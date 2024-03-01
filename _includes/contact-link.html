@@ -1,0 +1,16 @@
+<div class="contact">
+  <ul class="contact__list list-reset">
+    {% if site.data.settings.xiaoyuan %}
+      <li><a href="mailto:{{ site.data.settings.xiaoyuan }}" title="{{ site.data.settings.xiaoyuan }}">Xiaoyuan Yi</a></li>
+    {% else %} {% endif %}
+
+    {% if site.data.settings.jingyao %}
+      <li><a href="mailto:{{ site.data.settings.jingyao }}" title="{{ site.data.settings.jingyao }}">Jing Yao</a></li>
+    {% else %} {% endif %}
+
+    {% if site.data.settings.github %}
+      <li><a href="{{ site.data.settings.github }}" title="{{ site.data.settings.github }}">GitHub</a></li>
+    {% else %} {% endif %}
+
+  </ul>
+</div>

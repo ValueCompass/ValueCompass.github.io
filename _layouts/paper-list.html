@@ -1,0 +1,22 @@
+---
+layout: default
+---
+<div class="container-full">
+  <div class="sidebar">
+    {% for resource in site.resources %}
+        {% if resource.title %}
+            <a href="{{ resource.url | prepend: site.baseurl }}" class="sidebar_title">{{ resource.title }}</a>
+            {% if resource.subtitles %}
+                <ul class="subtitle_group">
+                {% for subtitle in resource.subtitles %}
+                    <ul><a href="{{ subtitle.id }}" class="sidebar_subtitle">{{ subtitle.title }}</a></ul>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+  </div>
+  <div class="side_row">
+    {{ content }}
+  </div>
+</div>

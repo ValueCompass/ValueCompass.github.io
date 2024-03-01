@@ -1,0 +1,13 @@
+---
+layout: default
+---
+<div class="container">
+	<div class="row">
+        {% for post in site.posts %}
+            {% if post.tags contains page.title %}
+                {% include article-content.html %}
+            {% endif %}
+        {% endfor %}
+	</div>
+</div>
+{% include pagination.html %}
