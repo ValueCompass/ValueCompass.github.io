@@ -1,0 +1,11 @@
+---
+layout: default
+---
+<div class="container">
+	<div class="row">
+        {% for post in site.posts %}
+            {% include article-brief.html %}
+        {% endfor %}
+	</div>
+</div>
+{% include pagination.html %}

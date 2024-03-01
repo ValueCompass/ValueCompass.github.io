@@ -1,0 +1,48 @@
+.sidebar_title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: black;
+}
+.sidebar_title a {
+    color: #333;
+    &:hover {
+        color: black;
+    }
+    &:active {
+        color: black;
+    }
+    &:visited {
+        color: black;
+    }
+    &:focus {
+        color: black;
+    }
+}
+.sidebar_subtitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: gray;
+
+    a {
+        color: gray;
+        &:hover {
+            color: #333;
+        }
+        &:active {
+            color: black;
+        }
+        &:visited {
+            color: black;
+        }
+        &:focus {
+            color: black;
+        }
+    }
+}
+
+.subtitle_group {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

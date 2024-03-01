@@ -1,131 +1,170 @@
-<div align="center">
-  <img src="./imgs/value_compass.png" alt="Value Compass" width="300"><br>
-  <strong>
-    Towards Navigating the Intrinsic Values of AI in a Symbiotic Future
-.
-  </strong><br>
-  (Contact: [Xiaoyuan Yi](xiaoyuanyi@microsoft.com); [Jing Yao](jingyao@microsoft.com))
-</div>
-<br>
+Zolan - Modern & Minimal Theme for Jekyll
+======
+Zolan is a minimal blog theme for Jekyll.
 
-- [1. Value Compass: Unpacking the Ethical Value Alignment in Big Models](#1-value-compass-unpacking-the-ethica-value-alignment-in-big-models)
-- [2. Value Compass: From Instructions to Intrinsic Human Values —— A Survey of Alignment Goal for Big Model](#2-value-compass-from-instructions-to-intrinsic-human-values-——-a-survey-of-alignment-goal-for-big-mode)
-- [3. Value FULCRA: Mapping Large Language Models to the Multidimensional Spectrum of Basic Human Values](#3-value-fulcra-mapping-large-language-models-to-the-multidimensional-spectrum-of-basic-human-values)
-<!-- - [3. Value Compass: On the Essence and Prospect —— An Investigation of Alignment Approach for Big Model](#3-value-compass-on-the-essence-and-prospect-——-an-investigation-of-alignment-approach-for-big-model)-->
+* * *
 
-- - -
+Table of Contents
+-----------------
+*   [Features](#features)
+*   [Demo](#demo)
+*   [Deployment](#deployment)
+*   [Posts](#posts)
+*   [Disqus Comments](#DisqusComments)
+*   [Instagram](#instagram)
+*   [Google Analytics](#GoogleAnalytics)
+*   [Update favicon](#UpdateFavicon)
+*   [Credits](#Credits)
+*   [Support](#Support)
 
-## 1. Value Compass: Unpacking the Ethical Value Alignment in Big Models
-<p align="center">
-  Xiaoyuan Yi,
-  Jing Yao, 
-  Xiting Wang, 
-  Fangzhao Wu,  
-  Xing Xie
-</p>  
+* * *
 
-<p align="center">
-Microsoft Research Asia
-</p>
+### Features
 
-<p align="center">
-{xiaoyuanyi, jingyao, xiting.wang, fangzwu, xing.xie}@microsoft.com
-</p>
+* 100% responsive and clean theme
 
+* Optimized for mobile devices
 
-<p align="center">
-[<a href="https://arxiv.org/pdf/2310.17551.pdf">Paper</a>]
-</p>
+* Minimal design
 
-<details>
-<summary>Abstract</summary>
-Big models have greatly advanced AI’s ability to understand, generate, and manipulate information and content, enabling numerous applications. However, as these models become increasingly integrated into everyday life, their inherent ethical values and potential biases pose unforeseen risks to society. This paper provides an overview of the risks and challenges associated with big models, surveys existing AI ethics guidelines, and examines the ethical implications arising from the limitations of these models. Taking a normative ethics perspective, we propose a reassessment of recent normative guidelines, highlighting the importance of collaborative efforts in academia to establish a unified and universal AI ethics framework. Furthermore, we investigate the moral inclinations of current mainstream LLMs using the Moral Foundation theory, analyze existing alignment algorithms, and outline the unique challenges encountered in aligning ethical values within them. To address these challenges, we introduce a novel conceptual paradigm for aligning the ethical values of big models and discuss promising research directions for alignment criteria, evaluation, and method, representing an initial step towards the interdisciplinary construction of the ethically aligned AI.
-</details>
+* Valid HTML5 code
 
-<p align="center">
-<img src="./imgs/ethics.png" style="width: 100%;"/>
-</p>
+* Post sharing
 
-- - -
+* Subscription form
 
-## 2. Value Compass: From Instructions to Intrinsic Human Values —— A Survey of Alignment Goal for Big Model
+* Supports Disqus Comments
 
-<p align="center">
-  Jing Yao, 
-  Xiaoyuan Yi,
-  Xiting Wang,  
-  Xing Xie
-</p>  
+* Instagram Feed
 
-<p align="center">
-Microsoft Research Asia
-</p>
+* Ionicons Icons
 
-<p align="center">
-{jingyao, xiaoyuanyi, xiting.wang, xing.xie}@microsoft.com
-</p>
+* Google Fonts
 
 
-<p align="center">
-[<a href="https://arxiv.org/pdf/2308.12014.pdf">Paper</a>]
-[<a href="https://github.com/ValueCompass/Alignment-Goal-Survey">Github</a>]
-</p>
+* * *
 
-<details>
-<summary>Abstract</summary>
-Big models, exemplified by Large Language Models (LLMs), are those pre-trained on massive data and comprise more than 10 billion parameters, which not only obtain significantly improved performance across diverse tasks but also represent emergent capabilities absent in smaller models. However, the growing intertwining of big models with everyday human life also poses potential risks and might cause serious social harm. Therefore, many efforts have been made to align LLMs with humans to make them better follow user instructions and satisfy human preferences. Nevertheless, "what to align with" has not been fully discussed, and inappropriate alignment goals might even backfire. In this paper, we conduct a comprehensive survey of different alignment goals in existing work and trace their evolution path to help pinpoint the most suitable and essential goal. Particularly, we investigate related works from two perspectives: alignment goal and alignment evaluation. Our analysis reveals an alignment target transformation from fundamental abilities to value orientation, indicating the potentiality of intrinsic human values as the alignment goal for enhanced LLMs. Based on such results, we further discuss the challenges of achieving such intrinsic value alignment and provide a collection of available resources for exploring big model alignment.
-</details>
+### Demo
 
+Check the theme in action [Demo](https://zolan-jekyll.netlify.app/)
 
-<p align="center">
-<img src="./imgs/alignment_targets.png" style="width: 100%;"/>
-</p>
+![Main page preview](https://github.com/artemsheludko/zolan/blob/master/images/zolan-main-page.png?raw=true)
 
-<!--
-## 3. Value Compass: On the Essence and Prospect —— An Investigation of Alignment Approach for Big Model
+The post page would look like this:
 
-<p align="center">
-  To be released.
-</p>  
--->
+![Post page preview](https://github.com/artemsheludko/zolan/blob/master/images/zolan-post.png?raw=true)
 
-## 3. Value FULCRA: Mapping Large Language Models to the Multidimensional Spectrum of Basic Human Values
+* * *
 
-<p align="center">
-  Jing Yao, 
-  Xiaoyuan Yi,
-  Xiting Wang,
-  Yifan Gong,
-  Xing Xie
-</p>  
+### Deployment
 
-<p align="center">
-Microsoft Research Asia
-</p>
+To run the theme locally, navigate to the theme directory and run `bundle install` to install the dependencies, then run `jekyll serve` or `bundle exec jekyll serve` to start the Jekyll server.
 
-<p align="center">
-{jingyao, xiaoyuanyi, v-yifangong, xing.xie}@microsoft.com
-</p>
+I would recommend checking the [Deployment Methods](https://jekyllrb.com/docs/deployment-methods/) page on Jekyll website.
+
+* * *
+
+### Posts
+
+To create a new post, you can create a new markdown file inside the \_posts directory by following the [recommended file structure](https://jekyllrb.com/docs/posts/#creating-post-files).
+
+      ---
+      layout: post
+      title: Time to give gifts to everyone
+      date: 2018-08-23 16:04:00 +0300
+      image: 03.jpg
+      tags: Life
+      ---
 
 
-<p align="center">
-[<a>Paper</a>]
-[<a>Dataset to be released</a>]
-</p>
+You can set the tags and the post image.
 
-<details>
-<summary>Abstract</summary>
-The rapid advancement of Large Language Models (LLMs) has attracted much attention to value alignment for their responsible development. However, how to define values in this context remains a largely unexplored question. Existing work mainly follows the Helpful, Honest, Harmless principle and specifies values as risk criteria formulated in the AI community, e.g., fairness and privacy protection, suffering from poor clarity, adaptability and transparency. Inspired by basic values in humanity and social science across cultures, this work proposes a novel basic value alignment paradigm and introduces a value space spanned by basic value dimensions. All LLMs’ behaviors can be mapped into the space by identifying the underlying values, possessing the potential to address the three challenges. To foster future research, we apply the representative Schwartz’s Theory of Basic Values as an initialized example and construct FULCRA, a dataset consisting of 5k (LLM output, value vector) pairs. Our extensive analysis of FULCRA reveals the underlying relation between basic values and LLMs’ behaviors, demonstrating that our approach not only covers existing mainstream risks but also anticipates possibly unidentified ones. Additionally, we present an initial implementation of the basic value evaluation and alignment, paving the way for future research in this line.
-</details>
+Add post images to **/images/** directory.
+
+For tags, try to not add space between two words, for example, `Ruby on Rails`, could be something like (`ruby-on-rails`, `Ruby_on_Rails`, or `Ruby-on-Rails`).
+
+* * *
+
+### Disqus Comments
+
+Zolan Theme comes with Disqus comments enabled.
+
+Open `_data/settings.yml` file, and change the `mr-brown` value on line 26 with your [Disqus account shortname](https://help.disqus.com/customer/portal/articles/466208).
+
+      Comment Section (Disqus)
+      disqus-identifier: mr-brown # Add your shortname for Disqus Comment. For example mr-brown
 
 
-<p align="center">
-<img src="./imgs/value_space.png" style="width: 100%;"/>
-Figure 1: Illustration of (a) downstream risks in existing datasets and (b) our proposed basic value paradigm
-</p>
+That’s all you need to setup Disqus from the theme side. If you get any issue regarding that comments are unable to load. First, make sure you have [registered your website with Disqus (Step 1)](https://help.disqus.com/customer/portal/articles/466182-publisher-quick-start-guide).
+
+And also check [Disqus troubleshooting guide](https://help.disqus.com/customer/portal/articles/472007-i-m-receiving-the-message-%22we-were-unable-to-load-disqus-%22) if you still have issues.
+
+* * *
+
+### Instagram
+
+The Instagram feed is working using [Instafeed.js](http://instafeedjs.com/) to show the photos.
+
+First, you will need to get your account `userId` and `accessToken` from the following URLs:
+
+*   userId: [http://codeofaninja.com/tools/find-instagram-user-id/](http://codeofaninja.com/tools/find-instagram-user-id/)
+*   accessToken: [instagram.pixelunion.net](http://instagram.pixelunion.net/)
+
+Second, open the `js/common.js` file and replace the `userId` and `accessToken` values.
+
+    var instagramFeed = new Instafeed({
+          get: 'user',
+          limit: 6,
+          resolution: 'standard_resolution',
+          userId: '8987997106',
+          accessToken: '8987997106.924f677.8555ecbd52584f41b9b22ec1a16dafb9',
+          template: ''
+    });
 
 
-<p align="center">
-<img src="./imgs/visualization.png" style="width: 100%;"/>
-Figure 4: (a) Visualization of LLM outputs in the value space, and we observe that 1) basic values can indicate a demarcation between safe and unsafe behaviors; 2) different safety risks can be clarified in the value space; and 3) basic values can describe new types of downstream risks. (b) Correlation between basic value dimensions and specific safety risks.
-</p>
+Third, open the `_data/settings.yml` file and replace the `instafeed: false` on `instafeed: true` value.
+
+    # Instagram Feed
+    instafeed: false # To enable the instafeed, use the value true. To turn off use the value false.
+
+
+* * *
+
+### Google Analytics
+
+To integrate Google Analytics, open `_data/settings.yml`, and add your Google Analytics identifier.
+
+    # Google Analytics
+    google-analytics: # Add your identifier. For example UA-99631805-1
+
+
+* * *
+
+### Update favicon
+
+You can find the current favicon (favicon.ico) inside the theme root directory, just replace it with your new favicon.
+
+* * *
+
+### Credits
+
+I have used the following scripts, fonts or other files as listed.
+
+*   [Google Fonts](https://fonts.google.com/specimen/Nunito) (Roboto, Sans Serif).
+*   [Ionicons Icons](https://ionicons.com/)
+*   [FitVids.js](http://fitvidsjs.com/)
+*   [Medium’s Image Zoom](https://github.com/fat/zoom.js)
+*   [Instafeed.js](http://instafeedjs.com/)
+*   [jQuery.com](https://jquery.com/)
+*   Preview Images form [unsplash.com](https://unsplash.com/), [pexels.com](https://www.pexels.com/)
+
+* * *
+### License
+
+Mit License
+
+* * *
+
+### Support
+<p>If you like the themes that I create you can become my sponsor on <a href="https://www.patreon.com/artemsheludko" target="_blank">Patreon</a>.
+<p align="center"><b>Thank you for your support ❤️</b></p>

@@ -1,0 +1,69 @@
+---
+layout: default
+---
+<div class="container">
+    <!-- <h2 class="team-head">Employees</h2> -->
+    <div class="team-head">
+        <h2>Employees</h2>
+    </div>
+    
+    <div class="team-members">
+        {% for member in page.employees %}
+            <div class="one-member">
+                {% if member.photo %}
+                    <div class="member__image">
+                        <img src="{{ site.baseurl }}/images/{{ member.photo }}" alt="{{ member.name }}" style="width: 150px; height: 150px;">
+                    </div>
+                {% endif %}
+                <div class="member-info">
+                    <h3 class="member__name">{{ member.name }}</h3>
+                    <p class="member__position">{{ member.position }}</p>
+                    <p class="member__institution">{{ member.institution }}</p>
+                    <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- <h2 class="team-head">Collaborators</h2> -->
+    <div class="team-head">
+        <h2>Collaborators</h2>
+    </div>
+    
+    <div class="team-members">
+        {% for member in page.collaborators %}
+            <div class="one-member">
+                {% if member.photo %}
+                    <div class="member__image">
+                        <img src="{{ site.baseurl }}/images/{{ member.photo }}" alt="{{ member.name }}" style="width: 150px; height: 150px;">
+                    </div>
+                {% endif %}
+                <div class="member-info">
+                    <h3 class="member__name">{{ member.name }}</h3>
+                    <p class="member__position">{{ member.position }}</p>
+                    <p class="member__institution">{{ member.institution }}</p>
+                    <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- <div class="row"> -->
+    <!-- <h2 class="team-head">Interns</h2> -->
+    <div class="team-head">
+        <h2>Interns</h2>
+    </div>
+    
+    <div class="team-members">
+        {% for member in page.interns %}
+            <div class="one-member">
+                <div class="member-info">
+                    <h3 class="member__name">{{ member.name }}</h3>
+                    <p class="member__institution">{{ member.institution }}</p>
+                    <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- </div> -->
+</div>
