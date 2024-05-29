@@ -24,17 +24,25 @@
             <div class="nav__title">Menu</div>
 
             <ul class="nav__list list-reset">
-              <li class="nav__item">
+              <li class="nav__item{% if page.url == '/index.html' %} active{% endif %}">
                 <a href="{{site.baseurl}}/" class="nav__link">Home</a>
               </li>
-              {% for page in site.pages %}
-                {% unless page.name == 'tags.html' or page.name == '404.html' %}
-                  {% if page.title %}
-                  <li class="nav__item">
-                    <a href="{{ page.url | prepend: site.baseurl }}" class="nav__link">{{ page.title }}</a>
+              {% assign sorted_pages = site.pages | sort: 'nav_order' %}
+              {% for node in sorted_pages %}
+                <!-- {% unless node.name == 'tags.html' or node.name == '404.html' %} -->
+                {% if node.autogen == null %}
+                  {% if node.title %}
+                  <li class="nav__item{% if page.url contains node.url %} active{% endif %}">
+                    {% if node.permalink contains '/papers/' %}
+                      {% assign url = '/papers/' %} 
+                    {% else %}
+                      {% assign url = node.url %}
+                    {% endif %}
+                    <a href="{{ url | prepend: site.baseurl }}" class="nav__link">{{ node.title }}</a>
                   </li>
                   {% endif %}
-                {% endunless %}
+                {% endif %}
+                <!-- {% endunless %} -->
               {% endfor %}
             </ul>
 

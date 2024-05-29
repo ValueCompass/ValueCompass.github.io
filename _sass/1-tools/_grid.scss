@@ -1,5 +1,5 @@
 $columns: 12;
-$container-base-width: 1200px;
+$container-base-width: 1680px;
 $container-offset: $base-spacing-unit;
 
 $desktop: 992px;
@@ -12,6 +12,7 @@ $mq: ( $mobile:$columns, $tablet:$columns, $desktop:$columns );
   max-width: $container-base-width;
   padding-left: $container-offset;
   padding-right: $container-offset;
+  width: 85%;
   margin: 0 auto;
 }
 
@@ -36,28 +37,6 @@ $mq: ( $mobile:$columns, $tablet:$columns, $desktop:$columns );
 .col {
   padding-left: $base-spacing-unit;
   padding-right: $base-spacing-unit;
-}
-
-.sidebar {
-  flex: 1;
-  position: fixed;
-  max-width: 18%;
-  // background-color: grey;
-  border-right: 1px solid #ccc;
-  padding: 20px;
-  padding-left: 50px;
-  box-sizing: border-box;
-  height: 100vh; /* 可视区域的高度 */
-  overflow-y: auto; /* 如果内容过多，出现滚动条 */
-  margin-left: ($base-spacing-unit * 1);
-}
-
-.side_row {
-  flex: 3;
-  margin-left: 18%;
-  padding: 20px;
-  padding-left: 100px;
-  overflow-y: auto;
 }
 
 [class^="col-"] {

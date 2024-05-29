@@ -1,6 +1,11 @@
 <div class="module">
-    <img class="module-bg" src="{{ site.baseurl }}/images/{{ module.image }}" alt="{{ module.title }}" style="width: 180px; height: 180px; margin-bottom: 20px; align-items: center;">
-    <h4 class="module-title" style="padding-left: 45px;">{{ module.title }}</h4>
+    <img class="module-bg" src="{{ site.baseurl }}/images/{{ module.image }}" alt="{{ module.title }}">
+    <h4 class="module-title">{{ module.title }}</h4>
+
+    <div class="module-cover">
+        <img src="{{ site.baseurl }}/images/{{ module.imageCover }}" alt="{{ module.title }}">
+        <!-- <p>{{ module.title }}</p> -->
+    </div>
     <!-- <div class="module-bg" style="background-image: url({{site.baseurl}}/images/{{module.image}})"></div> -->
     <!-- <div class="module-content">
         <h4 class="module-title">{{ module.title }}</h4>

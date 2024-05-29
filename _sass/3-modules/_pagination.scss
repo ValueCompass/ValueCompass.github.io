@@ -1,6 +1,5 @@
 .pagination {
-  margin: 20px 0 40px;
-  padding: 40px 0;
+  padding: .5em 0 0;
   text-align: center;
 
   @media only screen and (max-width: $mobile) {
@@ -10,7 +9,7 @@
 
 .pagination__list {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   .next-link,
@@ -46,12 +45,19 @@
     
     a, span {
       padding: 0 5px;
-      font-size: 15px;
+      font-size: 1em;
       color: $dark;
+      display: inline-block;
+      width: 2.1em;
+      line-height: 2.1em;
+      font-weight: 700;
     }
 
     .active-link {
       font-weight: 700;
+      background: $dark;
+      color: #fff;
+      border-radius: 50%;
     }
   }
 

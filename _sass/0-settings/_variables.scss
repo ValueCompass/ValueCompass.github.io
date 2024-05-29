@@ -3,7 +3,7 @@
 // *****************
 
 // Spaces
-$base-spacing-unit: 20px;
+$base-spacing-unit: 0px;
 
 // Border radius
 $global-radius: 3px;
@@ -15,8 +15,9 @@ $global-transition: all .35s;
 // *****************
 // Color Variables
 // *****************
-$brand-color: #f6b141;
-$dark: #393e46;
+$brand-color: rgba(16, 147, 255, 1);
+$brand-color-title: rgba(48, 131, 255, 1);
+$dark: #000;
 $gray: #bbbbbb;
 $light-gray: #e6eef0;
 $white: #ffffff;
@@ -51,17 +52,17 @@ $base-font-style: normal;
 $base-font-variant: normal;
 $base-font-weight: normal;
 $base-font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
-$base-line-height: 26px;
+$base-line-height: 1.6;
 
 // Headings
 $heading-font-weight: 700;
 $heading-font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
 
-$font-size-h1:  36px;
-$font-size-h2:  28px;
-$font-size-h3:  24px;
-$font-size-h4:  20px;
-$font-size-h5:  18px;
-$font-size-h6:  16px;
+$font-size-h1:  1.25em;
+$font-size-h2:  1.75em;
+$font-size-h3:  1.5em;
+$font-size-h4:  1.25em;
+$font-size-h5:  1.125em;
+$font-size-h6:  1em;
 
 $heading-line-height: 1.2;

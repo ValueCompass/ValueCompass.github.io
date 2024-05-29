@@ -1,0 +1,66 @@
+---
+layout: default
+---
+<div class="container talk-container">
+    {% assign sorted_talks = site.talks %}
+    {% assign active_index = 1 %}
+    {% if page.url == "/talks" %}
+        {% assign talk_home = true %}
+    {% else %}
+        {% assign talk_home = false %}
+    {% endif %}
+    <div class="talk-intro">
+        <h2>{{site.data.settings.TalksPage.name}}</h2>
+        <div>
+            {{site.data.settings.TalksPage.description}}
+        </div>
+    </div>
+    <div class="talks-content">
+        <div class="left talk-detail" id="talks-detail-list">
+            {% if sorted_talks.size > 0 && talk_home %}
+            {% for talk in sorted_talks %}
+            {% if active_index == forloop.index %}
+                {% assign display = 'block' %}
+            {% else %}
+                {% assign display = 'none' %}
+            {% endif %}
+            <div class="talks_{{forloop.index}}" style="display: {{display}}">
+                {% if talk.video %}
+                <video controls src="{{site.baseurl}}/images/{{talk.video}}" alt=""></video>
+                {% else %}
+                <img src="{{site.baseurl}}/images/{{talk.image}}" alt="">
+                {% endif %}
+                <h2>{{talk.title}}</h2>
+                <p>{{talk.content}}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+        </div>
+        <div class="right talk-list">
+            <ul id="talks-list-btns">
+                {% for talk in sorted_talks %}
+                <li class="{% if forloop.index == active_index && talk_home %} active{% endif %}">
+
+                    <div class="talk-image">
+                        <img src="{{site.baseurl}}/images/{{talk.image}}" alt="">
+                        {% if talk.video %}
+                        <div class="cover" style="background-image: url({{site.baseurl}}/images/play_icon.png)";"></div>
+                        {% endif %}
+                    </div>
+                    <div class="talk-content">
+                        <!-- <a href="">
+                            <a href="{{ site.baseurl }}/talk{{ talk.url | downcase | replace: " ", "-" }}" class="article__tag"><h4>{{talk.title}}</h4></a>
+                        </a> -->
+                        <span class="article__tag"><h4>{{talk.title}}</h4></span>
+                        <span><time datetime="{{ talk.date | date_to_xmlschema }}">{% assign date_format =
+                                site.minima.date_format | default: "%B %-d, %Y" %}{{ talk.date | date: date_format
+                                }}</time>
+                        </span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

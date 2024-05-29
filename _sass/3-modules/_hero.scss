@@ -1,28 +1,33 @@
 .hero {
-  padding: 80px 0;
-  margin-bottom: 80px;
-  background: #f5f5f5;
+  background: #F5F5F5;
 
   .last-item {
     display: flex;
   }
 
   .hero__content {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    // justify-content: center;
     width: 100%;
-    padding: 0 40px 0 0;
+    padding: 3em  2em 3em 15% ;
+
+    .hreo_name {
+      font-size: 3em;
+      color: $brand-color-title;
+    }
     
     .hero__title {
-      font-size: 38px;
-      font-weight: normal;
+      margin-top: .2em;
+      font-size: 2.25em;
+      color: $brand-color;
     }
 
     .hero__subtitle {
-      font-size: 18px;
-      line-height: 32px;
-      letter-spacing: 0.5px;
+      margin-top: 1.6em;
+      font-size: 1.125em;
+      line-height: 2em;
     }
 
     .hero__social {
@@ -37,45 +42,21 @@
 
   .hero__image {
     img {
-      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      // box-shadow: 0 1px 4px rgba(0,0,0,0.15);
     }
   }
 
   @media only screen and (max-width: $desktop) {
     .hero__content {
-      padding: 0;
-
-      .hero__subtitle {
-        font-size: 16px;
-        line-height: 28px;
-      }
+      padding: 2em 0;
     }
   }
 
   @media only screen and (max-width: $tablet) {
-    margin-bottom: 40px;
-
     .last-item {
       order: 1;
     }
-
-    .hero__content {
-      .hero__title {
-        margin-bottom: 20px;
-        font-size: 27px;
-      }
-    }
-
-    .hero__image {
-      margin-bottom: 20px;
-      
-      img {
-        box-shadow: none;
-      }
-    }
   }
 
-  @media only screen and (max-width: $mobile) {
-    padding: 40px 0;
-  }
+  
 }

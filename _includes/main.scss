@@ -98,6 +98,8 @@
 // 3.9 Instagram
 @import '3-modules/footer';
 
+@import '3-modules/login';
+
 /* >>>>>>>>>>>>>> :: 4-Layouts <<<<<<<<<<<<<<< */
 
 // 4.1 Page-home
@@ -120,3 +122,9 @@
 
 // 4.7 Team-member
 @import '4-layouts/teams';
+
+// 4.8 resouse
+@import '4-layouts/paper_list';
+
+// 4.9 talks
+@import '4-layouts/talks';

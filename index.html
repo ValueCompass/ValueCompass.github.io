@@ -1,39 +1,59 @@
 ---
 layout: default
+pagination:
+  enabled: true
+  collection: posts
+  permalink: /page/:num/
+  per_page: 4
+  sort_field: date
+  sort_reverse: true
+  trail:
+    before: 1 # The number of links before the current page
+    after: 3 # The number of links after the current page
 ---
 {% include intro.html %}
 
-<div class="container">
-    <div class="row">
-        {% for module in site.modules %}
-            <div class="col col-3">
-                <a href="{{ module.url | prepend: site.baseurl }}">
-                    {% include module-navigator.html %}
-                </a>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+<div style="padding-bottom: 5em;">
+	<div class="container module-container">
+		<div class="row">
+			{% for module in site.modules %}
+			<div class="col col-3">
+				<!-- <a href="{{ module.url | prepend: site.baseurl }}"> -->
+				{% include module-navigator.html %}
+				<!-- </a> -->
+			</div>
+			{% endfor %}
+		</div>
+	</div>
 
-<div class="container" style="margin-top: 20px;">
-	<div class="row">
-		<div class="col col-12">
+	<div class="container" style="margin-top: 20px;">
+		<div class="row">
+			<div class="col col-12">
+				{% if site.posts.size > 0 %}
+				<h4 class="lates-title">Latest News</h4>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			{% if page.pagination.enabled %}
+				{% assign postlist = paginator.posts %}
+			{% else %}
+				{% assign postlist = site.posts %}
+			{% endif %}
+
 			{% if site.posts.size > 0 %}
-				<h4 class="lates-title">Latest Posts</h4>
+				{% for post in postlist %}
+					{% if post.status == "latest" %}
+						{% include article-content.html %}
+					{% endif %}
+				{% endfor %}
 			{% endif %}
 		</div>
 	</div>
-</div>
-
-<div class="container">
-	<div class="row">
-	{% if site.posts.size > 0 %}
-		{% for post in site.posts %}
-            {% if post.status == "latest" %}
-			    {% include article-content.html %}
-            {% endif %}
-		{% endfor %}
+	{% if page.pagination.enabled %}
+	{% include pagination.html %}
 	{% endif %}
-	</div>
 </div>
-{% include pagination.html %}

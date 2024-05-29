@@ -1,4 +1,6 @@
-*, *::after, *::before {
+*,
+*::after,
+*::before {
   box-sizing: border-box;
 }
 
@@ -10,20 +12,27 @@ body {
   background-color: $background-color;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  input, textarea {
-		border: 1px solid $border-color;
-		outline: none;
-		&:focus:required:invalid {
-			border-color: #e02f40;
-		}
-		&:required:valid {
-			border-color: #34a74e;
-		}
-	}
+
+  input,
+  textarea {
+    border: 1px solid $border-color;
+    outline: none;
+
+    &:focus:required:invalid {
+      border-color: #e02f40;
+    }
+
+    &:required:valid {
+      border-color: #34a74e;
+    }
+  }
+  div,p{
+    // line-height: $base-line-height;
+  }
 }
 
 ::placeholder {
-	color: #666;
+  color: #666;
 }
 
 *::selection {
@@ -38,7 +47,6 @@ h4,
 h5,
 h6 {
   font-family: $heading-font-family;
-  line-height: initial;
   letter-spacing: 0.5px;
 }
 
@@ -73,7 +81,7 @@ blockquote {
   letter-spacing: 0.5px;
   font-style: normal;
   text-align: center;
-  
+
   @media only screen and (max-width: $tablet) {
     margin: 30px 0;
     font-size: 24px;
@@ -96,6 +104,7 @@ img,
   max-width: 100%;
   height: auto;
   vertical-align: middle;
+
   &+em {
     text-align: center;
     display: block;
@@ -107,15 +116,21 @@ img,
 }
 
 a {
-    text-decoration: none;
-    color: $link-color;
-    transition: $global-transition;
-    &:hover {
-      color: darken($link-color, 10%);
-    }
-    &:active {
-      color: darken($link-color, 20%);
-    }
+  text-decoration: none;
+  color: $link-color;
+  transition: $global-transition;
+
+  &:hover {
+    color: darken($link-color, 10%);
+  }
+
+  &:active {
+    color: darken($link-color, 20%);
+  }
+}
+
+.title_color {
+  color: $link-color;
 }
 
 hr {
@@ -124,4 +139,48 @@ hr {
   margin: 40px 0;
   border: 0;
   background: $light-gray;
+}
+
+@media (max-width: 1600px) {
+
+  html,
+  body {
+    font-size: 14px;
+  }
+}
+
+
+
+@media (max-width: 1500px) {
+
+  html,
+  body {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 1280px) {
+
+  html,
+  body {
+    font-size: 12px;
+  }
+}
+
+body,
+html,
+div,
+ul {
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #eee;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 25px;
+  }
 }

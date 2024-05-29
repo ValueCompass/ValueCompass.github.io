@@ -1,0 +1,52 @@
+.resource-page{
+    display: flex;
+    height: calc(100vh - 146px);
+    padding-bottom: 4em;
+    box-sizing: border-box;
+    h1,h2,h3,h4,h5,h6{
+        margin: 1em 0 .5em;
+    }
+    .side_row{
+        ol,ul{
+            padding-left: 2em;
+            
+        }
+        .hero{
+            margin-bottom: 3em;
+            background: transparent;
+            .hero__content{
+                padding: 0 2em 0 0;
+            }
+            align-items: flex-end;
+        }
+    }
+    
+    .sidebar {
+        transform: translateX(-3em);
+        width: 15em;
+        
+        box-sizing: border-box;
+        height: 100%; /* 可视区域的高度 */
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1.2em 0;
+        .active{
+            a{color:$brand-color;}
+        }
+        &>div{
+            padding-right: 1em;
+            padding-bottom: 2em;
+            max-height: 100%;
+            overflow-y: auto; /* 如果内容过多，出现滚动条 */
+            
+        }
+      }
+      
+      .side_row {
+        flex: 1;
+        height: 100%;
+        overflow-y: auto;
+      }
+}
