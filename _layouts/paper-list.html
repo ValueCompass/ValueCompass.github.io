@@ -1,22 +1,56 @@
 ---
 layout: default
 ---
-<div class="container-full">
-  <div class="sidebar">
-    {% for resource in site.resources %}
-        {% if resource.title %}
-            <a href="{{ resource.url | prepend: site.baseurl }}" class="sidebar_title">{{ resource.title }}</a>
-            {% if resource.subtitles %}
-                <ul class="subtitle_group">
-                {% for subtitle in resource.subtitles %}
-                    <ul><a href="{{ subtitle.id }}" class="sidebar_subtitle">{{ subtitle.title }}</a></ul>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endif %}
-    {% endfor %}
+<div class="container resource-page">
+  <div class="sidebar" id="navbar-example" role="navigation">
+    <div class="nav nav-tabs">
+      {% for resource in site.resources %}
+      {% if resource.title %}
+      <!-- <a href="{{ resource.url | prepend: site.baseurl }}" class="sidebar_title">{{ resource.title }}</a> -->
+      <!-- <span class="sidebar_title">{{ resource.title }}</span> -->
+      <ul>
+        <li>
+          <a  class="sidebar_title" href="#resource_{{forloop.index}}">
+            {{ resource.title }}
+          </a>
+        </li>
+      </ul>
+      {% if resource.subtitles %}
+      <ul class="subtitle_group">
+        {% for subtitle in resource.subtitles %}
+        <li><a href="{{ subtitle.id }}" class="sidebar_subtitle">{{ subtitle.title }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+    </div>
   </div>
-  <div class="side_row">
-    {{ content }}
+  <div id="scroll-container-example" class="side_row" data-spy="scroll" data-target="#navbar-example" data-offset="10" style="position: relative;">
+    <!-- <div class="row hero">
+      <div class="col col-6 col-t-12 last-item hero_left">
+        <div class="hero__content">
+          <h1 class="hero__title" style="font-size: 2.5em;">{{ site.data.settings.ResourcesPage.name }}</h1>
+          <p class="hero__subtitle">{{ site.data.settings.ResourcesPage.description }}</p>
+        
+        </div>
+      </div>
+      <div class="col col-6 col-t-12 hero_right">
+        <div class="hero__image">
+          <img src="{{site.baseurl}}/images/{{ site.data.settings.ResourcesPage.image }}" alt="">
+        </div>
+      </div>
+    </div> -->
+    <!-- {{ content }} -->
+    {% for resource in site.resources %}
+      {% if resource.content %}
+      <div style="margin-bottom: 5em;">
+        <h2 id="resource_{{forloop.index}}">{{ resource.title}}</h2>
+        <div>
+          {{ resource.content }}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
   </div>
 </div>

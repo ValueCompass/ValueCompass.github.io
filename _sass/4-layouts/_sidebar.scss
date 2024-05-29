@@ -1,5 +1,5 @@
 .sidebar_title {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 30px;
     color: black;
@@ -20,7 +20,7 @@
     }
 }
 .sidebar_subtitle {
-    font-size: 18px;
+    font-size: 1.2em;
     font-weight: 700;
     margin-bottom: 30px;
     color: gray;
@@ -43,6 +43,8 @@
 }
 
 .subtitle_group {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin:.2em 0 2em .6em;
+    li{
+        padding: .2em 0;
+    }
 }

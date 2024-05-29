@@ -5,25 +5,30 @@
 
 <body>
 
-  {% if site.data.settings.google-analytics %}
-  {% include google-analytics.html %}
-  {% endif %}
+  <div class="body-box" style="opacity: 0;">
+    {% if site.data.settings.google-analytics %}
+    {% include google-analytics.html %}
+    {% endif %}
 
-  {% include header.html %}
+    {% include header.html %}
 
-  <!-- begin content -->
-  <main class="content" aria-label="Content">
-    {{ content }}
-  </main>
-  <!-- end content -->
+    <!-- begin content -->
+    <main class="content" aria-label="Content" style="min-height: calc(100vh - 146px)">
+      {{ content }}
+    </main>
+    <!-- end content -->
 
-  <div class="top ion ion-ios-arrow-up" title="Top"></div>
+    <div class="top ion ion-ios-arrow-up" title="Top"></div>
 
-  {% include search.html %}
+    {% include search.html %}
 
-  {% include footer.html %}
+    {% include footer.html %}
 
-  {% include javascripts.html %}
+    {% include javascripts.html %}
+
+
+  </div>
+  {% include login.html %}
 </body>
 
 </html>

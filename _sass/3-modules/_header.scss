@@ -42,15 +42,15 @@
   }
   
   .logo__image {
-    max-height: 80px;
+    width: 11.9rem;
   }
 }
 
 .main-nav {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  right: 100px;
+  transform: translate(0, -50%);
 
   .nav-icon__close {
     display: none;
@@ -74,15 +74,19 @@
 
       .nav__link {
         display: inline-block;
-        padding: 10px 30px;
-        font-size: 15px;
+        padding: 5px 1.12em;
+        font-size: 1.125em;
         font-weight: 700;
         letter-spacing: 0.5px;
-        text-transform: uppercase;
+        text-transform: capitalize;
         color: $dark;
         &:hover {
-          color: $black;
+          color: #f6b141 !important;
         }
+        
+      }
+      &.active .nav__link{
+        color: $brand-color;
       }
     }
   }

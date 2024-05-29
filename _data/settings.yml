@@ -8,9 +8,26 @@ description: Aligning AI with Basic Human Values
 #-------------------------------
 # Project Settings
 project:
-  name: Value Compass - Aligning AI with Basic Human Values
+  name: Aligning AI with Basic Human Values
   description: Drawing on value theories from humanity and social science like Schwartz's Theory, we build a novel framework to map AI behaviors into value vectors, evaluate and align AI values dynamically and adaptively, and hence not only handle existing AI safety issues, but also anticipate and mitigate potential future risks.
-  image: basic_value_space.png
+  image: home_cover.png
+
+#-------------------------------
+# PapersPage Settings
+PagesPage:
+  name: Research Papers Hub
+  description: Explore our comprehensive collection of research papers covering various topics related to the Value Compass project. Stay informed and delve into the latest academic insights and findings from our team..
+  image: pages_cover.png
+
+TalksPage:
+  name: Welcome to our Insights & Events page!
+  description: <p>Explore a collection of interviews, conference highlights, and event videos to stay informed and inspired by engaging discussions with industry experts and recordings of past events.</p><p>Discover dynamic content that brings you closer to the forefront of knowledge and innovation in our field.</p>
+
+ResourcesPage:
+  name: "Research Resources: Enhancing Our Project Knowledge"
+  description: Explore our curated list of research resources, offering valuable tools from academic journals to online platforms. Covering a wide range of topics, these sources provide essential support for our project's exploration and understanding.
+  image: resource_cover.png
+
 
 
 #-------------------------------

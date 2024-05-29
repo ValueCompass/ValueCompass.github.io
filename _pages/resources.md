@@ -2,6 +2,7 @@
 layout: paper-list
 title: resources
 permalink: resources
+nav_order: 3
 ---
 
 ## Human Instructions

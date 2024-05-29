@@ -99,4 +99,66 @@ $(document).ready(function() {
   });
 
 
+  $('#talks-list-btns').on('click', 'li', function(e) {
+    console.log($(this).index());
+    $(this).addClass("active").siblings().removeClass("active");
+        var index = $(this).index();
+        $("#talks-detail-list>div").eq(index).show().siblings().hide();
+  });
+
+  // 前端验证登录 release前展示
+  let value =  sessionStorage.getItem("FrontToken")
+  if(value && value == "ValueCompass"){
+    
+    $('.login-container').hide()
+    $(".body-box").css("opacity",1)
+    $(".body-box").show()
+  }else{
+    $('.login-container').show()
+    $(".body-box").css("opacity",0)
+    $(".body-box").hide()
+  }
+  $('#log-btn').on('click', function () {
+    let passwordValue = $("#password-input").val()
+    console.log(passwordValue)
+    if (passwordValue != "ValueCompass") {
+      alert("请输入正确的密码");
+    } else {
+      $('.login-container').hide()
+      $(".body-box").css("opacity",1)
+      $(".body-box").show()
+      sessionStorage.setItem("FrontToken", passwordValue);
+      // console.log(this.$route.query.redirect);
+      let nextPath = sessionStorage.getItem("nextPath")
+      // router.push("/");
+    }
+  });
+
+
+  // bootstrap-toc
+  // if ($("#toc-sidebar").length) {
+  //   // remove related publications years from the TOC
+  //   $(".publications h2").each(function () {
+  //     $(this).attr("data-toc-skip", "");
+  //   });
+  //   var navSelector = "#toc-sidebar";
+  //   var $myNav = $(navSelector);
+  //   Toc.init($myNav);
+  //   $("body").scrollspy({
+  //     target: navSelector,
+  //   });
+  // }
+  // $('#aaaa').scrollspy({ target: '#navbar-example' })
+  
+
+
+
 });
+
+// $(function(){
+//   $('[data-spy="scroll"]').each(function () {
+//     var $spy = $(this).scrollspy('refresh')
+//   })
+
+//   $('#scroll-container-example').scrollspy({ target: '#navbar-example' })
+// })

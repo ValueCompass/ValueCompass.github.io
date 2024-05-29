@@ -1,39 +1,95 @@
 .lates-title {
-  position: relative;
-  margin-bottom: 80px;
-  font-size: 14px;
-  line-height: 24px;
+  margin-bottom: .8em;
+  font-size: 2em;
   letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: normal;
-  text-align: center;
-  &:after,
-  &:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%); 
-    height: 1px;
-    background: $light-gray;
-  }
+  text-transform: capitalize;
+  font-weight: 700;
+  color: $brand-color-title;
+  padding-left: 3%;
+}
 
-  &:after {
-    width: calc(50% - 90px);
-    left: 0;
+.module-container {
+  margin-top: 2em;
+  margin-bottom: 6em;
+  &>div{
+    padding: 0 2em;
   }
+  .module {
+    max-width: 150px;
+    min-width: 100px;
+    width: 50%;
+    margin: 0 auto;
+    position: relative;
 
-  &:before {
-    width: calc(50% - 90px);
-    right: 0;
-  }
-
-  @media only screen and (max-width: $tablet) {
-    margin-bottom: 40px;
-    
-    &:after,
-    &:before {
-      width: calc(50% - 70px);
+    .module-bg {
+      width: 100%;
+      padding: 10%;
+      border-radius: 8px;
+      margin: 0 auto;
+      display: block;
     }
+
+    .module-title {
+      color: $brand-color;
+      text-align: center;
+      font-size: 1em;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: .2em;
+    }
+
+    .module-cover {
+      border-radius: 12%;
+      z-index: 1;
+      background-color: $brand-color;
+      color: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    &:hover .module-cover{
+      opacity: 1;
+    }
+
+    // .module-cover {
+    //   border-radius: 8px;
+    //   z-index: 1;
+    //   background-color: $brand-color;
+    //   color: #fff;
+    //   position: absolute;
+    //   top: 0;
+    //   left: 0;
+    //   width: 100%;
+    //   height: 100%;
+    //   display: flex;
+    //   flex-direction: row;
+    //   align-items: center;
+    //   justify-content: center;
+    //   opacity: 0;
+    //   transition: all .1s;
+    //   font-size: 1.2em;
+    //   font-weight: bold;
+
+    //   p {
+    //     margin: 0;
+    //   }
+
+    // }
+
+    // &:hover {
+    //   .module-cover {
+    //     opacity: .8;
+    //   }
+    // }
   }
 }

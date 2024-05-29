@@ -6,19 +6,24 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 markdown: kramdown
 permalink: pretty
 plugins:
-  - jekyll-paginate
+  - jekyll-paginate-v2
   - jekyll-sitemap
   - jekyll/tagging
 
-paginate: 5
-paginate_path: "/page/:num"
-
+# paginate: 5
+# paginate_path: "/page/:num"
+# Pagination
+pagination:
+  enabled: true
+  
 collections:
   modules:
     output: true
   latest:
     output: true
   resources:
+    output: true
+  talks:
     output: true
 
 # Pages Path
@@ -35,6 +40,10 @@ defaults:
       path: '_resources'
     values:
       permalink: /resources/:basename:output_ext
+  - scope:
+      path: '_talks'
+    values:
+      permalink: /talks/:basename:output_ext
 
 include:
   - _pages
@@ -45,6 +54,10 @@ tag_page_dir:         tag
 tag_page_layout:      tag_page
 tag_permalink_style:  pretty
 
+
 sass:
   sass_dir: _sass
   style: compressed
+
+
+enable_video_embedding: false # enables video embedding for bibtex entries. If false, the button opens the video link in a new window.
