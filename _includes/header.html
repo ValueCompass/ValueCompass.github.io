@@ -24,8 +24,10 @@
             <div class="nav__title">Menu</div>
 
             <ul class="nav__list list-reset">
-              <li class="nav__item{% if page.url == '/index.html' %} active{% endif %}">
+              <span style="display: none;">page url:{{page.url}}</span>
+              <li class="nav__item{% if page.url == '/index.html' %} active{% endif %}{% if page.url == '/' %} active{% endif %}">
                 <a href="{{site.baseurl}}/" class="nav__link">Home</a>
+                
               </li>
               {% assign sorted_pages = site.pages | sort: 'nav_order' %}
               {% for node in sorted_pages %}
@@ -39,6 +41,7 @@
                       {% assign url = node.url %}
                     {% endif %}
                     <a href="{{ url | prepend: site.baseurl }}" class="nav__link">{{ node.title }}</a>
+                    <span style="display: none;">{{node.permalink}}</span>
                   </li>
                   {% endif %}
                 {% endif %}
