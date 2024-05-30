@@ -38,11 +38,7 @@ pagination:
 
 	<div class="container">
 		<div class="row">
-			{% if page.pagination.enabled %}
-				{% assign postlist = paginator.posts %}
-			{% else %}
-				{% assign postlist = site.posts %}
-			{% endif %}
+			{% assign postlist = site.posts %}
 
 			{% if site.posts.size > 0 %}
 				{% for post in postlist %}
@@ -53,7 +49,4 @@ pagination:
 			{% endif %}
 		</div>
 	</div>
-	{% if page.pagination.enabled %}
-	{% include pagination.html %}
-	{% endif %}
 </div>
