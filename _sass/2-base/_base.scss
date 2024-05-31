@@ -141,11 +141,11 @@ hr {
   background: $light-gray;
 }
 
-@media (max-width: 1600px) {
+@media (max-width: 1700px) {
 
   html,
   body {
-    font-size: 14px;
+    font-size: 15px;
   }
 }
 
@@ -155,17 +155,11 @@ hr {
 
   html,
   body {
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 
-@media (max-width: 1280px) {
 
-  html,
-  body {
-    font-size: 12px;
-  }
-}
 
 body,
 html,

@@ -9,10 +9,12 @@ layout: default
     {% else %}
         {% assign talk_home = false %}
     {% endif %}
-    <div class="talk-intro">
-        <h2>{{site.data.settings.TalksPage.name}}</h2>
-        <div>
-            {{site.data.settings.TalksPage.description}}
+    <div class="hero" style="background: transparent;">
+        <div class="talk-intro hero__content">
+            <h2 class="hreo_name">{{site.data.settings.TalksPage.name}}</h2>
+            <div class="hero__subtitle">
+                {{site.data.settings.TalksPage.description}}
+            </div>
         </div>
     </div>
     <div class="talks-content">
@@ -43,16 +45,16 @@ layout: default
                 <li class="{% if forloop.index == active_index && talk_home %} active{% endif %}">
 
                     <div class="talk-image">
-                        <img src="{{site.baseurl}}/images/{{talk.image}}" alt="">
+                        <img src="{{site.baseurl}}/images/posts/{{talk.image}}" alt="">
                         {% if talk.video %}
                         <div class="cover" style="background-image: url({{site.baseurl}}/images/play_icon.png)";"></div>
                         {% endif %}
                     </div>
                     <div class="talk-content">
-                        <!-- <a href="">
+                        <a href="">
                             <a href="{{ site.baseurl }}/talk{{ talk.url | downcase | replace: " ", "-" }}" class="article__tag"><h4>{{talk.title}}</h4></a>
-                        </a> -->
-                        <span class="article__tag"><h4>{{talk.title}}</h4></span>
+                        </a>
+                        <!-- <span class="article__tag"><h4>{{talk.title}}</h4></span> -->
                         <span><time datetime="{{ talk.date | date_to_xmlschema }}">{% assign date_format =
                                 site.minima.date_format | default: "%B %-d, %Y" %}{{ talk.date | date: date_format
                                 }}</time>

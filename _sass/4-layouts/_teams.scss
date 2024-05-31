@@ -1,12 +1,8 @@
 .teams-container {
   color: #2F2F2F;
 
-  .title {
-    font-size: 2.5em;
-    text-align: center;
+  .hero {
     padding: 1em 0 0 .5em;
-    color: $brand-color;
-    font-weight: bold;
   }
 
   .team-head {
@@ -21,7 +17,6 @@
       background-size: 1em auto;
       background-position: left center;
       padding-left: 1.5em;
-      transform: translateX(-1.4em);
     }
   }
 
@@ -31,16 +26,15 @@
     // justify-content: space-around;
     // border: 1px solid red;
     align-items: flex-start;
-    gap: 4%
+    gap: 2%;
+    padding:0 1em;
   }
 
   .one-member {
     padding: 2em 1em;
     box-sizing: border-box;
-    width: 30.6666%;
+    width: 32%;
     display: flex;
-    text-align: left;
-    align-items: left;
     // border: 1px solid red;
 
     .member__image {
@@ -74,13 +68,17 @@
 
       .member__position {
         font-size: 1.125em;
-        font-weight: bold;
-        margin-bottom: .8em;
+        font-weight: 700;
+        margin-bottom: .3em;
+      }
+      .member_intern_content{
+        margin-bottom: .5em;
+        font-size: .8em;
       }
 
       .member__institution {
         font-weight: 600;
-        padding-top: .2em;
+        margin-top: .3em;
       }
 
       .member__email {
@@ -92,8 +90,31 @@
 
 }
 
-@media only screen and (max-width: 1500px) {
-  .teams-container{
-    font-size: .8em;
+@media only screen and (max-width: 1200px) {
+  .teams-container {
+    .content {
+      font-size: .8em;
+
+    }
+    .team-members{
+      gap: 10%;
+    }
+    .one-member{
+      width: 45% !important;
+    }
+
+  }
+ 
+}
+
+@media only screen and (max-width: 600px) {
+  .teams-container {
+    .team-members{
+      gap: 0%;
+    }
+    .one-member{
+      width: 100% !important;
+    }
+
   }
 }
