@@ -18,12 +18,13 @@
       color: $brand-color;
       line-height: 1.625;
     }
-    &>div{
+    .hero__subtitle{
       flex: 1; 
       font-size: 1.125em;
       padding-left: 4em;
       padding-right: 3em;
       line-height: 2;
+      margin-top: 0;
       p{
         margin-bottom: .6em;
       }

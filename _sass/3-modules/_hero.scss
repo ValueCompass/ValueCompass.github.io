@@ -14,8 +14,12 @@
     padding: 3em  2em 3em 15% ;
 
     .hreo_name {
-      font-size: 3em;
+      line-height: 1.6;
+      font-size: 2.3em;
       color: $brand-color;
+      &.hreo_name_index{
+        font-size: 2.8em;
+      }
     }
     
     .hero__title {
@@ -43,6 +47,33 @@
   .hero__image {
     img {
       // box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+  }
+
+  @media only screen and (max-width: 1900px) {
+    .hero__content {
+      .hreo_name{
+        font-size: 1.9em;
+        &.hreo_name_index{
+          font-size: 2.6em;
+        }
+      }
+      .hero__title{
+        font-size: 1.7em;
+      }
+    }
+  }
+  @media only screen and (max-width: 1500px) {
+    .hero__content {
+      .hreo_name{
+        font-size: 1.7em;
+        &.hreo_name_index{
+          font-size: 2.2em;
+        }
+      }
+      .hero__title{
+        font-size: 1.6em;
+      }
     }
   }
 

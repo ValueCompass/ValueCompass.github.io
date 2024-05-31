@@ -1,5 +1,5 @@
 .sidebar_title {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 30px;
     color: black;
@@ -43,8 +43,9 @@
 }
 
 .subtitle_group {
-    margin:.2em 0 2em 0;
+    margin:.4em 0 2em 1em;
     li{
-        padding: .35em 0;
+        padding: .4em 0;
+        list-style: none;
     }
 }

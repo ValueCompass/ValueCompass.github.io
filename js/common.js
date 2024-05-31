@@ -86,11 +86,11 @@ $(document).ready(function() {
   // Scroll Top Button
   ======================= */
   $(".top").click(function() {
-    $("html, body")
+    $("#scroll-container-example")
       .stop()
       .animate({ scrollTop: 0 }, "slow", "swing");
   });
-  $(window).scroll(function() {
+  $("#scroll-container-example").scroll(function() {
     if ($(this).scrollTop() > $(window).height()) {
       $(".top").addClass("is-active");
     } else {

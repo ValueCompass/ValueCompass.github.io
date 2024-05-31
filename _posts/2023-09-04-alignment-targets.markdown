@@ -3,6 +3,7 @@ layout: post
 title: From Instructions to Intrinsic Human Values —— A Survey of Alignment Goals for Big Models
 date: 2023-09-04 0
 image: alignment_targets.png
+coverImage: hand.png
 tags: Analysis
 status: latest
 permalink: /alignment_target

@@ -2,42 +2,24 @@
 layout: default
 ---
 <div class="container teams-container">
-    <p class="title">Introducing Our Dynamic Team!</p>
-    <!-- <h2 class="team-head">Employees</h2> -->
-    <div class="team-head">
-        <h2 style="background-image: url({{site.baseurl}}/images/Employees.png)">Employees</h2>
+    <div class="hero" style="background: transparent;padding-top: 2em;">
+        <div class="hero__content" style="padding: 0;text-align: center;">
+            <h1 class="hreo_name">Introducing Our Dynamic Team!</h1>
+        </div>
     </div>
-    
-    <div class="team-members">
-        {% for member in page.employees %}
-            <div class="one-member">
-                {% if member.photo %}
-                    <div class="member__image">
-                        <img src="{{ site.baseurl }}/images/teams/{{ member.photo }}" alt="{{ member.name }}" >
-                    </div>
-                {% endif %}
-                <div class="member-info">
-                    <h3 class="member__name">{{ member.name }}</h3>
-                    <p class="member__position">{{ member.position }}</p>
-                    <!-- <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a> -->
-                    <p class="member__institution">{{ member.institution }}</p>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+    <div class="content">
+        <!-- <h2 class="team-head">Employees</h2> -->
+        <div class="team-head">
+            <h2 style="background-image: url({{site.baseurl}}/images/employees.png)">Employees</h2>
+        </div>
 
-    <!-- <h2 class="team-head">Collaborators</h2> -->
-    <div class="team-head">
-        <h2 style="background-image: url({{site.baseurl}}/images/Collaborators.png)">Collaborators</h2>
-    </div>
-    
-    <div class="team-members">
-        {% for member in page.collaborators %}
-            <div class="one-member">
+        <div class="team-members">
+            {% for member in page.employees %}
+            <div class="one-member" style="align-items: center;">
                 {% if member.photo %}
-                    <div class="member__image">
-                        <img src="{{ site.baseurl }}/images/teams/{{ member.photo }}" alt="{{ member.name }}">
-                    </div>
+                <div class="member__image">
+                    <img src="{{ site.baseurl }}/images/teams/{{ member.photo }}" alt="{{ member.name }}">
+                </div>
                 {% endif %}
                 <div class="member-info">
                     <h3 class="member__name">{{ member.name }}</h3>
@@ -46,22 +28,21 @@ layout: default
                     <p class="member__institution">{{ member.institution }}</p>
                 </div>
             </div>
-        {% endfor %}
-    </div>
-    
-    <!-- <div class="row"> -->
-    <!-- <h2 class="team-head">Interns</h2> -->
-    <div class="team-head">
-        <h2 style="background-image: url({{site.baseurl}}/images/Interns.png)">Interns</h2>
-    </div>
-    
-    <div class="team-members">
-        {% for member in page.interns %}
-            <div class="one-member">
+            {% endfor %}
+        </div>
+
+        <!-- <h2 class="team-head">Collaborators</h2> -->
+        <div class="team-head">
+            <h2 style="background-image: url({{site.baseurl}}/images/Collaborators.png)">Collaborators</h2>
+        </div>
+
+        <div class="team-members" style="align-items: center;">
+            {% for member in page.collaborators %}
+            <div class="one-member" style="align-items: center;">
                 {% if member.photo %}
-                    <div class="member__image">
-                        <img src="{{ site.baseurl }}/images/teams/{{ member.photo }}" alt="{{ member.name }}">
-                    </div>
+                <div class="member__image">
+                    <img src="{{ site.baseurl }}/images/teams/{{ member.photo }}" alt="{{ member.name }}">
+                </div>
                 {% endif %}
                 <div class="member-info">
                     <h3 class="member__name">{{ member.name }}</h3>
@@ -70,7 +51,42 @@ layout: default
                     <p class="member__institution">{{ member.institution }}</p>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+
+        <!-- <div class="row"> -->
+        <!-- <h2 class="team-head">Interns</h2> -->
+        <div class="team-head">
+            <h2 style="background-image: url({{site.baseurl}}/images/Interns.png)">Interns</h2>
+        </div>
+
+        <div class="team-members">
+            {% for member in page.interns %}
+            <div class="one-member">
+                {% if member.photo %}
+                <div class="member__image">
+                    <img src="{{ site.baseurl }}/images/teams/{{ member.photo }}" alt="{{ member.name }}">
+                </div>
+                {% endif %}
+                <div class="member-info">
+                    <h3 class="member__name">{{ member.name }}</h3>
+                    <p class="member__position">{{ member.position }}</p>
+                    <!-- <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a> -->
+                    <!-- <p style="color: ">{{ member.aaa }},</p> -->
+                    <p class="member_intern_content">
+                        {% if member.aaa=='Algorithm Research' %}
+                        <span style="color: rgba(255, 208, 0, 1)">{{ member.aaa }},</span><br>
+                        {% else %}
+                        <span style="color: rgba(255, 162, 0, 1)">{{ member.aaa }},</span>
+                        {% endif %}
+                        <span>{{ member.bbb }}</span>
+                    </p>
+                    <p class="member__institution">{{ member.institution }}</p>
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- </div> -->
     </div>
-    <!-- </div> -->
 </div>

@@ -1,11 +1,13 @@
 <div class="module">
-    <img class="module-bg" src="{{ site.baseurl }}/images/{{ module.image }}" alt="{{ module.title }}">
-    <h4 class="module-title">{{ module.title }}</h4>
+    <a href="{{ site.baseurl }}/tag/{{ module.url | downcase | replace: " ", "-" }}">
+        <img class="module-bg" src="{{ site.baseurl }}/images/{{ module.image }}" alt="{{ module.title }}">
+        <h4 class="module-title">{{ module.title }}</h4>
 
-    <div class="module-cover">
-        <img src="{{ site.baseurl }}/images/{{ module.imageCover }}" alt="{{ module.title }}">
-        <!-- <p>{{ module.title }}</p> -->
-    </div>
+        <div class="module-cover">
+            <img src="{{ site.baseurl }}/images/{{ module.imageCover }}" alt="{{ module.title }}">
+            <p>{{ module.title }}</p>
+        </div>
+    </a>
     <!-- <div class="module-bg" style="background-image: url({{site.baseurl}}/images/{{module.image}})"></div> -->
     <!-- <div class="module-content">
         <h4 class="module-title">{{ module.title }}</h4>

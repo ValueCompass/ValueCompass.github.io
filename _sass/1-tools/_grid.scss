@@ -1,5 +1,5 @@
 $columns: 12;
-$container-base-width: 1680px;
+$container-base-width: 1720px;
 $container-offset: $base-spacing-unit;
 
 $desktop: 992px;
@@ -10,9 +10,9 @@ $mq: ( $mobile:$columns, $tablet:$columns, $desktop:$columns );
 
 .container {
   max-width: $container-base-width;
-  padding-left: $container-offset;
-  padding-right: $container-offset;
-  width: 85%;
+  padding-left: 1em;
+  padding-right: 1em;
+  width: 90%;
   margin: 0 auto;
 }
 
