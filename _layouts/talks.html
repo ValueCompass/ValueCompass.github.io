@@ -28,9 +28,9 @@ layout: default
             {% endif %}
             <div class="talks_{{forloop.index}}" style="display: {{display}}">
                 {% if talk.video %}
-                <video controls src="{{site.baseurl}}/images/{{talk.video}}" alt=""></video>
+                <video controls src="{{site.baseurl}}/images/posts/{{talk.video}}" alt=""></video>
                 {% else %}
-                <img src="{{site.baseurl}}/images/{{talk.image}}" alt="">
+                <img src="{{site.baseurl}}/images/posts/{{talk.image}}" alt="">
                 {% endif %}
                 <h2>{{talk.title}}</h2>
                 <p>{{talk.content}}</p>

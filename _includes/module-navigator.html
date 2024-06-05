@@ -1,5 +1,5 @@
 <div class="module">
-    <a href="{{ site.baseurl }}/tag/{{ module.url | downcase | replace: " ", "-" }}">
+    <a href="{{ site.baseurl }}{{ module.url | downcase | replace: " ", "-" }}">
         <img class="module-bg" src="{{ site.baseurl }}/images/{{ module.image }}" alt="{{ module.title }}">
         <h4 class="module-title">{{ module.title }}</h4>
 

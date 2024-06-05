@@ -6,7 +6,14 @@ layout: default
     
     <span><a href="{{site.baseurl}}/">Home</a></span>
     <i class="ion ion-md-arrow-forward"></i>
-    <span><a href="{{site.baseurl}}/papers">papers</a></span>
+    <span><a href="{{site.baseurl}}/papers">Papers</a></span>
+    <i class="ion ion-md-arrow-forward"></i>
+    {% if page.tags.size >= 1 %}
+    
+      {% for tag in page.tags %}
+        <a href="{{ site.baseurl }}{{ tag | downcase | replace: " ", "-" }}" class="post__tags-tag">{{ tag }}</a>
+      {% endfor %}
+    {% endif %}
   </p>
   <div class="post-content">
     <div>
@@ -26,23 +33,14 @@ layout: default
                 <!-- <a href="{{ site.baseurl }}/about/" class="author-name">{{site.data.settings.author.name}}</a> -->
               </div>
 
-              {% if page.tags.size >= 1 %}
+              <!-- {% if page.tags.size >= 1 %}
               <div class="post__tags">
                 {% for tag in page.tags %}
-                  <a href="{{ site.baseurl }}/tag/{{ tag | downcase | replace: " ", "-" }}" class="post__tags-tag">{{ tag }}</a>
+                  <a href="{{ site.baseurl }}{{ tag | downcase | replace: " ", "-" }}" class="post__tags-tag">{{ tag }}</a>
                 {% endfor %}
               </div>
-              {% endif %}
+              {% endif %} -->
             </div>
-
-            {% if page.paper_url %}
-              <div class="post__button" style = "padding-top: 10px;">
-                <a href="{{ page.paper_url }}" class="read-paper-button">[Read Paper]</a>
-                {% if page.github %}
-                  <a href="{{ page.github }}" class="read-paper-button">[Github]</a>
-                {% endif %}
-              </div>
-            {% endif %}
             
           </div>
         </div>
@@ -71,8 +69,18 @@ layout: default
           <div class="post__content">
             {{ content }}
           </div>
-          {% if page.paper_url %}
+          <!-- {% if page.paper_url %}
           <a href="{{page.paper_url}}">read paper</a>
+          {% endif %} -->
+          {% if page.paper_url %}
+            <div class="post__button" style = "padding-top: 10px;">
+              <b>
+                <a target="_blank" href="{{ page.paper_url }}" class="read-paper-button">[Read Paper]</a>
+              {% if page.github %}
+                <a target="_blank" href="{{ page.github }}" class="read-paper-button">[Github]</a>
+              {% endif %}
+              </b>
+            </div>
           {% endif %}
 
           <!-- <div class="post__share">
