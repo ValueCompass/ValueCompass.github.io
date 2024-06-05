@@ -19,6 +19,9 @@
     a{
       color: $dark;
     }
+    .post__tags-tag{
+      color: $brand-color;
+    }
   }
 }
 .post-title-box {
@@ -57,7 +60,7 @@
   .post__author {
     margin-right: 10px;
     font-weight: 500;
-    font-size: 1.25em;
+    font-size: 1.15em;
 
 
     .author-name {

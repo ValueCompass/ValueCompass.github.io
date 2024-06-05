@@ -5,7 +5,7 @@ authors: Shitong Duan, Xiaoyuan Yi, Peng Zhang, Tun Lu, Xing Xie, Ning Gu
 paper_url: https://arxiv.org/pdf/2310.11053.pdf
 date: 2023-10-30 0
 image: denevil.png
-coverImage: hand.png
+coverImage: paper-cutting-doll.png
 tags: Evaluation Dataset
 status: latest 
 permalink: /denevil
