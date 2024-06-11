@@ -8,7 +8,7 @@ layout: default
         <h1 class="archive-title">Tag: <span>{{ page.title }}</span></h1>
       </div>
     </div>
-<div class="container">
+<div class="">
 	<div class="row">
         {% for post in site.posts %}
             {% if post.tags contains page.title %}
@@ -17,4 +17,7 @@ layout: default
         {% endfor %}
 	</div>
 </div>
-<!-- {% include pagination.html %} -->
+<div style="display: none;">
+  {% include pagination.html %}
+</div>
+
