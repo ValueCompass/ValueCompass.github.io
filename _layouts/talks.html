@@ -51,10 +51,10 @@ layout: default
                         {% endif %}
                     </div>
                     <div class="talk-content">
-                        <a href="">
+                        <!-- <a href="">
                             <a href="{{ site.baseurl }}/talk{{ talk.url | downcase | replace: " ", "-" }}" class="article__tag"><h4>{{talk.title}}</h4></a>
-                        </a>
-                        <!-- <span class="article__tag"><h4>{{talk.title}}</h4></span> -->
+                        </a> -->
+                        <span class="article__tag"><h4>{{talk.title}}</h4></span>
                         <span><time datetime="{{ talk.date | date_to_xmlschema }}">{% assign date_format =
                                 site.minima.date_format | default: "%B %-d, %Y" %}{{ talk.date | date: date_format
                                 }}</time>

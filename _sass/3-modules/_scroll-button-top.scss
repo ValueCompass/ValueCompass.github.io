@@ -11,7 +11,7 @@
 	color: $white;
 	cursor: pointer;
 	transition: all .25s ease;
-  
+  border-radius: 50%;
   &.is-active {
     right: 40px;
   }

@@ -156,3 +156,9 @@
     }
   }
 }
+
+@media(max-width: $desktop) {
+  .header{
+    margin: 0;
+  }
+}

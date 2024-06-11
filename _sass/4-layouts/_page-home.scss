@@ -12,7 +12,6 @@
   margin-top: 2em;
   margin-bottom: 6em;
   &>div{
-    padding: 0 2em;
   }
   .module {
     max-width: 150px;
@@ -36,7 +35,7 @@
       position: absolute;
       width: 100%;
       left: 0;
-      bottom: .2em;
+      bottom: 0em;
     }
 
     .module-cover {
