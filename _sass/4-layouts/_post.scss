@@ -1,7 +1,7 @@
 .page-detail-container{
-  max-width: 1172px;
+  max-width: 1200px;
   width: 100%;
-  padding: 0 3em;
+  // padding: 0 3em;
   margin: 2em auto 0;
   .post-content{
     padding: 0 6em;
@@ -196,11 +196,11 @@
 
   .prev,
   .next {
-    width: 40%;
-    max-width: 420px;
+    width: 45%;
+    max-width: 33em;
 
     &:last-child {
-      padding-right: 0;
+      padding-right: 2em;
     }
 
     .post__nav__image {
@@ -233,8 +233,7 @@
 
       a {
         display: inline-block;
-        max-width: 250px;
-        padding: 0 10px;
+        max-width: calc(100% - 2em);
         vertical-align: middle;
         white-space: nowrap;
         overflow: hidden;
@@ -259,7 +258,6 @@
   .prev__excerpt,
   .next__excerpt {
     width: 100%;
-    max-width: 400px;
     margin: 0 auto;
     text-align: center;
   }
