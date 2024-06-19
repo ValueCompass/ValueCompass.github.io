@@ -167,9 +167,15 @@
     }
   }
   .talk-container .talks-content{
-    flex-direction: column-reverse;
+    flex-direction: column;
     .left{
       width: 100%;
+    }
+    .right{
+      margin-top: 3em;
+      ul{
+        height: auto;
+      }
     }
   }
 }
