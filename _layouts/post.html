@@ -122,10 +122,14 @@ layout: default
       
       <div class="prev">
         {% if page.previous.url %}
+        
         <!-- <a class="post__nav__image" href="{{ site.baseurl }}{{page.previous.url}}" style="background-image: url({{site.baseurl}}/images/{{page.previous.image}})"></a> -->
         <h2 class="post__nav__title">
-          <i class="ion ion-md-arrow-back"></i>
-          <a href="{{ site.baseurl }}{{page.previous.url}}">{{page.previous.title}}</a>
+          <!-- <i class="ion ion-md-arrow-back"></i> -->
+          <a href="{{ site.baseurl }}{{page.previous.url}}">
+            {{page.previous.title}}
+            <span class="pre_icon arrow_icon" style="background-image: url({{site.baseurl}}/images/arrow.png)"></span>
+          </a>
         </h2>
         <p class="prev__excerpt">
           {% if page.previous.description %}
@@ -143,9 +147,13 @@ layout: default
         <!-- <a class="post__nav__image" href="{{ site.baseurl }}{{page.next.url}}" style="background-image: url({{site.baseurl}}/images/{{page.next.image}})">
         </a> -->
         {% if page.next.url %}
+        
         <h2 class="post__nav__title">
-          <a href="{{ site.baseurl }}{{page.next.url}}">{{page.next.title}}</a>
-          <i class="ion ion-md-arrow-forward"></i>
+          <a href="{{ site.baseurl }}{{page.next.url}}">
+            {{page.next.title}}
+            <span class="next_icon arrow_icon" style="background-image: url({{site.baseurl}}/images/arrow.png)"></span>
+          </a>
+          <!-- <i class="ion ion-md-arrow-forward"></i> -->
         </h2>
         <p class="next__excerpt">
           {% if page.next.description %}

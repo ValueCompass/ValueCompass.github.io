@@ -49,6 +49,7 @@
 }
 
 .main-nav {
+  font-size: 1.1em;
   position: absolute;
   top: 50%;
   right: 100px;
@@ -73,6 +74,7 @@
     
     .nav__item {
       display: inline-block;
+      padding: .2em 0;
 
       .nav__link {
         display: inline-block;
@@ -115,7 +117,7 @@
 
     .nav__title {
       display: block;
-      padding-left: 30px;
+      padding-left: 1.12em;
       padding-bottom: 7px;
       margin-bottom: 10px;
       color: $gray;

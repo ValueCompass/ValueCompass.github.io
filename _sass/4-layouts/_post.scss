@@ -1,14 +1,14 @@
 .page-detail-container{
-  max-width: 1200px;
-  width: 100%;
+  max-width: 1172px;
+  width: 85%;
   // padding: 0 3em;
   margin: 2em auto 0;
   .post-content{
-    padding: 0 6em;
+    padding: 0 14%;
     margin: 0 auto;
   }
   .post-nav{
-    font-size: 1.25em;
+    font-size: 1.1em;
     font-weight: bold;
     &>span{
       // padding-left: 2em;
@@ -42,7 +42,7 @@
     margin-bottom: 1.4em;
     margin-top: .4em;
     max-width: 100%;
-    font-size: 1.56em;
+    font-size: 1.5em;
     line-height: 1.8;
   }
 
@@ -71,7 +71,7 @@
   .post__author {
     margin-right: 10px;
     font-weight: 500;
-    font-size: 1.15em;
+    font-size: 1.1em;
 
 
     .author-name {
@@ -193,14 +193,14 @@
   align-items: baseline;
   padding-bottom: 5em;
   justify-content: space-between;
-
+  position: relative;
   .prev,
   .next {
     width: 45%;
     max-width: 33em;
 
     &:last-child {
-      padding-right: 2em;
+      
     }
 
     .post__nav__image {
@@ -247,12 +247,38 @@
     }
   }
 
+
+  .arrow_icon{
+    position: absolute;
+    width: 2.7em;
+    height: 1.6em;
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    top: 0em;
+    &.next_icon{
+      right: 0;
+    }
+    &.pre_icon{
+      left: 0;
+      transform: rotate(180deg);
+    }
+  }
+
   .prev {
     padding-right: 10px;
+    padding-left: 2em;
+    h2{
+      padding-left: 1em;
+    }
   }
 
   .next {
+    padding-right: 2em;
     padding-left: 10px;
+    h2{
+      padding-right: 1em;
+    }
   }
 
   .prev__excerpt,
@@ -297,8 +323,9 @@
   // }
 }
 
- @media screen and (max-width: $tablet) {
+ @media screen and (max-width: $desktop) {
   .page-detail-container{
+    width: 90%;
     .post-content{
       padding: 0;
     }
