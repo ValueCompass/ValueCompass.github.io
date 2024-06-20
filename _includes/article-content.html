@@ -47,7 +47,7 @@
       {% if post.image %}
       <a href="{{post.url | prepend: site.baseurl}}" class="article__image"
         >
-        <img src="{{site.baseurl}}/images/posts/{{post.coverImage}}" alt="">
+        <img src="{{site.baseurl}}/{{post.coverImage}}" alt="">
       </a>
       {% else %}
       {% assign without-image = 'article-without-image' %}

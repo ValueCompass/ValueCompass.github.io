@@ -4,8 +4,8 @@ title: Value FULCRA - Mapping Large Lnguage Modeuls to the Multidimensional Spec
 authors: Jing Yao, Xiaoyuan Yi, Xiting Wang, Yifan Gong, Xing Xie
 paper_url: https://arxiv.org/abs/2311.10766
 date: 2023-11-15 0
-image: basic_value_space.png
-coverImage: Weight-of-the-heart.png
+image: images/posts/basic_value_space.png
+coverImage: images/posts/Weight-of-the-heart.png
 tags: Alignment Dataset
 status: latest 
 permalink: /value_fulcra

@@ -137,10 +137,10 @@
 }
 
 .post {
-  margin: 80px auto;
+  margin: 2em auto;
 
   &.post-no-image {
-    margin: 0 auto 80px;
+    margin: 0 auto 2em;
   }
 
   // @media only screen and (max-width: $mobile) {
@@ -157,8 +157,18 @@
 }
 
 .post__content {
-  margin-bottom: 40px;
+  margin-bottom: 2px;
   line-height: 2em;
+  p,h1,h2,h3,h4,h5,h6{
+    margin: 2em 0 1em;
+    &:nth-child(1){
+      margin-top: 1em;
+    }
+  }
+  img{
+    margin: 0 auto !important;
+    display: block;
+  }
 }
 
 .post__share {
