@@ -47,6 +47,10 @@
                 {% endif %}
                 <!-- {% endunless %} -->
               {% endfor %}
+              <li class="nav__item nav__item_email" style="background-image: url({{site.baseurl}}/images/email.png)">
+                <a class="nav__link" style="opacity: 0;">email</a>
+                <span style="display: none;">{{ site.data.settings.project.email }}</span>
+              </li>
             </ul>
 
           </div>
@@ -54,7 +58,7 @@
 
         <div class="nav-buttons">
           <i class="nav__icon nav__icon-menu ion ion-md-menu" aria-label="Menu Icon"></i>
-          <i class="nav__icon nav__icon-search ion ion-md-search" aria-label="Search Icon"></i>
+          
         </div>
 
         <div class="header__overlay"></div>
