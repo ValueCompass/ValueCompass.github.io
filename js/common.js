@@ -40,6 +40,16 @@ $(document).ready(function() {
     }
   });
 
+  $(".resource-right-btn").click(function(){
+    if($(".resource-right-btn").hasClass("is-open-btn")){
+      $(".resource-right-btn").removeClass("is-open-btn");
+      $(".sidebar").removeClass("is-open")
+    }else{
+      $(".resource-right-btn").addClass("is-open-btn");
+      $(".sidebar").addClass("is-open")
+    }
+  })
+
   headerOverlay.click(function () {
     menuClose();
     searchClose();

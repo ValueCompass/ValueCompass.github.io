@@ -69,15 +69,56 @@
         overflow-y: auto;
         line-height: 2.5;
     }
+
+    .resource-right-btn {
+        position: fixed;
+        bottom: 2.5em;
+        right: 1.5em;
+        z-index: 1;
+        width: 35px;
+        height: 35px;
+        text-align: center;
+        line-height: 35px;
+        background-color: $dark;
+        color: $white;
+        cursor: pointer;
+        transition: all .25s ease;
+        border-radius: 50%;
+        transform: rotate(-90deg);
+        z-index: 11;
+        &.is-open-btn{
+            transform: rotate(90deg);
+        }
+      
+      }
 }
 
 @media(max-width: $desktop) {
+    .top{
+        display: none !important;
+    }
     .resource-page {
         padding: 0;
         width: 100%;
         padding-left: 1em;
         .sidebar {
-            display: none
+            border-radius: .5em;
+            padding: 2em 0em 0em 2em;
+            width: 18em;
+            position: fixed;
+            right: -20em;
+            bottom: 2em;
+            background: #000;
+            transition: all .3s;
+            z-index: 10;
+            height: auto;
+            max-height: 80vh;
+            .sidebar_title{
+                color: #fff;
+            }
+            &.is-open{
+                right:1em; 
+            }
         }
 
         .side_row {
