@@ -4,6 +4,8 @@
 
   img {
     border-radius: 2%;
+    display: block;
+    margin: 0 auto;
   }
 
   video {
@@ -49,10 +51,20 @@
       box-sizing: border-box;
       line-height: 1.8;
 
-      h2 {
-        font-size: 1.125em;
+      .title {
+        // font-size: 1.125em;
         margin: 2.5em 0 1.2em;
         line-height: 1.8;
+      }
+      p,h1,h2,h3,h4,h5,h6{
+        margin: 2em 0 1em;
+        &:nth-child(1){
+          margin-top: 1em;
+        }
+      }
+      img{
+        margin: 0 auto !important;
+        display: block;
       }
 
     }
