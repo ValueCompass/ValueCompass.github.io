@@ -25,7 +25,19 @@ $(document).ready(function() {
   });
 
   searchCloseIcon.click(function () {
-    searchClose();
+    // searchClose();
+    $("#js-search-input").val("")
+    $("#js-results-container").html("")
+    searchCloseIcon.hide()
+  });
+
+  $("#js-search-input").bind("input propertychange",function(event){
+    console.log($("#js-search-input").val())
+    if($("#js-search-input").val().length == 0){
+      searchCloseIcon.hide()
+    }else{
+      searchCloseIcon.show()
+    }
   });
 
   headerOverlay.click(function () {

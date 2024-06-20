@@ -2,22 +2,30 @@
 layout: default
 ---
 
-<div class="container">
-    <div class="arhive-head">
-      <div class="container">
-        <h1 class="archive-title">Tag: <span>{{ page.title }}</span></h1>
-      </div>
-    </div>
-<div class="">
-	<div class="row">
-        {% for post in site.posts %}
-            {% if post.tags contains page.title %}
-                {% include article-brief.html %}
-            {% endif %}
-        {% endfor %}
-	</div>
-</div>
-<div style="display: none;">
-  {% include pagination.html %}
-</div>
+<div class="container module-container">
+  <p class="post-nav">
 
+    <span><a href="{{site.baseurl}}/">Home</a></span>
+    <span class="icon" style="background-image: url({{site.baseurl}}/images/icon_arrow_right.png)"></span>
+    <span><a href="{{site.baseurl}}/papers">Papers</a></span>
+    <span class="icon" style="background-image: url({{site.baseurl}}/images/icon_arrow_right.png)"></span>
+    <!-- <i class="ion ion-md-arrow-forward"></i> -->
+    <a class="post__tags-tag">{{ page.title }}</a>
+  </p>
+  <!-- <div class="arhive-head">
+    <div class="container">
+      <h1 class="archive-title">Tag: <span>{{ page.title }}</span></h1>
+    </div>
+  </div> -->
+  <div class="">
+    <div class="row">
+      {% for post in site.posts %}
+        {% if post.tags contains page.title %}
+          {% include article-brief.html %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div style="display: none;">
+    {% include pagination.html %}
+  </div>

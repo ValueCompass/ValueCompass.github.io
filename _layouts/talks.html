@@ -37,7 +37,7 @@ layout: default
                         {% endif %}
                         <div class="talks_{{forloop.index}}" style="display: {{display_value}}">
                             {% if talk.video %}
-                            <video controls src="{{site.baseurl}}/{{talk.video}}" alt=""></video>
+                            <video controls src="{{site.baseurl}}/{{talk.video}}" poster="{{site.baseurl}}/{{talk.image}}" alt=""></video>
                             {% else %}
                             <img src="{{site.baseurl}}/{{talk.image}}" alt="">
                             {% endif %}

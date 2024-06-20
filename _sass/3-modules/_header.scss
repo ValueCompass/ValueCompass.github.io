@@ -52,7 +52,7 @@
   font-size: 1.1em;
   position: absolute;
   top: 50%;
-  right: 100px;
+  right: 0px;
   transform: translate(0, -50%);
 
   .nav-icon__close {
@@ -91,6 +91,11 @@
       &.active .nav__link{
         color: $brand-color;
       }
+    }
+    .nav__item_email{
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 1.6em auto;
     }
   }
 
