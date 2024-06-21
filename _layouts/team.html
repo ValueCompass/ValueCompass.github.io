@@ -72,14 +72,14 @@ layout: default
                     <h3 class="member__name">{{ member.name }}</h3>
                     <p class="member__position">{{ member.position }}</p>
                     <!-- <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a> -->
-                    <!-- <p style="color: ">{{ member.aaa }},</p> -->
+                    <!-- <p style="color: ">{{ member.workIntro }},</p> -->
                     <p class="member_intern_content">
-                        {% if member.aaa=='Algorithm Research' %}
-                        <span style="color: rgba(255, 208, 0, 1)">{{ member.aaa }},</span><br>
+                        {% if member.workIntro=='Algorithm Research' %}
+                        <span style="color: #8d7200">{{ member.workIntro }},</span><br>
                         {% else %}
-                        <span style="color: rgba(255, 162, 0, 1)">{{ member.aaa }},</span>
+                        <span style="color:#a66800">{{ member.workIntro }},</span>
                         {% endif %}
-                        <span>{{ member.bbb }}</span>
+                        <span>{{ member.InternshipTime }}</span>
                     </p>
                     <p class="member__institution">{{ member.institution }}</p>
                     </p>

@@ -45,8 +45,7 @@
       </div>
 
       {% if post.image %}
-      <a href="{{post.url | prepend: site.baseurl}}" class="article__image"
-        >
+      <a href="{{post.url | prepend: site.baseurl}}" class="article__image" aria-label="{{post.url}}" >
         <img src="{{site.baseurl}}/{{post.coverImage}}" alt="">
       </a>
       {% else %}
