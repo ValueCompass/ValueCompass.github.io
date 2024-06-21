@@ -37,12 +37,17 @@ layout: default
                         {% endif %}
                         <div class="talks_{{forloop.index}}" style="display: {{display_value}}">
                             {% if talk.video %}
-                            <video controls src="{{site.baseurl}}/{{talk.video}}" poster="{{site.baseurl}}/{{talk.image}}" alt=""></video>
+                            <video controls src="{{site.baseurl}}/{{talk.video}}" poster="{{site.baseurl}}/{{talk.image}}" x5-video-player-type="h5" x-webkit-airplay="allow" webkit-playsinline="true" x5-playsinline playsinline preload="auto" controlslist="nodownload"></video>
                             {% else %}
                             <img src="{{site.baseurl}}/{{talk.image}}" alt="">
                             {% endif %}
                             <h3 class="title">{{talk.title}}</h3>
                             <div>{{talk.content}}</div>
+                            {% if talk.talk_url %}
+                            <div>
+                                <a target="_blank" style="color: #0c76ce;" href="{{talk.talk_url}}">talk</a>
+                            </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
             {% endif %}
