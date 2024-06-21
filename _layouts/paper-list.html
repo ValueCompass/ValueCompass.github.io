@@ -44,7 +44,7 @@ layout: default
     <!-- {{ content }} -->
     {% for resource in site.resources %}
       {% if resource.content %}
-      <div style="margin-bottom: 5em;">
+      <div style="margin-bottom: 5em;" class="resource-content">
         <h2 id="resource_{{forloop.index}}">{{ resource.title}}</h2>
         <div>
           {{ resource.content }}

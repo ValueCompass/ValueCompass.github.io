@@ -74,6 +74,7 @@
 
       ul {
         height: calc(100vh - 146px - 16em);
+        min-height: 300px;
         box-sizing: border-box;
         padding: 0 1em 2em;
         overflow-y: auto;
@@ -88,7 +89,7 @@
           margin-bottom: .2em;
 
           &.active {
-            background: $brand-color;
+            background: #0065FF;
 
             .talk-content {
               color: #fff;
@@ -150,7 +151,7 @@
 
             time {
               font-size: .8em;
-              color: #D9D9D9;
+              color: #747474;
               font-weight: 700;
             }
           }

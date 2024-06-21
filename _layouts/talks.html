@@ -51,7 +51,7 @@ layout: default
         <div class="right talk-list">
             <ul id="talks-list-btns">
                 {% for talk in sorted_talks %}
-                <li class='
+                <li tabindex=0 class='
                     {% if page.url == "/talks" %}
                         {% if forloop.index == active_index %}
                             active
