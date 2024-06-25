@@ -1,21 +1,15 @@
-Zolan - Modern & Minimal Theme for Jekyll
+Value Compass
 ======
-Zolan is a minimal blog theme for Jekyll.
+Value Compass is a minimal blog theme for Jekyll.
 
 * * *
 
 Table of Contents
 -----------------
 *   [Features](#features)
-*   [Demo](#demo)
 *   [Deployment](#deployment)
 *   [Posts](#posts)
-*   [Disqus Comments](#DisqusComments)
-*   [Instagram](#instagram)
-*   [Google Analytics](#GoogleAnalytics)
-*   [Update favicon](#UpdateFavicon)
-*   [Credits](#Credits)
-*   [Support](#Support)
+
 
 * * *
 
@@ -31,30 +25,10 @@ Table of Contents
 
 * Post sharing
 
-* Subscription form
-
-* Supports Disqus Comments
-
-* Instagram Feed
-
-* Ionicons Icons
-
-* Google Fonts
-
 
 * * *
 
-### Demo
 
-Check the theme in action [Demo](https://zolan-jekyll.netlify.app/)
-
-![Main page preview](https://github.com/artemsheludko/zolan/blob/master/images/zolan-main-page.png?raw=true)
-
-The post page would look like this:
-
-![Post page preview](https://github.com/artemsheludko/zolan/blob/master/images/zolan-post.png?raw=true)
-
-* * *
 
 ### Deployment
 
@@ -85,86 +59,37 @@ For tags, try to not add space between two words, for example, `Ruby on Rails`, 
 
 * * *
 
-### Disqus Comments
-
-Zolan Theme comes with Disqus comments enabled.
-
-Open `_data/settings.yml` file, and change the `mr-brown` value on line 26 with your [Disqus account shortname](https://help.disqus.com/customer/portal/articles/466208).
-
-      Comment Section (Disqus)
-      disqus-identifier: mr-brown # Add your shortname for Disqus Comment. For example mr-brown
 
 
-That’s all you need to setup Disqus from the theme side. If you get any issue regarding that comments are unable to load. First, make sure you have [registered your website with Disqus (Step 1)](https://help.disqus.com/customer/portal/articles/466182-publisher-quick-start-guide).
-
-And also check [Disqus troubleshooting guide](https://help.disqus.com/customer/portal/articles/472007-i-m-receiving-the-message-%22we-were-unable-to-load-disqus-%22) if you still have issues.
-
-* * *
-
-### Instagram
-
-The Instagram feed is working using [Instafeed.js](http://instafeedjs.com/) to show the photos.
-
-First, you will need to get your account `userId` and `accessToken` from the following URLs:
-
-*   userId: [http://codeofaninja.com/tools/find-instagram-user-id/](http://codeofaninja.com/tools/find-instagram-user-id/)
-*   accessToken: [instagram.pixelunion.net](http://instagram.pixelunion.net/)
-
-Second, open the `js/common.js` file and replace the `userId` and `accessToken` values.
-
-    var instagramFeed = new Instafeed({
-          get: 'user',
-          limit: 6,
-          resolution: 'standard_resolution',
-          userId: '8987997106',
-          accessToken: '8987997106.924f677.8555ecbd52584f41b9b22ec1a16dafb9',
-          template: ''
-    });
 
 
-Third, open the `_data/settings.yml` file and replace the `instafeed: false` on `instafeed: true` value.
+### 添加paper页面
+参照_posts文件夹中的md文件
+例如
+```javascript
+layout: post  
+title: Value FULCRA - Mapping Large Lnguage Modeuls to the Multidimensional Spectrum of Basic Human Values
+authors: Jing Yao, Xiaoyuan Yi, Xiting Wang, Yifan Gong, Xing Xie
+paper_url: https://arxiv.org/abs/2311.10766  
+date: 2023-11-15 0
+image: images/posts/basic_value_space.png          // paper详情页中的图片（设计了四张风格类似的图片，可任选）
+coverImage: images/posts/Weight-of-the-heart.png   // 用于首页中的封面图
+tags: Alignment Dataset
+status: latest 
+permalink: /value_fulcra
+```
 
-    # Instagram Feed
-    instafeed: false # To enable the instafeed, use the value true. To turn off use the value false.
 
+### 添加talk页面
+参照_talks文件夹中的md文件
+例如
+```javascript
+layout: talks
+title: "TEDxBeijing演讲 | 价值观罗盘——以科技之光，照亮人机共生之路"
+date: 2024-05-23 0
+image: images/talks/talk2/stodownload.png     // 文章封面图，有video时，作为video封面图
+video: images/talks/talk2/1.mp4               // 展示video,没有不用写
+permalink: /talks/TEDxBeijing
+talk_url: "https://mp.weixin.qq.com/s?__biz=MzAwMTA3MzM4Nw==&mid=2649499917&idx=1&sn=09a98f428bbf1b6fff724d369dd08d2a&chksm=82c7c089b5b0499fb53214311350faacea5de741d3a4fc2611fec975ff9c533a0cc6e1811144&mpshare=1&scene=1&srcid=0607K3ZsjpwsJcgkawO8lSG2&sharer_shareinfo=6c79bf1d5b2ed02bf884e73866e0e001&sharer_shareinfo_first=6c79bf1d5b2ed02bf884e73866e0e001#rd"   // 文章详情链接
+```
 
-* * *
-
-### Google Analytics
-
-To integrate Google Analytics, open `_data/settings.yml`, and add your Google Analytics identifier.
-
-    # Google Analytics
-    google-analytics: # Add your identifier. For example UA-99631805-1
-
-
-* * *
-
-### Update favicon
-
-You can find the current favicon (favicon.ico) inside the theme root directory, just replace it with your new favicon.
-
-* * *
-
-### Credits
-
-I have used the following scripts, fonts or other files as listed.
-
-*   [Google Fonts](https://fonts.google.com/specimen/Nunito) (Roboto, Sans Serif).
-*   [Ionicons Icons](https://ionicons.com/)
-*   [FitVids.js](http://fitvidsjs.com/)
-*   [Medium’s Image Zoom](https://github.com/fat/zoom.js)
-*   [Instafeed.js](http://instafeedjs.com/)
-*   [jQuery.com](https://jquery.com/)
-*   Preview Images form [unsplash.com](https://unsplash.com/), [pexels.com](https://www.pexels.com/)
-
-* * *
-### License
-
-Mit License
-
-* * *
-
-### Support
-<p>If you like the themes that I create you can become my sponsor on <a href="https://www.patreon.com/artemsheludko" target="_blank">Patreon</a>.
-<p align="center"><b>Thank you for your support ❤️</b></p>
