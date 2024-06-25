@@ -87,24 +87,6 @@ $(document).ready(function() {
   $(".page a img, .post a img").removeAttr("data-action", "zoom");
 
   /* =======================
-  // Instagram Feed
-  ======================= */
-  // userId and accessToken from Matthew Elsom (https://codepen.io/matthewelsom/pen/zrrrLN) for example, for which he thanks a lot!
-  var instagramFeed = new Instafeed({
-    get: 'user',
-    limit: 6,
-    resolution: 'standard_resolution',
-    userId: '8987997106',
-    accessToken: '8987997106.924f677.8555ecbd52584f41b9b22ec1a16dafb9',
-    template:
-      '<li class="instagram-item"><a href="{{link}}" aria-label="{{caption}}" target="_blank"><img src="{{image}}" alt="{{caption}}"></a></li>'
-  });
-
-  if ($('#instafeed').length) {
-    instagramFeed.run();
-  }
-
-  /* =======================
   // Scroll Top Button
   ======================= */
   $(".top").click(function() {
@@ -127,6 +109,22 @@ $(document).ready(function() {
         var index = $(this).index();
         $("#talks-detail-list>div").eq(index).show().siblings().hide();
   });
+
+  $(".nav__item_email").click(function(){
+    var text = $(this).find('.tip').eq(0).text()
+    copyText(text)
+  })
+
+  function copyText(text){
+    var textareaC = document.createElement('textarea');
+    textareaC.setAttribute('readonly', 'readonly'); //设置只读属性防止手机上弹出软键盘
+    textareaC.value = text;
+    document.body.appendChild(textareaC); //将textarea添加为body子元素
+    textareaC.select();
+    var res = document.execCommand('copy');
+    document.body.removeChild(textareaC);//移除DOM元素
+    return res;
+}
 
   // 前端验证登录 release前展示
   let value =  sessionStorage.getItem("FrontToken")
@@ -156,31 +154,4 @@ $(document).ready(function() {
     }
   });
 
-
-  // bootstrap-toc
-  // if ($("#toc-sidebar").length) {
-  //   // remove related publications years from the TOC
-  //   $(".publications h2").each(function () {
-  //     $(this).attr("data-toc-skip", "");
-  //   });
-  //   var navSelector = "#toc-sidebar";
-  //   var $myNav = $(navSelector);
-  //   Toc.init($myNav);
-  //   $("body").scrollspy({
-  //     target: navSelector,
-  //   });
-  // }
-  // $('#aaaa').scrollspy({ target: '#navbar-example' })
-  
-
-
-
 });
-
-// $(function(){
-//   $('[data-spy="scroll"]').each(function () {
-//     var $spy = $(this).scrollspy('refresh')
-//   })
-
-//   $('#scroll-container-example').scrollspy({ target: '#navbar-example' })
-// })
