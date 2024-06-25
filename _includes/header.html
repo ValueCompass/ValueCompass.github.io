@@ -46,9 +46,9 @@
                 {% endif %}
                 <!-- {% endunless %} -->
               {% endfor %}
-              <li class="nav__item nav__item_email" style="background-image: url({{site.baseurl}}/images/email.png)">
-                <a class="nav__link" style="opacity: 0;">email</a>
-                <span style="display: none;">{{ site.data.settings.project.email }}</span>
+              <li class="nav__item nav__item_email">
+                <a class="nav__link" style="background-image: url({{site.baseurl}}/images/email.png)"><i>email</i></a>
+                <span class="tip">{{ site.data.settings.project.email }}</span>
               </li>
             </ul>
 
