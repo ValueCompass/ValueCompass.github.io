@@ -5,6 +5,7 @@
   transition: all 250ms ease;
   max-width: 1100px;
   margin: 0 auto;
+  margin-bottom: 4em;
 
   &.is-visible {
     transform: scale(1);
