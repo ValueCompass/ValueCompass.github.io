@@ -36,11 +36,13 @@ layout: default
                         {% endif %}
                         {% endif %}
                         <div class="talks_{{forloop.index}}" style="display: {{display_value}}">
-                            {% if talk.video %}
-                            <video controls src="{{site.baseurl}}/{{talk.video}}" poster="{{site.baseurl}}/{{talk.image}}" x5-video-player-type="h5" x-webkit-airplay="allow" webkit-playsinline="true" x5-playsinline playsinline preload="auto" controlslist="nodownload"></video>
-                            {% else %}
-                            <img src="{{site.baseurl}}/{{talk.image}}" alt="">
-                            {% endif %}
+                            <div class="img_container">
+                                {% if talk.video %}
+                                <video controls src="{{site.baseurl}}/{{talk.video}}" poster="{{site.baseurl}}/{{talk.image}}" x5-video-player-type="h5" x-webkit-airplay="allow" webkit-playsinline="true" x5-playsinline playsinline preload="auto" controlslist="nodownload"></video>
+                                {% else %}
+                                <img src="{{site.baseurl}}/{{talk.image}}" alt="">
+                                {% endif %}
+                            </div>
                             <h3 class="title">{{talk.title}}</h3>
                             <div>{{talk.content}}</div>
                             {% if talk.talk_url %}
@@ -70,7 +72,7 @@ layout: default
                 >
 
                     <div class="talk-image">
-                        <div style="position: relative;">
+                        <div>
                             <img src="{{site.baseurl}}/{{talk.image}}" alt="">
                             {% if talk.video %}
                             <div class="cover" style="background-image: url({{site.baseurl}}/images/play_icon.png)";"></div>
