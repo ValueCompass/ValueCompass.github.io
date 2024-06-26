@@ -2,7 +2,7 @@
 layout: talks
 title: "科学匠人 | 谢幸：做经得起时间检验的研究，打造负责任的人工智能"
 date: 2023-08-09  0
-image: images/talks/talk3/3.png
+image: images/talks/talk3/cover.jpg
 permalink: /talks/xie_xing
 talk_url: https://mp.weixin.qq.com/s?__biz=MzAwMTA3MzM4Nw==&mid=2649495177&idx=1&sn=6b479a9700b6e9318d435b922b0f5195&chksm=82c7ff0db5b0761b1e1564eea5f6010cfc5ab6cca0b46b2f1389288a1417eb095da98129456f&mpshare=1&scene=1&srcid=0607Fb06ymwLGI3F0nBuPDkp&sharer_shareinfo=3796af9b4bb8396fa8525a116cae20e4&sharer_shareinfo_first=3796af9b4bb8396fa8525a116cae20e4#rd
 ---
