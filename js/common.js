@@ -111,10 +111,10 @@ $(document).ready(function() {
   });
 
   $(".nav__item_email").click(function(){
-    var text = $(this).find('.tip').eq(0).text()
+    var text = $(this).find('.email_text').eq(0).text()
     copyText(text)
     var spanElement = $("<span></span>");
-    spanElement.text('"mailto:' + text + '" copied to your clipboard');  // 添加文本内容
+    spanElement.text('"mailto: ' + text + '" copied to your clipboard');  // 添加文本内容
 
     // 设置样式
     spanElement.css({
