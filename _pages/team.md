@@ -20,6 +20,14 @@ employees:
     photo: Beibei_Shi.png
     position: Senior Research  PM
     institution: Microsoft Research Asia
+  - name: Scarlett Li
+    photo: scarlett.png
+    position: Principal Research PM Manager
+    institution: Microsoft Research Asia
+  - name: Yang Ou
+    photo: ouyang.png
+    position: Senior Designer
+    institution: Microsoft Research Asia
 collaborators:
   - name: Xiting Wang
     photo: Xiting_Wang.png
