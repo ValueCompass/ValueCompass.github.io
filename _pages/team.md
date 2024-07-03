@@ -28,6 +28,14 @@ employees:
     photo: ouyang.png
     position: Senior Designer
     institution: Microsoft Research Asia
+  - name: Tiantian Xue 
+    photo: tiantian.png
+    position: Development
+    institution: Microsoft Research Asia
+  - name: Geli Guo
+    photo: geli.png
+    position: UI&UX Designer
+    institution: Microsoft Research Asia
 collaborators:
   - name: Xiting Wang
     photo: Xiting_Wang.png
