@@ -9,7 +9,7 @@ description: Aligning AI with Basic Human Values
 # Project Settings
 project:
   name: Aligning AI with Basic Human Values
-  description: Drawing on value theories from humanity and social science like Schwartz's Theory, we build a novel framework to map AI behaviors into value vectors, evaluate and align AI values dynamically and adaptively, and hence not only handle existing AI safety issues, but also anticipate and mitigate potential future risks.
+  description: To push the frontier of AI towards a human-machine symbiotic future, we propose the interdisciplinary value compass project, aiming to achieve LLM alignment based on the basic values from humanity and social science. This project mainly explores three parts:1) efficient and adaptive alignment algorithms; 2) reliable value evaluation systems; and 3)  Interdisciplinary studies on values and machine ethics, hoping to create a new generation of AI systems that compatible with human values of various cultural contexts.
   image: home_cover.png
   email: valuecompass@microsoft.com
 

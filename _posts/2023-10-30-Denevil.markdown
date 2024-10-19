@@ -7,7 +7,6 @@ date: 2023-10-30 0
 image: images/posts/denevil.png
 coverImage: images/posts/paper-cutting-doll.png
 tags: Evaluation Dataset
-status: latest 
 permalink: /denevil
 ---
 
