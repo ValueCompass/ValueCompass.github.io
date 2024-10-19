@@ -5,7 +5,6 @@ date: 2023-09-04 0
 image: images/posts/alignment_targets.png
 coverImage: images/posts/hand.png
 tags: Analysis
-status: latest
 permalink: /alignment_target
 ---
 

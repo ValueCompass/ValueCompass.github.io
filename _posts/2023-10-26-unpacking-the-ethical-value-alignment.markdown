@@ -5,7 +5,6 @@ date: 2023-10-26 0
 image: images/posts/unpacking_ethics.png
 coverImage: images/posts/hand&arrow.png
 tags: Analysis
-status: latest 
 permalink: /unpacking_ethics
 ---
 
