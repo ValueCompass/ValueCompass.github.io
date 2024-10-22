@@ -5,7 +5,7 @@ authors: Xinpeng Wang, Shitong Duan, Xiaoyuan Yi, Jing Yao, Shanlin Zhou, Zhihua
 paper_url: https://arxiv.org/abs/2403.04204
 date: 2024-03-07 0
 image: images/posts/alignment_methods.png
-coverImage: images/posts/Weight-of-the-heart.png
+coverImage: images/posts/hand.png
 tags: Analysis
 status: latest 
 permalink: /essence_and_prospect

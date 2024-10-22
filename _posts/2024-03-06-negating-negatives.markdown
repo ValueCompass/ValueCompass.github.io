@@ -5,8 +5,8 @@ authors: Shitong Duan, Xiaoyuan Yi, Peng Zhang, Tun Lu, Xing Xie, Ning Gu
 paper_url: https://arxiv.org/pdf/2403.03419v1
 date: 2024-03-06 0
 image: images/posts/basic_value_space.png
-coverImage: images/posts/Weight-of-the-heart.png
-tags: Alignment Dataset
+coverImage: images/posts/hand&arrow.png
+tags: Alignment
 status: latest 
 permalink: /negating_negatives
 ---

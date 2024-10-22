@@ -5,7 +5,7 @@ authors: Jing Yao, Xiaoyuan Yi, Xiting Wang, Yifan Gong, Xing Xie
 paper_url: https://arxiv.org/abs/2311.10766
 date: 2023-11-15 0
 image: images/posts/basic_value_space.png
-coverImage: images/posts/Weight-of-the-heart.png
+coverImage: images/posts/hand&arrow.png
 tags: Alignment Dataset
 permalink: /value_fulcra
 ---
