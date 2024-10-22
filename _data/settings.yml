@@ -9,26 +9,26 @@ description: Aligning AI with Basic Human Values
 # Project Settings
 project:
   name: Aligning AI with Basic Human Values
-  description: To push the frontier of AI towards a human-machine symbiotic future, we propose the interdisciplinary value compass project, aiming to achieve LLM alignment based on the basic values from humanity and social science. This project mainly explores three parts:1) efficient and adaptive alignment algorithms; 2) reliable value evaluation systems; and 3)  Interdisciplinary studies on values and machine ethics, hoping to create a new generation of AI systems that compatible with human values of various cultural contexts.
+  description: To push the frontier of AI towards a human-machine symbiotic future, we propose the interdisciplinary value compass project, aiming to achieve LLM alignment based on the basic values from humanity and social science. Three parts are mainly explored:1) efficient and adaptive alignment algorithms; 2) reliable value evaluation systems; and 3) interdisciplinary studies on values and machine ethics. Hoping to create a new generation of AI systems that compatible with human values of various cultural contexts.
   image: home_cover.png
   email: valuecompass@microsoft.com
+  github: https://github.com/microsoft/ValueCompass.git
 
 #-------------------------------
 # PapersPage Settings
 PagesPage:
-  name: Research Papers Hub
-  description: Explore our comprehensive collection of research papers covering various topics related to the Value Compass project. Stay informed and delve into the latest academic insights and findings from our team..
+  name: Publications Hub
+  description: Explore our comprehensive collection of published papers covering various topics within the Value Compass project. Stay informed and delve into the latest research insights and findings from our team.
   image: pages_cover.png
 
 TalksPage:
   name: Welcome to our Insights & Events page!
-  description: <p>Explore a collection of interviews, conference highlights, and event videos to stay informed and inspired by engaging discussions with industry experts and recordings of past events.</p><p>Discover dynamic content that brings you closer to the forefront of knowledge and innovation in our field.</p>
+  description: <p>Explore a collection of interviews, conference highlights, and event videos to stay informed and inspired by engaging discussions with experts.</p><p>Stay ahead of the curve with our insights that provide a deeper understanding of the latest trends and developments in the field of AI values and ethics.</p>
 
 ResourcesPage:
-  name: "Research Resources: Enhancing Our Project Knowledge"
-  description: Explore our curated list of research resources, offering valuable tools from academic journals to online platforms. Covering a wide range of topics, these sources provide essential support for our project's exploration and understanding.
+  name: "Research Resources: Up-to-date Survey of LLM Value Alignment"
+  description: Explore key resources about large language models (LLMs) value alignment, including papers, benchmarks and open-sourced projects. We aim to engage more researchers and facilitate an easy entry into this critical research area.
   image: resource_cover.png
-
 
 
 #-------------------------------

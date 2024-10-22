@@ -1,10 +1,10 @@
 ---
 layout: talks
-title: "对话 | ACM、IEEE双Fellow谢幸：坚持长期主义研究的秘诀是什么？"
+title: "Conversation | ACM and IEEE Fellow Xing Xie: What is the Secret to Commit to Long-Term Research?"
 date: 2024-02-05 0
 image: images/talks/talk4/2.png
 permalink: /talks/ACM_IEEE
 talk_url: https://mp.weixin.qq.com/s?__biz=MzAwMTA3MzM4Nw==&mid=2649498437&idx=1&sn=8ce7d853edf9368de2286f8d17bbce9c&chksm=82c7cac1b5b043d72b334c9062516ab7b1cd702e948032553f5be348b6f2cd52fcbf25085973&mpshare=1&scene=1&srcid=0607PPROMi8nij7NLjUQCLru&sharer_shareinfo=e733d5aeb14460570ce3b667cbc070ed&sharer_shareinfo_first=e733d5aeb14460570ce3b667cbc070ed#rd
 ---
 
-日前，全球计算机领域影响力最大的专业学术组织国际计算机学会（Association for Computing Machinery，简称 ACM）公布了2023年度 ACM Fellow 名单。微软亚洲研究院资深首席研究员谢幸博士因其在空间数据挖掘和推荐系统方面的卓越贡献获选其中。 
+Recently, the Association for Computing Machinery (ACM), the world's most influential professional academic organization in the field of computing, announced the 2023 list of ACM Fellows. Dr. Xing Xie, a Senior Principal Researcher at Microsoft Research Asia, was named a Fellow for his outstanding contributions to spatial data mining and recommender systems.

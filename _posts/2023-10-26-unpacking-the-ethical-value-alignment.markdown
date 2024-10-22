@@ -3,7 +3,7 @@ layout: post
 title: Unpacking the Ethical Value Alignment in Big Models
 date: 2023-10-26 0
 image: images/posts/unpacking_ethics.png
-coverImage: images/posts/hand&arrow.png
+coverImage: images/posts/hand.png
 tags: Analysis
 permalink: /unpacking_ethics
 ---

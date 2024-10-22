@@ -5,8 +5,8 @@ authors: Jing Yao, Xiaoyuan Yi, Xing Xie
 paper_url: https://arxiv.org/abs/2407.10725v1
 date: 2024-07-15 0
 image: images/posts/clave_evaluator.png
-coverImage: images/posts/Weight-of-the-heart.png
-tags: Dataset Evaluator
+coverImage: images/posts/paper-cutting-doll.png
+tags: Dataset Evaluation
 status: latest 
 permalink: /clave_evaluator
 ---

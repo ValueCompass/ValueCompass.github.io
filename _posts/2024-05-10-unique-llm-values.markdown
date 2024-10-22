@@ -5,7 +5,7 @@ authors: Pablo Biedma, Xiaoyuan Yi, Linus Huang, Maosong Sun, Xing Xie
 paper_url: https://arxiv.org/pdf/2404.12744
 date: 2024-05-10 0
 image: images/posts/unique_llm_values.png
-coverImage: images/posts/Weight-of-the-heart.png
+coverImage: images/posts/hand.png
 tags: Analysis Evaluation
 status: latest 
 permalink: /unique_value_alignment

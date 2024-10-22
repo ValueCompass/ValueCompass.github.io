@@ -5,7 +5,7 @@ authors: Yan Liu, Xiaoyuan Yi, Xiaokang Chen, Jing Yao, Jingwei Yi, Daoguang Zan
 paper_url: https://arxiv.org/abs/2409.19024
 date: 2024-09-26 0
 image: images/posts/reward_model_quality.png
-coverImage: images/posts/Weight-of-the-heart.png
+coverImage: images/posts/hand.png
 tags: Analysis
 status: latest 
 permalink: /reward_model_quality
