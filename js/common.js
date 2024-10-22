@@ -151,28 +151,28 @@ $(document).ready(function() {
 }
 
   // 前端验证登录 release前展示
-  let value =  sessionStorage.getItem("FrontToken")
-  if(value && value == "ValueCompass"){
+  // let value =  sessionStorage.getItem("FrontToken")
+  // if(value && value == "ValueCompass"){
     
-    $('.login-container').hide()
-    $(".body-box").css("opacity",1)
-    $(".body-box").show()
-  }else{
-    $('.login-container').show()
-    $(".body-box").css("opacity",0)
-    $(".body-box").hide()
-  }
-  $('#log-btn').on('click', function () {
-    let passwordValue = $("#password-input").val()
-    console.log(passwordValue)
-    if (passwordValue != "ValueCompass") {
-      alert("请输入正确的密码");
-    } else {
-      $('.login-container').hide()
-      $(".body-box").css("opacity",1)
-      $(".body-box").show()
-      sessionStorage.setItem("FrontToken", passwordValue);
-    }
-  });
+  //   $('.login-container').hide()
+  //   $(".body-box").css("opacity",1)
+  //   $(".body-box").show()
+  // }else{
+  //   $('.login-container').show()
+  //   $(".body-box").css("opacity",0)
+  //   $(".body-box").hide()
+  // }
+  // $('#log-btn').on('click', function () {
+  //   let passwordValue = $("#password-input").val()
+  //   console.log(passwordValue)
+  //   if (passwordValue != "ValueCompass") {
+  //     alert("请输入正确的密码");
+  //   } else {
+  //     $('.login-container').hide()
+  //     $(".body-box").css("opacity",1)
+  //     $(".body-box").show()
+  //     sessionStorage.setItem("FrontToken", passwordValue);
+  //   }
+  // });
 
 });
