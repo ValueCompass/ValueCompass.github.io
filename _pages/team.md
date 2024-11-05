@@ -80,6 +80,6 @@ interns:
     photo: Yuhan_Zeng.png
     position: Undergraduate Student
     institution: Chu Kochen Honors College, Zhejiang University
-    workIntro: Outreach Acceleration
+    workIntro: Project Management
     InternshipTime: Internship Period 2024.2-2024.7
 ---
