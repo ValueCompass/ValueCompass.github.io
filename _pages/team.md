@@ -28,16 +28,7 @@ employees:
     photo: ouyang.png
     position: Senior Designer
     institution: Microsoft Research Asia
-  - name: Tiantian Xue 
-    photo: tiantian.png
-    position: Developer
-    institution: Microsoft Research Asia
-    workIntro: Tech Development
-  - name: Geli Guo
-    photo: geli.png
-    position: UI&UX Designer
-    institution: Microsoft Research Asia
-    workIntro: Tech Development
+  
 collaborators:
   - name: Xiting Wang
     photo: Xiting_Wang.png
@@ -82,4 +73,14 @@ interns:
     institution: Chu Kochen Honors College, Zhejiang University
     workIntro: Outreach Acceleration
     InternshipTime: Internship Period 2024.2-2024.7
+  - name: Tiantian Xue 
+    photo: tiantian.png
+    position: Developer
+    institution: Microsoft Research Asia
+    workIntro: Tech Development
+  - name: Geli Guo
+    photo: geli.png
+    position: UI&UX Designer
+    institution: Microsoft Research Asia
+    workIntro: Tech Development
 ---
