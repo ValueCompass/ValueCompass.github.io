@@ -6,7 +6,7 @@ nav_order: 4
 employees:
   - name: Xing Xie
     photo: Xing_Xie.png
-    position: Senior Principle Research Manager
+    position: Partner Research Manager
     institution: Microsoft Research Asia
   - name: Xiaoyuan Yi
     photo: Xiaoyuan_Yi.png
