@@ -14,6 +14,9 @@ layout: default
       
         {% for tag in page.tags %}
           <a href="{{ site.baseurl }}{{ tag | downcase | replace: " ", "-" }}" class="post__tags-tag">{{ tag }}</a>
+          {% if page.tags.size != forloop.index %}
+          ・
+          {% endif %}
         {% endfor %}
       {% endif %}
     </p>
