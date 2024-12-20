@@ -16,18 +16,18 @@ project:
 
 #-------------------------------
 # PapersPage Settings
-PagesPage:
-  name: Publications Hub
-  description: Explore our comprehensive collection of published papers covering various topics within the Value Compass project. Stay informed and delve into the latest research insights and findings from our team.
+PagesPage: 
+  name: Publications Hub 
+  description: This page houses a collection of published papers covering various topics within the Value Compass project. It provides a detailed overview of our research progress and findings, focusing on interdisciplinary analysis, benchmarks, value evaluation and alignment techniques.
   image: pages_cover.png
 
 TalksPage:
-  name: Welcome to our Insights & Events page!
-  description: <p>Explore a collection of interviews, conference highlights, and event videos to stay informed and inspired by engaging discussions with experts.</p><p>Stay ahead of the curve with our insights that provide a deeper understanding of the latest trends and developments in the field of AI values and ethics.</p>
+  name: Events & Insights
+  description: This page offers a repository of interviews, conference presentations, and workshop discussions. It delivers our understanding and insights about the latest trends and developments in the fields of AI ethics and value alignment.
 
 ResourcesPage:
   name: "Research Resources: Up-to-date Survey of LLM Value Alignment"
-  description: Explore key resources about large language models (LLMs) value alignment, including papers, benchmarks and open-sourced projects. We aim to engage more researchers and facilitate an easy entry into this critical research area.
+  description: This page consolidates key resources about large language models (LLMs) value alignment, including research papers, benchmarks and open-sourced projects. It aims to engage more researchers and facilitate an easy entry into this critical research area.
   image: resource_cover.png
 
 
