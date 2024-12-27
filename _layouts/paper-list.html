@@ -18,7 +18,20 @@ layout: default
       {% if resource.subtitles %}
       <ul class="subtitle_group">
         {% for subtitle in resource.subtitles %}
-        <li><a href="{{ subtitle.id }}" class="sidebar_subtitle">{{ subtitle.title }}</a></li>
+        <li class="level_2">
+          <a href="{{ subtitle.id }}" class="sidebar_subtitle">{{ subtitle.title }}</a>
+          
+        </li>
+
+        {% if subtitle.subtitles %}
+          <!-- <ul class="subtitle_group"> -->
+            
+            {% for subtitle in subtitle.subtitles %}
+            <li class="level_3"><a href="{{ subtitle.id }}" class="sidebar_subtitle">{{ subtitle.title }}</a></li>
+            {% endfor %}
+            
+          <!-- </ul> -->
+          {% endif %}
         {% endfor %}
       </ul>
       {% endif %}
@@ -26,7 +39,7 @@ layout: default
       {% endfor %}
     </div>
   </div>
-  <div id="scroll-container-example" class="side_row" data-spy="scroll" data-target="#navbar-example" data-offset="10" style="position: relative;">
+  <div id="scroll-container-example" class="side_row" data-spy="scroll" data-target="#navbar-example" data-offset="50" style="position: relative;">
     <div class="row hero">
       <div class="col col-6 col-t-12 last-item hero_left">
         <div class="hero__content">
@@ -45,7 +58,7 @@ layout: default
     {% for resource in site.resources %}
       {% if resource.content %}
       <div style="margin-bottom: 5em;" class="resource-content">
-        <h2 id="resource_{{forloop.index}}">{{ resource.title}}</h2>
+        <h1 id="resource_{{forloop.index}}">{{ resource.title}}</h1>
         <div>
           {{ resource.content }}
         </div>
