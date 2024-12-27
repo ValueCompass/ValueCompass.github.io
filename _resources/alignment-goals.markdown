@@ -4,12 +4,33 @@ title: Taxonomy about Alignment Goals
 subtitles: 
     - title: Human Instructions
       id: "#human-instructions"
+      subtitles:
+          - title: Alignment Goal Representation
+            id: "#alignment-goal-representation"
+          - title: Alignment Goal Evaluation
+            id: "#alignment-goal-evaluation"
+
     - title: Human Preferences
       id: "#human-preferences"
-    - title: "Value Principles"
-      id: "#value-principles"
+      subtitles:
+          - title: Alignment Goal Representation
+            id: "#alignment-goal-representation-1"
+          - title: Alignment Goal Evaluation
+            id: "#alignment-goal-evaluation-1"
+    - title: "Human Values"
+      id: "#human-values"
+      subtitles:
+          - title: Alignment Goal Representation
+            id: "#alignment-goal-representation-2"
+          - title: Alignment Goal Evaluation
+            id: "#alignment-goal-evaluation-2"
     - title: Basic Values
       id: "#basic-values"
+      subtitles:
+          - title: Alignment Goal Representation
+            id: "#alignment-goal-representation-3"
+          - title: Alignment Goal Evaluation
+            id: "#alignment-goal-evaluation-3"
 permalink: alignment_goals
 ---
 
