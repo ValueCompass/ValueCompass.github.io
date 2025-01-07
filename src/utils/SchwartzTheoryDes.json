@@ -1,0 +1,100 @@
+{
+    "chwartz Theory Item": {
+        "Self-direction": {
+            "des": [
+                "You value your independence and enjoy being creative, always finding new ways to express your thoughts and actions.",
+                "You cherish your independence and are driven by a strong sense of personal creativity.",
+                "You value being true to yourself, constantly seeking unique paths and original thinking.",
+                "You thrive when you have the freedom to pursue your own goals and express your individuality."
+            ],
+            "img": "SchwartzTheory/Self-direction.png"
+        },
+        "Stimulation": {
+            "des": [
+                "You thrive on excitement and seek new, adventurous experiences that bring a sense of novelty to your life.",
+                "You live for the thrill and seek experiences that challenge and excite you.",
+                "Adventures and new, unexpected journeys fuel your energy and zest for life.",
+                "You crave change and novelty, always looking for the next stimulating experience.",
+                "Embracing the unknown and chasing exhilarating moments are what keep you inspired."
+            ],
+            "img": "SchwartzTheory/Stimulation.png"
+        },
+        "Hedonism": {
+            "des": [
+                "You know how to enjoy life and prioritize activities that bring you joy and satisfaction.",
+                "You prioritize enjoyment and take pleasure in living life to its fullest.",
+                "Indulging in the simple joys and delightful moments is important to you.",
+                "You know how to appreciate life’s pleasures, making time for relaxation and fun.",
+                "Seeking happiness and satisfaction in your activities is what makes you feel fulfilled."
+            ],
+            "img": "SchwartzTheory/Hedonism.png"
+        },
+        "Achievement": {
+            "des": [
+                "You push yourself to excel and achieve your goals, taking pride in your accomplishments and showing your capabilities.",
+                "You’re driven by a desire to succeed and be recognized for your hard work.",
+                "Reaching your goals and showcasing your abilities gives you a strong sense of pride.",
+                "You are ambitious and determined to prove your competence to yourself and others.",
+                "Excelling in what you do and gaining recognition is a key part of who you are."
+            ],
+            "img": "SchwartzTheory/Achievement.png"
+        },
+        "Power": {
+            "des": [
+                " You value being in control and earning respect from those around you, striving to influence and lead effectively.",
+                "You strive to be influential and respected in your social and professional circles.",
+                "Being in a position of control and having a voice in important matters is significant to you.",
+                "You seek opportunities that allow you to demonstrate leadership and command respect.",
+                "Earning authority and influencing outcomes gives you a sense of fulfillment."
+            ],
+            "img": "SchwartzTheory/Power.png"
+        },
+        "Security": {
+            "des": [
+                "You prioritize safety and stability, ensuring that both you and those around you feel secure and protected.",
+                "You value stability and take measures to ensure a safe environment for yourself and your loved ones.",
+                "Feeling secure and maintaining harmony is essential for your peace of mind.",
+                "You strive to create a predictable and safe life, where both you and others are protected.",
+                "Safety, consistency, and a sense of well-being are important aspects of your life."
+            ],
+            "img": "SchwartzTheory/Security.png"
+        },
+        "Conformity": {
+            "des": [
+                "You believe in following rules and behaving in ways that maintain social harmony.",
+                "Respecting social norms and avoiding actions that disrupt or upset others is a priority for you.",
+                "You value being considerate of others’ expectations and acting with propriety.",
+                "Adhering to accepted standards and being mindful of how your behavior affects others is key for you."
+            ],
+            "img": "SchwartzTheory/Conformity.png"
+        },
+        "Tradition": {
+            "des": [
+                "You appreciate the importance of customs and traditions, holding onto the values passed down to you.",
+                "You hold cultural and family traditions close to your heart, respecting their importance.",
+                "Customs and practices passed down through generations shape your values and guide your life.",
+                "You find meaning in preserving and upholding traditions that connect you to your roots.",
+                "Following rituals and adhering to long-held beliefs are part of who you are."
+            ],
+            "img": "SchwartzTheory/Tradition.png"
+        },
+        "Benevolence": {
+            "des": [
+                "You genuinely care about others, always ready to lend a helping hand and stay loyal to the people close to you.",
+                "You are caring and compassionate, always ready to support and uplift those around you.",
+                "Helping others and fostering a sense of community is deeply fulfilling for you.",
+                "Your loyalty and kindness make you a reliable and cherished friend and family member.",
+                "You are guided by a desire to make life better for the people closest to you."
+            ],
+            "img": "SchwartzTheory/Benevolence.png"
+        },
+        "Universalism": {
+            "des": [
+                "You are committed to promoting understanding and fairness for all, valuing diversity and inclusion.",
+                "Protecting the environment and advocating for equality reflect your broader perspective on life.",
+                "You believe in the interconnectedness of all people and the importance of caring for our shared world"
+            ],
+            "img": "SchwartzTheory/Universalism.png"
+        }
+    }
+}
