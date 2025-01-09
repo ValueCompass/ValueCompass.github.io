@@ -22,8 +22,7 @@
         <li>
           <a
             class="homepage-a"
-            href="https://valuecompass.github.io/"
-            target="_blank"
+            href="https://valuecompass.github.io/Leaderboard/"
             >Homepage</a
           >
         </li>
