@@ -22,7 +22,7 @@
 </template>
 <script setup lang="ts">
 import { provide, nextTick, ref } from "vue";
-import Header from "./components/navBar.vue";
+import Header from "./components/navBarNew.vue";
 import Footer from "./components/Footer.vue";
 
 const isRouterActive = ref(true);

@@ -8,36 +8,55 @@
       </router-link>
       <ul class="nav-ul">
         <li>
-          <!-- <router-link to="/">Home</router-link> -->
-          <a href="">Home</a>
+          <router-link to="/">Home</router-link>
+          <!-- <a href="">Home</a> -->
         </li>
-        <li class="has-child-nav">
+        <li
+          @mouseenter="mouseenter"
+          @mouseleave="mouseleave"
+          class="has-child-nav"
+        >
           <a href="https://valuecompass.github.io/papers">Resources</a>
           <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li>
-              <a href="https://valuecompass.github.io/papers/">Papers</a>
+              <a href="https://valuecompass.github.io/Research/papers/"
+                >Papers</a
+              >
             </li>
             <li>
-              <a href="https://valuecompass.github.io/talks">Talks</a>
+              <a href="https://valuecompass.github.io/Research/talks">Talks</a>
             </li>
             <li>
-              <a href="https://valuecompass.github.io/resources">Documents</a>
+              <a href="https://valuecompass.github.io/Research/resources"
+                >Documents</a
+              >
             </li>
           </ul>
         </li>
-        <li class="has-child-nav">
-          <a href="">Leaderboard</a>
+        <li
+          @mouseenter="mouseenter"
+          @mouseleave="mouseleave"
+          class="has-child-nav"
+          :class="{ active: $route.path.indexOf('/leaderboard/') != -1 }"
+        >
+          <a>Leaderboard</a>
           <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
-            <li>
-              <router-link to="/">Alignment Leaderboard</router-link>
+            <li @click="toggleNav">
+              <router-link to="/leaderboard/leaderboard"
+                >Alignment Leaderboard</router-link
+              >
             </li>
-            <li>
-              <router-link to="/Analysis">Value Analysis</router-link>
+            <li @click="toggleNav">
+              <router-link to="/leaderboard/valueAnalysis"
+                >Value Analysis</router-link
+              >
             </li>
-            <li>
-              <router-link to="/Comparison">Value Comparison</router-link>
+            <li @click="toggleNav">
+              <router-link to="/leaderboard/valueComparison"
+                >Value Comparison</router-link
+              >
             </li>
           </ul>
         </li>
@@ -46,23 +65,33 @@
           <router-link to="/TestValues">Test Your Values</router-link>
         </li>
         <li>
-          <a href="https://valuecompass.github.io/Leaderboard/team_info"
-            >About Us</a
-          >
+          <router-link to="/AboutUs">About Us</router-link>
         </li>
       </ul>
     </div>
   </div>
 </template>
-<script lang="ts">
-export default {
-  components: {},
-  setup() {},
+<script lang="ts" setup>
+const mouseenter = (e: any) => {
+  console.log("mouseenter");
+  e.currentTarget.classList.add("enter-active");
+};
+const mouseleave = (e: any) => {
+  console.log("mouseleave");
+  e.currentTarget.classList.remove("enter-active");
+};
+const toggleNav = (e: any) => {
+  console.log(e.currentTarget.parentElement);
+  const liNode = e.currentTarget.parentElement.parentElement;
+  liNode.classList.remove("enter-active");
+  // opacity: 0;
+  //         transform: scaleY(0);
 };
 </script>
 <style scoped lang="scss">
 .header-component {
-  padding: 1.875em 0 1.875em;
+  padding: 1em 0;
+  padding-right: 3.75em;
   font-size: 1em;
   & > .nav {
     a {
@@ -75,11 +104,12 @@ export default {
     flex-direction: row;
     .logo-container {
       img {
-        display: inline-block;
+        display: block;
         height: 4.375em;
       }
     }
     ul.nav-ul {
+      height: 4.375em;
       display: flex;
       flex-direction: row;
       & > li {
@@ -92,7 +122,7 @@ export default {
             color: #ffd000;
           }
         }
-        &.has-child-nav:hover {
+        &.has-child-nav.enter-active {
           background: #f5f5f5;
           .nav-child-ul {
             opacity: 1;
@@ -114,6 +144,12 @@ export default {
           color: #1093ff !important;
           font-weight: 700;
         }
+        &.active {
+          & > a,
+          svg {
+            color: #1093ff !important;
+          }
+        }
         .down-arrow {
           vertical-align: middle;
           margin-left: 0.4em;
@@ -124,7 +160,8 @@ export default {
         }
 
         .nav-child-ul {
-          transition: all 0.2s;
+          transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+            opacity3s cubic-bezier(0.23, 1, 0.32, 1);
           opacity: 0;
           transform: scaleY(0);
           transform-origin: center top;
@@ -134,7 +171,7 @@ export default {
           position: absolute;
           left: 0em;
           top: 100%;
-          z-index: 3;
+          z-index: 101;
           color: #666666;
           padding: 1.5em 3em;
           background: #f5f5f5;
