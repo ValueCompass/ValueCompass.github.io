@@ -99,7 +99,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-const getAssetsFile = (url) => {
+const getAssetsFile = (url:any) => {
   return new URL(`../assets/teams/${url}`, import.meta.url).href;
 };
 const employees = ref([

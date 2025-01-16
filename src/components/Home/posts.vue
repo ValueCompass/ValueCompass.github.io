@@ -63,7 +63,7 @@ import { ref } from "vue";
 // element-plus 集成的 dayjs 默认也安装了 dayjs 插件，所以相关插件可以直接使用
 import { dayjs } from "element-plus";
 console.log(dayjs("2012-2-2").format("MMMM D,YYYY"));
-const getAssetsFile = (url) => {
+const getAssetsFile = (url:any) => {
   return new URL(`../../assets/${url}`, import.meta.url).href;
 };
 const posts = ref([

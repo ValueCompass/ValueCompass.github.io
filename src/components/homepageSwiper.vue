@@ -18,7 +18,7 @@
   </swiper>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -63,7 +63,7 @@ The theory has wide applications in cultural comparison, behavior prediction, an
   },
 ]);
 
-const onSwiper = (swiper) => {
+const onSwiper = (swiper:any) => {
   console.log(swiper);
 };
 

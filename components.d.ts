@@ -26,7 +26,6 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Footer: typeof import('./src/components/Footer.vue')['default']
-    Home: typeof import('./src/components/Home/Home.vue')['default']
     HomepageSwiper: typeof import('./src/components/homepageSwiper.vue')['default']
     Intro: typeof import('./src/components/Home/intro.vue')['default']
     Loading: typeof import('./src/components/loading.vue')['default']

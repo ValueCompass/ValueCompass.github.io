@@ -50,7 +50,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
 import { ElMessage } from "element-plus";
 
 const getAssetsFile = (url: string) => {
