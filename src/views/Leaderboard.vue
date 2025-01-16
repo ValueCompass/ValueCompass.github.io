@@ -619,7 +619,7 @@ const updateFilterHeight = () => {
 const router = useRouter();
 const goAnalysisPage = (modelName) => {
   router.push({
-    path: "/Analysis",
+    path: "/leaderboard/valueAnalysis",
     query: {
       modelName: modelName,
     },
