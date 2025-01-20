@@ -592,7 +592,7 @@ const tabSwitch = (index) => {
   currentCaseData.value = currentCase[currentChartTab.value];
 };
 
-const openCaseStatus = ref(false);
+const openCaseStatus = ref(true);
 const openCase = (bool) => {
   openCaseStatus.value = bool;
 };
@@ -779,7 +779,7 @@ onActivated(() => {
       .chart-container {
         transition: all 0.2s;
         width: 54%;
-        padding-bottom: 36%;
+        padding-bottom: 40%;
         height: 0;
         // min-width: 640px;
         // flex: 1;
@@ -884,7 +884,7 @@ onActivated(() => {
       font-size: 1em;
       font-weight: 600;
       text-align: center;
-      margin-top: 1em;
+      margin-top: 3em;
       line-height: 2;
     }
     .chart-main-bar {
