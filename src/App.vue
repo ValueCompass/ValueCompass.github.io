@@ -41,7 +41,7 @@ provide("reload", () => {
   box-sizing: border-box;
 
   #content {
-    min-height: calc(100vh - 8.125em - 40px);
+    min-height: calc(100vh - 6.375em - 40px);
 }
 }
 </style>

@@ -7,8 +7,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    '副本': typeof import('./src/components/selectBox - 副本.vue')['default']
+    CompareModelChose: typeof import('./src/components/compareModelChose.vue')['default']
+    ComparePool: typeof import('./src/components/ComparePool.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
     Echart: typeof import('./src/components/Comparison/echart.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElCascader: typeof import('element-plus/es')['ElCascader']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
@@ -19,6 +23,7 @@ declare module 'vue' {
     ElRadio: typeof import('element-plus/es')['ElRadio']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
@@ -38,6 +43,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SaveImage: typeof import('./src/components/saveImage.vue')['default']
     SelectBox: typeof import('./src/components/selectBox.vue')['default']
+    SelectedPoints: typeof import('./src/components/selectedPoints.vue')['default']
     SvgIcon: typeof import('./src/components/svgIcon.vue')['default']
     Swiper: typeof import('./src/components/swiper.vue')['default']
     Table: typeof import('./src/components/Comparison/Table.vue')['default']

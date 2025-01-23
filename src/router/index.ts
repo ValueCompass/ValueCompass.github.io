@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/leaderboard/leaderboard',
     name: 'Alignment Leaderboard',
-    component: () => import('../views/Leaderboard.vue'),
+    component: () => import('../views/LeaderboardNew.vue'),
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
