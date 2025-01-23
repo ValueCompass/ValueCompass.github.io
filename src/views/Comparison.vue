@@ -338,12 +338,12 @@ const fetchData = async () => {
           MFT_table_columns_checked.value = MFT_table_columns.value;
 
           //  默认选中第一个model
-          checkedModelNameList.value.push(modelNameList.value[0]);
-          // if (setModelName) {
-          //   checkedModelNameList.value = [setModelName];
-          // } else {
-          //   checkedModelNameList.value.push(modelNameList.value[0]);
-          // }
+          // checkedModelNameList.value.push(modelNameList.value[0]);
+          if (setModelName) {
+            checkedModelNameList.value = setModelName;
+          } else {
+            checkedModelNameList.value.push(modelNameList.value[0]);
+          }
           submit();
         })
       );
@@ -477,7 +477,6 @@ const getModelDetail = () => {
   // for setHotChart
   CulturalAlignmentComponentProps.value.setHotChart(checkedModelNameList.value);
   console.log("checkedModelDetailList.value", checkedModelDetailList.value);
-
 };
 
 // 销毁ECharts实例
@@ -488,22 +487,22 @@ const router = useRoute();
 let isFirstEnter = true;
 onMounted(() => {
   // console.log("首页传过来的modelName：" + router.query.modelName);
-  // setModelName = router.query.modelName;
+  setModelName = router.query.modelName;
   fetchData();
 });
 
-// onActivated(() => {
-//   if (isFirstEnter) {
-//     isFirstEnter = false;
-//   } else {
-//     setModelName = router.query.modelName;
-//     if (setModelName) {
-//       console.log("首页传过来的modelName：" + router.query.modelName);
-//       checkedModelNameList.value = [setModelName];
-//       submit();
-//     }
-//   }
-// });
+onActivated(() => {
+  if (isFirstEnter) {
+    isFirstEnter = false;
+  } else {
+    setModelName = router.query.modelName;
+    if (setModelName) {
+      console.log("首页传过来的modelName：" + router.query.modelName);
+      checkedModelNameList.value = setModelName;
+      submit();
+    }
+  }
+});
 
 let mergeData = null;
 
