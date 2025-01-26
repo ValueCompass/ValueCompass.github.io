@@ -16,7 +16,7 @@
           class="model-li"
           v-for="(item, index) in checkedModelDetailList"
           :key="index"
-          :style="{ 'border-color': item.color }"
+          :style="{ 'border-color': colorList[index] }"
         >
           <span class="close-comparison" @click="closeModel(item)"></span>
           <p class="name">{{ item.modelName }}</p>
@@ -99,6 +99,14 @@ const emit = defineEmits([
 defineExpose({
   setCheckedModelDetailList,
 });
+
+const colorList = ref([
+  "rgba(16, 147, 255, 1)",
+  "rgba(172, 210, 145, 1)",
+  "rgba(113, 134, 201, 1)",
+  "rgba(162, 123, 187, 1)",
+  "rgba(225, 149, 208, 1)",
+]);
 </script>
 
 

@@ -9,7 +9,11 @@
       >
         <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
         <span>{{ item.label }}</span>
-        <SvgIcon class="info" name="info"></SvgIcon>
+        <SvgIcon
+          class="info"
+          name="info"
+          @click.stop="showIntro(index)"
+        ></SvgIcon>
       </li>
     </ul>
     <div class="select-points-box">
@@ -30,6 +34,7 @@
       <div class="btn-container">
         <div>
           <el-switch
+            aria-label="switch"
             v-model="tablePointDetailShow"
             class="switch"
             inline-prompt
@@ -40,26 +45,25 @@
           <span style="color: #004f8f">Show Selected Points</span>
         </div>
         <div>
-          <el-button
-            class="btn select-all-btn"
-            @click="handleCheckAllChange(true)"
+          <el-button class="btn select-all-btn" @click="handleCheckAllChange"
             >Select All</el-button
           >
-          <el-button class="btn apply-btn" color="#1093FF">Apply</el-button>
+          <el-button
+            class="btn apply-btn"
+            color="#1093FF"
+            :disabled="checkedPoints.length == 0"
+            @click="applyChange()"
+            >Apply</el-button
+          >
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, defineEmits, defineExpose, defineProps } from "vue";
+import { ref, defineEmits, defineExpose } from "vue";
 import { Check, Close } from "@element-plus/icons-vue";
-const props = defineProps({
-  tablePointDetailShow: {
-    type: Boolean,
-    required: false,
-  },
-});
+
 const tablePointDetailShow = ref(false);
 
 const options = [
@@ -201,30 +205,36 @@ const selectedIndex = ref(0);
 const points: any = ref([]);
 const checkedPoints: any = ref([]);
 
-const checkAll = ref(false);
+const emit = defineEmits(["applyChange", "swicthChange", "showIntro"]);
 
-const emit = defineEmits(["handleChange", "swicthChange"]);
-
-const handleChange = () => {
-  console.log("handleChange", checkedPoints.value);
-  emit("handleChange", checkedPoints.value);
+const applyChange = () => {
+  console.log("applyChange", checkedPoints.value);
+  emit("applyChange", checkedPoints.value);
 };
-const handleCheckAllChange = (val: boolean) => {
+const handleCheckAllChange = () => {
+  // if(checkedPoints.value.length > 0 && checkedPoints.value.length == points.value.length) {
+  //   checkedPoints.value = []
+  //   return;
+  // }
   checkedPoints.value = points.value.map((item: any) => {
     return item.label;
   });
-  handleChange();
+  // applyChange();
 };
 const hancelTypeIndexChange = (index: number) => {
+  // if(selectedIndex.value == index){
+  //   return;
+  // }
   selectedIndex.value = index;
   points.value = options[index].children;
-  handleCheckAllChange(true);
+  handleCheckAllChange();
+  applyChange();
 };
 // hancelTypeIndexChange(selectedIndex.value)
 
 const handleCheckedPointsChange = (value: string[]) => {
   console.log("handleCheckedPointsChange", value);
-  handleChange();
+  // applyChange();
 };
 
 const swicthChange = (val: boolean) => {
@@ -232,9 +242,14 @@ const swicthChange = (val: boolean) => {
   emit("swicthChange", val);
 };
 
+const showIntro = (index: number) => {
+  emit("showIntro", index);
+};
+
 defineExpose({
   hancelTypeIndexChange,
   tablePointDetailShow,
+  selectedIndex,
 });
 </script>
 
@@ -247,6 +262,7 @@ defineExpose({
     justify-content: center;
     align-content: center;
     li {
+      margin: 0 0.2em;
       cursor: pointer;
       flex-grow: 1;
       padding: 1em 1em;
@@ -255,6 +271,7 @@ defineExpose({
       flex-wrap: nowrap;
       justify-content: center;
       align-items: center;
+      transition: all 0.2s;
       // flex: 1;
       span {
         white-space: nowrap;
@@ -262,9 +279,13 @@ defineExpose({
         color: #004f8f;
         margin: 0 0.5em;
       }
+      &:hover {
+        background: #47acff;
+      }
       &.on {
         background: #85c8ff;
       }
+
       svg {
         vertical-align: middle;
 
@@ -285,6 +306,7 @@ defineExpose({
     font-size: 1.25em;
   }
   .btn-container {
+    margin-top: 0.8em;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -304,7 +326,7 @@ defineExpose({
   .el-checkbox__input.is-checked .el-checkbox__inner {
     background: red !important;
   }
-  margin-bottom: 1em;
+  margin-bottom: 0em;
   --el-checkbox-input-border: 1px solid #000;
   --el-checkbox-text-color: #000;
   --el-checkbox-checked-input-border-color: #000;
@@ -312,7 +334,7 @@ defineExpose({
   --el-checkbox-input-border-color-hover: #000;
   --el-checkbox-checked-bg-color: #fff;
   --el-checkbox-checked-icon-color: #000;
-  --el-checkbox-font-size: 1.25rem;
+  --el-checkbox-font-size: 1.125rem;
   // --el-checkbox-font-size:1.25rem;
   --el-checkbox-input-width: 1rem;
   --el-checkbox-input-height: 1rem;

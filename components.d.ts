@@ -7,8 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    '副本': typeof import('./src/components/selectBox - 副本.vue')['default']
-    CompareModelChose: typeof import('./src/components/compareModelChose.vue')['default']
     ComparePool: typeof import('./src/components/ComparePool.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
     Echart: typeof import('./src/components/Comparison/echart.vue')['default']
@@ -16,6 +14,7 @@ declare module 'vue' {
     ElCascader: typeof import('element-plus/es')['ElCascader']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPopover: typeof import('element-plus/es')['ElPopover']
