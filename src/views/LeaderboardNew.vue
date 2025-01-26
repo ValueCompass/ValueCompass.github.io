@@ -1,14 +1,15 @@
 <template>
   <div>
-    <div class="main-container" style="padding: 0 70px">
+    <div class="main-container">
       <div class="des">
         <h4>Overall Rankings and Scores of LLMs</h4>
       </div>
       <div class="content">
         <SelectedPoints
           ref="SelectedPointsRef"
-          @handleChange="handleChange"
+          @applyChange="applyChange"
           @swicthChange="swicthChange"
+          @showIntro="showIntro"
         ></SelectedPoints>
         <div class="filter-table">
           <el-table
@@ -18,31 +19,43 @@
           >
             <el-table-column
               prop="place"
-              label="Place"
+              label="Rank"
               sortable
-              width="120"
+              width="188"
               fixed
             >
+              <template #header>
+                <span style="padding-left: 3em">Rank</span>
+              </template>
               <template #default="scope">
-                <img
-                  v-if="scope.row.place == 2"
-                  style="width: 1.9em"
-                  src="@/assets/images/silver-medal.png"
-                  alt="silver medal"
-                />
-                <img
-                  v-else-if="scope.row.place == 1"
-                  style="width: 1.9em"
-                  src="@/assets/images/gold-medal.png"
-                  alt="silver medal"
-                />
-                <img
-                  v-else-if="scope.row.place == 3"
-                  style="width: 1.9em"
-                  src="@/assets/images/bronze-medal.png"
-                  alt="silver medal"
-                />
-                <span v-else class="table-color">{{ scope.row.place }}</span>
+                <span
+                  style="
+                    padding-left: 3em;
+                    width: 3em;
+                    display: inline-block;
+                    text-align: center;
+                  "
+                >
+                  <img
+                    class="top3-img"
+                    v-if="scope.row.place == 2"
+                    src="@/assets/images/silver-medal.png"
+                    alt="silver medal"
+                  />
+                  <img
+                    class="top3-img"
+                    v-else-if="scope.row.place == 1"
+                    src="@/assets/images/gold-medal.png"
+                    alt="silver medal"
+                  />
+                  <img
+                    class="top3-img"
+                    v-else-if="scope.row.place == 3"
+                    src="@/assets/images/bronze-medal.png"
+                    alt="silver medal"
+                  />
+                  <span v-else class="table-color">{{ scope.row.place }}</span>
+                </span>
                 <SvgIcon
                   color="#FFD000"
                   class="top-icon"
@@ -51,14 +64,15 @@
               </template>
             </el-table-column>
             <el-table-column
+              align="left"
               prop="modelName"
               label="Model Name"
-              min-width="320"
+              width="304"
               sortable
               fixed
             >
               <template #default="scope">
-                <p class="table-color" style="padding: 0 2em">
+                <p class="table-color">
                   {{ scope.row.modelName }}
                 </p>
               </template>
@@ -75,11 +89,11 @@
               align="left"
               prop="points"
               label="Points"
-              width="120"
+              width="156"
               sortable
             >
               <template #header>
-                Points
+                Score
                 <el-tooltip
                   effect="customized"
                   :content="!tablePointDetailShow ? 'show more' : 'show less'"
@@ -119,17 +133,61 @@
                   :label="item"
                   :prop="item"
                   :formatter="formatter"
-                  width="100"
+                  :width="
+                    SelectedPointsRef.selectedIndex == 0
+                      ? 80
+                      : SelectedPointsRef.selectedIndex == 2
+                      ? 100
+                      : 135
+                  "
                   sortable
+                  align="left"
                 >
                   <template #header>
-                    {{ item.substring(0, 3) }}
+                    <template v-if="SelectedPointsRef.selectedIndex == 0">{{
+                      item.indexOf("-") > -1
+                        ? item
+                            .split("-")
+                            .map((x) => x[0].toUpperCase())
+                            .join("")
+                        : item.substring(0, 3)
+                    }}</template>
+                    <template v-else-if="SelectedPointsRef.selectedIndex == 1">
+                      <span
+                        v-html="
+                          item
+                            .split('/')
+                            .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                            .join('/<br>')
+                        "
+                      ></span>
+                    </template>
+
+                    <template
+                      v-else-if="SelectedPointsRef.selectedIndex == 2"
+                      >{{
+                        item
+                          .split(" ")
+                          .map((x) => x.charAt(0).toUpperCase())
+                          .join("")
+                      }}</template
+                    >
+                    <template v-else-if="SelectedPointsRef.selectedIndex == 3">
+                      <span
+                        v-html="
+                          item
+                            .split('-')
+                            .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                            .join('-<br>')
+                        "
+                      ></span>
+                    </template>
                   </template>
                 </el-table-column>
               </template>
             </template>
 
-            <el-table-column label="Type" width="90">
+            <el-table-column label="Type" width="130" align="center">
               <template #default="scope">
                 <el-tooltip
                   effect="customized"
@@ -150,47 +208,66 @@
             <el-table-column
               prop="releaseDate"
               label="Release Date"
-              width="150"
+              width="170"
               sortable
             />
 
-            <el-table-column label="Compare" width="100">
+            <el-table-column label="Compare" width="90" align="center">
               <template #default="scope">
-                <SvgIcon
+                <div
                   v-if="
                     compareArrString.indexOf(scope.row.modelName) == -1 &&
                     compareArr.length < 5
                   "
-                  class="add"
-                  name="add"
-                  @click="compareBtnClick(scope.row)"
-                ></SvgIcon>
-                <SvgIcon
+                >
+                  <el-tooltip
+                    effect="customized"
+                    content="compare"
+                    placement="top"
+                  >
+                    <SvgIcon
+                      class="add"
+                      name="add"
+                      @click="compareBtnClick(scope.row)"
+                    ></SvgIcon>
+                  </el-tooltip>
+                </div>
+
+                <div
                   v-else-if="
                     compareArrString.indexOf(scope.row.modelName) == -1 &&
                     compareArr.length >= 5
                   "
-                  class="add disabled"
-                  name="add-disabled"
-                ></SvgIcon>
+                >
+                  <SvgIcon class="add disabled" name="add-disabled"></SvgIcon>
+                </div>
 
-                <SvgIcon
-                  style="color: #1093ff"
-                  v-else
-                  class="add"
-                  name="model-checked-icon"
-                  @click="compareBtnClick(scope.row)"
-                ></SvgIcon>
+                <div v-else>
+                  <el-tooltip
+                    effect="customized"
+                    content="compare pool"
+                    placement="top"
+                  >
+                    <SvgIcon
+                      style="color: #1093ff"
+                      class="add"
+                      name="model-checked-icon"
+                      @click="compareBtnClick(scope.row)"
+                    ></SvgIcon>
+                  </el-tooltip>
+                </div>
               </template>
             </el-table-column>
-            <el-table-column label="Details" width="90">
+            <el-table-column label="Details" width="224" align="center">
               <template #default="scope">
-                <SvgIcon
-                  color="#FFD000"
-                  class="handleDetailClick"
-                  name="jump"
-                  @click="handleDetailClick(scope.row)"
-                ></SvgIcon>
+                <el-tooltip effect="customized" content="view" placement="top">
+                  <SvgIcon
+                    color="#FFD000"
+                    class="handleDetailClick"
+                    name="jump"
+                    @click="handleDetailClick(scope.row)"
+                  ></SvgIcon>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -205,9 +282,11 @@
       @closeModel="closeModel"
       @hideComparePool="ComparePoolShow = false"
     ></ComparePool>
+    <homepageSwiper ref="homepageSwiperRef"></homepageSwiper>
   </div>
 </template>
 <script setup>
+import homepageSwiper from "../components/homepageSwiper.vue";
 import ComparePool from "../components/ComparePool.vue";
 import SelectedPoints from "../components/selectedPoints.vue";
 import { ref, watch, reactive, nextTick } from "vue";
@@ -273,7 +352,7 @@ const fetchData = async () => {
 fetchData();
 
 const checked_points_list = ref([]);
-const handleChange = (value) => {
+const applyChange = (value) => {
   console.log(value);
   const filterArr = value;
 
@@ -394,6 +473,11 @@ const swicthChange = (bool) => {
   tablePointDetailShow.value = bool;
 };
 
+const homepageSwiperRef = ref(null);
+const showIntro = (index) => {
+  homepageSwiperRef.value.showIntro(index);
+};
+
 const tablePointDetailShow = ref(false);
 </script>
 
@@ -423,147 +507,25 @@ const tablePointDetailShow = ref(false);
   margin-top: 3.56em;
   font-family: Segoe UI;
   padding-bottom: 4em;
-  .content-filter {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
-
-    .filter-btn {
-      font-size: 0.875em;
-      font-weight: 400;
-      line-height: 1.57em;
-      color: #0c76ce;
-      margin-left: 1.9em;
-      cursor: pointer;
-    }
-    .show-filter {
-      width: 1.5em;
-      height: 1.5em;
-      background: url(@/assets/images/filter-show.svg) no-repeat;
-      background-size: contain;
-      cursor: pointer;
-      position: absolute;
-      right: 0;
-
-      &.is-show {
-        background: url(@/assets/images/filter-hide.svg) no-repeat;
-        background-size: contain;
-      }
-    }
-  }
-
-  .panel-box {
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.3s ease-out;
-    margin-top: 0.75em;
-    border-bottom: 1px solid var(--gary-color);
-    .panel-content {
-      padding: 0 0 1.5em;
-      .title {
-        font-size: 0.875em;
-        font-weight: 600;
-        line-height: 1.7em;
-        margin-top: 0.75em;
-      }
-      .panel-row {
-        margin-top: 0.75em;
-        display: flex;
-        .filter-name {
-          width: 12.85em;
-          font-size: 0.875em;
-          font-weight: 600;
-          line-height: 1.57em;
-          text-align: right;
-          margin-right: 0.75em;
-        }
-        .panel-tags {
-          flex: 1;
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          gap: 0.75em;
-        }
-      }
-    }
-  }
   .filter-table {
     margin-top: 2.25em;
+    .top3-img {
+      width: 1.9em;
+      vertical-align: middle;
+    }
     .top-icon {
       width: 1.125em;
       height: 1.125em;
-      float: right;
-      margin-top: 5px;
+
+      transform: translateY(0.2em);
     }
 
     .table-color {
       font-weight: bold;
-      font-size: 1.22em;
+      font-size: 1.125em;
     }
   }
-  .filer-top {
-    margin-top: 2.25em;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 3em 1em;
-    .top-item {
-      color: #fff;
-      padding: 1.125em 1.5em;
-      box-sizing: border-box;
-      background: #121f37;
-      border-radius: 0.75em;
-      text-align: center;
-      width: 31%;
-      &:hover {
-        background: #0a111f;
-      }
-      img {
-        display: inline-block;
-      }
-      .top-medal {
-        position: relative;
-      }
-      .top-icon-e {
-        position: absolute;
-        width: 1.125em;
-        height: 1.125em;
-        bottom: 0;
-      }
-      p {
-        margin-top: 1.2em;
 
-        font-size: 1.25em;
-        font-weight: 600;
-        line-height: 1.625em;
-        .name {
-          margin-right: 0.5em;
-        }
-        .point {
-          font-size: 0.6em;
-          font-weight: 400;
-          line-height: 1.3em;
-          margin-left: 0.4em;
-        }
-      }
-      .top-item-content {
-        margin-top: 1.5em;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .dev {
-          width: 9em;
-          font-size: 1em;
-          line-height: 1.5em;
-        }
-        .date {
-          font-size: 0.75em;
-          line-height: 1.5em;
-        }
-      }
-    }
-  }
   .add-icon {
     width: 1.125em;
     height: 1.125em;
@@ -639,7 +601,7 @@ const tablePointDetailShow = ref(false);
     text-align: left;
   }
   .el-table__cell {
-    text-align: center;
+    // text-align: center;
   }
   .cell {
     padding: 0 5px;

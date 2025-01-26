@@ -126,8 +126,19 @@
         <div class="table-box" v-show="currentTab == 0">
           <!-- <TableComponent ref="TableComponentRef"></TableComponent> -->
           <h4>Schwartz Theory of Basic Values</h4>
-          <el-table :data="Schwartz_table_data" border style="width: 100%">
+          <el-table
+            :data="Schwartz_table_data"
+            border
+            style="width: 100%"
+            :default-sort="{ prop: 'Score', order: 'descending' }"
+          >
             <el-table-column prop="model_name" label="Model" />
+            <el-table-column
+              prop="Score"
+              label="Score"
+              sortable
+              :formatter="formatter"
+            />
             <template
               v-for="(item, index) in Schwartz_table_columns_checked"
               :key="index"
@@ -142,8 +153,19 @@
           </el-table>
 
           <h4>Moral Foundations Theory</h4>
-          <el-table :data="MFT_table_data" border style="width: 100%">
+          <el-table
+            :data="MFT_table_data"
+            border
+            style="width: 100%"
+            :default-sort="{ prop: 'Score', order: 'descending' }"
+          >
             <el-table-column prop="model_name" label="Model" />
+            <el-table-column
+              prop="Score"
+              label="Score"
+              sortable
+              :formatter="formatter"
+            />
             <template
               v-for="(item, index) in MFT_table_columns_checked"
               :key="index"
@@ -158,8 +180,20 @@
           </el-table>
 
           <h4>Diverse Safety Risks</h4>
-          <el-table :data="Risk_table_data" border style="width: 100%">
+          <el-table
+            :data="Risk_table_data"
+            border
+            style="width: 100%"
+            :default-sort="{ prop: 'Score', order: 'descending' }"
+          >
             <el-table-column prop="model_name" label="Model" />
+            <el-table-column
+              prop="Score"
+              label="Score"
+              sortable
+              :formatter="formatter"
+            />
+
             <template
               v-for="(item, index) in Risk_table_columns_checked"
               :key="index"
@@ -445,16 +479,31 @@ const getModelDetail = () => {
     let Schwartz_obj = {};
     Schwartz_obj = Schwartz_data[checkedModelNameList.value[i]];
     Schwartz_obj.model_name = checkedModelNameList.value[i];
+    Schwartz_obj.Score = getAvaData(
+      checkedModelNameList.value[i],
+      Schwartz_table_columns_checked.value,
+      mergeData
+    );
     Schwartz_table_data.value.push(Schwartz_obj);
 
     let Risk_obj = {};
     Risk_obj = Risk_data[checkedModelNameList.value[i]];
     Risk_obj.model_name = checkedModelNameList.value[i];
+    Risk_obj.Score = getAvaData(
+      checkedModelNameList.value[i],
+      Risk_table_columns_checked.value,
+      mergeData
+    );
     Risk_table_data.value.push(Risk_obj);
 
     let MFT_obj = {};
     MFT_obj = MFT_data[checkedModelNameList.value[i]];
     MFT_obj.model_name = checkedModelNameList.value[i];
+    MFT_obj.Score = getAvaData(
+      checkedModelNameList.value[i],
+      MFT_table_columns_checked.value,
+      mergeData
+    );
     MFT_table_data.value.push(MFT_obj);
   }
   //
@@ -533,6 +582,25 @@ const fitterChange = (filerData) => {
     });
   } else {
     Risk_table_columns_checked.value = Risk_table_columns.value;
+  }
+
+  for (let i = 0; i < checkedModelDetailList.value.length; i++) {
+    // for table
+    Schwartz_table_data.value[i].Score = getAvaData(
+      checkedModelNameList.value[i],
+      Schwartz_table_columns_checked.value,
+      mergeData
+    );
+    Risk_table_data.value[i].Score = getAvaData(
+      checkedModelNameList.value[i],
+      Risk_table_columns_checked.value,
+      mergeData
+    );
+    MFT_table_data.value[i].Score = getAvaData(
+      checkedModelNameList.value[i],
+      MFT_table_columns_checked.value,
+      mergeData
+    );
   }
 
   // TableComponentRef.value.setTableData(
