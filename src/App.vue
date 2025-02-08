@@ -1,23 +1,25 @@
 <template>
-  <div id="app">
-    <Header />
-    <div id="content">
-      <router-view v-slot="{ Component }">
-        <keep-alive>
+  <div id="app" class="app-container">
+    <Header class="header-component" style="" />
+    <div id="content" style="">
+      <div style="min-height: calc(100% - 40px)">
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component
+              :is="Component"
+              :key="$route.name"
+              v-if="$route.meta.keepAlive"
+            />
+          </keep-alive>
           <component
             :is="Component"
             :key="$route.name"
-            v-if="$route.meta.keepAlive"
+            v-if="!$route.meta.keepAlive"
           />
-        </keep-alive>
-        <component
-          :is="Component"
-          :key="$route.name"
-          v-if="!$route.meta.keepAlive"
-        />
-      </router-view>
+        </router-view>
+      </div>
+      <Footer class="footer-component" />
     </div>
-    <Footer />
   </div>
 </template>
 <script setup lang="ts">
@@ -39,9 +41,28 @@ provide("reload", () => {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-
+  overflow: hidden;
+  position: relative;
   #content {
-    min-height: calc(100vh - 6.375em - 40px);
-}
+    padding-top: 4.5em;
+    // padding-bottom: 40px;
+    box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .header-component {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+  .footer-component {
+    // position: absolute;
+    // bottom:0;
+    // left:0;
+    // z-index: 10;
+  }
 }
 </style>

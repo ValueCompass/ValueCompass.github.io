@@ -2,15 +2,16 @@
 <template>
   <div class="title-content">
     <h2>
-      Compare Pool
+      Compare Pool ({{checkedModelDetailList.length}})
       <SvgIcon
         @click="hideComparePool"
         class="compare-hide-icon"
         name="compare-hide-icon"
+        :style="{'transform': showDetail ? '' : 'rotate(180deg)'}"
       ></SvgIcon>
     </h2>
 
-    <div class="compare-model-list">
+    <div class="compare-model-list" v-if="showDetail">
       <ul>
         <li
           class="model-li"
@@ -21,9 +22,9 @@
           <span class="close-comparison" @click="closeModel(item)"></span>
           <p class="name">{{ item.modelName }}</p>
           <!-- <p style="display: none">{{ modelInfo[item] }}</p> -->
-          <p class="point-num">
+          <!-- <p class="point-num">
             {{ item.points }}<span class="point">points</span>
-          </p>
+          </p> -->
           <div class="top-item-content">
             <el-tooltip
               effect="customized"
@@ -36,7 +37,7 @@
                 ></span> -->
             </el-tooltip>
             <span class="dev">{{ item.developer }}</span>
-            <span class="date">{{ item["releaseDate"].split(" ")[0] }}</span>
+            <span class="date">{{ item["releaseDate"].split(" ")[0].substring(0,7) }}</span>
           </div>
         </li>
         <li
@@ -72,6 +73,7 @@
 import { ref, reactive, defineExpose, defineEmits } from "vue";
 
 const checkedModelDetailList = ref([]);
+const showDetail = ref(true)
 const setCheckedModelDetailList = (arr) => {
   checkedModelDetailList.value = arr;
   console.log("arr", checkedModelDetailList.value);
@@ -87,7 +89,8 @@ const compareNow = () => {
 };
 
 const hideComparePool = () => {
-  emit("hideComparePool");
+  // emit("hideComparePool");
+  showDetail.value = !showDetail.value
 };
 
 const emit = defineEmits([
@@ -116,16 +119,15 @@ const colorList = ref([
   box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.25);
 
   position: fixed;
-  bottom: 0;
+  bottom: 1em;
   background: #fff;
   max-width: 1236px;
   width: 85%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  margin-top: 3.56em;
   background: var(--gary-color);
-  padding: 2.25em 3em;
+  padding: 1.5em 3em;
   border-radius: 0.375em;
   .compare-hide-icon {
     width: 0.6em;
@@ -140,16 +142,20 @@ const colorList = ref([
     font-size: 2em;
     font-weight: 600;
     line-height: 1.3125em;
-    margin-bottom: 1.3125em;
+    
   }
   .compare-model-list {
     ul {
+      margin-top: 1.5em;
       display: flex;
       gap: 0.75em;
       li.model-li {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         width: 11.25em;
         // height: 7.5em;
-        padding: 1.125em 1.5em;
+        padding: 1.125em 1em;
         box-sizing: border-box;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 0.75em;
@@ -168,7 +174,12 @@ const colorList = ref([
           top: 0.5em;
         }
         .name {
-          margin-right: 0.5em;
+          margin-right: 0.8em;
+          margin-bottom: .5em;
+          text-align: left;
+          font-size: .875em;
+          color: #000;
+          font-weight: 600;
         }
         .point-num {
           font-size: 1.25em;
@@ -216,8 +227,11 @@ const colorList = ref([
         }
       }
       .add-model {
+        display: block!important;
+        padding-top: 0!important;
+        padding-bottom: .4em!important;
         width: 10em;
-        min-height: 7.5em;
+        min-height: 3.5em;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -247,7 +261,8 @@ const colorList = ref([
     }
     .max-num-tip {
       color: #666;
-      margin-top: 0.5em;
+      margin-top: 0.8em;
+      font-size: 0.875em;
     }
   }
 }

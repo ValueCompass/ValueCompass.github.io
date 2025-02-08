@@ -17,9 +17,9 @@
               ></span>
               <p class="name">{{ item.model_name }}</p>
               <!-- <p style="display: none">{{ modelInfo[item] }}</p> -->
-              <p class="point-num">
+              <!-- <p class="point-num">
                 {{ item.model_info.points }}<span class="point">points</span>
-              </p>
+              </p> -->
               <div class="top-item-content">
                 <el-tooltip
                   effect="customized"
@@ -37,12 +37,10 @@
                 }}</span>
               </div>
             </li>
-            <li v-if="checkedModelDetailList.length >= 5" class="max-num-tip">
-              <p style="">The maximum number of comparisons supported is 5</p>
-            </li>
+            
             <li
               v-if="checkedModelDetailList.length < 5"
-              class="add-model"
+              class="model-li add-model"
               v-popover="popoverRef"
               @click="visible = true"
             >
@@ -81,6 +79,7 @@
               </div>
             </el-popover>
           </ul>
+           <p class="max-num-tip" style="">The maximum number of comparisons supported is 5</p>
         </div>
       </div>
     </div>
@@ -132,12 +131,13 @@
             style="width: 100%"
             :default-sort="{ prop: 'Score', order: 'descending' }"
           >
-            <el-table-column prop="model_name" label="Model" />
+            <el-table-column prop="model_name" label="Model" width="210" />
             <el-table-column
               prop="Score"
-              label="Score"
+              label="Average"
               sortable
               :formatter="formatter"
+              
             />
             <template
               v-for="(item, index) in Schwartz_table_columns_checked"
@@ -159,7 +159,7 @@
             style="width: 100%"
             :default-sort="{ prop: 'Score', order: 'descending' }"
           >
-            <el-table-column prop="model_name" label="Model" />
+            <el-table-column prop="model_name" label="Model" width="210" />
             <el-table-column
               prop="Score"
               label="Score"
@@ -186,7 +186,7 @@
             style="width: 100%"
             :default-sort="{ prop: 'Score', order: 'descending' }"
           >
-            <el-table-column prop="model_name" label="Model" />
+            <el-table-column prop="model_name" label="Model" width="210" />
             <el-table-column
               prop="Score"
               label="Score"
@@ -658,13 +658,15 @@ const fitterChange = (filerData) => {
     margin-bottom: 1.3125em;
   }
   .compare-model-list {
-    font-size: 14px;
     ul {
       display: flex;
       gap: 0.75em;
       align-items: center;
       align-items: stretch;
       li.model-li {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
         width: 13em;
         // height: 7.5em;
         padding: 1.125em 1.5em;
@@ -686,7 +688,12 @@ const fitterChange = (filerData) => {
           top: 0.5em;
         }
         .name {
-          margin-right: 0.5em;
+          margin-right: 0.8em;
+          margin-bottom: 0.5em;
+          text-align: left;
+          color: #000;
+          font-weight: 600;
+          font-size: 0.875em;
         }
         .point-num {
           font-size: 1.25em;
@@ -734,8 +741,11 @@ const fitterChange = (filerData) => {
         }
       }
       .add-model {
+        display: block!important;
+        padding-top: 0!important;
+        padding-bottom: .4em!important;
         width: 10em;
-        min-height: 7.5em;
+        min-height: 5.5em;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -744,18 +754,14 @@ const fitterChange = (filerData) => {
         border-radius: 0.75em;
         color: #6b6b6b;
         cursor: pointer;
+        border: 3px dashed rgb(194, 194, 194) !important;
       }
-      .max-num-tip {
-        width: 8em;
-        min-height: 7.5em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        line-height: 1.8;
-        text-align: center;
-      }
+      
     }
+    .max-num-tip {
+       font-size: 0.875em;
+       margin-top: .5em;
+      }
   }
 }
 .chart-box {

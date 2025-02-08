@@ -11,36 +11,49 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/leaderboard/leaderboard',
-    name: 'Alignment Leaderboard',
-    component: () => import('../views/LeaderboardNew.vue'),
+    path: '/leaderboard',
+    name: 'Leaderboard',
+    component: () => import('../views/LeaderboardHome.vue'),
+    redirect: '/leaderboard/leaderboard', // 配置重定向
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
     },
+    children:[
+      {
+        path: 'leaderboard',
+        name: 'Alignment Leaderboard',
+        component: () => import('../views/LeaderboardNew.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
+      {
+        path: 'valueAnalysis',
+        name: 'Value Analysis',
+        component: () => import('../views/Analysis.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
+      {
+        path: 'valueComparison',
+        name: 'Value Comparison',
+        component: () => import('../views/Comparison.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
+    ]
   },
-  {
-    path: '/leaderboard/valueAnalysis',
-    name: 'Value Analysis',
-    component: () => import('../views/Analysis.vue'),
-    meta: {
-      keepAlive: true, //此页面需要缓存
-      requiresFrontEndAuth: true
-    },
-  },
-  {
-    path: '/leaderboard/valueComparison',
-    name: 'Value Comparison',
-    component: () => import('../views/Comparison.vue'),
-    meta: {
-      keepAlive: true, //此页面需要缓存
-      requiresFrontEndAuth: true
-    },
-  },
+  
   {
     path: '/TestValues',
     name: 'Test Your Values',
-    component: () => import('../views/TestValuesNew.vue'),
+    component: () => import('../views/TestValuesNew2.vue'),
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
