@@ -16,6 +16,7 @@
             :data="tableData"
             :default-sort="{ prop: 'place' }"
             style="width: 100%"
+            height="600"
           >
             <el-table-column
               prop="place"
@@ -89,7 +90,7 @@
               align="left"
               prop="points"
               label="Points"
-              width="156"
+              min-width="130"
               sortable
             >
               <template #header>
@@ -133,7 +134,7 @@
                   :label="item"
                   :prop="item"
                   :formatter="formatter"
-                  :width="
+                  :min-width="
                     SelectedPointsRef.selectedIndex == 0
                       ? 80
                       : SelectedPointsRef.selectedIndex == 2
@@ -187,7 +188,7 @@
               </template>
             </template>
 
-            <el-table-column label="Type" width="130" align="center">
+            <el-table-column label="Type" min-width="70" >
               <template #default="scope">
                 <el-tooltip
                   effect="customized"
@@ -208,11 +209,11 @@
             <el-table-column
               prop="releaseDate"
               label="Release Date"
-              width="170"
+              min-width="140"
               sortable
             />
 
-            <el-table-column label="Compare" width="90" align="center">
+            <el-table-column label="Compare" min-width="100">
               <template #default="scope">
                 <div
                   v-if="
@@ -229,6 +230,7 @@
                       class="add"
                       name="add"
                       @click="compareBtnClick(scope.row)"
+                      style="margin-left:1.2em"
                     ></SvgIcon>
                   </el-tooltip>
                 </div>
@@ -239,7 +241,7 @@
                     compareArr.length >= 5
                   "
                 >
-                  <SvgIcon class="add disabled" name="add-disabled"></SvgIcon>
+                  <SvgIcon class="add disabled" name="add-disabled" style="margin-left:1.2em"></SvgIcon>
                 </div>
 
                 <div v-else>
@@ -249,7 +251,7 @@
                     placement="top"
                   >
                     <SvgIcon
-                      style="color: #1093ff"
+                      style="color: #1093ff;margin-left:1.2em"
                       class="add"
                       name="model-checked-icon"
                       @click="compareBtnClick(scope.row)"
@@ -258,7 +260,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="Details" width="224" align="center">
+            <el-table-column label="Details" min-width="100" >
               <template #default="scope">
                 <el-tooltip effect="customized" content="view" placement="top">
                   <SvgIcon
@@ -266,6 +268,7 @@
                     class="handleDetailClick"
                     name="jump"
                     @click="handleDetailClick(scope.row)"
+                    style="margin-left:1em"
                   ></SvgIcon>
                 </el-tooltip>
               </template>
@@ -275,7 +278,7 @@
       </div>
     </div>
     <ComparePool
-      v-show="ComparePoolShow"
+      v-show="compareArr.length > 0"
       ref="ComparePoolRef"
       @removeAll="removeAll"
       @compareNow="compareNow"
@@ -283,6 +286,7 @@
       @hideComparePool="ComparePoolShow = false"
     ></ComparePool>
     <homepageSwiper ref="homepageSwiperRef"></homepageSwiper>
+    <div v-if="compareArr.length > 0" style="height:200px"></div>
   </div>
 </template>
 <script setup>
@@ -538,6 +542,7 @@ const tablePointDetailShow = ref(false);
     background: url(@/assets/images/type-icon.svg) no-repeat;
     background-size: contain;
     vertical-align: text-bottom;
+    margin-left: .5em;
   }
   .type-close-icon {
     display: inline-block;
@@ -546,6 +551,7 @@ const tablePointDetailShow = ref(false);
     background: url(@/assets/images/type-icon-close.svg) no-repeat;
     background-size: contain;
     vertical-align: text-bottom;
+    margin-left: .5em;
   }
   .top-type-icon {
     width: 1.6em;
@@ -573,8 +579,9 @@ const tablePointDetailShow = ref(false);
   --el-table-text-color: var(--text-color);
   --el-table-header-text-color: var(--text-color);
   --el-table-row-hover-bg-color: #fff;
-  --el-table-border-color: rgba(0, 0, 0, 0.2);
+  --el-table-border-color: transparent;
   font-size: 1em;
+  border-radius: 16px;
 
   // --el-table-border: none;
   // --el-table-header-bg-color: red;
@@ -602,6 +609,7 @@ const tablePointDetailShow = ref(false);
   }
   .el-table__cell {
     // text-align: center;
+    padding: 1em 0!important;
   }
   .cell {
     padding: 0 5px;
@@ -613,6 +621,9 @@ const tablePointDetailShow = ref(false);
   thead th {
     font-weight: 600;
     font-size: 1.11em;
+  }
+  .el-scrollbar__bar.is-horizontal{
+    height: 10px;
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="header-component main-container">
-    <div class="nav">
+  <div class="header-component">
+    <div class="nav main-container">
       <router-link to="/">
         <div class="logo-container">
           <img src="@/assets/images/main-logo.png" alt="Microsoft logo" />
@@ -16,7 +16,7 @@
           @mouseleave="mouseleave"
           class="has-child-nav"
         >
-          <a href="https://valuecompass.github.io/papers">Resources</a>
+          <a href="https://valuecompass.github.io/Research/papers">Research</a>
           <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li>
@@ -40,8 +40,11 @@
           class="has-child-nav"
           :class="{ active: $route.path.indexOf('/leaderboard/') != -1 }"
         >
-          <a>Leaderboard</a>
-          <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
+          <a></a>
+          <router-link to="/leaderboard/leaderboard"
+                >Leaderboard</router-link
+              >
+          <!-- <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li @click="toggleNav">
               <router-link to="/leaderboard/leaderboard"
@@ -58,7 +61,7 @@
                 >Value Comparison</router-link
               >
             </li>
-          </ul>
+          </ul> -->
         </li>
 
         <li>
@@ -90,7 +93,8 @@ const toggleNav = (e: any) => {
 </script>
 <style scoped lang="scss">
 .header-component {
-  padding: 1em 0;
+  background: #fff;
+  padding: .75em 0;
   padding-right: 3.75em;
   font-size: 1em;
   & > .nav {
@@ -105,11 +109,10 @@ const toggleNav = (e: any) => {
     .logo-container {
       img {
         display: block;
-        height: 4.375em;
+        height: 3em;
       }
     }
     ul.nav-ul {
-      height: 4.375em;
       display: flex;
       flex-direction: row;
       & > li {
@@ -129,7 +132,7 @@ const toggleNav = (e: any) => {
             transform: scaleY(1);
           }
         }
-        padding: 1.37em 0.75em;
+        padding: .5em 0.75em;
         margin-left: 3.75em;
 
         font-weight: 700;
@@ -138,7 +141,7 @@ const toggleNav = (e: any) => {
         cursor: pointer;
         a {
           color: var(--text-color);
-          font-size: 1.25em;
+          font-size: 1.125em;
         }
         .router-link-exact-active {
           color: #1093ff !important;

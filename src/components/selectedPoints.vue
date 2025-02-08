@@ -42,7 +42,14 @@
             :inactive-action-icon="Close"
             @change="swicthChange"
           />
-          <span style="color: #004f8f">Show Selected Points</span>
+          <span
+            style="color: #004f8f; font-size: 0.825em; cursor: pointer"
+            @click="
+              tablePointDetailShow = !tablePointDetailShow;
+              swicthChange(tablePointDetailShow);
+            "
+            >Show Selected Points</span
+          >
         </div>
         <div>
           <el-button class="btn select-all-btn" @click="handleCheckAllChange"
@@ -212,10 +219,13 @@ const applyChange = () => {
   emit("applyChange", checkedPoints.value);
 };
 const handleCheckAllChange = () => {
-  // if(checkedPoints.value.length > 0 && checkedPoints.value.length == points.value.length) {
-  //   checkedPoints.value = []
-  //   return;
-  // }
+  if (
+    checkedPoints.value.length > 0 &&
+    checkedPoints.value.length == points.value.length
+  ) {
+    checkedPoints.value = [];
+    return;
+  }
   checkedPoints.value = points.value.map((item: any) => {
     return item.label;
   });
@@ -275,7 +285,7 @@ defineExpose({
       // flex: 1;
       span {
         white-space: nowrap;
-        font-size: 1.25em;
+        font-size: 1em;
         color: #004f8f;
         margin: 0 0.5em;
       }
