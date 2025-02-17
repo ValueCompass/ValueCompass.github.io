@@ -1,8 +1,10 @@
 import { createApp } from 'vue'
 import 'element-plus/dist/index.css'
 
-import './common/reset.css'
-import './style.css'
+import './scss/reset.css'
+import './scss/style.css'
+import './scss/common.scss'
+
 import App from './App.vue'
 import router from './router/index'
 import 'virtual:svg-icons-register'

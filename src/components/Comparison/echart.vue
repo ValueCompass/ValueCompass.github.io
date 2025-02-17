@@ -6,7 +6,7 @@
           <div
             class="chart"
             ref="chartDom"
-            style="width: 1000px; height: 850px; margin: 0 auto"
+            style="width: 800px; height: 600px; margin: 0 auto"
           ></div>
         </div>
       </div>
@@ -84,6 +84,9 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       },
     },
     radar: {
+      // 设置雷达图的中心和半径
+      center: ['50%', '50%'],
+      radius: '65%', // 增大半径以留出更多空间给文字
       splitArea: {
         areaStyle: {
           color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],

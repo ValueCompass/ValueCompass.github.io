@@ -29,7 +29,7 @@
             </li>
             <li>
               <a href="https://valuecompass.github.io/Research/resources"
-                >Documents</a
+                >Related Works</a
               >
             </li>
           </ul>
@@ -37,13 +37,10 @@
         <li
           @mouseenter="mouseenter"
           @mouseleave="mouseleave"
-          class="has-child-nav"
           :class="{ active: $route.path.indexOf('/leaderboard/') != -1 }"
         >
           <a></a>
-          <router-link to="/leaderboard/leaderboard"
-                >Leaderboard</router-link
-              >
+          <router-link to="/leaderboard/leaderboard">Leaderboard</router-link>
           <!-- <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li @click="toggleNav">
@@ -70,11 +67,25 @@
         <li>
           <router-link to="/AboutUs">About Us</router-link>
         </li>
+        <li class="icon-li">
+          <SvgIcon
+            class="SvgIcon email-icon"
+            name="email-icon"
+            @click="copyEmail('valuecompass@microsoft.com')"
+          ></SvgIcon>
+        </li>
+        <li class="icon-li">
+          <a href="https://github.com/microsoft/ValueCompass.git"
+            ><SvgIcon class="SvgIcon github-icon" name="github-icon"></SvgIcon
+          ></a>
+        </li>
       </ul>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import { ElMessage } from "element-plus";
+
 const mouseenter = (e: any) => {
   console.log("mouseenter");
   e.currentTarget.classList.add("enter-active");
@@ -83,18 +94,37 @@ const mouseleave = (e: any) => {
   console.log("mouseleave");
   e.currentTarget.classList.remove("enter-active");
 };
-const toggleNav = (e: any) => {
-  console.log(e.currentTarget.parentElement);
-  const liNode = e.currentTarget.parentElement.parentElement;
-  liNode.classList.remove("enter-active");
-  // opacity: 0;
-  //         transform: scaleY(0);
+const copyEmail = (text: string) => {
+  copyText(text);
+  // ElMessage.success('"mailto: valuecompass@microsoft.com" copied to your clipboard')
+  ElMessage({
+    message: `"mailto: ${text}" copied to your clipboard`,
+    type: "success",
+    plain: true,
+  });
 };
+const copyText = (text: string) => {
+  var textareaC = document.createElement("textarea");
+  textareaC.setAttribute("readonly", "readonly"); //设置只读属性防止手机上弹出软键盘
+  textareaC.value = text;
+  document.body.appendChild(textareaC); //将textarea添加为body子元素
+  textareaC.select();
+  var res = document.execCommand("copy");
+  document.body.removeChild(textareaC); //移除DOM元素
+  return res;
+};
+// const toggleNav = (e: any) => {
+//   console.log(e.currentTarget.parentElement);
+//   const liNode = e.currentTarget.parentElement.parentElement;
+//   liNode.classList.remove("enter-active");
+//   // opacity: 0;
+//   //         transform: scaleY(0);
+// };
 </script>
 <style scoped lang="scss">
 .header-component {
   background: #fff;
-  padding: .75em 0;
+  padding: 1em 0;
   padding-right: 3.75em;
   font-size: 1em;
   & > .nav {
@@ -109,31 +139,42 @@ const toggleNav = (e: any) => {
     .logo-container {
       img {
         display: block;
-        height: 3em;
+        height: 4.375em;
       }
     }
     ul.nav-ul {
       display: flex;
       flex-direction: row;
       & > li {
+        &.icon-li {
+          padding: 0.5em 0;
+          a {
+            font-size: 1em;
+          }
+          .SvgIcon {
+            width: 1.5em;
+            height: 1.5em;
+          }
+        }
+
         &:nth-child(1) {
           margin-left: 0;
         }
         &:hover {
           & > a,
           svg {
-            color: #ffd000;
+            color: #1093ff;
           }
         }
         &.has-child-nav.enter-active {
-          background: #f5f5f5;
+          // background: #f5f5f5;
           .nav-child-ul {
             opacity: 1;
             transform: scaleY(1);
           }
         }
-        padding: .5em 0.75em;
-        margin-left: 3.75em;
+        padding: 0.5em 0.75em;
+        margin-left: 2.68em;
 
         font-weight: 700;
         line-height: 1.68em;
@@ -176,7 +217,7 @@ const toggleNav = (e: any) => {
           top: 100%;
           z-index: 101;
           color: #666666;
-          padding: 1.5em 3em;
+          padding: 1.5em 1em;
           background: #f5f5f5;
           & > li {
             font-weight: 700;
@@ -188,7 +229,7 @@ const toggleNav = (e: any) => {
             }
             &:hover {
               & > a {
-                color: #ffd000;
+                color: #1093ff;
               }
             }
           }

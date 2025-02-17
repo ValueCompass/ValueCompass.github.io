@@ -500,7 +500,7 @@ const tablePointDetailShow = ref(false);
   h4 {
     font-size: 2em;
     font-weight: 600;
-    margin: 1.5em 0 1em;
+    margin: 2em 0 0em;
   }
   p {
     font-size: 1.12em;
@@ -508,7 +508,7 @@ const tablePointDetailShow = ref(false);
 }
 
 .content {
-  margin-top: 3.56em;
+  margin-top: 2em;
   font-family: Segoe UI;
   padding-bottom: 4em;
   .filter-table {
@@ -579,7 +579,7 @@ const tablePointDetailShow = ref(false);
   --el-table-text-color: var(--text-color);
   --el-table-header-text-color: var(--text-color);
   --el-table-row-hover-bg-color: #fff;
-  --el-table-border-color: transparent;
+  --el-table-border-color: rgba(0,0,0,.2);
   font-size: 1em;
   border-radius: 16px;
 
@@ -609,7 +609,7 @@ const tablePointDetailShow = ref(false);
   }
   .el-table__cell {
     // text-align: center;
-    padding: 1em 0!important;
+    padding: 1.2em 0!important;
   }
   .cell {
     padding: 0 5px;

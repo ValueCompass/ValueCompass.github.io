@@ -16,11 +16,19 @@ html {
     font-size: 16px;
 }
 
-@media (max-width: 1500px) {
-    html {
-        font-size: 14px;
+@media (max-width: 1600px) {
+    html,
+    body {
+      font-size: 15px;
     }
-}
+  }
+  
+  @media (max-width: 1500px) {
+    html,
+    body {
+      font-size: 14px;
+    }
+  }
 
 body {
     width: 100%;
@@ -60,7 +68,6 @@ button:focus-visible {
     width: 90%;
     max-width: 1600px;
     box-sizing: border-box;
-    padding: 0 30px;
     margin: 0 auto;
     min-width: 1200px;
 }
@@ -106,10 +113,11 @@ button:focus-visible {
     --el-cascader-menu-selected-text-color: var(--text-color) !important;
 }
 
-.el-checkbox{
-    --el-checkbox-font-weight:400!important;
+.el-checkbox {
+    --el-checkbox-font-weight: 400 !important;
 }
-.el-checkbox.is-checked{
+
+.el-checkbox.is-checked {
     font-weight: 500;
 }
 
@@ -137,9 +145,10 @@ button:focus-visible {
     --el-radio-input-border-color-hover: #1890FF !important;
     color: var(--text-color) !important;
     --el-radio-font-weight: 400 !important;
-    
+
 }
-.el-radio.is-checked{
+
+.el-radio.is-checked {
     font-weight: 500;
 }
 
@@ -196,18 +205,20 @@ button:focus-visible {
     outline: none !important;
 }
 
-button {
+button,.button {
     background-color: #1093ff;
     color: #fff;
-    font-size: 0.875em;
-    line-height: 1.57em;
-    padding: 0.36em 1.14em;
+    font-size: 1.25em;
+    line-height: 1.4;
+    padding: 0.46em 1.2em;
     border: 1px solid #1093ff;
     border-radius: 2px;
     cursor: pointer;
+    border-radius: 0.25em;
 
     &:hover {
         /* background: #50b8ff; */
+        opacity: .9;
     }
 }
 
@@ -228,3 +239,4 @@ button {
     margin-top: -3.2em;
     justify-content: flex-end !important
 }
+

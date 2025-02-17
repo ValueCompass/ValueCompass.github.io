@@ -1,6 +1,8 @@
 <template>
   <div class="select-container">
-    <ul class="label">
+    
+    <div class="select-points-box">
+      <ul class="label">
       <li
         :class="selectedIndex == index ? 'on' : ''"
         v-for="(item, index) in options"
@@ -16,8 +18,7 @@
         ></SvgIcon>
       </li>
     </ul>
-    <div class="select-points-box">
-      <p style="margin-bottom: 1em"><b>Selected Points</b></p>
+      <p style="margin: 1em 0;font-size:1.25em"><b>Selected Points</b></p>
       <el-checkbox-group
         v-model="checkedPoints"
         @change="handleCheckedPointsChange"
@@ -43,7 +44,7 @@
             @change="swicthChange"
           />
           <span
-            style="color: #004f8f; font-size: 0.825em; cursor: pointer"
+            style="color: #004f8f; font-size: 1.125em; cursor: pointer"
             @click="
               tablePointDetailShow = !tablePointDetailShow;
               swicthChange(tablePointDetailShow);
@@ -266,41 +267,46 @@ defineExpose({
 <style scoped lang="scss">
 .select-container {
   ul {
-    padding: 1.5em 2.8em;
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-content: center;
+    justify-content: left;
     li {
+      line-height: 1.4;
       margin: 0 0.2em;
       cursor: pointer;
-      flex-grow: 1;
-      padding: 1em 1em;
-      border-radius: 200px;
+      // flex-grow: 1;
+      padding: .65em 1em;
+      border-radius: 1em;
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
       align-items: center;
       transition: all 0.2s;
       // flex: 1;
+      color: #A3A3A3;
       span {
         white-space: nowrap;
         font-size: 1em;
-        color: #004f8f;
+        
         margin: 0 0.5em;
       }
       &:hover {
         background: #47acff;
+        color: #004F8F;
       }
       &.on {
         background: #85c8ff;
+        color: #004F8F;
       }
 
       svg {
         vertical-align: middle;
-
+        
         &.point-type-icon {
           // transform: translateY(-.2em);
+          width: 1.5em;
+          height: 1.5em;
         }
         &.info {
           width: 1.1em;
@@ -313,7 +319,7 @@ defineExpose({
     background: #eefaff;
     border-radius: 1em;
     padding: 1.5em 3em;
-    font-size: 1.25em;
+    // font-size: 1.25em;
   }
   .btn-container {
     margin-top: 0.8em;
