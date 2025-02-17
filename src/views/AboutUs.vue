@@ -1,12 +1,12 @@
 <template>
   <div class="about-us-template main-container" style="padding: 0">
     <div class="container teams-container">
-      <div class="hero" style="background: transparent; padding-top: 2em">
+      <div class="hero" style="background: transparent; padding-top: 3.75em">
         <div class="hero__content" style="padding: 0; text-align: center">
           <h1 class="hreo_name">Introducing Our Team!</h1>
         </div>
       </div>
-      <div class="content" style="padding-top: 1em">
+      <div class="content" style="padding-top: 2em">
         <!-- <h2 class="team-head">Employees</h2> -->
         <div class="team-head">
           <!-- <h2 style="background-image: url({{site.baseurl}}/images/employees.png)">Employees</h2> -->
@@ -227,7 +227,9 @@ const interns = ref([
   line-height: 1.6;
   .hreo_name {
     font-size: 2.5em;
-    color: #1093ff;
+    color: #004F8F;
+    font-weight: 400;
+    font-style:italic
   }
   .teams-container {
     color: #2f2f2f;
@@ -256,48 +258,48 @@ const interns = ref([
     }
 
     .team-members {
+      margin-top: 1.5em;
       display: flex;
       flex-wrap: wrap;
       // justify-content: space-around;
       // border: 1px solid red;
       align-items: flex-start;
-      gap: 2%;
-      padding: 0 1em;
+      // gap: 2%;
+      // padding: 0 1em;
     }
 
     .one-member {
-      padding: 2em 1em;
+      // padding: 2em 1em;
+      line-height: 1.3;
       box-sizing: border-box;
-      width: 32%;
+      width: 25%;
       display: flex;
       // border: 1px solid red;
+      margin-bottom: 2.5em;
 
       .member__image {
-        width: 50%;
-        padding-top: 50%;
-        object-fit: cover;
-        position: relative;
+        width: 40%;
+        
 
         img {
           border-radius: 9px;
-          top: 0;
-          left: 0;
-          position: absolute;
+          
           width: 100%;
         }
       }
 
       .member-info {
+        flex: 1;
         width: 50%;
         display: flex;
         flex-direction: column;
-        padding: 0.5em 0 0.5em 1em;
+        padding: 0 1em;
 
         .member__name {
           font-size: 1.5em;
           font-weight: 700;
-          color: #1093ff;
-          margin-bottom: 0.5em;
+          color: #004F8F;
+          margin-bottom: 0.7em;
           // margin-bottom: 10px;
         }
 
@@ -324,16 +326,13 @@ const interns = ref([
     }
   }
 
-  // @media only screen and (max-width: 1200px) {
+  // @media only screen and (max-width: 1400px) {
   //   .teams-container {
   //     .content {
   //       font-size: 0.8em;
   //     }
-  //     .team-members {
-  //       gap: 10%;
-  //     }
   //     .one-member {
-  //       width: 45% !important;
+  //       width: 33.33% !important;
   //     }
   //   }
   // }

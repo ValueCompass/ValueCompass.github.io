@@ -12,7 +12,7 @@
               :style="{ 'border-color': item.color }"
             >
               <span
-                class="close-comparison"
+                class="close"
                 @click="closeModel(item.model_name, index)"
               ></span>
               <p class="name">{{ item.model_name }}</p>
@@ -33,16 +33,18 @@
                 </el-tooltip>
                 <span class="dev">{{ item.model_info.developer }}</span>
                 <span class="date">{{
-                  item.model_info["release date"].split(" ")[0]
+                  item.model_info["release date"].split(" ")[0].substring(0,7)
                 }}</span>
               </div>
             </li>
-            
+
             <li
-              v-if="checkedModelDetailList.length < 5"
+              v-for="item in 5 - checkedModelDetailList.length"
+              :key="item"
               class="model-li add-model"
               v-popover="popoverRef"
-              @click="visible = true"
+              @click.stop="visible = true"
+              ref="listItem"
             >
               <img src="@/assets/images/add-model.svg" alt="add-model" />
               <p>Add</p>
@@ -55,8 +57,9 @@
               trigger="click"
               virtual-triggering
               persistent
+              :reference="currentLi"
             >
-              <div>
+              <div id="popoverId">
                 <el-checkbox-group v-model="checkedModelNameList" :max="5">
                   <el-checkbox
                     v-for="model in modelNameList"
@@ -79,7 +82,9 @@
               </div>
             </el-popover>
           </ul>
-           <p class="max-num-tip" style="">The maximum number of comparisons supported is 5</p>
+          <p class="max-num-tip" style="">
+            The maximum number of comparisons supported is 5
+          </p>
         </div>
       </div>
     </div>
@@ -116,96 +121,114 @@
         </ul> -->
       </div>
       <div class="chart-main" style="">
-        <selectBoxComponent
+        <!-- <selectBoxComponent
           v-show="currentTab == 0 || currentTab == 1"
           @fitterChange="fitterChange"
-        ></selectBoxComponent>
+        ></selectBoxComponent> -->
+
+        <DimensionMeasurementTabs
+          style="margin:.5em 0 2em"
+          v-show="currentTab == 0 || currentTab == 1"
+          :DimensionMeasurementTabIndex = DimensionMeasurementTabIndex
+          @handleDimensionMeasurementTabsChange="
+            handleDimensionMeasurementTabsChange
+          "
+        ></DimensionMeasurementTabs>
 
         <!-- table -->
         <div class="table-box" v-show="currentTab == 0">
           <!-- <TableComponent ref="TableComponentRef"></TableComponent> -->
-          <h4>Schwartz Theory of Basic Values</h4>
-          <el-table
-            :data="Schwartz_table_data"
-            border
-            style="width: 100%"
-            :default-sort="{ prop: 'Score', order: 'descending' }"
-          >
-            <el-table-column prop="model_name" label="Model" width="210" />
-            <el-table-column
-              prop="Score"
-              label="Average"
-              sortable
-              :formatter="formatter"
-              
-            />
-            <template
-              v-for="(item, index) in Schwartz_table_columns_checked"
-              :key="index"
+          <div v-show="DimensionMeasurementTabIndex == 0">
+            <h4>Schwartz Theory of Basic Values</h4>
+            <el-table
+              :data="Schwartz_table_data"
+              border
+              style="width: 100%"
+              :default-sort="{ prop: 'Score', order: 'descending' }"
             >
+              <el-table-column prop="model_name" label="Model" width="210" />
               <el-table-column
-                v-if="item != 'model_name'"
-                :prop="item"
-                :label="item"
+                prop="Score"
+                label="Score"
+                sortable
+                :formatter="formatter"
+              >
+                <template #header>
+                <span>Average</span>
+              </template>
+              </el-table-column>
+              <template
+                v-for="(item, index) in Schwartz_table_columns_checked"
+                :key="index"
+              >
+                <el-table-column
+                  v-if="item != 'model_name'"
+                  :prop="item"
+                  :label="item"
+                  :formatter="formatter"
+                />
+              </template>
+            </el-table>
+          </div>
+
+          <div v-show="DimensionMeasurementTabIndex == 1">
+            <h4>Moral Foundations Theory</h4>
+            <el-table
+              :data="MFT_table_data"
+              border
+              style="width: 100%"
+              :default-sort="{ prop: 'Score', order: 'descending' }"
+            >
+              <el-table-column prop="model_name" label="Model" width="210" />
+              <el-table-column
+                prop="Score"
+                label="Score"
+                sortable
                 :formatter="formatter"
               />
-            </template>
-          </el-table>
+              <template
+                v-for="(item, index) in MFT_table_columns_checked"
+                :key="index"
+              >
+                <el-table-column
+                  v-if="item != 'model_name'"
+                  :prop="item"
+                  :label="item"
+                  :formatter="formatter"
+                />
+              </template>
+            </el-table>
+          </div>
 
-          <h4>Moral Foundations Theory</h4>
-          <el-table
-            :data="MFT_table_data"
-            border
-            style="width: 100%"
-            :default-sort="{ prop: 'Score', order: 'descending' }"
-          >
-            <el-table-column prop="model_name" label="Model" width="210" />
-            <el-table-column
-              prop="Score"
-              label="Score"
-              sortable
-              :formatter="formatter"
-            />
-            <template
-              v-for="(item, index) in MFT_table_columns_checked"
-              :key="index"
+          <div v-show="DimensionMeasurementTabIndex == 2">
+            <h4>Diverse Safety Risks</h4>
+            <el-table
+              :data="Risk_table_data"
+              border
+              style="width: 100%"
+              :default-sort="{ prop: 'Score', order: 'descending' }"
             >
+              <el-table-column prop="model_name" label="Model" width="210" />
               <el-table-column
-                v-if="item != 'model_name'"
-                :prop="item"
-                :label="item"
+                prop="Score"
+                label="Score"
+                sortable
                 :formatter="formatter"
               />
-            </template>
-          </el-table>
 
-          <h4>Diverse Safety Risks</h4>
-          <el-table
-            :data="Risk_table_data"
-            border
-            style="width: 100%"
-            :default-sort="{ prop: 'Score', order: 'descending' }"
-          >
-            <el-table-column prop="model_name" label="Model" width="210" />
-            <el-table-column
-              prop="Score"
-              label="Score"
-              sortable
-              :formatter="formatter"
-            />
-
-            <template
-              v-for="(item, index) in Risk_table_columns_checked"
-              :key="index"
-            >
-              <el-table-column
-                v-if="item != 'model_name'"
-                :prop="item"
-                :label="item"
-                :formatter="formatter"
-              />
-            </template>
-          </el-table>
+              <template
+                v-for="(item, index) in Risk_table_columns_checked"
+                :key="index"
+              >
+                <el-table-column
+                  v-if="item != 'model_name'"
+                  :prop="item"
+                  :label="item"
+                  :formatter="formatter"
+                />
+              </template>
+            </el-table>
+          </div>
 
           <!-- <h4>LLM Value System</h4> -->
         </div>
@@ -213,6 +236,7 @@
         <div v-show="currentTab == 1">
           <VisualizationComponent
             ref="VisualizationComponentProps"
+            :DimensionMeasurementTabIndex="DimensionMeasurementTabIndex"
           ></VisualizationComponent>
         </div>
 
@@ -251,18 +275,15 @@ import ValueSpaceComponent from "../components/Comparison/ValueSpace.vue";
 import CulturalAlignmentComponent from "../components/Comparison/CulturalAlignment.vue";
 import selectBoxComponent from "../components/selectBox.vue";
 import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
+import DimensionMeasurementTabs from "../components/DimensionMeasurementTabs.vue";
+import GlobalData from "@/utils/common-data";
+
 
 const VisualizationComponentProps = ref(null);
 const CulturalAlignmentComponentProps = ref(null);
 const ValueSpaceComponentProps = ref(null);
 const TableComponentRef = ref(null);
-const colorList = [
-  "rgba(16, 147, 255, 1)",
-  "rgba(172, 210, 145, 1)",
-  "rgba(113, 134, 201, 1)",
-  "rgba(162, 123, 187, 1)",
-  "rgba(225, 149, 208, 1)",
-];
+const colorList = GlobalData.colorList;
 
 const tabList = [
   {
@@ -306,7 +327,7 @@ var modelInfo_list = null; // [ {model: 'GPT-4-Turbo', developer: 'OpenAI', type
 // var modelInfo = null;
 const modelInfo = ref(); //  { 'GPT-4-Turbo': {developer: 'OpenAI', type: 'Close'},  'GPT-4o-mini' : {} }
 const checkedModel = ref([]);
-const popoverRef = ref();
+const popoverRef = ref(null);
 const visible = ref(false);
 const modelNameList = ref([]); // [ 'GPT-4-Turbo', 'GPT-4-Turbo' ]
 const checkedModelNameList = ref([]);
@@ -538,9 +559,25 @@ onMounted(() => {
   // console.log("首页传过来的modelName：" + router.query.modelName);
   setModelName = router.query.modelName;
   fetchData();
+
+  document.addEventListener("click", handleClickOutside);
 });
+const handleClickOutside = (event) => {
+  // 使用 Popper 的 getPopperElement 方法获取真正的弹窗元素
+  const popperElement = document.getElementById("popoverId");
+  // 判断点击的是否为popover外部，关闭popover
+  if (
+    popoverRef.value &&
+    popperElement &&
+    !popperElement.contains(event.target)
+  ) {
+    visible.value = false;
+  }
+};
 
 onActivated(() => {
+  currentTab.value = 0
+  DimensionMeasurementTabIndex.value = 0
   if (isFirstEnter) {
     isFirstEnter = false;
   } else {
@@ -624,6 +661,11 @@ const fitterChange = (filerData) => {
   // chartDom2.value.setRadarChart(modelList, "MFT_data",filerData && filerData[2] || null);
   // chartDom3.value.setRadarChart(modelList, "Risk_data",filerData && filerData[3] || null);
 };
+
+const DimensionMeasurementTabIndex = ref(0);
+const handleDimensionMeasurementTabsChange = (index) => {
+  DimensionMeasurementTabIndex.value = index;
+};
 </script>
 
 <style scoped lang="scss">
@@ -649,119 +691,13 @@ const fitterChange = (filerData) => {
   margin-top: 3.56em;
   margin-bottom: 3em;
   background: var(--gary-color);
-  padding: 2.25em 3em;
-  border-radius: 0.375em;
+  padding: 2.25em 6em;
+  border-radius: 1em;
   h2 {
     font-size: 2em;
     font-weight: 600;
     line-height: 1.3125em;
     margin-bottom: 1.3125em;
-  }
-  .compare-model-list {
-    ul {
-      display: flex;
-      gap: 0.75em;
-      align-items: center;
-      align-items: stretch;
-      li.model-li {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        width: 13em;
-        // height: 7.5em;
-        padding: 1.125em 1.5em;
-        box-sizing: border-box;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 0.75em;
-        text-align: center;
-        border: 1px solid #4992ff;
-        position: relative;
-        .close-comparison {
-          display: inline-block;
-          width: 1.2em;
-          height: 1.2em;
-          background: url(@/assets/images/close-comparison.svg) no-repeat;
-          background-size: contain;
-          vertical-align: text-bottom;
-          position: absolute;
-          right: 0.5em;
-          top: 0.5em;
-        }
-        .name {
-          margin-right: 0.8em;
-          margin-bottom: 0.5em;
-          text-align: left;
-          color: #000;
-          font-weight: 600;
-          font-size: 0.875em;
-        }
-        .point-num {
-          font-size: 1.25em;
-          font-weight: 600;
-          line-height: 1.5em;
-          margin: 0.8em 0;
-        }
-        .point {
-          font-size: 0.6em;
-          font-weight: 400;
-          line-height: 1.3em;
-          margin-left: 0.4em;
-          opacity: 0.8;
-        }
-        .top-item-content {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          .dev {
-            width: 6em;
-            font-size: 0.75em;
-            // line-height: 1.5em;
-          }
-          .date {
-            font-size: 0.75em;
-            opacity: 0.8;
-            // line-height: 1.5em;
-          }
-        }
-        .type-icon {
-          display: inline-block;
-          width: 1em;
-          height: 1em;
-          background: url(@/assets/images/type-icon.svg) no-repeat;
-          background-size: contain;
-          vertical-align: text-bottom;
-        }
-        .type-close-icon {
-          display: inline-block;
-          width: 1em;
-          height: 1em;
-          background: url(@/assets/images/type-icon-close.svg) no-repeat;
-          background-size: contain;
-          vertical-align: text-bottom;
-        }
-      }
-      .add-model {
-        display: block!important;
-        padding-top: 0!important;
-        padding-bottom: .4em!important;
-        width: 10em;
-        min-height: 5.5em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        border: 3px dashed rgba(194, 194, 194, 1);
-        border-radius: 0.75em;
-        color: #6b6b6b;
-        cursor: pointer;
-        border: 3px dashed rgb(194, 194, 194) !important;
-      }
-      
-    }
-    .max-num-tip {
-       font-size: 0.875em;
-       margin-top: .5em;
-      }
   }
 }
 .chart-box {

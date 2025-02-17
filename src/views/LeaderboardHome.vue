@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="affix-container">
-      <div class="main-container intro">
+      <!-- <div class="main-container intro intro-container">
         <div class="left">
           <h2>Value Compass <br />Leaderboard</h2>
           <p>
@@ -15,9 +15,23 @@
         <div class="right">
           <img src="@/assets/images/leaderboard.png" alt="" />
         </div>
+      </div> -->
+      <div class="main-container intro intro-container">
+        <div class="left">
+          <h2>Value Compass <br />Leaderboard</h2>
+        </div>
+          <div class="right">
+            <p>
+            Welcome to a comprehensive LLM value assessment platform,
+            distinguished by its interdisciplinary value perspectives and robust
+            evaluation framework. <br />With fine-grained value comparisons and
+            illustrative examples, this platform empowers you to find the LLM
+            that best aligns with your own values.
+          </p>
+          </div>
       </div>
-      <el-affix target=".affix-container" :offset="65" ref="affixRef">
-        <div class="nav-container">
+      <el-affix class="affix-box" target=".affix-container" :offset="90" ref="affixRef">
+        <div class="leaderboard-nav-container">
           <ul class="nav-child-ul main-container">
             <li @click="toggleNav">
               <router-link to="/leaderboard/leaderboard">
@@ -33,7 +47,6 @@
                 ><SvgIcon
                   class="svg-icon"
                   name="icon-ValueAnalysis"
-                  color="red"
                 ></SvgIcon
                 >Value Analysis</router-link
               >
@@ -43,7 +56,6 @@
                 ><SvgIcon
                   class="svg-icon"
                   name="icon-ValueComparison"
-                  color="red"
                 ></SvgIcon
                 >Value Comparison</router-link
               >
@@ -51,7 +63,8 @@
           </ul>
         </div>
       </el-affix>
-      <router-view v-slot="{ Component }">
+      <div class="leaderboard-router-view">
+        <router-view v-slot="{ Component }">
         <keep-alive>
           <component
             :is="Component"
@@ -65,6 +78,7 @@
           v-if="!$route.meta.keepAlive"
         />
       </router-view>
+      </div>
     </div>
     <div class="learnMore-btn" @click="showIntro(0)">
       <span>Learn More About the Value Systems</span>
@@ -89,58 +103,78 @@ const affixRef = ref(null);
 onActivated(() => {
   nextTick(() => {
     if (affixRef.value) {
-      // 进行必要的 DOM 操作或更新位置
-      // affixRef.value.$forceUpdate(); // 强制更新
-      setTimeout(() => {
-        console.log("dddddsss");
-        affixRef.value.updateRoot();
-      }, 1000);
+      const dom = document.getElementById("content")
+      const scrollTop = dom.scrollTop
+      const introContainerHeight = document.getElementsByClassName("intro-container")[0].offsetHeight
+      if(dom.scrollTop >= (introContainerHeight )){
+        dom.scrollTop  = (introContainerHeight)
+      }
     }
   });
-  // setTimeout(()=>{
-  //   affixRef.value.update()
-  //   // console.log(document.getElementsByClassName("app-container")[0])
-  //   // const dom = document.getElementsByClassName("app-container")[0]
-  //   // let scrolltop = dom.scrollTop
-  //   // dom.scrollTo({'top':1+scrolltop})
-  // },10)
 });
 </script>
 
 <style scoped lang="scss">
+// .intro {
+//   display: flex;
+//   flex-direction: row;
+//   flex-wrap: nowrap;
+//   align-items: center;
+//   padding: 0 4em 0 12em;
+//   margin-top: -5em;
+//   .left {
+//     width: 55%;
+//     max-width: 784px;
+//     padding: 8.125em 0;
+//     h2 {
+//       font-size: 4em;
+//       color: #004f8f;
+//       line-height: 1.328;
+//       font-weight: 400;
+//       font-style: italic;
+//     }
+//     p {
+//       margin-top: 1.5em;
+//       font-size: 1.25em;
+//       line-height: 1.8;
+//     }
+//   }
+//   .right {
+//     flex: 1;
+//     padding: 1em 1em;
+//     text-align: right;
+//     img {
+//       width: 92%;
+//     }
+//   }
+// }
 .intro {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  padding: 0 4em 0 12em;
-  margin-top: -5em;
-  .left {
-    width: 55%;
-    max-width: 784px;
-    padding: 8.125em 0;
-    h2 {
+  padding: 3.7em 10em;
+  .left{
+    width: 32em;
+  }
+  .right{
+    flex: 1;
+    padding-left: 2em;
+  }
+  h2 {
+    
       font-size: 4em;
       color: #004f8f;
       line-height: 1.328;
       font-weight: 400;
+      font-style: italic;
     }
     p {
-      margin-top: 1.5em;
       font-size: 1.25em;
       line-height: 1.8;
     }
-  }
-  .right {
-    flex: 1;
-    padding: 1em 1em;
-    text-align: right;
-    img {
-      width: 92%;
-    }
-  }
 }
-.nav-container {
+.leaderboard-nav-container {
   width: 100vw;
   border-bottom: 2px solid #1093ff;
   background: #fff;

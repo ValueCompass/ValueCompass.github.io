@@ -11,7 +11,7 @@
             <div
               class="model-type model-flex"
               v-popover="popoverRef"
-              @click="visible = true"
+              @click.stop="visible = true"
             >
               {{ currentModel }}
               <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
@@ -26,7 +26,7 @@
             virtual-triggering
             persistent
           >
-            <div>
+            <div id="popoverId2">
               <el-radio-group
                 v-model="checkedModel"
                 @change="handleCheckedModelChange"
@@ -619,14 +619,31 @@ onActivated(() => {
     }
   }
 });
+
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+const handleClickOutside = (event) => {
+  // 使用 Popper 的 getPopperElement 方法获取真正的弹窗元素
+  const popperElement = document.getElementById("popoverId2");
+  // 判断点击的是否为popover外部，关闭popover
+  if (
+    popoverRef.value &&
+    popperElement &&
+    !popperElement.contains(event.target)
+  ) {
+    visible.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">
 .title-content {
   margin-top: 3.56em;
   background: var(--gary-color);
-  padding: 2.25em 3em;
-  border-radius: 0.375em;
+  padding: 2.25em 6em;
+  border-radius: 1em;
   .model {
     display: flex;
     justify-content: space-between;
@@ -676,7 +693,7 @@ onActivated(() => {
     }
   }
   .desc {
-    font-size: 0.875em;
+    font-size: 1em;
     font-weight: 400;
     line-height: 1.29em;
     margin-top: 1.36em;
@@ -684,7 +701,8 @@ onActivated(() => {
   .model-props {
     margin-top: 1.5em;
     display: flex;
-    justify-content: space-between;
+    gap: 3.75em;
+    // justify-content: space-between;
     align-items: center;
     .model-prop {
       display: flex;

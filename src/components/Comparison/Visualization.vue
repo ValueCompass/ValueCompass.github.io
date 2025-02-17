@@ -8,15 +8,15 @@
         </div>
       </div> -->
       <div class="echart-list">
-        <div>
+        <div v-show="props.DimensionMeasurementTabIndex == 0">
           <p>Schwartz Theory of Basic Values</p>
           <EchartComponent ref="chartDom1"></EchartComponent>
         </div>
-        <div>
+        <div v-show="props.DimensionMeasurementTabIndex == 1">
           <p>Moral Foundation Theory</p>
           <EchartComponent ref="chartDom2"></EchartComponent>
         </div>
-        <div>
+        <div v-show="props.DimensionMeasurementTabIndex == 2">
           <p>Diverse Safety Risks</p>
           <EchartComponent ref="chartDom3"></EchartComponent>
         </div>
@@ -42,9 +42,17 @@ import {
   onUnmounted,
   nextTick,
   defineExpose,
+  defineProps
 } from "vue";
 import axios from "axios";
 import * as echarts from "echarts";
+const props = defineProps({
+  DimensionMeasurementTabIndex:{
+    type:Number,
+    required:false,
+    default:0
+  }
+})
 
 const chartDom1 = ref(null);
 const chartDom2 = ref(null);

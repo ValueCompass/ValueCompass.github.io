@@ -148,12 +148,17 @@ defineExpose({
     flex-direction: row;
     align-items: center;
     margin: 0 2em;
+    .point-type-icon{
+      font-size: 1.4em;
+      margin-right: .2em;
+    }
     span {
       font-weight: 600;
       color: #727272;
       font-size: 1rem;
     }
     &.on {
+      color: #1093FF;
       border-color: #000;
       span {
         color: #000;

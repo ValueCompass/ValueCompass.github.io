@@ -2,22 +2,20 @@
   <div id="app" class="app-container">
     <Header class="header-component" style="" />
     <div id="content" style="">
-      <div style="min-height: calc(100% - 40px)">
-        <router-view v-slot="{ Component }">
-          <keep-alive>
-            <component
-              :is="Component"
-              :key="$route.name"
-              v-if="$route.meta.keepAlive"
-            />
-          </keep-alive>
+      <router-view v-slot="{ Component }" style="min-height: calc(100% - 40px)">
+        <keep-alive>
           <component
             :is="Component"
             :key="$route.name"
-            v-if="!$route.meta.keepAlive"
+            v-if="$route.meta.keepAlive"
           />
-        </router-view>
-      </div>
+        </keep-alive>
+        <component
+          :is="Component"
+          :key="$route.name"
+          v-if="!$route.meta.keepAlive"
+        />
+      </router-view>
       <Footer class="footer-component" />
     </div>
   </div>
@@ -44,7 +42,7 @@ provide("reload", () => {
   overflow: hidden;
   position: relative;
   #content {
-    padding-top: 4.5em;
+    padding-top: 6.375em;
     // padding-bottom: 40px;
     box-sizing: border-box;
     height: 100%;
