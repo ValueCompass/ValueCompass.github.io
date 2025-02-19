@@ -308,6 +308,8 @@ const fetchOtherData = async () => {
 fetchData();
 fetchOtherData();
 
+let maxValue = 1
+let minValue = -1
 function getCaseData(arr, model) {
   const arr1 = arr.filter((item) => {
     return item.model == model;
@@ -323,13 +325,17 @@ function getCaseData(arr, model) {
   }, {});
 }
 function setRadarChart(data) {
+  const values = Object.values(data);
+  maxValue = Math.ceil(Math.max(...values) * 10) / 10;
+  minValue = Math.floor(Math.min(...values) * 10) / 10 - 0.1;
+  // 获取dada
   const indicator = Object.keys(data).map((item, index) => {
     return {
       name: item,
       color: index == 0 ? "rgba(16, 147, 255, 1)" : "black",
       axisLabel: { show: index == 0 ? true : false },
-      min: -1,
-      max: 1,
+      min: minValue,
+      max: maxValue,
     };
   });
   const r_data = Object.values(data);
@@ -346,6 +352,11 @@ function setRadarChart(data) {
         color: "black",
         formatter: function (value) {
           return value.split("&").join("&\n"); // 将换行符拆分为数组
+        },
+      },
+      axisLabel: {
+        formatter: function (value) {
+          return value.toFixed(2); // 保留一位小数
         },
       },
       triggerEvent: true,
@@ -381,8 +392,8 @@ function setRadarHighlight(data, item) {
       name: indica,
       color: item == indica ? "rgba(16, 147, 255, 1)" : "black",
       axisLabel: { show: index == 0 ? true : false },
-      min: -1,
-      max: 1,
+      min: minValue,
+      max: maxValue,
     };
   });
   chartInstance.setOption({

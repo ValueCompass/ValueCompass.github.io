@@ -29,22 +29,29 @@ const chartDom = ref(null);
 let chartInstance = null;
 
 const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
+  const allValues = modelList.flatMap(item => 
+    Object.entries(item[MeasurementDimensionName])
+      .filter(([key, value]) => key !== 'model_name' && key !== 'Score')
+      .map(([key, value]) => value)
+  );
+  const maxValue = Math.ceil(Math.max(...allValues) * 10) / 10;
+  const minValue = Math.floor(Math.min(...allValues) * 10) / 10 - 0.1;
+
   let keys = [];
   if (filerData) {
     keys = filerData;
   } else {
     keys = Object.keys(modelList[0][MeasurementDimensionName]);
   }
-
   let Schwartz_indicator = keys // Object.keys(modelList[0].Schwartz_data)
-    .filter((item) => item != "model_name")
+    .filter((item) => item != "model_name" && item != "Score")
     .map((item, index) => {
       return {
         name: item,
         color: index == 0 ? "#000" : "#000",
         axisLabel: { show: index == 0 ? true : false },
-        min: -1,
-        max: 1,
+        min: minValue,
+        max: maxValue,
       };
     });
 
@@ -98,6 +105,11 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
         color: "black",
         formatter: function (value) {
           return value.split("&").join("&\n"); // 将换行符拆分为数组
+        },
+      },
+      axisLabel: {
+        formatter: function (value) {
+          return value.toFixed(2); // 保留一位小数
         },
       },
       triggerEvent: true,
