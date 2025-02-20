@@ -175,7 +175,7 @@ onActivated(() => {
     }
 }
 .leaderboard-nav-container {
-  width: 100vw;
+  width: 100%;
   border-bottom: 2px solid #1093ff;
   background: #fff;
   padding-top: 2em;
@@ -203,7 +203,7 @@ onActivated(() => {
       border-color: #c2c2c2;
       color: #727272;
       &:hover {
-        color: #f5c344;
+        color: #1093ff;
       }
       &.router-link-active {
         background: #1093ff;

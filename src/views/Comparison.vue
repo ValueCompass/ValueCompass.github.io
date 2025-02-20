@@ -127,7 +127,7 @@
         ></selectBoxComponent> -->
 
         <DimensionMeasurementTabs
-          style="margin:.5em 0 2em"
+          style="margin:.5em 0 2.5em"
           v-show="currentTab == 0 || currentTab == 1"
           :DimensionMeasurementTabIndex = DimensionMeasurementTabIndex
           @handleDimensionMeasurementTabsChange="
@@ -185,7 +185,11 @@
                 label="Score"
                 sortable
                 :formatter="formatter"
-              />
+              >
+                <template #header>
+                <span>Average</span>
+              </template>
+              </el-table-column>
               <template
                 v-for="(item, index) in MFT_table_columns_checked"
                 :key="index"
@@ -214,7 +218,11 @@
                 label="Score"
                 sortable
                 :formatter="formatter"
-              />
+              >
+                <template #header>
+                <span>Average</span>
+              </template>
+              </el-table-column>
 
               <template
                 v-for="(item, index) in Risk_table_columns_checked"
@@ -741,7 +749,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
       margin-top: 2em;
       h4 {
         font-size: 1.2em;
-        margin: 2em 0 0.8em;
+        margin: 0 0 0.8em;
         font-weight: 600;
         text-align: center;
       }

@@ -1,49 +1,64 @@
 <template>
-  <div class="home-template">
-    <div class="home" style="padding: 0">
-      <div class="top">
-        <div class="intro">
-          <div class="intro-container">
-            <h2>Value Compass</h2>
-            <h4>Aligning AI with Basic Human Values</h4>
-            <p>
-              To push the frontier of AI towards a human-machine symbiotic
-              future, we propose the interdisciplinary value compass project,
-              aiming to achieve LLM alignment based on the basic values from
-              humanity and social science. Three parts are mainly explored:1)
-              efficient and adaptive alignment algorithms; 2) reliable value
-              evaluation systems; and 3) interdisciplinary studies on values and
-              machine ethics. Hoping to create a new generation of AI systems
-              that compatible with human values of various cultural contexts.
-            </p>
-            <div class="btn-container">
-              <span
-                class="btn contact-btn nav__item_email"
-                @click="copyEmail('valuecompass@microsoft.com')"
-                >Contact Us<span class="email_text" style="display: none"
-                  >valuecompass@microsoft.com</span
-                ></span
-              >
-              <a
-                href="https://github.com/microsoft/ValueCompass.git"
-                target="_blank"
-                class="btn github-btn"
-                >Github</a
-              >
-            </div>
-          </div>
-          <div class="right"></div>
+  <div class="home-template main-container">
+    <div class="test-container">
+      <div class="test-intro">
+        <h1>Value Compass</h1>
+        <h2>Aligning AI with Basic Human Values</h2>
+        <div>
+          <p>
+            To advance AI towards a human-machine symbiotic future, we introduce
+            the Value Compass Project—an interdisciplinary initiative that
+            integrates social science, ethics, and human values to redefine LLM
+            alignment. Our approach is grounded in universal human values while
+            ensuring adaptability across cultural contexts. Our research focuses
+            on three core areas:
+          </p>
+          <p>
+            1.     Effective and Adaptive Alignment Algorithms 2.     Reliable
+            value evaluation system 3.     Interdisciplinary Studies on Values
+            and Machine Ethics
+          </p>
+          <p>
+            Unlike existing benchmarks, our platform quantifies alignment as a
+            weighted spectrum, allowing users to prioritize values based on
+            individual, organizational, or cultural needs. Through this
+            initiative, we aim to shape the next generation of AI
+            systems—ensuring they are not only technically advanced but also
+            aligned with diverse human values.
+          </p>
         </div>
-        <div class="bg-image">
-          <img :src="getAssetsFile('bg/bg9.png')" alt="" />
+        <div>
+          <div class="btn-container">
+            <span
+              class="btn contact-btn nav__item_email"
+              @click="copyEmail('valuecompass@microsoft.com')"
+              >Contact Us<span class="email_text" style="display: none"
+                >valuecompass@microsoft.com</span
+              ></span
+            >
+            <a
+              href="https://github.com/microsoft/ValueCompass.git"
+              target="_blank"
+              class="btn github-btn"
+              >Github</a
+            >
+          </div>
         </div>
       </div>
-
-      <div class="bottom">
-        <div class="bg-image2">
-          <img :src="getAssetsFile('bg/bg8.png')" alt="" />
+      <div class="img-div">
+        <!-- <img src="@/assets/images/test-love.png" alt="test" /> -->
+        <div class="home-animate-img">
+          <img
+            class="img img1"
+            src="@/assets/images/testValues/home_2@2x.png"
+            alt="test"
+          />
+          <img
+            class="img img2"
+            src="@/assets/images/testValues/home_4@2x.png"
+            alt="test"
+          />
         </div>
-        <div class="right"></div>
       </div>
     </div>
   </div>
@@ -51,10 +66,8 @@
 
 <script lang="ts" setup>
 import { ElMessage } from "element-plus";
+import { onMounted, nextTick } from "vue";
 
-const getAssetsFile = (url: string) => {
-  return new URL(`../../assets/${url}`, import.meta.url).href;
-};
 const copyEmail = (text: string) => {
   copyText(text);
   // ElMessage.success('"mailto: valuecompass@microsoft.com" copied to your clipboard')
@@ -74,106 +87,127 @@ const copyText = (text: string) => {
   document.body.removeChild(textareaC); //移除DOM元素
   return res;
 };
+
+onMounted(async () => {
+  await nextTick(); // 确保DOM已经渲染完成
+  setTimeout(() => {
+    document
+      .querySelector(".home-animate-img")!
+      .classList.add("animate-on-load");
+  }, 200);
+});
 </script>
 <style scoped lang="scss">
-.home-template {
-  overflow: hidden;
-}
-.home {
-  max-width: 2800px;
-  margin: 0 auto;
-  overflow: hidden;
-}
-.top {
+.test-container {
+  padding: 2em 6em 3em;
   display: flex;
-  flex-direction: row;
-}
-.bg-image {
-  flex: 1;
-  background: #70bfff;
-  align-items: stretch;
-  position: relative;
-  img {
-    position: absolute;
-    top: 0;
-    left: -52%;
-    height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  .test-intro {
+    width: 58%;
+    text-align: left;
+    h1 {
+      font-size: 4em;
+      font-weight: 400;
+      line-height: 1.3;
+      color: #004f8f;
+      font-style: italic;
+    }
+    h2 {
+      margin: 0.67em;
+      color: #004f8f;
+      font-size: 2.25em;
+      font-style: italic;
+      font-weight: 350;
+      line-height: normal;
+    }
+    p {
+      font-size: 1.25em;
+      line-height: 1.6;
+      margin: 0.6em 0;
+    }
+    button {
+      background: rgba(16, 147, 255, 1);
+      padding: 0 1.14em;
+      height: 2.28em;
+      color: #fff;
+      font-size: 1.25em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 3.43em;
+      margin-bottom: 2em;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
   }
-}
-.intro {
-  position: relative;
-  z-index: 10;
-  padding: 6em 0 2em;
-  background: radial-gradient(#b3ddff, #70bfff);
-  width: 75%;
-  position: relative;
-  .intro-container {
-    padding: 3.75em 0;
-    width: 64%;
-    max-width: 926px;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 0;
-  }
-  h2 {
-    font-weight: 400;
-    font-size: 4em;
-    line-height: 1.4;
-    font-style: italic;
-  }
-  h4 {
-    font-weight: 350;
-    font-size: 2.25em;
-    font-style: italic;
-    line-height: 1.4;
-    margin: 0.5em 0 0.5em;
-  }
-  p {
-    font-size: 1.25em;
-    line-height: 1.8;
+  .img-div {
+    flex: 1;
+    padding-left: 2em;
+    img {
+      width: 100%;
+    }
+    .home-animate-img {
+      position: relative;
+      img {
+        transition: all 2s;
+      }
+      .img2 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 2s;
+      }
+      .img1 {
+        transform: rotate(-75deg);
+      }
+      .img2 {
+        transform: translate(-50%, -50%) rotate(120deg);
+      }
+
+      &.animate-on-load {
+        .img1 {
+          transform: rotate(0deg);
+        }
+        .img2 {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+      }
+    }
   }
   .btn-container {
-    padding-top: 3.75em;
-  }
-  .btn {
-    cursor: pointer;
-    display: inline-block;
-    margin-right: 1em;
-    border-radius: 6px;
-    font-size: 1.5em;
-    padding: 0.5em 1em;
-    border: 1px solid #1093ff;
-    background: #fff;
-    color: #1093ff;
-    &.github-btn {
-      border-color: #1093ff;
-      color: #fff;
-      background: #1093ff;
-    }
-  }
-}
+    margin-top: 2em;
+    .btn {
+      cursor: pointer;
 
-.bottom {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  .bg-image2 {
-    height: 14em;
-    width: 75%;
-    position: relative;
-    // overflow: hidden;
-    img {
-      width: 110%;
-      position: absolute;
-      top: -120%;
-      right: 0;
-      z-index: -1;
+      display: inline-block;
+
+      margin-right: 1em;
+
+      border-radius: 6px;
+
+      font-size: 1.25em;
+
+      width: 7.45em;
+      height: 2.9em;
+      line-height: 2.9em;
+      text-align: center;
+
+      border: 1px solid #1093ff;
+
+      background: #fff;
+
+      color: #1093ff;
+
+      &.github-btn {
+        border-color: #1093ff;
+
+        color: #fff;
+
+        background: #1093ff;
+      }
     }
-  }
-  .right {
-    flex: 1;
-    background: #1093ff;
   }
 }
 </style>
