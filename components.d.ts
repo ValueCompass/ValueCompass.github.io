@@ -49,7 +49,6 @@ declare module 'vue' {
     SvgIcon: typeof import('./src/components/svgIcon.vue')['default']
     Swiper: typeof import('./src/components/swiper.vue')['default']
     Table: typeof import('./src/components/Comparison/Table.vue')['default']
-    TestValuesNew2: typeof import('./src/components/TestValues/TestValuesNew2.vue')['default']
     TestValuesResults: typeof import('./src/components/TestValues/TestValuesResults.vue')['default']
     ValueSpace: typeof import('./src/components/Comparison/ValueSpace.vue')['default']
     Visualization: typeof import('./src/components/Comparison/Visualization.vue')['default']

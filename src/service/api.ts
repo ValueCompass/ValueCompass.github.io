@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { createAxios } from './axios'
 
 
@@ -8,8 +8,8 @@ const request = createAxios({
 });
 
 export const calculateHumanValue = (data: any): any => {
-    return axios.get("./data/value_space.json");
-    // return request.post("/api/calculate_human_value", data)
+    // return axios.get("./data/value_space.json");
+    return request.post("/api/calculate_human_value", data)
 }
 
 export const calculateModelValue = (data: any): any => {

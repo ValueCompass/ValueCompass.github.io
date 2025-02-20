@@ -6,7 +6,7 @@
           <div
             class="chart"
             ref="chartDom"
-            style="width: 800px; height: 600px; margin: 0 auto"
+            style="width: 1000px; height: 700px; margin: 0 auto"
           ></div>
         </div>
       </div>

@@ -284,7 +284,8 @@ defineExpose({
       align-items: center;
       transition: all 0.2s;
       // flex: 1;
-      color: #A3A3A3;
+      color: #004F8F;
+      font-weight: 600;
       span {
         white-space: nowrap;
         font-size: 1em;
@@ -292,8 +293,8 @@ defineExpose({
         margin: 0 0.5em;
       }
       &:hover {
-        background: #47acff;
-        color: #004F8F;
+        // background: #47acff;
+        color: #1093FF;
       }
       &.on {
         background: #85c8ff;

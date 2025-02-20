@@ -20,7 +20,14 @@
           ></span>
         </div>
         <div class="img-div">
-          <img src="@/assets/images/test-love.png" alt="test" />
+          <!-- <img src="@/assets/images/test-love.png" alt="test" /> -->
+          <div class="testValues-img">
+            <img src="@/assets/images/testValues/0.png" alt="test" />
+            <img class="img img1" src="@/assets/images/testValues/1@2x.png" alt="test" />
+            <img class="img img2" src="@/assets/images/testValues/2@2x.png" alt="test" />
+            <img class="img img3" src="@/assets/images/testValues/3@2x.png" alt="test" />
+            <img class="img img4" src="@/assets/images/testValues/4@2x.png" alt="test" />
+          </div>
         </div>
       </div>
     </div>
@@ -281,6 +288,7 @@ let chartInstance = null;
 import Spearman from "spearman-rho";
 onMounted(async () => {
   await nextTick(); // 确保DOM已经渲染完成
+  document.querySelector('.testValues-img').classList.add('animate-on-load');
 });
 </script>
 
@@ -358,6 +366,59 @@ onMounted(async () => {
     padding-left: 2em;
     img{
       width: 100%;
+    }
+    .testValues-img{
+      position: relative;
+      .img{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: all 2s;
+        
+  
+      }
+
+      .img1{
+          width: 100%;
+          height: 100%;
+          
+        }
+        .img2{
+          width: 10px;
+          height: 10px;
+          
+        }
+        .img3{
+          width: 100%;
+          height: 100%;
+          flex-shrink: 0;
+          aspect-ratio: 1/1;
+          margin-left: 20%;
+        }
+        .img4{
+          width: 100%;
+          height: 100%;
+          transform: translate(-50%,-50%)  rotate(90deg);
+          flex-shrink: 0;
+          aspect-ratio: 1/1;
+  
+      }
+      &.animate-on-load {
+        .img {
+          opacity: 1;
+          width: 100%;
+          height: 100%;
+        }
+        .img3{
+          margin-left: 0;
+          transform: translate(-50%,-50%) rotate(0);
+        }
+        .img4{
+          transform: translate(-50%,-50%) rotate(0);
+        }
+      }
     }
   }
 }

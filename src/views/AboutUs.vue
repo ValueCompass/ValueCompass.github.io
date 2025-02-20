@@ -77,11 +77,11 @@
               <!-- <p style="color: ">{{ member.workIntro }},</p> -->
               <p class="member_intern_content">
                 <template v-if="member.workIntro == 'Algorithm Research'">
-                  <span style="color: #8d7200">{{ member.workIntro }},</span
+                  <span style="font-weight: 600">{{ member.workIntro }},</span
                   ><br />
                 </template>
                 <template v-else>
-                  <span style="color: #a66800">{{ member.workIntro }},</span
+                  <span style="font-weight: 600">{{ member.workIntro }},</span
                   ><br />
                 </template>
                 <span>{{ member.InternshipTime }}</span>
@@ -310,7 +310,7 @@ const interns = ref([
         }
         .member_intern_content {
           margin-bottom: 0.5em;
-          font-size: 0.8em;
+          font-size: 0.875em;
         }
 
         .member__institution {

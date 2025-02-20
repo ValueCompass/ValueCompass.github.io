@@ -141,13 +141,12 @@ defineExpose({
   }
 }
 .echart-list {
-  padding-top: 30px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   & > div {
     width: 100%;
-    padding: 20px 5%;
+    padding-bottom: 2em;
     box-sizing: border-box;
     p {
       text-align: center;
