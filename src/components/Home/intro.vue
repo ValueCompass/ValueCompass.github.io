@@ -1,30 +1,24 @@
 <template>
-  <div class="home-template main-container">
-    <div class="test-container">
-      <div class="test-intro">
+  <div class="home-template">
+    <div class="test-container main-container">
+      <div class="home-intro-div">
         <h1>Value Compass</h1>
         <h2>Aligning AI with Basic Human Values</h2>
         <div>
           <p>
-            To advance AI towards a human-machine symbiotic future, we introduce
-            the Value Compass Project—an interdisciplinary initiative that
-            integrates social science, ethics, and human values to redefine LLM
-            alignment. Our approach is grounded in universal human values while
-            ensuring adaptability across cultural contexts. Our research focuses
-            on three core areas:
+            To advance AI towards a human-machine symbiotic future, we introduce the <b>Value Compass Project</b>—an interdisciplinary initiative that integrates social science, ethics, and human values to redefine LLM alignment. Grounded on universal, pluralistic and adaptive human values, our research focuses on three core areas:
           </p>
+          <b
+            ><p>
+              1.     Effectiveand Adaptive Alignment Algorithms <br />2.    
+              Reliable and Validated Value Evaluation <br />3.    
+              Interdisciplinary Studies on AI Values and Machine Ethics
+            </p></b
+          >
+
           <p>
-            1.     Effective and Adaptive Alignment Algorithms 2.     Reliable
-            value evaluation system 3.     Interdisciplinary Studies on Values
-            and Machine Ethics
-          </p>
-          <p>
-            Unlike existing benchmarks, our platform quantifies alignment as a
-            weighted spectrum, allowing users to prioritize values based on
-            individual, organizational, or cultural needs. Through this
-            initiative, we aim to shape the next generation of AI
-            systems—ensuring they are not only technically advanced but also
-            aligned with diverse human values.
+            We aim to shape the next generation of AI systems that are not only
+            technically advanced but also aligned with diverse human values.
           </p>
         </div>
         <div>
@@ -94,27 +88,43 @@ onMounted(async () => {
     document
       .querySelector(".home-animate-img")!
       .classList.add("animate-on-load");
+    document.querySelector(".home-intro-div")!.classList.add("animate-on-load");
   }, 200);
 });
 </script>
 <style scoped lang="scss">
+.home-template{
+  background: #f9f9f9;
+}
 .test-container {
-  padding: 2em 6em 3em;
+  background: #f9f9f9;
+  overflow: hidden;
+  padding: 2em 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .test-intro {
-    width: 58%;
+  .home-intro-div {
+    width: 65.25%;
+    padding-right: 0.75em;
+    box-sizing: content-box;
     text-align: left;
+    transform: translateY(100%);
+    position: relative;
+    opacity: 0;
+    transition: all 1s ease-out 0.1s;
+    &.animate-on-load {
+      opacity: 1;
+      transform: translateY(0%);
+    }
     h1 {
       font-size: 4em;
       font-weight: 400;
-      line-height: 1.3;
+      line-height: normal;
       color: #004f8f;
       font-style: italic;
     }
     h2 {
-      margin: 0.67em;
+      margin: .33em 0;
       color: #004f8f;
       font-size: 2.25em;
       font-style: italic;
@@ -143,27 +153,28 @@ onMounted(async () => {
   }
   .img-div {
     flex: 1;
-    padding-left: 2em;
+    padding-left: 0.75em;
+    padding-right: 2em;
     img {
       width: 100%;
     }
     .home-animate-img {
       position: relative;
       img {
-        transition: all 2s;
+        transition: all 1s ease-out 0.1s;
       }
       .img2 {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        transition: all 2s;
+        transition: all 1s ease-out 0.1s;
       }
       .img1 {
-        transform: rotate(-75deg);
+        transform: rotate(-35deg);
       }
       .img2 {
-        transform: translate(-50%, -50%) rotate(120deg);
+        transform: translate(-50%, -50%) rotate(20deg);
       }
 
       &.animate-on-load {
@@ -177,7 +188,6 @@ onMounted(async () => {
     }
   }
   .btn-container {
-    margin-top: 2em;
     .btn {
       cursor: pointer;
 
@@ -193,12 +203,17 @@ onMounted(async () => {
       height: 2.9em;
       line-height: 2.9em;
       text-align: center;
+      box-sizing: border-box;
 
-      border: 1px solid #1093ff;
+      border: 2px solid #1093ff;
 
       background: #fff;
 
       color: #1093ff;
+      &:hover {
+        opacity: 0.8;
+        transition: all 0.2s;
+      }
 
       &.github-btn {
         border-color: #1093ff;

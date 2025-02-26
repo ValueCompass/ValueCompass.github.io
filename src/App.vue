@@ -2,20 +2,28 @@
   <div id="app" class="app-container">
     <Header class="header-component" style="" />
     <div id="content" style="">
-      <router-view v-slot="{ Component }" style="min-height: calc(100% - 40px)">
-        <keep-alive>
+      <div
+        style="
+          min-height: calc(100% - 40px);
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component
+              :is="Component"
+              :key="$route.name"
+              v-if="$route.meta.keepAlive"
+            />
+          </keep-alive>
           <component
             :is="Component"
             :key="$route.name"
-            v-if="$route.meta.keepAlive"
+            v-if="!$route.meta.keepAlive"
           />
-        </keep-alive>
-        <component
-          :is="Component"
-          :key="$route.name"
-          v-if="!$route.meta.keepAlive"
-        />
-      </router-view>
+        </router-view>
+      </div>
       <Footer class="footer-component" />
     </div>
   </div>
@@ -54,7 +62,7 @@ provide("reload", () => {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
+    z-index: 109;
   }
   .footer-component {
     // position: absolute;

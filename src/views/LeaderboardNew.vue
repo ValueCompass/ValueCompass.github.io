@@ -95,6 +95,16 @@
             >
               <template #header>
                 Score
+
+                <SvgIcon
+                  style="
+                    width: 1.2em;
+                    height: 1.2em;
+                    transform: translateY(0.2em);
+                  "
+                  name="icon-question"
+                  @click="showScoreIntro(true)"
+                ></SvgIcon>
                 <el-tooltip
                   effect="customized"
                   :content="!tablePointDetailShow ? 'show more' : 'show less'"
@@ -188,7 +198,7 @@
               </template>
             </template>
 
-            <el-table-column label="Type" min-width="70" >
+            <el-table-column label="Type" min-width="70">
               <template #default="scope">
                 <el-tooltip
                   effect="customized"
@@ -230,7 +240,7 @@
                       class="add"
                       name="add"
                       @click="compareBtnClick(scope.row)"
-                      style="margin-left:1.2em"
+                      style="margin-left: 1.2em"
                     ></SvgIcon>
                   </el-tooltip>
                 </div>
@@ -241,7 +251,11 @@
                     compareArr.length >= 5
                   "
                 >
-                  <SvgIcon class="add disabled" name="add-disabled" style="margin-left:1.2em"></SvgIcon>
+                  <SvgIcon
+                    class="add disabled"
+                    name="add-disabled"
+                    style="margin-left: 1.2em"
+                  ></SvgIcon>
                 </div>
 
                 <div v-else>
@@ -251,7 +265,7 @@
                     placement="top"
                   >
                     <SvgIcon
-                      style="color: #1093ff;margin-left:1.2em"
+                      style="color: #1093ff; margin-left: 1.2em"
                       class="add"
                       name="model-checked-icon"
                       @click="compareBtnClick(scope.row)"
@@ -260,7 +274,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="Details" min-width="100" >
+            <el-table-column label="Details" min-width="100">
               <template #default="scope">
                 <el-tooltip effect="customized" content="view" placement="top">
                   <SvgIcon
@@ -268,7 +282,7 @@
                     class="handleDetailClick"
                     name="jump"
                     @click="handleDetailClick(scope.row)"
-                    style="margin-left:1em"
+                    style="margin-left: 1em"
                   ></SvgIcon>
                 </el-tooltip>
               </template>
@@ -286,7 +300,9 @@
       @hideComparePool="ComparePoolShow = false"
     ></ComparePool>
     <homepageSwiper ref="homepageSwiperRef"></homepageSwiper>
-    <div v-if="compareArr.length > 0" style="height:200px"></div>
+    <div v-if="compareArr.length > 0" style="height: 200px"></div>
+
+    <scoreIntro ref="scoreIntroRef"></scoreIntro>
   </div>
 </template>
 <script setup>
@@ -297,6 +313,12 @@ import { ref, watch, reactive, nextTick } from "vue";
 import axios from "axios";
 import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
 import { useRouter } from "vue-router";
+
+import scoreIntro from "../components/scoreIntro.vue";
+const scoreIntroRef = ref(null);
+const showScoreIntro = () => {
+  scoreIntroRef.value.showScoreIntro();
+};
 
 const SelectedPointsRef = ref(null);
 var modelInfo = null;
@@ -542,7 +564,7 @@ const tablePointDetailShow = ref(false);
     background: url(@/assets/images/type-icon.svg) no-repeat;
     background-size: contain;
     vertical-align: text-bottom;
-    margin-left: .5em;
+    margin-left: 0.5em;
   }
   .type-close-icon {
     display: inline-block;
@@ -551,7 +573,7 @@ const tablePointDetailShow = ref(false);
     background: url(@/assets/images/type-icon-close.svg) no-repeat;
     background-size: contain;
     vertical-align: text-bottom;
-    margin-left: .5em;
+    margin-left: 0.5em;
   }
   .top-type-icon {
     width: 1.6em;
@@ -579,7 +601,7 @@ const tablePointDetailShow = ref(false);
   --el-table-text-color: var(--text-color);
   --el-table-header-text-color: var(--text-color);
   --el-table-row-hover-bg-color: #fff;
-  --el-table-border-color: rgba(0,0,0,.2);
+  --el-table-border-color: rgba(0, 0, 0, 0.2);
   font-size: 1em;
   border-radius: 16px;
 
@@ -609,7 +631,7 @@ const tablePointDetailShow = ref(false);
   }
   .el-table__cell {
     // text-align: center;
-    padding: 1.2em 0!important;
+    padding: 1.2em 0 !important;
   }
   .cell {
     padding: 0 5px;
@@ -622,7 +644,7 @@ const tablePointDetailShow = ref(false);
     font-weight: 600;
     font-size: 1.11em;
   }
-  .el-scrollbar__bar.is-horizontal{
+  .el-scrollbar__bar.is-horizontal {
     height: 10px;
   }
 }
@@ -633,6 +655,6 @@ const tablePointDetailShow = ref(false);
 
 .points-show {
   position: absolute;
-  left: 4.5em;
+  left: 5.5em;
 }
 </style>

@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    '副本': typeof import('./src/components/homepageSwiper - 副本.vue')['default']
+    Am4core: typeof import('./src/components/am4core.vue')['default']
     ComparePool: typeof import('./src/components/ComparePool.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
     DimensionMeasurementTabs: typeof import('./src/components/DimensionMeasurementTabs.vue')['default']
@@ -40,10 +42,12 @@ declare module 'vue' {
     NavBar: typeof import('./src/components/navBar.vue')['default']
     NavBarNew: typeof import('./src/components/navBarNew.vue')['default']
     Posts: typeof import('./src/components/Home/posts.vue')['default']
+    PostsOld: typeof import('./src/components/Home/posts-old.vue')['default']
     RadarChart: typeof import('./src/components/radar-chart.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SaveImage: typeof import('./src/components/saveImage.vue')['default']
+    ScoreIntro: typeof import('./src/components/scoreIntro.vue')['default']
     SelectBox: typeof import('./src/components/selectBox.vue')['default']
     SelectedPoints: typeof import('./src/components/selectedPoints.vue')['default']
     SvgIcon: typeof import('./src/components/svgIcon.vue')['default']

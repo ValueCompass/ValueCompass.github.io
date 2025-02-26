@@ -75,7 +75,9 @@
           ></SvgIcon>
         </li>
         <li class="icon-li">
-          <a href="https://github.com/microsoft/ValueCompass.git"
+          <a
+            target="_blank"
+            href="https://github.com/microsoft/ValueCompass.git"
             ><SvgIcon class="SvgIcon github-icon" name="github-icon"></SvgIcon
           ></a>
         </li>
@@ -123,7 +125,7 @@ const copyText = (text: string) => {
 </script>
 <style scoped lang="scss">
 .header-component {
-  background: #fff;
+  background: #f9f9f9;
   padding: 1em 0;
   padding-right: 3.75em;
   font-size: 1em;
