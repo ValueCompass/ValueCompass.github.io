@@ -3,6 +3,7 @@
     <div class="container teams-container">
       <div class="hero" style="background: transparent; padding-top: 3.75em">
         <div class="hero__content" style="padding: 0; text-align: center">
+          <img src="@/assets/images/teams-icon.png" alt="">
           <h1 class="hreo_name">Introducing Our Team!</h1>
         </div>
       </div>
@@ -161,6 +162,20 @@ const collaborators = ref([
     institution:
       "Division of Humanities, Hong Kong University of Science and Technology",
   },
+  {
+    name: "JinYeong Bak",
+    photo: "Linus_Huang.png",
+    position: "Associate Professor",
+    institution:
+      "College of Computing and Informatics, SungKyunKwan University",
+  },
+  {
+    name: "Xiao Zhou",
+    photo: "Linus_Huang.png",
+    position: "Assistant Professor",
+    institution:
+      "Gaoling School of Artificial Intelligence, Renmin University of China",
+  },
 ]);
 
 const interns = ref([
@@ -220,11 +235,84 @@ const interns = ref([
     institution: "Microsoft Research Asia",
     workIntro: "Tech Development",
   },
+  {
+    name: "Dongyao Zhu",
+    photo: "Dongyao_Zhu.png",
+    position: "PhD Student",
+    institution: "Department of Computer Science, North Carolina State University",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2023.11-2024.08",
+  },
+  {
+    name: "Han Jiang",
+    photo: "Han_Jiang.png",
+    position: "Master Student",
+    institution: "Department of Computer Science and Technology, Tongji University",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.04-2024.08",
+  },
+  {
+    name: "HyunJin Kim",
+    photo: "HyunJin_Kim.png",
+    position: "Phd Student",
+    institution: "Department of Artificial Intelligence, SungKyunKwan University",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.09-2025.03",
+  },
+  {
+    name: "Muhua Huang",
+    photo: "Muhua_Huang.png",
+    position: "Master Student",
+    institution: "School of Computational Social Science, The University of Chicago",
+    workIntro: "Interdisciplinary Research",
+    InternshipTime: "Internship Period 2024.07-2024.10",
+  },
+  {
+    name: "Pablo Biedma",
+    photo: "Pablo_Biedma.png",
+    position: "Master Student",
+    institution: "Department of Computer Science and Technology, Tsinghua University",
+    workIntro: "Interdisciplinary Research",
+    InternshipTime: "Internship Period 2024.07-2024.09",
+  },
+  {
+    name: "Yanxu Zhu",
+    photo: "Yanxu_Zhu.png",
+    position: "Master Student",
+    institution: "Department of Computer Science and Engineering, Beijing Jiaotong university",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.10-2025.02",
+  },
+  {
+    name: "Bingbing Xu",
+    photo: "Bingbing_Xu.png",
+    position: "PhD student",
+    institution: "School of Information, Renmin University of China",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.1-",
+  },
+  {
+    name: "Vicky Hua",
+    photo: "Vicky_Hua.png",
+    position: "UI&UX Designer",
+    institution: "Microsoft Research Asia",
+    workIntro: "Tech Development",
+  },
 ]);
 </script>
 <style scoped lang="scss">
 .about-us-template {
   line-height: 1.6;
+  .hero__content{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em;
+    img{
+      width: 7.5em;
+    }
+  }
   .hreo_name {
     font-size: 2.5em;
     color: #004F8F;
@@ -293,7 +381,7 @@ const interns = ref([
         width: 50%;
         display: flex;
         flex-direction: column;
-        padding: 0 1em;
+        padding: 0 .8em;
 
         .member__name {
           font-size: 1.5em;
@@ -326,16 +414,11 @@ const interns = ref([
     }
   }
 
-  // @media only screen and (max-width: 1400px) {
-  //   .teams-container {
-  //     .content {
-  //       font-size: 0.8em;
-  //     }
-  //     .one-member {
-  //       width: 33.33% !important;
-  //     }
-  //   }
-  // }
+  @media only screen and (max-width: 1400px) {
+    .teams-container .one-member{
+      width: 33.333%;
+    }
+  }
 
   // @media only screen and (max-width: 600px) {
   //   .teams-container {

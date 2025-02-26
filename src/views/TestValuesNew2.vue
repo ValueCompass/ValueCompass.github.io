@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container test-values-template">
+  <div class="main-container test-values-template" style="flex:1">
     <div v-show="showTest == 1">
       <div class="test-container">
         <div class="test-intro">
@@ -253,9 +253,9 @@ const select = (item, index) => {
   currentTest.value.userAnswers[startIndex.value] = item;
   currentTest.value.userAnswerIndex[startIndex.value] = index;
   if (!isLast.value) {
-    timer.value = setTimeout(() => {
-      goNext();
-    }, 500);
+    // timer.value = setTimeout(() => {
+    //   goNext();
+    // }, 500);
   }
 
   console.log(currentTest.value);
@@ -327,7 +327,7 @@ onMounted(async () => {
   }
 }
 .test-container {
-  padding: 0 6em;
+  padding: 3em 6em;
   display: flex;
   justify-content: space-between;
   align-items: center;

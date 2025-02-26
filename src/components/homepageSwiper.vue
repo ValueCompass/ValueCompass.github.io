@@ -1,58 +1,60 @@
 <template>
-  <el-dialog
-    v-model="dialogTableVisible"
-    title=""
-    style="width: 90%; max-width: 1200px"
-    align-center
-  >
-    <!-- <div class="homepageSwiper-container"> -->
-    <div>
+  <div>
+    <el-dialog
+      v-model="dialogTableVisible"
+      title=""
+      style="width: 90%; max-width: 1200px"
+      align-center
+    >
+      <!-- <div class="homepageSwiper-container"> -->
       <div>
-        <ul class="tabs-ul">
-          <li
-            :class="tabIndex == index ? 'on' : ''"
-            v-for="(item, index) in introData"
-            :key="index"
-            @click="tabClick(index)"
-          >
-            <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
-            <span>{{ item.name }}</span>
-          </li>
-        </ul>
-      </div>
-      <swiper
-        class="swiper"
-        :slides-per-view="1"
-        :space-between="50"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-        :modules="modules"
-        :navigation="true"
-        :pagination="{ clickable: true }"
-      >
-        <swiper-slide
-          class="swiper-slide"
-          v-for="(item, index) in introData"
-          :key="item.name + index"
+        <div>
+          <ul class="tabs-ul">
+            <li
+              :class="tabIndex == index ? 'on' : ''"
+              v-for="(item, index) in introData"
+              :key="index"
+              @click="tabClick(index)"
+            >
+              <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
+              <span>{{ item.name }}</span>
+            </li>
+          </ul>
+        </div>
+        <swiper
+          class="swiper"
+          :slides-per-view="1"
+          :space-between="50"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+          :modules="modules"
+          :navigation="true"
+          :pagination="{ clickable: true }"
         >
-          <div class="swiper-main">
-            <div>
-              <h3>{{ item.name }}</h3>
-              <p>{{ item.detail }}</p>
-            </div>
+          <swiper-slide
+            class="swiper-slide"
+            v-for="(item, index) in introData"
+            :key="item.name + index"
+          >
+            <div class="swiper-main">
+              <div>
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.detail }}</p>
+              </div>
 
-            <div class="img-box">
-              <img src="@/assets/images/SchwartzBasicValues@2x.png" alt="" />
+              <div class="img-box">
+                <img src="@/assets/images/SchwartzBasicValues@2x.png" alt="" />
+              </div>
             </div>
-          </div>
-        </swiper-slide>
-      </swiper>
-    </div>
-    <!-- </div> -->
-  </el-dialog>
+          </swiper-slide>
+        </swiper>
+      </div>
+      <!-- </div> -->
+    </el-dialog>
+  </div>
 </template>
 <script setup>
-import { ref,defineExpose } from "vue";
+import { ref, defineExpose } from "vue";
 
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -100,7 +102,7 @@ const onSwiper = (swiper) => {
 
 const onSlideChange = () => {
   console.log("slide change");
-  console.log(swiperRef.value.activeIndex)
+  console.log(swiperRef.value.activeIndex);
   tabIndex.value = swiperRef.value.activeIndex;
 };
 const tabClick = (index) => {
@@ -110,14 +112,13 @@ const tabClick = (index) => {
   }
 };
 
-const showIntro = (index) =>{
-  tabClick(index)
-  dialogTableVisible.value = true
-
-}
+const showIntro = (index) => {
+  tabClick(index);
+  dialogTableVisible.value = true;
+};
 
 defineExpose({
-  showIntro
+  showIntro,
 });
 </script>
 
@@ -139,7 +140,7 @@ defineExpose({
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding:0 4em;
+  padding: 0 4em;
   li {
     cursor: pointer;
     padding-bottom: 0.5em;
@@ -148,9 +149,9 @@ defineExpose({
     flex-direction: row;
     align-items: center;
     margin: 0 2em;
-    .point-type-icon{
+    .point-type-icon {
       font-size: 1.4em;
-      margin-right: .2em;
+      margin-right: 0.2em;
     }
     span {
       font-weight: 600;
@@ -158,7 +159,7 @@ defineExpose({
       font-size: 1rem;
     }
     &.on {
-      color: #1093FF;
+      color: #1093ff;
       border-color: #000;
       span {
         color: #000;
@@ -178,7 +179,7 @@ defineExpose({
     flex-wrap: nowrap;
     align-items: center;
     h3 {
-      margin:.2em 0 .3em;
+      margin: 0.2em 0 0.3em;
       font-style: italic;
       font-size: 2.5rem;
       font-weight: 400;
@@ -227,5 +228,33 @@ defineExpose({
   color: rgba(0, 79, 143, 1);
   font-weight: 500;
   line-height: 1.8em;
+}
+
+:deep(.el-dialog) {
+  --el-dialog-content-font-size: 1em;
+  --el-dialog-border-radius: 0.75em;
+  padding: 2em;
+  .el-dialog__header {
+    padding-bottom: 0;
+  }
+  .el-dialog__headerbtn {
+    width: 1.5em;
+    height: 1.5em;
+    top: 1.25em;
+    right: 1.25em;
+    &:hover {
+      .el-dialog__close {
+        color: #909399;
+      }
+    }
+  }
+  .el-icon {
+    width: 1.5em;
+    height: 1.5em;
+    svg {
+      width: 1.5em;
+      height: 1.5em;
+    }
+  }
 }
 </style>
