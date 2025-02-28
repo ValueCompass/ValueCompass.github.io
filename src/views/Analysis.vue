@@ -59,7 +59,7 @@
         <div class="model-props" v-if="currentModelInfo">
           <div class="model-prop">
             <SvgIcon class="prop-icon" name="Affiliation-icon"></SvgIcon>
-            <span class="prop-name">Affiliation: </span>
+            <span class="prop-name">Developer: </span>
             <span class="prop-content">{{ currentModelInfo.affiliation }}</span>
           </div>
           <div class="model-prop">

@@ -547,7 +547,7 @@ const tablePointDetailShow = ref(false);
     }
 
     .table-color {
-      font-weight: bold;
+      font-weight: 600;
       font-size: 1.125em;
     }
   }

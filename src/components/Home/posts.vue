@@ -23,7 +23,7 @@
               <div class="article__date">
                 <span
                   ><time datetime="{{ post.date }}">{{
-                    dayjs(post.date).format("MMMM D, YYYY")
+                    dayjs(post.date).format("MMM D, YYYY")
                   }}</time></span
                 >
               </div>

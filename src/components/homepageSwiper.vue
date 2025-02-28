@@ -113,7 +113,7 @@ const introData = ref([
     name: "LLMs' Unique Value System",
     img: "LLMs_Unique_Value_System_image.png",
     detail:
-      "Proposed by Biedma et al. (2024), this framework prioritizes three AI-centric principles for LLMs: Competence (accuracy), Character (empathy), and Integrity (transparency). —leveraging psychological methods derived from human values and constructed independently. This framework ensures the alignment of LLMs with human principles while maintaining technical proficiency.",
+      "Proposed by Biedma et al. (2024), this framework prioritizes three AI-centric principles for LLMs: Competence (accuracy), Character (empathy), and Integrity (transparency). —leveraging psychological methods derived from human values and constructed independently. This framework ensures the alignment of LLMs with human principles while maintaining technical proficiency.",
   },
 ]);
 
@@ -197,7 +197,7 @@ defineExpose({
 .swiper-slide {
   .swiper-main {
     color: #000;
-    padding: 0 1.2em 1em;
+    padding: 0 1.2em 2em;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -228,7 +228,7 @@ defineExpose({
       line-height: 1.5;
       white-space: pre-wrap;
       line-height: 150%; /* 30px */
-      letter-spacing: -0.2px;
+      letter-spacing: -0.4px;
     }
   }
 }
