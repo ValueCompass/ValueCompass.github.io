@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%;">
     <div class="chart-box" v-show="showTest == 4">
       <div class="loading-main">
         <p class="thanks">Thank you for your cooperation!</p>
@@ -1086,7 +1086,6 @@ defineExpose({
           text-align: center;
           .print-btn {
             margin-top: 40px;
-            font-family: Roboto;
             font-size: .83em;
             line-height: 1.57em;
             color: #0b70c3;
@@ -1271,7 +1270,6 @@ defineExpose({
         height: 32px;
         font-size: 14px;
         font-weight: 400;
-        line-height: 22px;
         text-align: center;
       }
       .cancel {
