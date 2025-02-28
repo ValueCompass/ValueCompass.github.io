@@ -3,12 +3,12 @@
     <el-dialog
       v-model="dialogTableVisible"
       title=""
-      style="width: 90%; max-width: 1200px"
+      style="width: 65%; max-width: 1200px"
       align-center
     >
       <!-- <div class="homepageSwiper-container"> -->
       <div>
-        <div>
+        <!-- <div>
           <ul class="tabs-ul">
             <li
               :class="tabIndex == index ? 'on' : ''"
@@ -20,7 +20,7 @@
               <span>{{ item.name }}</span>
             </li>
           </ul>
-        </div>
+        </div> -->
         <swiper
           class="swiper"
           :slides-per-view="1"
@@ -38,13 +38,24 @@
           >
             <div class="swiper-main">
               <div>
-                <h3>{{ item.name }}</h3>
+                <h3>
+                  <SvgIcon
+                    class="point-type-icon"
+                    name="point-type-icon"
+                  ></SvgIcon
+                  >{{ item.name }}
+                </h3>
+                <img
+                  :src="getAssetsFile(item.img)"
+                  :alt="item.img"
+                  width="100%"
+                />
                 <p>{{ item.detail }}</p>
               </div>
 
-              <div class="img-box">
+              <!-- <div class="img-box">
                 <img src="@/assets/images/SchwartzBasicValues@2x.png" alt="" />
-              </div>
+              </div> -->
             </div>
           </swiper-slide>
         </swiper>
@@ -72,25 +83,37 @@ import "swiper/css/pagination";
 // Import Swiper styles
 import "swiper/css";
 
+const getAssetsFile = (url) => {
+  return new URL(`../assets/Value_Systems_images/${url}`, import.meta.url).href;
+};
+
 const dialogTableVisible = ref(false);
 const tabIndex = ref(0);
 
 const introData = ref([
   {
-    name: "Schwartz’s Value Theory",
-    detail: `Schwartz’s Value Theory, proposed by psychologist Shalom Schwartz, provides a framework to describe and analyze basic human values. The theory suggests that values are universal beliefs that guide individual and societal behavior, reflecting personal and cultural differences through their varying priorities.\n\n Schwartz categorizes values into ten core types: Power (status and control), Achievement (success and competence), Hedonism (pleasure and enjoyment), Stimulation (adventure and novelty), Self-Direction (independence and creativity), Universalism (tolerance and protecting nature and humanity), Benevolence (caring for and helping others), Tradition (respecting cultural and religious practices), Conformity (adhering to rules and discipline), and Security (stability and safety). These values are organized in a circular structure that reflects their dynamic relationships. Adjacent values are more compatible, while opposing values (e.g., Stimulation and Security) often conflict.`,
+    name: "Schwartz Theory of Basic Values",
+    img: "Schwartz_image.png",
+    detail:
+      "Proposed by psychologist Shalom Schwartz, Schwartz’s theory defines 10 universal human values grounded in the requirements of human existence ( Self-direction, Stimulation, Hedonism, Achievement, Power, Security, Tradition, Conformity, Benevolence, Universalism). This theory reflects basic needs inherent in human individuals and priorities shared across cultures.",
   },
   {
     name: "Moral Foundation Theory",
-    detail: `Schwartz’s Value Theory, proposed by psychologist Shalom Schwartz, provides a framework to describe and analyze basic human values. The theory suggests that values are universal beliefs that guide individual and societal behavior, reflecting personal and cultural differences through their varying priorities.\n\n Schwartz categorizes values into ten core types: Power (status and control), Achievement (success and competence), Hedonism (pleasure and enjoyment), Stimulation (adventure and novelty), Self-Direction (independence and creativity), Universalism (tolerance and protecting nature and humanity), Benevolence (caring for and helping others), Tradition (respecting cultural and religious practices), Conformity (adhering to rules and discipline), and Security (stability and safety). These values are organized in a circular structure that reflects their dynamic relationships. Adjacent values are more compatible, while opposing values (e.g., Stimulation and Security) often conflict.`,
+    img: "MoralFoundationTheory_image.png",
+    detail:
+      "This theory specifically focuses on morality as a core component of human values, dividing it into five innate foundations:  Care/Harm, Fairness/Cheating, Loyalty/Betrayal, Authority/Subversion, and Sanctity/Degradation. This theory explains how moral diversity varies across contexts.",
   },
   {
-    name: "Diverse Safety Risks",
-    detail: `Schwartz’s Value Theory, proposed by psychologist Shalom Schwartz, provides a framework to describe and analyze basic human values. The theory suggests that values are universal beliefs that guide individual and societal behavior, reflecting personal and cultural differences through their varying priorities.\n\n Schwartz categorizes values into ten core types: Power (status and control), Achievement (success and competence), Hedonism (pleasure and enjoyment), Stimulation (adventure and novelty), Self-Direction (independence and creativity), Universalism (tolerance and protecting nature and humanity), Benevolence (caring for and helping others), Tradition (respecting cultural and religious practices), Conformity (adhering to rules and discipline), and Security (stability and safety). These values are organized in a circular structure that reflects their dynamic relationships. Adjacent values are more compatible, while opposing values (e.g., Stimulation and Security) often conflict.`,
+    name: "Safety Taxonomy",
+    img: "Safety_Taxonomy_image.png",
+    detail:
+      "Organized via SALAD-Bench (Li et al., 2024), this system classifies AI risks (malicious use, toxicity, bias, privacy violations) into 6 domains and 16 tasks. For instance, a chatbot might unintentionally promote harmful stereotypes (bias) or leak user data (privacy). This value system guides people to build safer AI to eliminate those potential risks.",
   },
   {
-    name: "LLMs’ Unique Values",
-    detail: `Schwartz’s Value Theory, proposed by psychologist Shalom Schwartz, provides a framework to describe and analyze basic human values. The theory suggests that values are universal beliefs that guide individual and societal behavior, reflecting personal and cultural differences through their varying priorities.\n\n Schwartz categorizes values into ten core types: Power (status and control), Achievement (success and competence), Hedonism (pleasure and enjoyment), Stimulation (adventure and novelty), Self-Direction (independence and creativity), Universalism (tolerance and protecting nature and humanity), Benevolence (caring for and helping others), Tradition (respecting cultural and religious practices), Conformity (adhering to rules and discipline), and Security (stability and safety). These values are organized in a circular structure that reflects their dynamic relationships. Adjacent values are more compatible, while opposing values (e.g., Stimulation and Security) often conflict.`,
+    name: "LLMs' Unique Value System",
+    img: "LLMs_Unique_Value_System_image.png",
+    detail:
+      "Proposed by Biedma et al. (2024), this framework prioritizes three AI-centric principles for LLMs: Competence (accuracy), Character (empathy), and Integrity (transparency). —leveraging psychological methods derived from human values and constructed independently. This framework ensures the alignment of LLMs with human principles while maintaining technical proficiency.",
   },
 ]);
 
@@ -168,38 +191,44 @@ defineExpose({
   }
 }
 .swiper {
+  margin-top: 1em;
   background: #fff;
 }
 .swiper-slide {
   .swiper-main {
     color: #000;
-    padding: 2em 4em;
+    padding: 0 1.2em 1em;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     h3 {
-      margin: 0.2em 0 0.3em;
+      font-size: 2em;
       font-style: italic;
-      font-size: 2.5rem;
       font-weight: 400;
-      line-height: 1.5;
-      font-family: "Times New Roman";
+      line-height: 150%; /* 48px */
+      text-align: center;
+      color: #004f8f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      align-self: stretch;
+      svg {
+        width: 1em;
+        height: 1em;
+        margin-right: 0.2em;
+      }
+    }
+    img {
+      width: 100%;
+      margin: 0.875em 0;
     }
     p {
       font-size: 1.25rem;
       line-height: 1.5;
       white-space: pre-wrap;
-    }
-    & > div:nth-child(1) {
-      padding-right: 1em;
-      width: 70%;
-    }
-    .img-box {
-      flex: 1;
-      img {
-        width: 100%;
-      }
+      line-height: 150%; /* 30px */
+      letter-spacing: -0.2px;
     }
   }
 }
@@ -233,15 +262,16 @@ defineExpose({
 :deep(.el-dialog) {
   --el-dialog-content-font-size: 1em;
   --el-dialog-border-radius: 0.75em;
-  padding: 2em;
+  padding: 1em 2em;
   .el-dialog__header {
     padding-bottom: 0;
   }
   .el-dialog__headerbtn {
     width: 1.5em;
     height: 1.5em;
-    top: 1.25em;
-    right: 1.25em;
+    top: 1em;
+    right: 1em;
+    z-index: 3;
     &:hover {
       .el-dialog__close {
         color: #909399;
