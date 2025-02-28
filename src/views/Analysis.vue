@@ -182,7 +182,7 @@ let chartInstance = null;
 let barInstance = null;
 const tabList = [
   {
-    name: "Schwartz Value Theory",
+    name: "Schwartz Theory of Basic Values",
     index: 0,
     children: [
       {
@@ -210,11 +210,11 @@ const tabList = [
     ],
   },
   {
-    name: "Diverse Safety Risks",
+    name: "Safety Taxonomy",
     index: 2,
   },
   // {
-  //   name: "LLMs’ Unique Values",
+  //   name: "LLMs' Unique Value System",
   //   index: 3,
   // },
 ];

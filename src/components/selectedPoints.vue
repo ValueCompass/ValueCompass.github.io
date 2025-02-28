@@ -77,7 +77,7 @@ const tablePointDetailShow = ref(false);
 const options = [
   {
     value: 1,
-    label: "Schwartz Value Theory",
+    label: "Schwartz Theory of Basic Values",
     children: [
       {
         value: 0,
@@ -149,7 +149,7 @@ const options = [
   },
   {
     value: 3,
-    label: "Diverse Safety Risks",
+    label: "Safety Taxonomy",
     children: [
       {
         value: 0,
@@ -179,7 +179,7 @@ const options = [
   },
   {
     value: 4,
-    label: "LLMs' Unique Values",
+    label: "LLMs' Unique Value System",
     children: [
       {
         value: 0,

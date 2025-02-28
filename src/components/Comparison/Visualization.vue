@@ -17,11 +17,11 @@
           <EchartComponent ref="chartDom2"></EchartComponent>
         </div>
         <div v-show="props.DimensionMeasurementTabIndex == 2">
-          <p>Diverse Safety Risks</p>
+          <p>Safety Taxonomy</p>
           <EchartComponent ref="chartDom3"></EchartComponent>
         </div>
         <!-- <div>
-          <p>LLM Value System</p>
+          <p>LLMs' Unique Value System</p>
           <div
             class="chart"
             ref="chartDom4"
