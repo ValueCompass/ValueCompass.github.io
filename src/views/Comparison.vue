@@ -238,6 +238,40 @@
             </el-table>
           </div>
 
+          <div v-show="DimensionMeasurementTabIndex == 3">
+            <h4>LLMs' Unique Value System</h4>
+            <el-table
+              :data="FULVa_table_data"
+              border
+              style="width: 100%"
+              :default-sort="{ prop: 'Score', order: 'descending' }"
+            >
+              <el-table-column prop="model_name" label="Model" width="210" />
+              <el-table-column
+                prop="Score"
+                label="Score"
+                sortable
+                :formatter="formatter"
+              >
+                <template #header>
+                <span>Average</span>
+              </template>
+              </el-table-column>
+
+              <template
+                v-for="(item, index) in FULVa_table_columns_checked"
+                :key="index"
+              >
+                <el-table-column
+                  v-if="item != 'model_name'"
+                  :prop="item"
+                  :label="item"
+                  :formatter="formatter"
+                />
+              </template>
+            </el-table>
+          </div>
+
           <!-- <h4>LLMs' Unique Value System</h4> -->
         </div>
         <!-- echart -->
@@ -330,6 +364,7 @@ var Risk_data = null;
 var Risk_case = null;
 var MFT_data = null;
 var MFT_case = null;
+var FULVa_data = null;
 
 var modelInfo_list = null; // [ {model: 'GPT-4-Turbo', developer: 'OpenAI', type: 'Close'}, ... ]
 // var modelInfo = null;
@@ -355,6 +390,7 @@ const fetchData = async () => {
         getAxiosData("./data/Risk_cases.json"),
         getAxiosData("./data/MFT_scores.json"),
         getAxiosData("./data/MFT_cases.json"),
+        getAxiosData("./data/FULVa_scores.json"),
       ])
       .then(
         axios.spread(function (
@@ -364,7 +400,8 @@ const fetchData = async () => {
           Risk_scores,
           Risk_cases,
           MFT_scores,
-          MFT_cases
+          MFT_cases,
+          FULVa_scores
         ) {
           modelInfo_list = modelInfos.data.data;
           modelInfo.value = getKeyValue(modelInfos.data.data);
@@ -374,11 +411,12 @@ const fetchData = async () => {
           Risk_case = Risk_cases.data.data;
           MFT_data = getKeyValue(MFT_scores.data.data);
           MFT_case = MFT_cases.data.data;
+          FULVa_data = getKeyValue(FULVa_scores.data.data);
 
           // const a = getKeyValue(Schwartz_data);
           // const b = getKeyValue(Risk_data);
           // const c = getKeyValue(MFT_data);
-          const d = mergeObj(Schwartz_data, Risk_data, MFT_data);
+          const d = mergeObj(Schwartz_data, Risk_data, MFT_data, FULVa_data);
           mergeData = d;
 
           for (let key in modelInfo.value) {
@@ -399,6 +437,10 @@ const fetchData = async () => {
             MFT_data[modelNameList.value[0]]
           );
           MFT_table_columns_checked.value = MFT_table_columns.value;
+          FULVa_table_columns.value = Object.keys(
+            FULVa_data[modelNameList.value[0]]
+          );
+          FULVa_table_columns_checked.value = FULVa_table_columns.value;
 
           //  默认选中第一个model
           // checkedModelNameList.value.push(modelNameList.value[0]);
@@ -455,14 +497,18 @@ const closeModel = (modelName, index) => {
 const Schwartz_table_columns = ref([]);
 const MFT_table_columns = ref([]);
 const Risk_table_columns = ref([]);
+const FULVa_table_columns = ref([]);
 
 const Schwartz_table_columns_checked = ref([]);
 const MFT_table_columns_checked = ref([]);
 const Risk_table_columns_checked = ref([]);
+const FULVa_table_columns_checked = ref([]);
 
 const Schwartz_table_data = ref([]);
 const MFT_table_data = ref([]);
 const Risk_table_data = ref([]);
+const FULVa_table_data = ref([]);
+
 const getModelDetail = () => {
   checkedModelDetailList.value = [];
   if (checkedModelNameList.value.length > 5) {
@@ -494,6 +540,7 @@ const getModelDetail = () => {
       obj.Schwartz_data = Schwartz_data[checkedModelNameList.value[i]];
       obj.Risk_data = Risk_data[checkedModelNameList.value[i]];
       obj.MFT_data = MFT_data[checkedModelNameList.value[i]];
+      obj.FULVa_data = FULVa_data[checkedModelNameList.value[i]];
       checkedModelDetailList.value.push(obj);
     }
   }
@@ -534,6 +581,16 @@ const getModelDetail = () => {
       mergeData
     );
     MFT_table_data.value.push(MFT_obj);
+
+    let FULVa_obj = {};
+    FULVa_obj = FULVa_data[checkedModelNameList.value[i]];
+    FULVa_obj.model_name = checkedModelNameList.value[i];
+    FULVa_obj.Score = getAvaData(
+      checkedModelNameList.value[i],
+      FULVa_table_columns_checked.value,
+      mergeData
+    );
+    FULVa_table_data.value.push(FULVa_obj);
   }
   //
   // TableComponentRef.value.setTableData(
@@ -663,6 +720,7 @@ const fitterChange = (filerData) => {
       Schwartz_data: Schwartz_table_columns_checked.value,
       MFT_data: MFT_table_columns_checked.value,
       Risk_data: Risk_table_columns_checked.value,
+      FULVa_data: Risk_table_columns_checked.value,
     }
   );
   // chartDom1.value.setRadarChart(modelList, "Schwartz_data", filerData && filerData[1] || null);

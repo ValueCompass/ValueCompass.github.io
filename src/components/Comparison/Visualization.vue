@@ -20,14 +20,10 @@
           <p>Safety Taxonomy</p>
           <EchartComponent ref="chartDom3"></EchartComponent>
         </div>
-        <!-- <div>
+        <div>
           <p>LLMs' Unique Value System</p>
-          <div
-            class="chart"
-            ref="chartDom4"
-            style="width: 500px; height: 500px"
-          ></div>
-        </div> -->
+          <EchartComponent ref="chartDom4"></EchartComponent>
+        </div>
       </div>
     </div>
   </div>
@@ -78,6 +74,11 @@ const setRadarChart = (modelList, filerData) => {
     modelList,
     "Risk_data",
     filerData ? filerData["Risk_data"] : null
+  );
+  chartDom4.value.setRadarChart(
+    modelList,
+    "FULVa_data",
+    filerData ? filerData["FULVa_data"] : null
   );
 };
 
