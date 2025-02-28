@@ -394,7 +394,7 @@ const applyChange = (value) => {
     let modelitem = {
       modelName: item.model,
       developer: item.developer,
-      points: (point * 100).toFixed(3),
+      points: (point * 1).toFixed(2),
       type: item.type,
       releaseDate: item["release date"].split(" ")[0],
     };
@@ -488,7 +488,7 @@ const formatter = (row, column) => {
   if (column.label == "model_name") {
     return row[column.label];
   } else {
-    return (row[column.label] * 100).toFixed(3);
+    return (row[column.label] * 1).toFixed(2);
   }
 };
 

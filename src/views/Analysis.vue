@@ -319,8 +319,8 @@ const fetchOtherData = async () => {
 fetchData();
 fetchOtherData();
 
-let maxValue = 1
-let minValue = -1
+let maxValue = 0
+let minValue = 100
 function getCaseData(arr, model) {
   const arr1 = arr.filter((item) => {
     return item.model == model;
@@ -337,8 +337,8 @@ function getCaseData(arr, model) {
 }
 function setRadarChart(data) {
   const values = Object.values(data);
-  maxValue = Math.ceil(Math.max(...values) * 10) / 10;
-  minValue = Math.floor(Math.min(...values) * 10) / 10 - 0.1;
+  maxValue = Math.ceil(Math.max(...values) * 1) / 1;
+  minValue = Math.floor(Math.min(...values) * 1) / 1 - 10;
   // 获取dada
   const indicator = Object.keys(data).map((item, index) => {
     return {
@@ -367,7 +367,7 @@ function setRadarChart(data) {
       },
       axisLabel: {
         formatter: function (value) {
-          return value.toFixed(2); // 保留一位小数
+          return value.toFixed(0); // 保留一位小数
         },
       },
       triggerEvent: true,
