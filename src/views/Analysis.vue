@@ -58,12 +58,12 @@
         </div>
         <div class="model-props" v-if="currentModelInfo">
           <div class="model-prop">
-            <SvgIcon class="prop-icon" name="Affiliation-icon"></SvgIcon>
+            <!-- <SvgIcon class="prop-icon" name="Affiliation-icon"></SvgIcon> -->
             <span class="prop-name">Developer: </span>
             <span class="prop-content">{{ currentModelInfo.affiliation }}</span>
           </div>
           <div class="model-prop">
-            <SvgIcon class="prop-icon" name="website-icon"></SvgIcon>
+            <!-- <SvgIcon class="prop-icon" name="website-icon"></SvgIcon> -->
             <span class="prop-name">Website/GitHub: </span>
             <span class="prop-content"
               ><a :href="currentModelInfo.website">{{
@@ -72,7 +72,7 @@
             >
           </div>
           <div class="model-prop">
-            <SvgIcon class="prop-icon" name="paper-icon"></SvgIcon>
+            <!-- <SvgIcon class="prop-icon" name="paper-icon"></SvgIcon> -->
             <span class="prop-name">Paper/Report: </span>
             <span class="prop-content"
               ><a :href="currentModelInfo.report">{{
@@ -85,7 +85,12 @@
             >
           </div>
           <div class="model-prop">
-            <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon>
+            <span class="prop-name">Type: </span>
+            <span class="prop-content">{{ currentModelInfo["type"] }}-Source</span
+            >
+          </div>
+          <div class="model-prop">
+            <!-- <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon> -->
             <span class="prop-name">Publish Date: </span>
             <span class="prop-content">{{
               currentModelInfo["release date"].split(" ")[0]
