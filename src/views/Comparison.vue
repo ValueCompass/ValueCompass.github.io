@@ -421,7 +421,7 @@ const fetchData = async () => {
 
           for (let key in modelInfo.value) {
             const point = getAvaData(key, [], mergeData);
-            modelInfo.value[key].points = (point * 100).toFixed(3);
+            modelInfo.value[key].points = (point * 1).toFixed(2);
           }
           modelNameList.value = Object.keys(modelInfo.value);
 
@@ -461,7 +461,7 @@ const formatter = (row, column) => {
   if (column.label == "model_name") {
     return row[column.label];
   } else {
-    return (row[column.label] * 100).toFixed(3);
+    return (row[column.label] * 1).toFixed(2);
   }
   // if(column.label == 'model_name'){
   //   return row[column.label]

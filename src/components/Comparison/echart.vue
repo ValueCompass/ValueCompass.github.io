@@ -34,8 +34,8 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       .filter(([key, value]) => key !== 'model_name' && key !== 'Score')
       .map(([key, value]) => value)
   );
-  const maxValue = Math.ceil(Math.max(...allValues) * 10) / 10;
-  const minValue = Math.floor(Math.min(...allValues) * 10) / 10 - 0.1;
+  const maxValue = Math.ceil(Math.max(...allValues) * 1) / 1;
+  const minValue = Math.floor(Math.min(...allValues) * 1) / 1 - 10;
 
   let keys = [];
   if (filerData) {
@@ -109,7 +109,7 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       },
       axisLabel: {
         formatter: function (value) {
-          return value.toFixed(2); // 保留一位小数
+          return value.toFixed(0); // 保留一位小数
         },
       },
       triggerEvent: true,
