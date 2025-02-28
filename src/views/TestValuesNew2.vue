@@ -288,7 +288,9 @@ let chartInstance = null;
 import Spearman from "spearman-rho";
 onMounted(async () => {
   await nextTick(); // 确保DOM已经渲染完成
-  document.querySelector('.testValues-img').classList.add('animate-on-load');
+  setTimeout(() => {
+    document.querySelector('.testValues-img').classList.add('animate-on-load');
+  }, 100);
 });
 </script>
 
@@ -375,7 +377,7 @@ onMounted(async () => {
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
-        transition: all 2s;
+        transition: all 1s ease-out 0.1s;
         
   
       }
