@@ -205,7 +205,7 @@
           </div>
 
           <div v-show="DimensionMeasurementTabIndex == 2">
-            <h4>Diverse Safety Risks</h4>
+            <h4>Safety Taxonomy</h4>
             <el-table
               :data="Risk_table_data"
               border
@@ -238,7 +238,7 @@
             </el-table>
           </div>
 
-          <!-- <h4>LLM Value System</h4> -->
+          <!-- <h4>LLMs' Unique Value System</h4> -->
         </div>
         <!-- echart -->
         <div v-show="currentTab == 1">
