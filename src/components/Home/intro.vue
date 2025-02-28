@@ -108,7 +108,7 @@ onMounted(async () => {
     padding-right: 0.75em;
     box-sizing: content-box;
     text-align: left;
-    transform: translateY(100%);
+    transform: translateY(30%);
     position: relative;
     opacity: 0;
     transition: all 1s ease-out 0.1s;

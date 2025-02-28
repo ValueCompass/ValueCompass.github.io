@@ -338,7 +338,7 @@ onMounted(async () => {
       font-size: 4em;
       font-weight: 400;
       line-height: 1.3;
-      color: #9a3b74;
+      color: rgba(0, 79, 143, 1);
       font-style: italic;
     }
     p {

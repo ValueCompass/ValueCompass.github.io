@@ -3,7 +3,7 @@
     <div class="container teams-container">
       <div class="hero" style="background: transparent; padding-top: 3.75em">
         <div class="hero__content" style="padding: 0; text-align: center">
-          <img src="@/assets/images/teams-icon.png" alt="">
+          <img src="@/assets/images/teams-icon.png" alt="" />
           <h1 class="hreo_name">Introducing Our Team!</h1>
         </div>
       </div>
@@ -73,20 +73,12 @@
             </div>
             <div class="member-info">
               <h3 class="member__name">{{ member.name }}</h3>
-              <p class="member__position">{{ member.position }}</p>
-              <!-- <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a> -->
-              <!-- <p style="color: ">{{ member.workIntro }},</p> -->
-              <p class="member_intern_content">
-                <template v-if="member.workIntro == 'Algorithm Research'">
-                  <span style="font-weight: 600">{{ member.workIntro }},</span
-                  ><br />
-                </template>
-                <template v-else>
-                  <span style="font-weight: 600">{{ member.workIntro }},</span
-                  ><br />
-                </template>
-                <span>{{ member.InternshipTime }}</span>
-              </p>
+              <div>
+                <p class="member__position">{{ member.position }}</p>
+                <p class="member_intern_content">
+                  <span v-if="member.workIntro">{{ member.workIntro }}</span>
+                </p>
+              </div>
               <p class="member__institution">{{ member.institution }}</p>
             </div>
           </div>
@@ -100,7 +92,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-const getAssetsFile = (url:any) => {
+const getAssetsFile = (url: any) => {
   return new URL(`../assets/teams/${url}`, import.meta.url).href;
 };
 const employees = ref([
@@ -164,14 +156,14 @@ const collaborators = ref([
   },
   {
     name: "JinYeong Bak",
-    photo: "Linus_Huang.png",
+    photo: "JinYeong_Bak.png",
     position: "Associate Professor",
     institution:
       "College of Computing and Informatics, SungKyunKwan University",
   },
   {
     name: "Xiao Zhou",
-    photo: "Linus_Huang.png",
+    photo: "Xiao_Zhou.png",
     position: "Assistant Professor",
     institution:
       "Gaoling School of Artificial Intelligence, Renmin University of China",
@@ -183,145 +175,174 @@ const interns = ref([
     name: "Yifan Gong",
     photo: "Yifan_Gong.png",
     position: "Undergraduate Student",
-    institution:
+    institutionOld:
       "College of Computer Science and Electronic Engineering, Hunan University",
     workIntro: "Algorithm Research",
     InternshipTime: "Internship Period 2023.10-2024.05",
+    institution: "Hunan University",
   },
   {
     name: "Shitong Duan",
     photo: "Shitong_Duan.png",
     position: "Master Student",
-    institution: "School of Computer Science, Fudan University",
+    institutionOld: "School of Computer Science, Fudan University",
     workIntro: "Algorithm Research",
     InternshipTime: "Internship Period 2023.04-2023.10",
+    institution: "Fudan University",
   },
   {
     name: "Xingqi Wang",
     photo: "Xingqi_Wang.png",
     position: "PhD Student",
-    institution:
+    institutionOld:
       "Department of Computer Science and Technology, Tsinghua University",
     workIntro: "Algorithm Research",
     InternshipTime: "Internship Period 2023.02-2023.09",
+    institution: "Tsinghua University",
   },
   {
     name: "Yan Liu",
     photo: "Yan_Liu.png",
     position: "PhD Student",
-    institution: "School of Informatics, The University of Edinburgh",
+    institutionOld: "School of Informatics, The University of Edinburgh",
     workIntro: "Algorithm Research",
     InternshipTime: "Internship Period 2023.11-2024.04",
+    institution: "The University of Edinburgh",
   },
   {
     name: "Yuhan Zeng",
     photo: "Yuhan_Zeng.png",
     position: "Undergraduate Student",
-    institution: "Chu Kochen Honors College, Zhejiang University",
+    institutionOld: "Chu Kochen Honors College, Zhejiang University",
     workIntro: "Project Management",
     InternshipTime: "Internship Period 2024.2-2024.7",
+    institution: "Zhejiang University",
+  },
+  {
+    name: "Dongyao Zhu",
+    photo: "Dongyao_Zhu.png",
+    position: "PhD Student",
+    institutionOld:
+      "Department of Computer Science, North Carolina State University",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2023.11-2024.08",
+    institution: "North Carolina State University",
+  },
+  {
+    name: "Han Jiang",
+    photo: "Han_Jiang.png",
+    position: "Master Student",
+    institutionOld:
+      "Department of Computer Science and Technology, Tongji University",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.04-2024.08",
+    institution: "Tongji University",
+  },
+  {
+    name: "HyunJin Kim",
+    photo: "HyunJin_Kim.png",
+    position: "Phd Student",
+    institutionOld:
+      "Department of Artificial Intelligence, SungKyunKwan University",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.09-2025.03",
+    institution: "SungKyunKwan University",
+  },
+  {
+    name: "Muhua Huang",
+    photo: "Muhua_Huang.png",
+    position: "Master Student",
+    institutionOld:
+      "School of Computational Social Science, The University of Chicago",
+    workIntro: "Interdisciplinary Research",
+    InternshipTime: "Internship Period 2024.07-2024.10",
+    institution: "The University of Chicago",
+  },
+  {
+    name: "Pablo Biedma",
+    photo: "Pablo_Biedma.png",
+    position: "Master Student",
+    institutionOld:
+      "Department of Computer Science and Technology, Tsinghua University",
+    workIntro: "Interdisciplinary Research",
+    InternshipTime: "Internship Period 2024.07-2024.09",
+    institution: "Tsinghua University",
+  },
+  {
+    name: "Yanxu Zhu",
+    photo: "Yanxu_Zhu.png",
+    position: "Master Student",
+    institutionOld:
+      "Department of Computer Science and Engineering, Beijing Jiaotong university",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.10-2025.02",
+    institution: "Beijing Jiaotong university",
+  },
+  {
+    name: "Bingbing Xu",
+    photo: "Bingbing_Xu.png",
+    position: "PhD student",
+    institutionOld: "School of Information, Renmin University of China",
+    workIntro: "Algorithm Research",
+    InternshipTime: "Internship Period 2024.1-",
+    institution: "Renmin University of China",
+  },
+  {
+    name: "Tianmeng Liu",
+    photo: "Tianmeng_Liu.png",
+    position: "Master Student",
+    institutionOld: "School of Information, Renmin University of China",
+    workIntro: "Product Manager",
+    institution: "University of Washington",
   },
   {
     name: "Tiantian Xue",
     photo: "tiantian.png",
     position: "Developer",
     institution: "Microsoft Research Asia",
-    workIntro: "Tech Development",
+    workIntro: "",
   },
   {
     name: "Geli Guo",
     photo: "geli.png",
     position: "UI&UX Designer",
     institution: "Microsoft Research Asia",
-    workIntro: "Tech Development",
+    workIntro: "",
   },
   {
-    name: "Dongyao Zhu",
-    photo: "Dongyao_Zhu.png",
-    position: "PhD Student",
-    institution: "Department of Computer Science, North Carolina State University",
-    workIntro: "Algorithm Research",
-    InternshipTime: "Internship Period 2023.11-2024.08",
-  },
-  {
-    name: "Han Jiang",
-    photo: "Han_Jiang.png",
-    position: "Master Student",
-    institution: "Department of Computer Science and Technology, Tongji University",
-    workIntro: "Algorithm Research",
-    InternshipTime: "Internship Period 2024.04-2024.08",
-  },
-  {
-    name: "HyunJin Kim",
-    photo: "HyunJin_Kim.png",
-    position: "Phd Student",
-    institution: "Department of Artificial Intelligence, SungKyunKwan University",
-    workIntro: "Algorithm Research",
-    InternshipTime: "Internship Period 2024.09-2025.03",
-  },
-  {
-    name: "Muhua Huang",
-    photo: "Muhua_Huang.png",
-    position: "Master Student",
-    institution: "School of Computational Social Science, The University of Chicago",
-    workIntro: "Interdisciplinary Research",
-    InternshipTime: "Internship Period 2024.07-2024.10",
-  },
-  {
-    name: "Pablo Biedma",
-    photo: "Pablo_Biedma.png",
-    position: "Master Student",
-    institution: "Department of Computer Science and Technology, Tsinghua University",
-    workIntro: "Interdisciplinary Research",
-    InternshipTime: "Internship Period 2024.07-2024.09",
-  },
-  {
-    name: "Yanxu Zhu",
-    photo: "Yanxu_Zhu.png",
-    position: "Master Student",
-    institution: "Department of Computer Science and Engineering, Beijing Jiaotong university",
-    workIntro: "Algorithm Research",
-    InternshipTime: "Internship Period 2024.10-2025.02",
-  },
-  {
-    name: "Bingbing Xu",
-    photo: "Bingbing_Xu.png",
-    position: "PhD student",
-    institution: "School of Information, Renmin University of China",
-    workIntro: "Algorithm Research",
-    InternshipTime: "Internship Period 2024.1-",
-  },
-  {
-    name: "Vicky Hua",
+    name: "Xin Hua",
     photo: "Vicky_Hua.png",
     position: "UI&UX Designer",
     institution: "Microsoft Research Asia",
-    workIntro: "Tech Development",
+    workIntro: "",
   },
 ]);
 </script>
 <style scoped lang="scss">
 .about-us-template {
   line-height: 1.6;
-  .hero__content{
+  .hero__content {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 1.5em;
-    img{
+    img {
       width: 7.5em;
     }
   }
+  p,
+  h3 {
+    line-height: normal;
+  }
   .hreo_name {
     font-size: 2.5em;
-    color: #004F8F;
+    color: #004f8f;
     font-weight: 400;
-    font-style:italic
+    font-style: italic;
   }
   .teams-container {
-    color: #2f2f2f;
-
+    color: #505050;
     .hero {
       padding: 1em 0 0 0.5em;
     }
@@ -358,7 +379,6 @@ const interns = ref([
 
     .one-member {
       // padding: 2em 1em;
-      line-height: 1.3;
       box-sizing: border-box;
       width: 25%;
       display: flex;
@@ -367,11 +387,10 @@ const interns = ref([
 
       .member__image {
         width: 40%;
-        
 
         img {
           border-radius: 9px;
-          
+          display: block;
           width: 100%;
         }
       }
@@ -381,29 +400,30 @@ const interns = ref([
         width: 50%;
         display: flex;
         flex-direction: column;
-        padding: 0 .8em;
+        justify-content: space-between;
+        flex: 1 0 0;
+        align-items: flex-start;
+        align-items: flex-start;
+        padding: 0.75em 0.8em;
+        align-self: stretch;
 
         .member__name {
           font-size: 1.5em;
           font-weight: 700;
-          color: #004F8F;
-          margin-bottom: 0.7em;
-          // margin-bottom: 10px;
+          color: #004f8f;
         }
 
         .member__position {
-          font-size: 1.125em;
+          font-size: 1em;
           font-weight: 700;
-          margin-bottom: 0.3em;
         }
         .member_intern_content {
-          margin-bottom: 0.5em;
-          font-size: 0.875em;
+          font-size: 1em;
+          font-weight: 700;
         }
 
         .member__institution {
           font-weight: 600;
-          margin-top: 0.3em;
         }
 
         .member__email {
@@ -415,7 +435,7 @@ const interns = ref([
   }
 
   @media only screen and (max-width: 1400px) {
-    .teams-container .one-member{
+    .teams-container .one-member {
       width: 33.333%;
     }
   }

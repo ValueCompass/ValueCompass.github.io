@@ -78,6 +78,7 @@ const posts = ref([
   li {
     width: calc(33.3% - 21px);
     border-radius: 1em;
+    overflow: hidden;
     border: 1px solid #d9d9d9;
     background: #f9f9f9;
 
@@ -86,6 +87,7 @@ const posts = ref([
     transition: all .2s;
     .img-div {
       padding: 1.19em 1.625em;
+      background: #ffffff;
     }
     img {
       width: 100%;

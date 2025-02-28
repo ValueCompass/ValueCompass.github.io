@@ -1,8 +1,6 @@
 <template>
   <div class="home" style="padding: 0">
     <introComponent></introComponent>
-    <!-- <modulesComponent></modulesComponent>
-    <postsComponent></postsComponent> -->
 
     <div class="box">
       <div class="leaderboard flex main-container">
@@ -73,7 +71,7 @@
       <div style="background: #f9f9f9">
         <div class="flex main-container" style="padding: 2.8em 0">
           <div class="left">
-            <div class="card">
+            <div class="card" style="background-color: #fff;">
               <div class="title">
                 <img
                   src="@/assets/images/home-icon-PublicationsHub.png"
@@ -99,7 +97,7 @@
             </div>
           </div>
           <div class="right">
-            <div class="card">
+            <div class="card" style="background-color: #fff;">
               <div class="title">
                 <img src="@/assets/images/home-icon-testValues.png" alt="" />
                 <h4>Test Your Values</h4>
@@ -145,7 +143,6 @@
 
 <script lang="ts" setup>
 import introComponent from "../components/Home/intro.vue";
-import modulesComponent from "../components/Home/modules.vue";
 import postsComponent from "../components/Home/posts.vue";
 </script>
 <style scoped lang="scss">
@@ -163,18 +160,17 @@ import postsComponent from "../components/Home/posts.vue";
   .leaderboard {
     padding: 2.75em 0;
     .left > div {
-      overflow: hidden;
       position: relative;
 
       &:hover {
         img {
           transform: translateX(0.8em);
-          box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
+          box-shadow: 0px 0px .75em 0px rgba(0, 0, 0, 0.25);
         }
       }
       img {
-        transform: translateX(0.8em);
-        box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
+        // transform: translateX(0.8em);
+        // box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
         display: block;
         width: 145.7%;
         transition: all 0.5s;
@@ -194,6 +190,8 @@ import postsComponent from "../components/Home/posts.vue";
       }
     }
     .right {
+      position: relative;
+      z-index: 2;
       padding: 2.25em 1.75em;
       border: none;
       ul {
@@ -230,7 +228,7 @@ import postsComponent from "../components/Home/posts.vue";
 
   .card {
     padding: 2.25em 3em;
-    border: 1px solid rgba(214, 237, 255, 1);
+    border: 2px solid rgba(214, 237, 255, 1);
     border-radius: 3em;
     .p {
       font-size: 1.25em;
