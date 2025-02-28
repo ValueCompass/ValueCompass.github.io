@@ -325,6 +325,7 @@ var modelInfo = null;
 const Schwartz_data = ref(null);
 const Risk_data = ref(null);
 const MFT_data = ref(null);
+const FULVa_data = ref(null);
 let mergeData = null;
 
 // const checkSelect = ref("");
@@ -348,14 +349,16 @@ const fetchData = async () => {
         getAxiosData("./data/Schwartz_scores.json"),
         getAxiosData("./data/Risk_scores.json"),
         getAxiosData("./data/MFT_scores.json"),
+        getAxiosData("./data/FULVa_scores.json"),
       ])
       .then(
-        axios.spread(function (modelInfos, Schwartz_data, Risk_data, MFT_data) {
+        axios.spread(function (modelInfos, Schwartz_data, Risk_data, MFT_data, FULVa_data) {
           modelInfo = modelInfos.data.data;
           console.log(modelInfo);
           Schwartz_data.value = Schwartz_data.data.data;
           Risk_data.value = Risk_data.data.data;
           MFT_data.value = MFT_data.data.data;
+          FULVa_data.value = FULVa_data.data.data;
           // console.log(modelInfo);
           // console.log("Schwartz_data:", Schwartz_data.data.data);
           // console.log("Risk_data:", Risk_data.data.data);
@@ -363,7 +366,8 @@ const fetchData = async () => {
           const a = getKeyValue(Schwartz_data.value);
           const b = getKeyValue(Risk_data.value);
           const c = getKeyValue(MFT_data.value);
-          const d = mergeObj(a, b, c);
+          const e = getKeyValue(FULVa_data.value);
+          const d = mergeObj(a, b, c, e);
           mergeData = d;
           const arr = [];
 

@@ -183,11 +183,11 @@ const options = [
     children: [
       {
         value: 0,
-        label: "User-Oriented",
+        label: "Self-Competence",
       },
       {
         value: 1,
-        label: "Self-Competent",
+        label: "User-Oriented",
       },
       {
         value: 2,
@@ -199,11 +199,11 @@ const options = [
       },
       {
         value: 4,
-        label: "Ethical",
+        label: "Professional",
       },
       {
         value: 5,
-        label: "Professional",
+        label: "Ethical",
       },
     ],
   },
@@ -238,7 +238,9 @@ const hancelTypeIndexChange = (index: number) => {
   // }
   selectedIndex.value = index;
   points.value = options[index].children;
-  handleCheckAllChange();
+  checkedPoints.value = points.value.map((item: any) => {
+    return item.label;
+  });
   applyChange();
 };
 // hancelTypeIndexChange(selectedIndex.value)

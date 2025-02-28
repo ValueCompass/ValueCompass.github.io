@@ -28,8 +28,8 @@ export const getKeyValue = (array) => {
   }, {});
   return result;
 }
-export const mergeObj = (obj1, obj2, obj3) => {
-  const objects = [obj1, obj2, obj3];
+export const mergeObj = (obj1, obj2, obj3, obj4) => {
+  const objects = [obj1, obj2, obj3, obj4];
 
   const merged = objects.reduce((acc, curr) => {
     Object.entries(curr).forEach(([key, value]) => {

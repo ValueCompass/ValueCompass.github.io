@@ -213,10 +213,10 @@ const tabList = [
     name: "Safety Taxonomy",
     index: 2,
   },
-  // {
-  //   name: "LLMs' Unique Value System",
-  //   index: 3,
-  // },
+  {
+    name: "LLMs' Unique Value System",
+    index: 3,
+  },
 ];
 const chartTabMenu = [
   "Benevolence",
@@ -241,6 +241,8 @@ var Risk_data = null;
 var Risk_case = null;
 var MFT_data = null;
 var MFT_case = null;
+var FULVa_data = null;
+var FULVa_case = null;
 const modellist = ref([]);
 const popoverRef = ref();
 const visible = ref(false);
@@ -292,13 +294,17 @@ const fetchOtherData = async () => {
         getAxiosData("./data/Risk_cases.json"),
         getAxiosData("./data/MFT_scores.json"),
         getAxiosData("./data/MFT_cases.json"),
+        getAxiosData("./data/FULVa_scores.json"),
+        getAxiosData("./data/FULVa_cases.json"),
       ])
       .then(
-        axios.spread(function (Risk_scores, Risk_cases, MFT_scores, MFT_cases) {
+        axios.spread(function (Risk_scores, Risk_cases, MFT_scores, MFT_cases, FULVa_scores, FULVa_cases) {
           Risk_data = getKeyValue(Risk_scores.data.data);
           Risk_case = Risk_cases.data.data;
           MFT_data = getKeyValue(MFT_scores.data.data);
           MFT_case = MFT_cases.data.data;
+          FULVa_data = getKeyValue(FULVa_scores.data.data);
+          FULVa_case = FULVa_cases.data.data;
         })
       );
   } catch (error) {
@@ -555,8 +561,10 @@ const changeMenu = (item) => {
     setRadarHighlight(Schwartz_data[currentModel.value], item);
   } else if (currentTab.value == 1) {
     setRadarHighlight(MFT_data[currentModel.value], item);
-  } else {
+  } else if (currentTab.value == 2)  {
     setRadarHighlight(Risk_data[currentModel.value], item);
+  } else if (currentTab.value == 3)  {
+    setRadarHighlight(FULVa_data[currentModel.value], item);
   }
 };
 const submit = () => {
@@ -572,9 +580,12 @@ const submit = () => {
   } else if (currentTab.value == 1) {
     setRadarChart(MFT_data[currentModel.value]);
     currentCase = getCaseData(MFT_case, currentModel.value);
-  } else {
+  } else if (currentTab.value == 2) {
     setRadarChart(Risk_data[currentModel.value]);
     currentCase = getCaseData(Risk_case, currentModel.value);
+  } else if (currentTab.value == 3) {
+    setRadarChart(FULVa_data[currentModel.value]);
+    currentCase = getCaseData(FULVa_case, currentModel.value);
   }
   console.log(currentCase);
   chartMenu.value = Object.keys(currentCase).sort();
@@ -592,9 +603,12 @@ const tabSwitch = (index) => {
   } else if (currentTab.value == 1) {
     setRadarChart(MFT_data[currentModel.value]);
     currentCase = getCaseData(MFT_case, currentModel.value);
-  } else {
+  } else if (currentTab.value == 2) {
     setRadarChart(Risk_data[currentModel.value]);
     currentCase = getCaseData(Risk_case, currentModel.value);
+  } else if (currentTab.value == 3) {
+    setRadarChart(FULVa_data[currentModel.value]);
+    currentCase = getCaseData(FULVa_case, currentModel.value);
   }
 
   chartMenu.value = Object.keys(currentCase).sort();
