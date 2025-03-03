@@ -95,25 +95,25 @@ const introData = ref([
     name: "Schwartz Theory of Basic Values",
     img: "Schwartz_image.png",
     detail:
-      "Proposed by psychologist Shalom Schwartz, Schwartz’s theory defines 10 universal human values grounded in the requirements of human existence ( Self-direction, Stimulation, Hedonism, Achievement, Power, Security, Tradition, Conformity, Benevolence, Universalism). This theory reflects basic needs inherent in human individuals and priorities shared across cultures.",
+      "Proposed by psychologist Shalom Schwartz, Schwartz’s theory defines 10 basic human values that are distinguished by their underlying motivations or goals and well-recognized across all cultures. The adjacent or opposed positions of values in the above figure reflect the relations of conflict and congrence among values.",
   },
   {
     name: "Moral Foundation Theory",
     img: "MoralFoundationTheory_image.png",
     detail:
-      "This theory specifically focuses on morality as a core component of human values, dividing it into five innate foundations:  Care/Harm, Fairness/Cheating, Loyalty/Betrayal, Authority/Subversion, and Sanctity/Degradation. This theory explains how moral diversity varies across contexts.",
+      "This is a social psychological theory intended to explain the origins of and variation in human moral reasoning on the basis of five innate, modular foundations.",
   },
   {
     name: "Safety Taxonomy",
     img: "Safety_Taxonomy_image.png",
     detail:
-      "Organized via SALAD-Bench (Li et al., 2024), this system classifies AI risks (malicious use, toxicity, bias, privacy violations) into 6 domains and 16 tasks. For instance, a chatbot might unintentionally promote harmful stereotypes (bias) or leak user data (privacy). This value system guides people to build safer AI to eliminate those potential risks.",
+      "It builds a hierarchical three-level safety taxonomy for LLMs, including 6 domain-level harmfulness areas that are further subdivided into 16 tasks and 66 categories for precise safety topic delineation.",
   },
   {
     name: "LLMs' Unique Value System",
     img: "LLMs_Unique_Value_System_image.png",
     detail:
-      "Proposed by Biedma et al. (2024), this framework prioritizes three AI-centric principles for LLMs: Competence (accuracy), Character (empathy), and Integrity (transparency). —leveraging psychological methods derived from human values and constructed independently. This framework ensures the alignment of LLMs with human principles while maintaining technical proficiency.",
+      "This theory is constructed from scratch to reveal LLMs’ unique values, leveraging psychological methods from human value/personality studies. It identifies three core value dimensions and 6 sub-dimensions.",
   },
 ]);
 
@@ -228,7 +228,7 @@ defineExpose({
       line-height: 1.5;
       white-space: pre-wrap;
       line-height: 150%; /* 30px */
-      letter-spacing: -0.4px;
+      // letter-spacing: -0.2px;
     }
   }
 }
