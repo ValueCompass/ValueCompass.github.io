@@ -125,6 +125,7 @@ export default {
       overflow: hidden;
       font-size: 0.875em;
       line-height: 1.8em;
+      white-space: pre-wrap;
     }
   }
 }
