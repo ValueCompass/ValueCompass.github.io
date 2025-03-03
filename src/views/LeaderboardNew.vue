@@ -16,7 +16,8 @@
             :data="tableData"
             :default-sort="{ prop: 'place' }"
             style="width: 100%"
-           
+            height="630"
+            ref="tableRef"
           >
             <el-table-column
               prop="place"
@@ -313,6 +314,7 @@ import { ref, watch, reactive, nextTick } from "vue";
 import axios from "axios";
 import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
 import { useRouter } from "vue-router";
+const tableRef = ref(null);
 
 import scoreIntro from "../components/scoreIntro.vue";
 const scoreIntroRef = ref(null);
@@ -412,6 +414,11 @@ const applyChange = (value) => {
 
   tableData.value = arr;
   console.log("tableData", tableData.value);
+  
+  // 在数据更新后滚动到最顶部
+  nextTick(() => {
+    tableRef.value.scrollTo({ top: 0 });
+  });
 };
 
 const router = useRouter();
