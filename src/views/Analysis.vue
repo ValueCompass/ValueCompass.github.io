@@ -158,6 +158,7 @@
                     .map((x) => x.charAt(0).toUpperCase())
                     .join("")
                 }}</template>
+                <template v-else-if="currentTab == 3">{{item}}</template>
               </li>
             </ul>
             <div class="chart-content">
