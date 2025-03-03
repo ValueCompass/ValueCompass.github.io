@@ -754,7 +754,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
   font-size: 1em;
 }
 .title-content {
-  margin-top: 3.56em;
+  margin-top: 1.5em;
   margin-bottom: 3em;
   background: var(--gary-color);
   padding: 2.25em 6em;
@@ -767,7 +767,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
   }
 }
 .chart-box {
-  // margin-top: 4.5em;
+  margin-top: 3em;
   padding: 0 0 4.5em;
   // display: flex;
   .chart-tab {

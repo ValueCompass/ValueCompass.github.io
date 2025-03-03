@@ -150,7 +150,7 @@ onActivated(() => {
       const introContainerHeight =
         document.getElementsByClassName("intro-container")[0].offsetHeight;
       if (dom.scrollTop >= introContainerHeight) {
-        dom.scrollTop = introContainerHeight;
+        dom.scrollTop = introContainerHeight + 25;
       }
     }
   });

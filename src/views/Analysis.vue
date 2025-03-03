@@ -671,7 +671,7 @@ const handleClickOutside = (event) => {
 
 <style scoped lang="scss">
 .title-content {
-  margin-top: 3.56em;
+  margin-top: 1.5em;
   background: var(--gary-color);
   padding: 2.25em 6em;
   border-radius: 1em;
@@ -764,7 +764,7 @@ const handleClickOutside = (event) => {
   }
 }
 .chart-box {
-  margin-top: 4.5em;
+  margin-top: 3em;
   padding: 0 0 4.5em;
   font-size: 1.125em;
   display: flex;
@@ -807,7 +807,7 @@ const handleClickOutside = (event) => {
 
     .chart-main-chart {
       transition: all 0.2s;
-      height: 33em;
+      height: 30em;
       position: relative;
       display: flex;
       // align-items: center;
@@ -828,7 +828,7 @@ const handleClickOutside = (event) => {
       .chart-container {
         transition: all 0.2s;
         width: 54%;
-        padding-bottom: 40%;
+        padding-bottom: 35%;
         height: 0;
         // min-width: 640px;
         // flex: 1;
@@ -874,7 +874,7 @@ const handleClickOutside = (event) => {
           background: var(--gary-color);
           border-radius: 0.375em;
           margin-top: 0.75em;
-          padding-bottom: 2em;
+          padding-bottom: .75em;
           .case-close-btn {
             cursor: pointer;
             position: absolute;
@@ -933,7 +933,7 @@ const handleClickOutside = (event) => {
       font-size: 1em;
       font-weight: 600;
       text-align: center;
-      margin-top: 3em;
+      margin-top: 1em;
       line-height: 2;
     }
     .chart-main-bar {

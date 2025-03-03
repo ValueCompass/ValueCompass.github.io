@@ -16,7 +16,7 @@
             :data="tableData"
             :default-sort="{ prop: 'place' }"
             style="width: 100%"
-            height="600"
+           
           >
             <el-table-column
               prop="place"
