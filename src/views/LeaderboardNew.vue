@@ -58,11 +58,11 @@
                   />
                   <span v-else class="table-color">{{ scope.row.place }}</span>
                 </span>
-                <SvgIcon
+                <!-- <SvgIcon
                   color="#FFD000"
                   class="top-icon"
                   name="sort-e"
-                ></SvgIcon>
+                ></SvgIcon> -->
               </template>
             </el-table-column>
             <el-table-column
@@ -296,9 +296,11 @@
       v-show="compareArr.length > 0"
       ref="ComparePoolRef"
       @removeAll="removeAll"
+      @comparisonPoolSubmit="comparisonPoolSubmit"
       @compareNow="compareNow"
       @closeModel="closeModel"
       @hideComparePool="ComparePoolShow = false"
+      :compareArr="compareArr"
     ></ComparePool>
     <homepageSwiper ref="homepageSwiperRef"></homepageSwiper>
     <div v-if="compareArr.length > 0" style="height: 200px"></div>
@@ -324,6 +326,7 @@ const showScoreIntro = () => {
 
 const SelectedPointsRef = ref(null);
 var modelInfo = null;
+var modelInfoObj = null;
 const Schwartz_data = ref(null);
 const Risk_data = ref(null);
 const MFT_data = ref(null);
@@ -356,6 +359,7 @@ const fetchData = async () => {
       .then(
         axios.spread(function (modelInfos, Schwartz_data, Risk_data, MFT_data, FULVa_data) {
           modelInfo = modelInfos.data.data;
+          modelInfoObj = getKeyValue(modelInfo);
           console.log(modelInfo);
           Schwartz_data.value = Schwartz_data.data.data;
           Risk_data.value = Risk_data.data.data;
@@ -461,7 +465,6 @@ const compareBtnClick = (row) => {
     compareArr.value.push(row);
     compareArrString.value.push(row.modelName);
   }
-  ComparePoolRef.value.setCheckedModelDetailList(compareArr.value);
 };
 
 const removeAll = () => {
@@ -471,7 +474,19 @@ const removeAll = () => {
   }
   compareArr.value = [];
   compareArrString.value = [];
-  ComparePoolRef.value.setCheckedModelDetailList(compareArr.value);
+};
+const comparisonPoolSubmit = (checkedModelNameList) => {
+  const checkModelsDetailArr =  checkedModelNameList.map((item) => {
+    return {
+      modelName: item,
+      developer: modelInfoObj[item].developer,
+      releaseDate: modelInfoObj[item]["release date"],
+      type: modelInfoObj[item].type,
+      affiliation: modelInfoObj[item].affiliation,
+    }
+  });
+  compareArr.value = checkModelsDetailArr;
+  compareArrString.value = checkModelsDetailArr.map((item) => item.modelName);
 };
 const compareNow = () => {
   router.push({
@@ -488,7 +503,6 @@ const closeModel = (model) => {
   compareArrString.value = compareArrString.value.filter(
     (item) => item !== model.modelName
   );
-  ComparePoolRef.value.setCheckedModelDetailList(compareArr.value);
 };
 
 const formatter = (row, column) => {

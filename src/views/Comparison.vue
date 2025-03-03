@@ -824,6 +824,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  line-height: 1.4;
 }
 :deep(.el-checkbox) {
   --el-checkbox-text-color: var(--text-color);
