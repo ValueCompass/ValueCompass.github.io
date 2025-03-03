@@ -71,19 +71,18 @@
       <div style="background: #f9f9f9">
         <div class="flex main-container" style="padding: 2.8em 0">
           <div class="left">
-            <div class="card" style="background-color: #fff;">
+            <div class="card" style="background-color: #fff">
               <div class="title">
                 <img
                   src="@/assets/images/home-icon-PublicationsHub.png"
                   alt=""
                 />
-                <h4>Publications Hub</h4>
+                <h4>Publication</h4>
               </div>
               <p class="p">
-                A collection of published papers covering various topics within
-                the Value Compass project. It provides a detailed overview of
-                our research progress and findings, focusing on
-                interdisciplinary analysis, benchmarks, value evaluation and
+                A collection of published papers on the Value Compass project,
+                detailing our research progress and findings on
+                interdisciplinary analysis, benchmarks, value evaluation, and
                 alignment techniques.
               </p>
               <div>
@@ -97,16 +96,16 @@
             </div>
           </div>
           <div class="right">
-            <div class="card" style="background-color: #fff;">
+            <div class="card" style="background-color: #fff">
               <div class="title">
                 <img src="@/assets/images/home-icon-testValues.png" alt="" />
                 <h4>Test Your Values</h4>
               </div>
               <p class="p">
-                "Test Your Values" is a quiz of 14 quick questions to help you
-                uncover your values profile—your way of thinking. By comparing
-                your answers to LLMs’ value orientations, quiz matches you with
-                the LLM that best reflects your beliefs.
+                "Test Your Values" is a 14-question quiz that uncovers your
+                values profile. By comparing your answers to LLMs’ value
+                orientations, it matches you with the LLM that best reflects
+                your beliefs.
               </p>
               <div>
                 <router-link to="/TestValues">
@@ -165,7 +164,7 @@ import postsComponent from "../components/Home/posts.vue";
       &:hover {
         img {
           transform: translateX(0.8em);
-          box-shadow: 0px 0px .75em 0px rgba(0, 0, 0, 0.25);
+          box-shadow: 0px 0px 0.75em 0px rgba(0, 0, 0, 0.25);
         }
       }
       img {

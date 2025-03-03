@@ -96,7 +96,7 @@ export default {
   padding: 2.5em 0 2.5em 0;
   .swiper-main {
     padding: 0 4em;
-    height: 21em;
+    height: 19em;
     overflow: auto;
   }
   .title {
