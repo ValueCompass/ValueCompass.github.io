@@ -33,7 +33,7 @@
                 <p>basic value systems</p>
               </li>
               <li>
-                <p>25</p>
+                <p>33</p>
                 <p>Advanced LLMs</p>
               </li>
               <li>

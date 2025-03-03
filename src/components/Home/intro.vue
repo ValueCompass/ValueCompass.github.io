@@ -23,13 +23,14 @@
         </div>
         <div>
           <div class="btn-container">
-            <span
+            <!-- <span
               class="btn contact-btn nav__item_email"
               @click="copyEmail('valuecompass@microsoft.com')"
               >Contact Us<span class="email_text" style="display: none"
                 >valuecompass@microsoft.com</span
               ></span
-            >
+            > -->
+            <a href="mailto:valuecompass@microsoft.com"><span class="btn contact-btn nav__item_email">Contact Us</span></a>
             <a
               href="https://github.com/microsoft/ValueCompass.git"
               target="_blank"
@@ -115,6 +116,14 @@ onMounted(async () => {
     &.animate-on-load {
       opacity: 1;
       transform: translateY(0%);
+      h2{
+        margin: .33em 0;
+        transition: all 1s ease-out 0.1s;
+      }
+      p,.btn-container{
+        margin: 0.6em 0;
+        transition: all 1s ease-out 0.1s;
+      }
     }
     h1 {
       font-size: 4em;
@@ -124,7 +133,7 @@ onMounted(async () => {
       font-style: italic;
     }
     h2 {
-      margin: .33em 0;
+      margin: .66em 0;
       color: #004f8f;
       font-size: 2.25em;
       font-style: italic;
@@ -134,7 +143,7 @@ onMounted(async () => {
     p {
       font-size: 1.25em;
       line-height: 1.6;
-      margin: 0.6em 0;
+      margin: 1.2em 0;
     }
     button {
       background: rgba(16, 147, 255, 1);
@@ -188,6 +197,7 @@ onMounted(async () => {
     }
   }
   .btn-container {
+    margin-top: 4em;
     .btn {
       cursor: pointer;
 
