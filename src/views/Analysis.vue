@@ -66,7 +66,7 @@
             <!-- <SvgIcon class="prop-icon" name="website-icon"></SvgIcon> -->
             <span class="prop-name">Website/GitHub: </span>
             <span class="prop-content"
-              ><a :href="currentModelInfo.website">{{
+              ><a :href="currentModelInfo.website" target="_blank">{{
                 currentModelInfo.website
               }}</a></span
             >
@@ -75,7 +75,7 @@
             <!-- <SvgIcon class="prop-icon" name="paper-icon"></SvgIcon> -->
             <span class="prop-name">Paper/Report: </span>
             <span class="prop-content"
-              ><a :href="currentModelInfo.report">{{
+              ><a :href="currentModelInfo.report" target="_blank">{{
                 currentModelInfo.report
                   ? currentModelInfo.report == "NaN"
                     ? ""

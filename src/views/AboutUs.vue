@@ -139,7 +139,7 @@ const collaborators = ref([
     name: "Xiting Wang",
     photo: "Xiting_Wang.png",
     position: "Assistant Professor",
-    institution: "Renmin University of China",
+    institution: "Gaoling School of Artificial Intelligence, Renmin University of China",
   },
   {
     name: "Peng Zhang",

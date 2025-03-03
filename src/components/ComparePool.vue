@@ -61,7 +61,7 @@
           persistent
           :reference="currentLi"
         >
-          <div id="popoverId2">
+          <div id="popoverId3">
             <el-checkbox-group v-model="checkedModelNameList" :max="5">
               <el-checkbox
                 v-for="model in modelNameList"
@@ -161,7 +161,7 @@ onMounted(() => {
 });
 const handleClickOutside = (event) => {
   // 使用 Popper 的 getPopperElement 方法获取真正的弹窗元素
-  const popperElement = document.getElementById("popoverId2");
+  const popperElement = document.getElementById("popoverId3");
   // 判断点击的是否为popover外部，关闭popover
   if (
     popoverRef.value &&

@@ -21,11 +21,11 @@
           <ul class="nav-child-ul">
             <li>
               <a href="https://valuecompass.github.io/Research/papers/"
-                >Papers</a
+                >Publication</a
               >
             </li>
             <li>
-              <a href="https://valuecompass.github.io/Research/talks">Talks</a>
+              <a href="https://valuecompass.github.io/Research/talks">Blog</a>
             </li>
             <li>
               <a href="https://valuecompass.github.io/Research/resources"
@@ -68,11 +68,13 @@
           <router-link to="/AboutUs">About Us</router-link>
         </li>
         <li class="icon-li">
-          <SvgIcon
-            class="SvgIcon email-icon"
-            name="email-icon"
-            @click="copyEmail('valuecompass@microsoft.com')"
-          ></SvgIcon>
+          <a href="mailto:valuecompass@microsoft.com">
+            <SvgIcon
+              class="SvgIcon email-icon"
+              name="email-icon"
+              @click="copyEmail('valuecompass@microsoft.com')"
+            ></SvgIcon>
+          </a>
         </li>
         <li class="icon-li">
           <a
