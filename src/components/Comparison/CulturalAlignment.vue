@@ -6,7 +6,7 @@
           <div
             class="chart"
             ref="chartDom"
-            style="width: 1200px; height: 600px;margin:0 auto"
+            style="width: 1200px; height: 600px; margin: 0 auto"
           ></div>
         </div>
       </div>
@@ -24,8 +24,7 @@ import {
 } from "vue";
 import axios from "axios";
 import * as echarts from "echarts";
-import{getKeyValue} from "@/utils/common.js"
-
+import { getKeyValue } from "@/utils/common.js";
 
 const chartDom = ref(null);
 let chartInstance = null;
@@ -71,13 +70,15 @@ const setHotChart = (modelNameList) => {
 
   var hotData = [];
   for (let i = 0; i < allHeatMapDataFilter.cosine_sim_matrix.length; i++) {
-    for (let j = 0; j < allHeatMapDataFilter.countries.length; j++) {
-      hotData.push([i, j, allHeatMapDataFilter.cosine_sim_matrix[i][j]]);
+    if (allHeatMapDataFilter.cosine_sim_matrix[i]) {
+      for (let j = 0; j < allHeatMapDataFilter.countries.length; j++) {
+        hotData.push([i, j, allHeatMapDataFilter.cosine_sim_matrix[i][j]]);
+      }
     }
   }
   const modelNames = allHeatMapDataFilter.models;
   const data = hotData.map(function (item) {
-    return [item[1], item[0], (item[2]*100).toFixed(3) || "-"];
+    return [item[1], item[0], (item[2] * 100).toFixed(3) || "-"];
   });
   // console.log(hotData, "hotData", data);
 
@@ -109,16 +110,12 @@ const setHotChart = (modelNameList) => {
           show: true,
         },
         emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
 
-        itemStyle: {
-
-          shadowBlur: 10,
-
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
-
-        }
-
-      }
+            shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
       },
     ],
   });
