@@ -366,6 +366,21 @@ var logoMappingModel = {
   "Deepseek-v2": "LOGO/deepseek.png",
   "Moonshot-v1": "LOGO/Moonshot.png",
   "GLM-4": "LOGO/TsinghuaUniversity.png",
+
+  "o1": "LOGO/OpenAI.png",
+  "o1-mini": "LOGO/OpenAI.png",
+  "o3-mini": "LOGO/OpenAI.png",
+  "LlaMA-3.1-8B-Instruct": "LOGO/Meta.png",
+  "LlaMA-3.3-70B-Instruct": "LOGO/Meta.png",
+  "Gemini-2.0-Pro": "LOGO/Google.png",
+  "Gemini-2.0-Flash": "LOGO/Google.png",
+  "Claude-3.5-Haiku": "LOGO/Anthropic.png",
+  "Grok-2": "LOGO/xAI.png",
+  "Phi-4" : "LOGO/Microsoft.png",
+  "LlaMA3-8B-CPT-SEA-Lionv2.1-Instruct":"LOGO/aisingapore.png",
+  "LlaMA3.1-8B-CPT-SEA-Lionv3-Instruct":"LOGO/aisingapore.png",
+  "DeepSeek-V3": "LOGO/deepseek.png",
+  "DeepSeek-R1": "LOGO/deepseek.png",
 };
 const showModal = ref(false);
 const capture = ref(null);
