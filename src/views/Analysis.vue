@@ -66,22 +66,22 @@
             <!-- <SvgIcon class="prop-icon" name="website-icon"></SvgIcon> -->
             <span class="prop-name">Website/GitHub: </span>
             <span class="prop-content"
-              ><a :href="currentModelInfo.website" target="_blank">{{
-                currentModelInfo.website
-              }}</a></span
+              ><a
+                :href="ensureHttps(currentModelInfo.website)"
+                target="_blank"
+                >{{ extractDomain(currentModelInfo.website) }}</a
+              ></span
             >
           </div>
           <div class="model-prop">
             <!-- <SvgIcon class="prop-icon" name="paper-icon"></SvgIcon> -->
             <span class="prop-name">Paper/Report: </span>
             <span class="prop-content"
-              ><a :href="currentModelInfo.report" target="_blank">{{
-                currentModelInfo.report
-                  ? currentModelInfo.report == "NaN"
-                    ? ""
-                    : currentModelInfo.report
-                  : ""
-              }}</a></span
+              ><a
+                :href="ensureHttps(currentModelInfo.report)"
+                target="_blank"
+                >{{ extractDomain(currentModelInfo.report) }}</a
+              ></span
             >
           </div>
           <div class="model-prop">
@@ -183,7 +183,7 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import * as echarts from "echarts";
 import swiper from "../components/swiper.vue";
-import { getKeyValue } from "../utils/common.js";
+import { getKeyValue, ensureHttps, extractDomain } from "../utils/common.js";
 
 const chartDom = ref(null);
 // const barChart = ref(null);
@@ -763,6 +763,7 @@ const handleClickOutside = (event) => {
         overflow: hidden; /* 超出部分隐藏 */
         text-overflow: ellipsis;
         font-size: 1.125em;
+        text-transform: capitalize;
         a {
           text-decoration: underline;
           color: #657171;
@@ -880,7 +881,7 @@ const handleClickOutside = (event) => {
               max-width: 5.5em;
               font-size: 1em;
               line-height: 1.3em;
-              padding: 0.25em .7em;
+              padding: 0.25em 0.7em;
               cursor: pointer;
               border-bottom: 2px solid transparent;
 
