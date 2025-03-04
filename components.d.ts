@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    '副本': typeof import('./src/components/homepageSwiper - 副本.vue')['default']
     Am4core: typeof import('./src/components/am4core.vue')['default']
     ComparePool: typeof import('./src/components/ComparePool.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
@@ -56,6 +55,7 @@ declare module 'vue' {
     TestValuesResults: typeof import('./src/components/TestValues/TestValuesResults.vue')['default']
     ValueSpace: typeof import('./src/components/Comparison/ValueSpace.vue')['default']
     Visualization: typeof import('./src/components/Comparison/Visualization.vue')['default']
+    Visualization_new: typeof import('./src/components/Comparison/Visualization_new.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
