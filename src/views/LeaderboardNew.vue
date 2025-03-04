@@ -11,12 +11,11 @@
           @swicthChange="swicthChange"
           @showIntro="showIntro"
         ></SelectedPoints>
-        <div class="filter-table">
+        <div class="filter-table" @mousedown="handleMouseDown">
           <el-table
             :data="tableData"
             :default-sort="{ prop: 'place' }"
             style="width: 100%"
-            height="630"
             ref="tableRef"
           >
             <el-table-column
@@ -357,7 +356,13 @@ const fetchData = async () => {
         getAxiosData("./data/FULVa_scores.json"),
       ])
       .then(
-        axios.spread(function (modelInfos, Schwartz_data, Risk_data, MFT_data, FULVa_data) {
+        axios.spread(function (
+          modelInfos,
+          Schwartz_data,
+          Risk_data,
+          MFT_data,
+          FULVa_data
+        ) {
           modelInfo = modelInfos.data.data;
           modelInfoObj = getKeyValue(modelInfo);
           console.log(modelInfo);
@@ -418,10 +423,11 @@ const applyChange = (value) => {
 
   tableData.value = arr;
   console.log("tableData", tableData.value);
-  
+
   // 在数据更新后滚动到最顶部
   nextTick(() => {
-    tableRef.value.scrollTo({ top: 0 });
+    // tableRef.value.scrollTo({ top: 0 });
+    tableRef.value.clearSort();
   });
 };
 
@@ -476,14 +482,14 @@ const removeAll = () => {
   compareArrString.value = [];
 };
 const comparisonPoolSubmit = (checkedModelNameList) => {
-  const checkModelsDetailArr =  checkedModelNameList.map((item) => {
+  const checkModelsDetailArr = checkedModelNameList.map((item) => {
     return {
       modelName: item,
       developer: modelInfoObj[item].developer,
       releaseDate: modelInfoObj[item]["release date"],
       type: modelInfoObj[item].type,
       affiliation: modelInfoObj[item].affiliation,
-    }
+    };
   });
   compareArr.value = checkModelsDetailArr;
   compareArrString.value = checkModelsDetailArr.map((item) => item.modelName);
@@ -530,6 +536,37 @@ const showIntro = (index) => {
 };
 
 const tablePointDetailShow = ref(false);
+
+// 鼠标拖动事件处理
+let isDragging = false;
+let startX = 0;
+let scrollLeft = 0;
+let tableScrollWrap = document.getElementsByClassName("el-scrollbar__wrap")[0];
+const handleMouseDown = (e) => {
+  tableScrollWrap = document.getElementsByClassName("el-scrollbar__wrap")[0];
+  console.log("handleMouseDown");
+  isDragging = true;
+  startX = e.pageX - tableScrollWrap.offsetLeft;
+  scrollLeft = tableScrollWrap.scrollLeft;
+  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mouseup", handleMouseUp);
+};
+
+const handleMouseMove = (e) => {
+  console.log("handleMouseMove");
+  if (!isDragging) return;
+  e.preventDefault();
+  const x = e.pageX - tableScrollWrap.offsetLeft;
+  const walk = (x - startX) * 1; // 滚动速度
+  tableScrollWrap.scrollLeft = scrollLeft - walk;
+};
+
+const handleMouseUp = () => {
+  console.log("handleMouseUp");
+  isDragging = false;
+  document.removeEventListener("mousemove", handleMouseMove);
+  document.removeEventListener("mouseup", handleMouseUp);
+};
 </script>
 
 <style scoped lang="scss">
