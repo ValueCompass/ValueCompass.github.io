@@ -1,15 +1,13 @@
 <template>
-  <div class="main-container test-values-template" style="flex:1">
+  <div class="main-container test-values-template" style="flex: 1">
     <div v-show="showTest == 1">
       <div class="test-container">
         <div class="test-intro">
           <h1>Discover Your Core Values and Meet Your Perfect LLM Match</h1>
           <p>
-            Ever wonder which values shape your worldview? In just 14 quick
-            questions, uncover your core principles and reveal the LLM that best
-            aligns with your way of thinking. Plus, you'll also receive a
-            personalized card that highlights your unique value profile. Dive in
-            for a fun and eye-opening experience!
+            "Test Your Values" is a 14-question quiz that uncovers your values
+            profile. By comparing your answers to LLMs’ value orientations, it
+            matches you with the LLM that best reflects your beliefs.
           </p>
           <!-- <button @click="toTest">Take the Test</button> -->
           <span
@@ -23,10 +21,26 @@
           <!-- <img src="@/assets/images/test-love.png" alt="test" /> -->
           <div class="testValues-img">
             <img src="@/assets/images/testValues/0.png" alt="test" />
-            <img class="img img1" src="@/assets/images/testValues/1@2x.png" alt="test" />
-            <img class="img img2" src="@/assets/images/testValues/2@2x.png" alt="test" />
-            <img class="img img3" src="@/assets/images/testValues/3@2x.png" alt="test" />
-            <img class="img img4" src="@/assets/images/testValues/4@2x.png" alt="test" />
+            <img
+              class="img img1"
+              src="@/assets/images/testValues/1@2x.png"
+              alt="test"
+            />
+            <img
+              class="img img2"
+              src="@/assets/images/testValues/2@2x.png"
+              alt="test"
+            />
+            <img
+              class="img img3"
+              src="@/assets/images/testValues/3@2x.png"
+              alt="test"
+            />
+            <img
+              class="img img4"
+              src="@/assets/images/testValues/4@2x.png"
+              alt="test"
+            />
           </div>
         </div>
       </div>
@@ -289,7 +303,7 @@ import Spearman from "spearman-rho";
 onMounted(async () => {
   await nextTick(); // 确保DOM已经渲染完成
   setTimeout(() => {
-    document.querySelector('.testValues-img').classList.add('animate-on-load');
+    document.querySelector(".testValues-img").classList.add("animate-on-load");
   }, 100);
 });
 </script>
@@ -363,49 +377,44 @@ onMounted(async () => {
       }
     }
   }
-  .img-div{
+  .img-div {
     flex: 1;
     padding-left: 2em;
-    img{
+    img {
       width: 100%;
     }
-    .testValues-img{
+    .testValues-img {
       position: relative;
-      .img{
+      .img {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
         transition: all 1s ease-out 0.1s;
-        
-  
       }
 
-      .img1{
-          width: 100%;
-          height: 100%;
-          
-        }
-        .img2{
-          width: 10px;
-          height: 10px;
-          
-        }
-        .img3{
-          width: 100%;
-          height: 100%;
-          flex-shrink: 0;
-          aspect-ratio: 1/1;
-          margin-left: 20%;
-        }
-        .img4{
-          width: 100%;
-          height: 100%;
-          transform: translate(-50%,-50%)  rotate(90deg);
-          flex-shrink: 0;
-          aspect-ratio: 1/1;
-  
+      .img1 {
+        width: 100%;
+        height: 100%;
+      }
+      .img2 {
+        width: 10px;
+        height: 10px;
+      }
+      .img3 {
+        width: 100%;
+        height: 100%;
+        flex-shrink: 0;
+        aspect-ratio: 1/1;
+        margin-left: 20%;
+      }
+      .img4 {
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%) rotate(90deg);
+        flex-shrink: 0;
+        aspect-ratio: 1/1;
       }
       &.animate-on-load {
         .img {
@@ -413,12 +422,12 @@ onMounted(async () => {
           width: 100%;
           height: 100%;
         }
-        .img3{
+        .img3 {
           margin-left: 0;
-          transform: translate(-50%,-50%) rotate(0);
+          transform: translate(-50%, -50%) rotate(0);
         }
-        .img4{
-          transform: translate(-50%,-50%) rotate(0);
+        .img4 {
+          transform: translate(-50%, -50%) rotate(0);
         }
       }
     }

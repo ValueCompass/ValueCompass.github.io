@@ -43,7 +43,7 @@
                     name="icon-ValueComparison"
                   ></SvgIcon>
                 </p>
-                <p>Detailed Comparison</p>
+                <p>Model Comparison</p>
               </li>
               <li>
                 <p>
@@ -214,6 +214,7 @@ import postsComponent from "../components/Home/posts.vue";
           }
           p:nth-child(2) {
             margin-top: 0.2em;
+            text-transform: capitalize;
           }
         }
       }

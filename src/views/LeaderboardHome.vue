@@ -23,7 +23,7 @@
         </div>
         <div class="right">
           <p class="p">
-              A holistic, adaptive, and pluralistic evaluation platform for LLM
+              <b>A holistic, adaptive, and pluralistic</b> evaluation platform for LLM
               values, grounded in basic values and generative, evolving
               assessments.
             </p>
@@ -52,7 +52,7 @@
                     name="icon-ValueComparison"
                   ></SvgIcon>
                 </p>
-                <p>Detailed Comparison</p>
+                <p>Model Comparison</p>
               </li>
               <li>
                 <p>
@@ -227,6 +227,7 @@ onActivated(() => {
           }
           p:nth-child(2) {
             margin-top: 0.2em;
+            text-transform: capitalize;
           }
         }
       }
