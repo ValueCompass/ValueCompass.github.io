@@ -41,4 +41,15 @@ export const mergeObj = (obj1, obj2, obj3, obj4) => {
   return merged;
 }
 
+export const ensureHttps = (url) => {
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url;
+  }
+  return url;
+};
 
+export const extractDomain = (url) => {
+  const httpsUrl = ensureHttps(url);
+  const domain = new URL(httpsUrl).hostname.split('.')[0];
+  return domain;
+};
