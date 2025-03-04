@@ -344,31 +344,6 @@ var cultureMapping = {
 };
 
 var logoMappingModel = {
-  "sea-lionv2.1": "LOGO/aisingapore.png",
-  "sea-lion-7b": "LOGO/aisingapore.png",
-  "gpt-4": "LOGO/OpenAI.png",
-  "gpt-4o": "LOGO/OpenAI.png",
-  "gpt-4o-mini": "LOGO/OpenAI.png",
-  "gpt-3.5-turbo": "LOGO/OpenAI.png",
-  "claude-3.5-sonnet": "LOGO/Anthropic.png",
-  "gemini-1.5-pro": "LOGO/Google.png",
-  "llama-3.1-405B-instruct": "LOGO/Meta.png",
-  "llama-3.1-70B-instruct": "LOGO/Meta.png",
-  "llama-3-70B-instruct": "LOGO/Meta.png",
-  "mistral-large": "LOGO/MistralAI.png",
-  "phi-3-mini-instruct": "LOGO/Microsoft.png",
-  "phi-3-medium-instruct": "LOGO/Microsoft.png",
-  "phi-3.5-mini-instruct": "LOGO/Microsoft.png",
-  "phi-3.5-moe-instruct": "LOGO/Microsoft.png",
-  glm4: "LOGO/TsinghuaUniversity.png",
-  baichuan4: "LOGO/BaichuanAI.png",
-  "qwen-max": "LOGO/Alibaba.png",
-  "yi-large": "LOGO/01-AI.png",
-  "Moonshot-v1": "LOGO/Moonshot.png",
-  "DeepSeek-v1": "LOGO/deepseek.png",
-};
-
-var logoMappingModel = {
   "GPT-4-Turbo": "LOGO/OpenAI.png",
   "GPT-4o": "LOGO/OpenAI.png",
   "GPT-4o-mini": "LOGO/OpenAI.png",
