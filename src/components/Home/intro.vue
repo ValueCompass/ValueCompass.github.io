@@ -100,7 +100,7 @@ onMounted(async () => {
 .test-container {
   background: #f9f9f9;
   overflow: hidden;
-  padding: 2em 0;
+  padding: 3.75em 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
