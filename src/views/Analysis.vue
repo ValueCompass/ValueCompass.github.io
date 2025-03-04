@@ -758,7 +758,6 @@ const handleClickOutside = (event) => {
         margin-right: 0.375em;
       }
       .prop-content {
-        height: 20px;
         max-width: 180px;
         white-space: nowrap; /* 不换行 */
         overflow: hidden; /* 超出部分隐藏 */
