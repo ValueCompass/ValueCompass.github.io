@@ -104,7 +104,7 @@
           <el-tab-pane
             v-for="tab in tabList"
             :key="tab.index"
-            :label="'&nbsp;&nbsp;&nbsp;' + tab.name + '&nbsp;&nbsp;&nbsp;'"
+            :label="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + tab.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"
             :name="tab.index"
           ></el-tab-pane>
         </el-tabs>
@@ -333,11 +333,11 @@ const tabList = [
     index: 0,
   },
   {
-    name: "Visualization",
+    name: "radar chart",
     index: 1,
   },
   {
-    name: "Cultural Alignment",
+    name: "culture heatmap",
     index: 2,
   },
   {
@@ -831,13 +831,26 @@ const handleDimensionMeasurementTabsChange = (index) => {
   margin-right: 1em;
 }
 
+:deep(.el-tabs) {
+  --el-tabs-header-height: 2.1em;
+  .el-tabs__active-bar{
+    transition: all 0s;
+  }
+}
 :deep(.el-tabs__header) {
   --el-font-size-base: 1.25em;
   .el-tabs__item {
+    text-transform: capitalize;
     padding: 0;
     color: var(--sub-text-color);
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
     &.is-active {
       color: rgba(16, 147, 255, 1);
+    }
+    &:hover {
+      color: #47ACFF;
+      border-color: #47ACFF;
     }
   }
 }

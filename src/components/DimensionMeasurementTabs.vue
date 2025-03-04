@@ -92,6 +92,8 @@ defineExpose({
       // flex: 1;
       color: #004f8f;
       font-weight: 600;
+      border-radius: 1em;
+      border: 2px solid transparent;
       span {
         white-space: nowrap;
         font-size: 1em;
@@ -103,7 +105,7 @@ defineExpose({
         color: #1093FF;
       }
       &.on {
-        background: #85c8ff;
+        border-color: #004F8F;
         color: #004f8f;
       }
 
