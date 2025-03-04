@@ -45,12 +45,28 @@
                   ></SvgIcon
                   >{{ item.name }}
                 </h3>
-                <img
-                  :src="getAssetsFile(item.img)"
-                  :alt="item.img"
-                  width="100%"
-                />
-                <p>{{ item.detail }}</p>
+                <div class="img-div">
+                  <img
+                    :src="getAssetsFile(item.img)"
+                    :alt="item.img"
+                    width="100%"
+                  />
+                  <a href="item.casesLink" target="_blank">
+                    <span class="view-more-btn">
+                      <span>More cases</span>
+                      <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+                    </span>
+                  </a>
+                </div>
+                <p>
+                  {{ item.detail }}
+                  <a
+                    :href="item.sourceLink"
+                    target="_blank"
+                    style="color: #1093ff"
+                    >[Source Link]</a
+                  >
+                </p>
               </div>
 
               <!-- <div class="img-box">
@@ -94,24 +110,34 @@ const introData = ref([
   {
     name: "Schwartz Theory of Basic Values",
     img: "Schwartz_image.png",
+    sourceLink:
+      "https://scholarworks.gvsu.edu/cgi/viewcontent.cgi?article=1116&context=orpc",
+    casesLink: "https://arxiv.org/pdf/2112.06346",
     detail:
       "Proposed by psychologist Shalom Schwartz, Schwartz’s theory defines 10 basic human values that are distinguished by their underlying motivations or goals and well-recognized across all cultures. The adjacent or opposed positions of values in the above figure reflect the relations of conflict and congrence among values.",
   },
   {
     name: "Moral Foundation Theory",
     img: "MoralFoundationTheory_image.png",
+    sourceLink: "https://moralfoundations.org/",
+    casesLink:
+      "https://web.archive.org/web/20170731065520/http://www-bcf.usc.edu/~jessegra/papers/GHKMIWD.inpress.MFT.AESP.pdf",
     detail:
       "This is a social psychological theory intended to explain the origins of and variation in human moral reasoning on the basis of five innate, modular foundations.",
   },
   {
     name: "Safety Taxonomy",
     img: "Safety_Taxonomy_image.png",
+    sourceLink: "https://arxiv.org/pdf/2402.05044",
+    casesLink: "http://arxiv.org/pdf/2402.05044",
     detail:
       "It builds a hierarchical three-level safety taxonomy for LLMs, including 6 domain-level harmfulness areas that are further subdivided into 16 tasks and 66 categories for precise safety topic delineation.",
   },
   {
     name: "LLMs' Unique Value System",
     img: "LLMs_Unique_Value_System_image.png",
+    sourceLink: "https://arxiv.org/pdf/2404.12744",
+    casesLink: "https://arxiv.org/pdf/2404.12744",
     detail:
       "This theory is constructed from scratch to reveal LLMs’ unique values, leveraging psychological methods from human value/personality studies. It identifies three core value dimensions and 6 sub-dimensions.",
   },
@@ -219,10 +245,14 @@ defineExpose({
         margin-right: 0.2em;
       }
     }
-    img {
-      width: 100%;
+    .img-div {
+      position: relative;
       margin: 0.875em 0;
+      img {
+        width: 100%;
+      }
     }
+
     p {
       font-size: 1.25rem;
       line-height: 1.5;
@@ -232,27 +262,38 @@ defineExpose({
     }
   }
 }
-:deep(.swiper-pagination-bullet) {
-  width: 1em;
-  height: 3px;
-  background-color: var(--text-color);
-  opacity: 0.3;
-  border-radius: 1px;
+
+:deep(.swiper) {
+  .swiper-pagination-bullet {
+    width: 1em;
+    height: 3px;
+    background-color: var(--text-color);
+    opacity: 0.3;
+    border-radius: 1px;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 1.25em;
+    opacity: 1;
+  }
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: 3em;
+    height: 3em;
+    color: var(--text-color);
+    &:after {
+      font-size: 1.4em;
+      font-weight: 700;
+    }
+  }
+  .swiper-button-prev {
+    left: -1em;
+  }
+  .swiper-button-next {
+    right: -1em;
+  }
 }
-:deep(.swiper-pagination-bullet-active) {
-  width: 1.25em;
-  opacity: 1;
-}
-:deep(.swiper-button-prev),
-:deep(.swiper-button-next) {
-  width: 22px;
-  height: 25px;
-  color: var(--text-color);
-}
-:deep(.swiper-button-prev:after),
-:deep(.swiper-button-next:after) {
-  font-size: 1em;
-}
+
 :deep(.highlight i) {
   color: rgba(0, 79, 143, 1);
   font-weight: 500;
@@ -284,6 +325,38 @@ defineExpose({
     svg {
       width: 1.5em;
       height: 1.5em;
+    }
+  }
+
+  .view-more-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-block;
+    color: rgba(16, 147, 255, 1);
+    display: inline-flex;
+    flex-direction: row;
+    align-content: center;
+    font-size: 1.25em;
+    cursor: pointer;
+    svg {
+      width: 1.2em;
+      height: 1.2em;
+      margin-left: 0.2em;
+    }
+
+    &:hover {
+      span {
+        background: linear-gradient(270deg, #0078d4 0%, #8661c5 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: all 0.2s;
+      }
+      svg {
+        color: #0078d4;
+        transition: all 0.2s;
+      }
     }
   }
 }

@@ -86,7 +86,8 @@
           </div>
           <div class="model-prop">
             <span class="prop-name">Type: </span>
-            <span class="prop-content">{{ currentModelInfo["type"] }}-Source</span
+            <span class="prop-content"
+              >{{ currentModelInfo["type"] }}-Source</span
             >
           </div>
           <div class="model-prop">
@@ -120,47 +121,49 @@
             <div class="chart" ref="chartDom"></div>
           </div>
           <div class="chart-text-main">
-            <ul class="chart-menu">
-              <li
-                v-for="item in chartMenu"
-                :key="item"
-                @click="changeMenu(item)"
-                :class="{ active: currentChartTab == item }"
-              >
-                <template v-if="currentTab == 0">{{
-                  item.indexOf("-") > -1
-                    ? item
-                        .split("-")
-                        .map((x) => x[0].toUpperCase())
-                        .join("")
-                    : item.substring(0, 3)
-                }}</template>
-                <!-- <template v-else-if="currentTab == 1">{{
+            <div class="chart-menu">
+              <ul>
+                <li
+                  v-for="item in chartMenu"
+                  :key="item"
+                  @click="changeMenu(item)"
+                  :class="{ active: currentChartTab == item }"
+                >
+                  <template v-if="currentTab == 0">{{
+                    item.indexOf("-") > -1
+                      ? item
+                          .split("-")
+                          .map((x) => x[0].toUpperCase())
+                          .join("")
+                      : item.substring(0, 3)
+                  }}</template>
+                  <!-- <template v-else-if="currentTab == 1">{{
                   item
                     .split("-")
                     .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
                     .join("/<br>")
                 }}</template> -->
-                <template v-else-if="currentTab == 1">
-                  <span
-                    style="margin-right: 1em"
-                    v-html="
-                      item
-                        .split('/')
-                        .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-                        .join('/<br>')
-                    "
-                  ></span>
-                </template>
-                <template v-else-if="currentTab == 2">{{
-                  item
-                    .split(" ")
-                    .map((x) => x.charAt(0).toUpperCase())
-                    .join("")
-                }}</template>
-                <template v-else-if="currentTab == 3">{{item}}</template>
-              </li>
-            </ul>
+                  <template v-else-if="currentTab == 1">
+                    <span
+                      style="margin-right: 1em"
+                      v-html="
+                        item
+                          .split('/')
+                          .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                          .join('/<br>')
+                      "
+                    ></span>
+                  </template>
+                  <template v-else-if="currentTab == 2">{{
+                    item
+                      .split(" ")
+                      .map((x) => x.charAt(0).toUpperCase())
+                      .join("")
+                  }}</template>
+                  <template v-else-if="currentTab == 3">{{ item }}</template>
+                </li>
+              </ul>
+            </div>
             <div class="chart-content">
               <span class="case-close-btn" @click="openCase(false)"></span>
               <swiper :data="currentCaseData"></swiper>
@@ -304,7 +307,14 @@ const fetchOtherData = async () => {
         getAxiosData("./data/FULVa_cases.json"),
       ])
       .then(
-        axios.spread(function (Risk_scores, Risk_cases, MFT_scores, MFT_cases, FULVa_scores, FULVa_cases) {
+        axios.spread(function (
+          Risk_scores,
+          Risk_cases,
+          MFT_scores,
+          MFT_cases,
+          FULVa_scores,
+          FULVa_cases
+        ) {
           Risk_data = getKeyValue(Risk_scores.data.data);
           Risk_case = Risk_cases.data.data;
           MFT_data = getKeyValue(MFT_scores.data.data);
@@ -320,8 +330,8 @@ const fetchOtherData = async () => {
 fetchData();
 fetchOtherData();
 
-let maxValue = 0
-let minValue = 100
+let maxValue = 0;
+let minValue = 100;
 function getCaseData(arr, model) {
   const arr1 = arr.filter((item) => {
     return item.model == model;
@@ -567,9 +577,9 @@ const changeMenu = (item) => {
     setRadarHighlight(Schwartz_data[currentModel.value], item);
   } else if (currentTab.value == 1) {
     setRadarHighlight(MFT_data[currentModel.value], item);
-  } else if (currentTab.value == 2)  {
+  } else if (currentTab.value == 2) {
     setRadarHighlight(Risk_data[currentModel.value], item);
-  } else if (currentTab.value == 3)  {
+  } else if (currentTab.value == 3) {
     setRadarHighlight(FULVa_data[currentModel.value], item);
   }
 };
@@ -650,7 +660,6 @@ onActivated(() => {
     }
   }
 });
-
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
@@ -833,7 +842,7 @@ const handleClickOutside = (event) => {
         // min-width: 640px;
         // flex: 1;
         position: relative;
-        .chart{
+        .chart {
           z-index: 2;
           position: absolute;
           left: 0;
@@ -848,23 +857,41 @@ const handleClickOutside = (event) => {
         flex: 1;
         overflow: hidden;
         .chart-menu {
-          width: 100%;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: flex-start;
-          gap: 0.4em 1.2em;
-          align-items: flex-end;
-          li {
-            max-width: 5.5em;
-            font-size: 1em;
-            line-height: 1.3em;
-            padding: 0.25em 0;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
+          position: relative;
+          &::after {
+            background-color: rgba(194, 194, 194, 1);
+            bottom: 0;
+            content: "";
+            height: 1px;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            z-index: 1;
+          }
+          & > ul {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 0.4em 0;
+            align-items: flex-end;
+            li {
+              max-width: 5.5em;
+              font-size: 1em;
+              line-height: 1.3em;
+              padding: 0.25em .7em;
+              cursor: pointer;
+              border-bottom: 2px solid transparent;
 
-            &.active {
-              color: #0c76ce;
-              border-bottom: 2px solid rgba(16, 147, 255, 1);
+              &.active {
+                color: #0c76ce;
+                border-bottom: 2px solid rgba(16, 147, 255, 1);
+              }
+              &:hover {
+                color: #0c76ce;
+              }
             }
           }
         }
@@ -874,7 +901,7 @@ const handleClickOutside = (event) => {
           background: var(--gary-color);
           border-radius: 0.375em;
           margin-top: 0.75em;
-          padding-bottom: .75em;
+          padding-bottom: 0.75em;
           .case-close-btn {
             cursor: pointer;
             position: absolute;

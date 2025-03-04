@@ -662,7 +662,7 @@ const handleMouseUp = () => {
   --el-table-tr-bg-color: #fff;
   --el-table-text-color: var(--text-color);
   --el-table-header-text-color: var(--text-color);
-  --el-table-row-hover-bg-color: #fff;
+  --el-table-row-hover-bg-color: #f5f5f5;
   --el-table-border-color: rgba(0, 0, 0, 0.2);
   font-size: 1em;
   border-radius: 16px;

@@ -160,7 +160,6 @@ import postsComponent from "../components/Home/posts.vue";
     padding: 2.75em 0;
     .left > div {
       position: relative;
-
       &:hover {
         img {
           transform: translateX(0.8em);
@@ -168,12 +167,11 @@ import postsComponent from "../components/Home/posts.vue";
         }
       }
       img {
-        // transform: translateX(0.8em);
-        // box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
+        border-radius: 12px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
         display: block;
         width: 145.7%;
         transition: all 0.5s;
-        border-radius: 1.6%;
       }
       .cover {
         background: linear-gradient(
@@ -189,6 +187,7 @@ import postsComponent from "../components/Home/posts.vue";
       }
     }
     .right {
+      background: #fff;
       position: relative;
       z-index: 2;
       padding: 2.25em 1.75em;

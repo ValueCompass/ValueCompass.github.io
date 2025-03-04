@@ -62,7 +62,7 @@ provide("reload", () => {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 109;
+    z-index: 2003;
   }
   .footer-component {
     // position: absolute;

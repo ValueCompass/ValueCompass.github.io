@@ -19,7 +19,7 @@
       <div class="main-container">
         <div class="intro intro-container">
         <div class="left">
-          <h2>Leaderboard: <br />Evaluating Human Value Alignment in LLMs</h2>
+          <h2>Leaderboard</h2>
         </div>
         <div class="right">
           <p class="p">
@@ -237,7 +237,7 @@ onActivated(() => {
       }
   }
   h2 {
-    font-size: 2.25em;
+    font-size: 4em;
     color: #004f8f;
     line-height: normal;
     font-weight: 400;
@@ -249,7 +249,7 @@ onActivated(() => {
   // }
 }
 .leaderboard-nav-container {
-  width: 100%;
+  width: 100vw;
   border-bottom: 2px solid #1093ff;
   background: #fff;
   padding-top: 2em;
@@ -306,5 +306,9 @@ onActivated(() => {
   cursor: pointer;
   transform: translateY(-50%);
   z-index: 100;
+}
+
+:deep(.el-affix--fixed){
+  z-index: 2001 !important;
 }
 </style>
