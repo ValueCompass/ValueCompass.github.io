@@ -11,7 +11,7 @@
           >
             <div
               class="chart"
-              style="width: 1180px; height: 850px"
+              style="width: 1180px; height: 700px"
               ref="chartDom"
             ></div>
           </div>

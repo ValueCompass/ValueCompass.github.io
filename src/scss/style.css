@@ -9,7 +9,8 @@
     --border-color: rgba(194, 194, 194, 1);
     --gary-color: rgba(245, 245, 245, 1);
     --el-tag-text-color: #fff;
-    --theme-color: rgba(16, 147, 255, 1)
+    --theme-color: #0b70c3;
+    --el-button-bg-color: #0b70c3;
 }
 
 html {
@@ -115,6 +116,7 @@ button:focus-visible {
 
 .el-checkbox {
     --el-checkbox-font-weight: 400 !important;
+    --el-color-primary: var(--theme-color) !important;
 }
 
 .el-checkbox.is-checked {
@@ -141,10 +143,11 @@ button:focus-visible {
 .el-radio {
     --el-radio-text-color: var(--text-color) !important;
     --el-radio-input-bg-color: var(--bg-color) !important;
-    --el-radio-input-border-color: #1890FF !important;
-    --el-radio-input-border-color-hover: #1890FF !important;
+    --el-radio-input-border-color: var(--theme-color) !important;
+    --el-radio-input-border-color-hover: var(--theme-color) !important;
     color: var(--text-color) !important;
     --el-radio-font-weight: 400 !important;
+    --el-color-primary: var(--theme-color) !important;
 
 }
 
@@ -158,12 +161,12 @@ button:focus-visible {
 
 .el-radio__input.is-checked .el-radio__inner {
     background: var(--bg-color) !important;
-    border-color: #1890FF !important;
-    /* background: #1890FF !important; */
+    border-color: var(--theme-color) !important;
+    /* background: var(--theme-color) !important; */
 }
 
 .el-radio__inner:after {
-    background-color: #1890FF !important;
+    background-color: var(--theme-color) !important;
     width: 6px !important;
     height: 6px !important;
 }
@@ -193,12 +196,12 @@ button:focus-visible {
 .el-popper.is-customized {
     /* Set padding to ensure the height is 32px */
     padding: 6px 12px;
-    background: #1890ff;
+    background: var(--theme-color);
     color: #fff;
 }
 
 .el-popper.is-customized .el-popper__arrow::before {
-    background: #1890ff;
+    background: var(--theme-color);
 }
 
 .el-tooltip__trigger:focus {
@@ -210,12 +213,12 @@ button:focus-visible {
   }
 
 button,.button {
-    background-color: #1093ff;
+    background-color: var(--theme-color);
     color: #fff;
     font-size: 1.25em;
     line-height: 1.4;
     padding: 0.46em 1.2em;
-    border: 1px solid #1093ff;
+    border: 1px solid var(--theme-color);
     border-radius: 2px;
     cursor: pointer;
     border-radius: 0.25em;

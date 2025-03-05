@@ -536,7 +536,7 @@ function setGlChart(gl_data) {
   //   symbolSize: 18,
   //   itemStyle: {
   //     opacity: 1,
-  //     color: "#1093FF",
+  //     color: "var(--theme-color)",
   //   },
   //   label: {
   //     show: true,
@@ -882,7 +882,7 @@ defineExpose({
           }
           &.active {
             font-weight: 700;
-            color: rgba(16, 147, 255, 1);
+            color: var(--theme-color);
             span {
               background: url(@/assets/images/right-arrow.svg) no-repeat;
               background-size: contain;
@@ -1078,9 +1078,9 @@ defineExpose({
             margin-top: 40px;
             font-size: .83em;
             line-height: 1.57em;
-            color: #0b70c3;
+            color: var(--theme-color);
             cursor: pointer;
-            border: 1px solid rgba(16, 147, 255, 1);
+            border: 1px solid var(--theme-color);
             background-color: transparent;
           }
         }
@@ -1257,7 +1257,6 @@ defineExpose({
       justify-content: space-around;
       button {
         width: 145px;
-        height: 32px;
         font-size: 14px;
         font-weight: 400;
         text-align: center;
@@ -1268,8 +1267,8 @@ defineExpose({
         background: #737373;
       }
       .print {
-        border: 1px solid #1093ff;
-        background-color: #1093ff;
+        border: 1px solid var(--theme-color);
+        background-color: var(--theme-color);
       }
     }
   }
@@ -1289,12 +1288,13 @@ defineExpose({
 }
 
 :deep(.el-tabs__header) {
+  --el-color-primary: var(--theme-color);
   --el-font-size-base: 20px;
   .el-tabs__item {
     padding: 0;
     color: var(--sub-text-color);
     &.is-active {
-      color: rgba(16, 147, 255, 1);
+      color: var(--theme-color);
     }
   }
 }

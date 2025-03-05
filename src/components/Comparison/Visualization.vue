@@ -20,7 +20,7 @@
           <p>Safety Taxonomy</p>
           <EchartComponent ref="chartDom3"></EchartComponent>
         </div>
-        <div>
+        <div v-show="props.DimensionMeasurementTabIndex == 3">
           <p>LLMs' Unique Value System</p>
           <EchartComponent ref="chartDom4"></EchartComponent>
         </div>

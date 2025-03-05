@@ -363,7 +363,7 @@ onMounted(async () => {
       margin: 1em 0 2.4em;
     }
     button {
-      background: rgba(16, 147, 255, 1);
+      background: var(--theme-color);
       padding: 0 1.14em;
       height: 2.28em;
       color: #fff;
@@ -608,14 +608,14 @@ onMounted(async () => {
         cursor: pointer;
         font-size: 1.25em;
         line-height: 1.57em;
-        color: #0c76ce;
+        color: var(--theme-color);
         // display: flex;
         align-items: center;
-        border: 1px solid #0c76ce;
+        border: 1px solid var(--theme-color);
         background: transparent;
         &.blue {
-          background: rgba(16, 147, 255, 1);
-          border-color: rgba(16, 147, 255, 1);
+          background: var(--theme-color);
+          border-color: var(--theme-color);
           color: #fff;
           &:hover {
             opacity: 0.9;
@@ -698,16 +698,16 @@ onMounted(async () => {
       button {
         // width: 10em;
         // height: 2.29em;
-        border: 1px solid #0c76ce;
-        color: #0c76ce;
+        border: 1px solid var(--theme-color);
+        color: var(--theme-color);
         background: transparent;
         font-size: 1.25em;
         display: flex;
         align-items: center;
         justify-content: center;
         &.blue {
-          background: rgba(16, 147, 255, 1);
-          border-color: rgba(16, 147, 255, 1);
+          background: var(--theme-color);
+          border-color: var(--theme-color);
           color: #fff;
           &:hover {
             opacity: 0.9;

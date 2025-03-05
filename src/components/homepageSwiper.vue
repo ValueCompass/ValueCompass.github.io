@@ -64,7 +64,7 @@
                   <a
                     :href="item.sourceLink"
                     target="_blank"
-                    style="color: #1093ff"
+                    style="color: var(--theme-color)"
                     >[Source Link]</a
                   >
                 </p>
@@ -330,7 +330,7 @@ defineExpose({
     right: 0;
     top: 0;
     display: inline-block;
-    color: rgba(16, 147, 255, 1);
+    color: var(--theme-color);
     display: inline-flex;
     flex-direction: row;
     align-content: center;
@@ -344,14 +344,14 @@ defineExpose({
 
     &:hover {
       span {
-        background: linear-gradient(270deg, #0078d4 0%, #8661c5 100%);
+        background: linear-gradient(270deg, var(--theme-color) 0%, #8661c5 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         transition: all 0.2s;
       }
       svg {
-        color: #0078d4;
+        color: var(--theme-color);
         transition: all 0.2s;
       }
     }

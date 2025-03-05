@@ -146,7 +146,7 @@ onMounted(async () => {
       margin: 1.2em 0;
     }
     button {
-      background: rgba(16, 147, 255, 1);
+      background: var(--theme-color);
       padding: 0 1.14em;
       height: 2.28em;
       color: #fff;
@@ -215,22 +215,22 @@ onMounted(async () => {
       text-align: center;
       box-sizing: border-box;
 
-      border: 2px solid #1093ff;
+      border: 2px solid var(--theme-color);
 
       background: #fff;
 
-      color: #1093ff;
+      color: var(--theme-color);
       &:hover {
         opacity: 0.8;
         transition: all 0.2s;
       }
 
       &.github-btn {
-        border-color: #1093ff;
+        border-color: var(--theme-color);
 
         color: #fff;
 
-        background: #1093ff;
+        background: var(--theme-color);
       }
     }
   }
