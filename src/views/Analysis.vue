@@ -886,11 +886,11 @@ const handleClickOutside = (event) => {
               border-bottom: 2px solid transparent;
 
               &.active {
-                color: #0c76ce;
-                border-bottom: 2px solid rgba(16, 147, 255, 1);
+                color: var(--theme-color);
+                border-bottom: 2px solid var(--theme-color);
               }
               &:hover {
-                color: #0c76ce;
+                color: var(--theme-color);
               }
             }
           }
