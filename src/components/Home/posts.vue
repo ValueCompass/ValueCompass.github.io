@@ -44,6 +44,46 @@ const getAssetsFile = (url: any) => {
   return new URL(`../../assets/${url}`, import.meta.url).href;
 };
 const posts = ref([
+  // {
+  //   title:
+  //     "Embedding an Ethical Mind - Aligning Text-to-Image Synthesis via Lightweight Value Optimization",
+  //   date: "2024-10-16",
+  //   image: "basic_value_space.png",
+  //   tags: ["alignment"],
+  //   permalink: "/text2image_alignment",
+  // },
+  // {
+  //   title:
+  //     "Elephant in the Room - Unveiling the Impact of Reward Model Quality in Alignment",
+  //   date: "2024-09-26",
+  //   image: "reward_model_quality.png",
+  //   tags: ["analysis"],
+  //   permalink: "/reward_model_quality",
+  // },
+  // {
+  //   title:
+  //     "Raising the Bar - Investigating the Values of Large Language Models via Generative Evolving Testing",
+  //   date: "2024-07-20",
+  //   image: "evolving_test.png",
+  //   tags: ["evaluation"],
+  //   permalink: "/generative_evolving_test",
+  // },
+  {
+    title:
+      "Value Compass Leaderboard: A Platform for Fundamental and Validated Evaluation of LLMs Values",
+    date: "2015-1-13",
+    image: "ValueCompassLeaderboard-A-Platform-for-Fundamental-and-Validated-Evaluation-of-LLMs-Values.png",
+    tags: ["evaluation"],
+    permalink: "/",
+  },
+  {
+    title:
+      "The Road to Artificial SuperIntelligence: A Comprehensive Survey of Superalignment",
+    date: "2014-12-25",
+    image: "The-Road-to-Artificial-SuperIntelligence-A-Comprehensive-Survey-of-Superalignment.png",
+    tags: ["analysis"],
+    permalink: "/",
+  },
   {
     title:
       "Embedding an Ethical Mind - Aligning Text-to-Image Synthesis via Lightweight Value Optimization",
@@ -51,22 +91,6 @@ const posts = ref([
     image: "basic_value_space.png",
     tags: ["alignment"],
     permalink: "/text2image_alignment",
-  },
-  {
-    title:
-      "Elephant in the Room - Unveiling the Impact of Reward Model Quality in Alignment",
-    date: "2024-09-26",
-    image: "reward_model_quality.png",
-    tags: ["analysis"],
-    permalink: "/reward_model_quality",
-  },
-  {
-    title:
-      "Raising the Bar - Investigating the Values of Large Language Models via Generative Evolving Testing",
-    date: "2024-07-20",
-    image: "evolving_test.png",
-    tags: ["evaluation"],
-    permalink: "/generative_evolving_test",
   },
 ]);
 </script>
