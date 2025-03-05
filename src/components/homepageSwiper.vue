@@ -3,7 +3,7 @@
     <el-dialog
       v-model="dialogTableVisible"
       title=""
-      style="width: 65%; max-width: 1200px"
+      style="width: 70%; max-width: 1340px"
       align-center
     >
       <!-- <div class="homepageSwiper-container"> -->
@@ -30,6 +30,7 @@
           :modules="modules"
           :navigation="true"
           :pagination="{ clickable: true }"
+          :loop="true"
         >
           <swiper-slide
             class="swiper-slide"
@@ -90,14 +91,10 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Navigation, A11y, Autoplay } from "swiper/modules";
 const modules = [Pagination, Navigation, A11y, Autoplay];
 
-// Import Swiper Vue.js components
-
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-// Import Swiper styles
-import "swiper/css";
 
 const getAssetsFile = (url) => {
   return new URL(`../assets/Value_Systems_images/${url}`, import.meta.url).href;
@@ -151,8 +148,9 @@ const onSwiper = (swiper) => {
 
 const onSlideChange = () => {
   console.log("slide change");
-  console.log(swiperRef.value.activeIndex);
-  tabIndex.value = swiperRef.value.activeIndex;
+  if (swiperRef.value) {
+    tabIndex.value = swiperRef.value.activeIndex;
+  }
 };
 const tabClick = (index) => {
   tabIndex.value = index;
@@ -170,7 +168,6 @@ defineExpose({
   showIntro,
 });
 </script>
-
 <style scoped lang="scss">
 .homepageSwiper-container {
   background: rgba(0, 0, 0, 0.2);
@@ -223,7 +220,7 @@ defineExpose({
 .swiper-slide {
   .swiper-main {
     color: #000;
-    padding: 0 1.2em 2em;
+    padding: 0 2.4em 2em;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;

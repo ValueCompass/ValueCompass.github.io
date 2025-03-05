@@ -23,7 +23,7 @@
         </div>
         <div class="right">
           <p class="p">
-              <b>A holistic, adaptive, and pluralistic</b> evaluation platform for LLM
+            A <b>holistic, adaptive, and pluralistic</b> evaluation platform for LLM
               values, grounded in basic values and generative, evolving
               assessments.
             </p>

@@ -104,7 +104,7 @@
           <el-tab-pane
             v-for="tab in tabList"
             :key="tab.index"
-            :label="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + tab.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"
+            :label="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + tab.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"
             :name="tab.index"
           ></el-tab-pane>
         </el-tabs>

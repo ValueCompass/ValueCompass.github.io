@@ -277,19 +277,15 @@ defineExpose({
       line-height: 1.4;
       margin: 0 0.2em;
       cursor: pointer;
-      // flex-grow: 1;
-      padding: .65em 1em;
-      border-radius: 1em;
+      padding: .65em 3em;
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
       align-items: center;
       transition: all 0.2s;
-      // flex: 1;
-      color: #004F8F;
+      color: rgba(114, 114, 114, 1);
       font-weight: 600;
-      border-radius: 1em;
-      border: 2px solid transparent;
+      border-bottom: 2px solid transparent;
       span {
         white-space: nowrap;
         font-size: 1em;
