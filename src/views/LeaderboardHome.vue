@@ -18,16 +18,16 @@
       </div> -->
       <div class="main-container">
         <div class="intro intro-container">
-        <div class="left">
-          <h2>Leaderboard</h2>
-        </div>
-        <div class="right">
-          <p class="p">
-            A <b>holistic, adaptive, and pluralistic</b> evaluation platform for LLM
-              values, grounded in basic values and generative, evolving
+          <div class="left">
+            <h2>Leaderboard</h2>
+          </div>
+          <div class="right">
+            <p class="p">
+              A <b>holistic, adaptive, and pluralistic</b> evaluation platform
+              for LLM values, grounded in basic values and generative, evolving
               assessments.
             </p>
-          <ul>
+            <ul>
               <li>
                 <p>4</p>
                 <p>basic value systems</p>
@@ -61,16 +61,16 @@
                 <p>value space</p>
               </li>
             </ul>
-            
-          <!-- <p>
+
+            <!-- <p>
             Welcome to a comprehensive LLM value assessment platform,
             distinguished by its interdisciplinary value perspectives and robust
             evaluation framework. <br />With fine-grained value comparisons and
             illustrative examples, this platform empowers you to find the LLM
             that best aligns with your own values.
           </p> -->
+          </div>
         </div>
-      </div>
       </div>
       <el-affix
         class="affix-box"
@@ -121,7 +121,7 @@
         </router-view>
       </div>
     </div>
-    <div class="learnMore-btn" @click="showIntro(0)">
+    <div class="learnMore-btn" @click="showIntro(0)" v-drag>
       <span>Learn More About the Value Systems</span>
     </div>
 
@@ -138,6 +138,9 @@ import homepageSwiper from "../components/homepageSwiper.vue";
 const homepageSwiperRef = ref(null);
 
 const showIntro = (index) => {
+  if (isDragging) {
+    return;
+  }
   homepageSwiperRef.value.showIntro(index);
 };
 
@@ -155,6 +158,57 @@ onActivated(() => {
     }
   });
 });
+
+// 自定义指令 v-drag
+let isDragging = false;
+const vDrag = {
+  mounted(el) {
+    el.style.position = "absolute";
+
+    el.onmousedown = function (e) {
+      console.log("mousedown");
+      isDragging = false;
+      const disX = e.clientX - el.offsetLeft;
+      const disY = e.clientY - el.offsetTop;
+
+      document.onmousemove = function (e) {
+        isDragging = true;
+        let left = e.clientX - disX;
+        let top = e.clientY - disY;
+
+        // 边界检查
+        const minLeft = 0;
+        const maxLeft = document.body.clientWidth - el.offsetWidth;
+        const minTop = 0;
+        const maxTop = document.body.clientHeight - el.offsetHeight;
+
+        if (left < minLeft) left = minLeft;
+        if (left > maxLeft) left = maxLeft;
+        if (top < minTop) top = minTop;
+        if (top > maxTop) top = maxTop;
+
+        el.style.left = left + "px";
+        el.style.top = top + "px";
+      };
+
+      document.onmouseup = function () {
+        console.log("mouseup");
+        document.onmousemove = null;
+        document.onmouseup = null;
+        setTimeout(() => {
+          isDragging = false;
+        }, 0);
+      };
+    };
+
+    el.onclick = function (e) {
+      if (isDragging) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    };
+  },
+};
 </script>
 
 <style scoped lang="scss">
@@ -207,34 +261,34 @@ onActivated(() => {
     flex: 1;
     padding-left: 2em;
     ul {
-        padding: 0.75em 0;
-        margin: .75em 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        align-items: center;
-        li {
-          text-align: center;
-          p:nth-child(1) {
-            font-weight: 700;
-            font-size: 2.5em;
-            color: rgba(16, 147, 255, 1);
-            svg {
-              width: 1em;
-              height: 1em;
-            }
-          }
-          p:nth-child(2) {
-            margin-top: 0.2em;
-            text-transform: capitalize;
+      padding: 0.75em 0;
+      margin: 0.75em 0;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      align-items: center;
+      li {
+        text-align: center;
+        p:nth-child(1) {
+          font-weight: 700;
+          font-size: 2.5em;
+          color: rgba(16, 147, 255, 1);
+          svg {
+            width: 1em;
+            height: 1em;
           }
         }
+        p:nth-child(2) {
+          margin-top: 0.2em;
+          text-transform: capitalize;
+        }
       }
-      .p {
-        font-size: 1.25em;
-        line-height: 1.8;
-      }
+    }
+    .p {
+      font-size: 1.25em;
+      line-height: 1.8;
+    }
   }
   h2 {
     font-size: 4em;
@@ -295,7 +349,7 @@ onActivated(() => {
 .learnMore-btn {
   background: #f5c344;
   padding: 0.8em;
-  position: fixed;
+  position: absolute;
   top: 50%;
   right: 3px;
   width: 5.35em;
@@ -306,9 +360,13 @@ onActivated(() => {
   cursor: pointer;
   transform: translateY(-50%);
   z-index: 100;
+  -webkit-user-select: none; /* WebKit内核私有属性 */
+  -moz-user-select: none; /* Firefox私有属性 */
+  -ms-user-select: none; /* IE私有属性(IE10及以后) */
+  user-select: none; /* 标准CSS3属性 */
 }
 
-:deep(.el-affix--fixed){
+:deep(.el-affix--fixed) {
   z-index: 2001 !important;
 }
 </style>
