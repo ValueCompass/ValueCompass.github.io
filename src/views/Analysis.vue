@@ -741,7 +741,7 @@ const handleClickOutside = (event) => {
   .model-props {
     margin-top: 1.5em;
     display: flex;
-    gap: 3.75em;
+    gap: 3em;
     // justify-content: space-between;
     align-items: center;
     .model-prop {
@@ -756,9 +756,10 @@ const handleClickOutside = (event) => {
       .prop-name {
         font-size: 1.125em;
         margin-right: 0.375em;
+        white-space: nowrap;
       }
       .prop-content {
-        max-width: 180px;
+        max-width: 8em;
         white-space: nowrap; /* 不换行 */
         overflow: hidden; /* 超出部分隐藏 */
         text-overflow: ellipsis;
