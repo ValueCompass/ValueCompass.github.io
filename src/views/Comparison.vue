@@ -839,6 +839,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
 }
 :deep(.el-tabs__header) {
   --el-font-size-base: 1.25em;
+  --el-color-primary: var(--theme-color);
   .el-tabs__item {
     text-transform: capitalize;
     padding: 0;
@@ -846,7 +847,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
     font-weight: 600;
     border-bottom: 2px solid transparent;
     &.is-active {
-      color: rgba(16, 147, 255, 1);
+      color: var(--theme-color) !important;
     }
     &:hover {
       color: #47ACFF;

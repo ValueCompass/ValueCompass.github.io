@@ -86,7 +86,7 @@
 
         <li class="btn-box">
           <el-button
-            :color="props.compareArr.length < 2 ? '#C2C2C2' : '#1093FF'"
+            :color="props.compareArr.length < 2 ? '#C2C2C2' : 'var(--theme-color)'"
             @click="compareNow"
             :disabled="props.compareArr.length < 2"
             class="compare-btn"

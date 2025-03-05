@@ -240,7 +240,7 @@
                       class="add"
                       name="add"
                       @click="compareBtnClick(scope.row)"
-                      style="margin-left: 1.2em"
+                      style="margin-left: 1.2em; color: var(--theme-color)"
                     ></SvgIcon>
                   </el-tooltip>
                 </div>
@@ -265,7 +265,7 @@
                     placement="top"
                   >
                     <SvgIcon
-                      style="color: #1093ff; margin-left: 1.2em"
+                      style="color: var(--theme-color); margin-left: 1.2em"
                       class="add"
                       name="model-checked-icon"
                       @click="compareBtnClick(scope.row)"
@@ -278,11 +278,10 @@
               <template #default="scope">
                 <el-tooltip effect="customized" content="view" placement="top">
                   <SvgIcon
-                    color="#FFD000"
                     class="handleDetailClick"
                     name="jump"
                     @click="handleDetailClick(scope.row)"
-                    style="margin-left: 1em"
+                    style="margin-left: 1em; color: var(--theme-color);"
                   ></SvgIcon>
                 </el-tooltip>
               </template>

@@ -6,7 +6,7 @@
       <div class="leaderboard flex main-container">
         <div class="left">
           <div>
-            <router-link to="/leaderboard/leaderboard">
+            <router-link to="/leaderboard/leaderboard" aria-label="leaderboard">
               <img src="@/assets/images/leaderboard-image.png" alt="" />
               <div class="cover"></div>
             </router-link>
@@ -205,7 +205,7 @@ import postsComponent from "../components/Home/posts.vue";
           p:nth-child(1) {
             font-weight: 700;
             font-size: 2.5em;
-            color: rgba(16, 147, 255, 1);
+            color: var(--theme-color);
             svg {
               width: 1em;
               height: 1em;
@@ -254,7 +254,7 @@ import postsComponent from "../components/Home/posts.vue";
   }
   .view-more-btn {
     display: inline-block;
-    color: rgba(16, 147, 255, 1);
+    color: var(--theme-color);
     display: inline-flex;
     flex-direction: row;
     align-content: center;
@@ -268,14 +268,14 @@ import postsComponent from "../components/Home/posts.vue";
 
     &:hover {
       span {
-        background: linear-gradient(270deg, #0078d4 0%, #8661c5 100%);
+        background: linear-gradient(270deg, var(--theme-color) 0%, #8661c5 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         transition: all 0.2s;
       }
       svg {
-        color: #0078d4;
+        color: var(--theme-color);
         transition: all 0.2s;
       }
     }

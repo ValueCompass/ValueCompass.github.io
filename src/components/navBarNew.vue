@@ -68,7 +68,7 @@
           <router-link to="/AboutUs">About Us</router-link>
         </li>
         <li class="icon-li">
-          <a href="mailto:valuecompass@microsoft.com">
+          <a href="mailto:valuecompass@microsoft.com" aria-label="Email">
             <SvgIcon
               class="SvgIcon email-icon"
               name="email-icon"
@@ -77,7 +77,7 @@
           </a>
         </li>
         <li class="icon-li">
-          <a
+          <a aria-label="Github"
             target="_blank"
             href="https://github.com/microsoft/ValueCompass.git"
             ><SvgIcon class="SvgIcon github-icon" name="github-icon"></SvgIcon
@@ -167,7 +167,7 @@ const copyText = (text: string) => {
         &:hover {
           & > a,
           svg {
-            color: #1093ff;
+            color: var(--theme-color);
           }
         }
         &.has-child-nav.enter-active {
@@ -189,13 +189,13 @@ const copyText = (text: string) => {
           font-size: 1.125em;
         }
         .router-link-exact-active {
-          color: #1093ff !important;
+          color: var(--theme-color) !important;
           font-weight: 700;
         }
         &.active {
           & > a,
           svg {
-            color: #1093ff !important;
+            color: var(--theme-color) !important;
           }
         }
         .down-arrow {
@@ -233,7 +233,7 @@ const copyText = (text: string) => {
             }
             &:hover {
               & > a {
-                color: #1093ff;
+                color: var(--theme-color);
               }
             }
           }

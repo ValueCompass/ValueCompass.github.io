@@ -58,7 +58,6 @@
           >
           <el-button
             class="btn apply-btn"
-            color="#1093FF"
             :disabled="checkedPoints.length == 0"
             @click="applyChange()"
             >Apply</el-button
@@ -333,8 +332,12 @@ defineExpose({
     .btn {
     }
     .select-all-btn {
-      color: #1093ff;
-      border-color: #1093ff;
+      color: var(--theme-color);
+      border-color: var(--theme-color);
+    }
+    .apply-btn{
+      background: var(--theme-color);
+      color: #fff;
     }
   }
 }

@@ -273,7 +273,7 @@ const vDrag = {
         p:nth-child(1) {
           font-weight: 700;
           font-size: 2.5em;
-          color: rgba(16, 147, 255, 1);
+          color: var(--theme-color);
           svg {
             width: 1em;
             height: 1em;
@@ -304,7 +304,7 @@ const vDrag = {
 }
 .leaderboard-nav-container {
   width: 100vw;
-  border-bottom: 2px solid #1093ff;
+  border-bottom: 2px solid var(--theme-color);
   background: #fff;
   padding-top: 2em;
 }
@@ -331,12 +331,12 @@ const vDrag = {
       border-color: #c2c2c2;
       color: #727272;
       &:hover {
-        color: #1093ff;
+        color: var(--theme-color);
       }
       &.router-link-active {
-        background: #1093ff;
+        background: var(--theme-color);
         color: #ffffff;
-        border-color: #1093ff;
+        border-color: var(--theme-color);
       }
       .svg-icon {
         margin-right: 0.6em;
