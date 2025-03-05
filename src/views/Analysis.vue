@@ -69,7 +69,7 @@
               ><a
                 :href="ensureHttps(currentModelInfo.website)"
                 target="_blank"
-                >{{ extractDomain(currentModelInfo.website) }}</a
+                >{{ currentModelInfo.website }}</a
               ></span
             >
           </div>
@@ -80,7 +80,7 @@
               ><a
                 :href="ensureHttps(currentModelInfo.report)"
                 target="_blank"
-                >{{ extractDomain(currentModelInfo.report) }}</a
+                >{{ currentModelInfo.report }}</a
               ></span
             >
           </div>
@@ -110,7 +110,7 @@
             v-for="tab in tabList"
             :key="tab.index"
           >
-            <span class="lead"></span>{{ tab.name }}
+            {{ tab.name }}
           </li>
         </ul>
       </div>
@@ -763,7 +763,6 @@ const handleClickOutside = (event) => {
         overflow: hidden; /* 超出部分隐藏 */
         text-overflow: ellipsis;
         font-size: 1.125em;
-        text-transform: capitalize;
         a {
           text-decoration: underline;
           color: #657171;
@@ -775,24 +774,27 @@ const handleClickOutside = (event) => {
 .chart-box {
   margin-top: 3em;
   padding: 0 0 4.5em;
-  font-size: 1.125em;
   display: flex;
   .chart-tab {
-    width: 9em;
+    width: 11em;
     padding-right: 1em;
     .chart-tab-title {
-      font-size: 1em;
+      font-size: 1.25em;
       font-weight: 700;
+      margin-bottom: 2em;
     }
     ul {
       li {
         line-height: 1.35;
-        font-size: 1.11em;
-        font-weight: 400;
+        font-size: 1em;
+        font-weight: 600;
         margin-top: 1.5em;
         display: flex;
         align-items: center;
         cursor: pointer;
+        border-left: 2px solid transparent;
+        padding: 0 1em;
+        color: #727272;
         span {
           width: 0.6875em;
           height: 1.125em;
@@ -800,12 +802,9 @@ const handleClickOutside = (event) => {
           margin-right: 1em;
         }
         &.active {
-          font-weight: 700;
-          color: rgba(16, 147, 255, 1);
-          span {
-            background: url(@/assets/images/right-arrow.svg) no-repeat;
-            background-size: contain;
-          }
+          border-color: #004f8f;
+          font-weight: 600;
+          color: #004f8f;
         }
       }
     }
