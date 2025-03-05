@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios';
-// import { ElMessage } from "element-plus";
+import { ElMessage } from "element-plus";
 
 
 export const createAxios = (
@@ -104,7 +104,7 @@ export const createAxios = (
             }
 
             console.log(errorTxt)
-            // ElMessage.error(errorTxt)
+            ElMessage.error(errorTxt)
             /***** 处理结束 *****/
             return Promise.reject(error);
         }

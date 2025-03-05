@@ -205,6 +205,10 @@ button:focus-visible {
     outline: none !important;
 }
 
+.el-message {
+    z-index: 9999 !important;
+  }
+
 button,.button {
     background-color: #1093ff;
     color: #fff;
