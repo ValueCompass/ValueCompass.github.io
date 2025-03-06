@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="main-container">
-      <div class="des">
+      <!-- <div class="des">
         <h4>Overall Rankings and Scores of LLMs</h4>
-      </div>
+      </div> -->
       <div class="content">
         <SelectedPoints
           ref="SelectedPointsRef"
