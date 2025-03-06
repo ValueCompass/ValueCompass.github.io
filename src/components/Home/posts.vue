@@ -72,17 +72,17 @@ const posts = ref([
     title:
       "Value Compass Leaderboard: A Platform for Fundamental and Validated Evaluation of LLMs Values",
     date: "2015-1-13",
-    image: "ValueCompassLeaderboard-A-Platform-for-Fundamental-and-Validated-Evaluation-of-LLMs-Values.png",
+    image: "architecture_value.png",
     tags: ["evaluation"],
-    permalink: "/",
+    permalink: "/value_compass_leaderboard",
   },
   {
     title:
       "The Road to Artificial SuperIntelligence: A Comprehensive Survey of Superalignment",
     date: "2014-12-25",
-    image: "The-Road-to-Artificial-SuperIntelligence-A-Comprehensive-Survey-of-Superalignment.png",
+    image: "scalable_oversigh_ techniques.png",
     tags: ["analysis"],
-    permalink: "/",
+    permalink: "/survey_of_superalignment",
   },
   {
     title:

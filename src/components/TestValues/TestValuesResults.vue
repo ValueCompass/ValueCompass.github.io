@@ -1087,7 +1087,7 @@ defineExpose({
 }
 
 .modal-box {
-  z-index: 5;
+  z-index: 2005;
   position: fixed;
   width: 100%;
   height: 100%;
