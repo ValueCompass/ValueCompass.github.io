@@ -240,7 +240,7 @@
                       class="add"
                       name="add"
                       @click="compareBtnClick(scope.row)"
-                      style="margin-left: 1.2em; color: var(--theme-color)"
+                      style="padding: 0 1.2em; color: var(--theme-color)"
                     ></SvgIcon>
                   </el-tooltip>
                 </div>
@@ -254,7 +254,7 @@
                   <SvgIcon
                     class="add disabled"
                     name="add-disabled"
-                    style="margin-left: 1.2em"
+                    style="padding: 0 1.2em;"
                   ></SvgIcon>
                 </div>
 
@@ -265,7 +265,7 @@
                     placement="top"
                   >
                     <SvgIcon
-                      style="color: var(--theme-color); margin-left: 1.2em"
+                      style="color: var(--theme-color); padding: 0 1.2em;"
                       class="add"
                       name="model-checked-icon"
                       @click="compareBtnClick(scope.row)"
@@ -278,10 +278,10 @@
               <template #default="scope">
                 <el-tooltip effect="customized" content="view" placement="top">
                   <SvgIcon
-                    class="handleDetailClick"
+                    class="jump"
                     name="jump"
                     @click="handleDetailClick(scope.row)"
-                    style="margin-left: 1em; color: var(--theme-color);"
+                    style="padding: 0 1em; color: var(--theme-color);"
                   ></SvgIcon>
                 </el-tooltip>
               </template>
@@ -699,7 +699,7 @@ const handleMouseUp = () => {
   }
   .el-table__cell {
     padding: 18px 0;
-    cursor: pointer;
+    // cursor: pointer;
   }
   thead th {
     font-weight: 600;
@@ -717,5 +717,12 @@ const handleMouseUp = () => {
 .points-show {
   position: absolute;
   left: 5.5em;
+}
+
+
+svg{
+  &.add, &.jump{
+    cursor: pointer;
+  }
 }
 </style>
