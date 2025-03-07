@@ -52,12 +52,12 @@
                     :alt="item.img"
                     width="100%"
                   />
-                  <a :href="item.casesLink" target="_blank">
+                  <!-- <a :href="item.casesLink" target="_blank">
                     <span class="view-more-btn">
                       <span>More cases</span>
                       <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
                     </span>
-                  </a>
+                  </a> -->
                 </div>
                 <p>
                   {{ item.detail }}

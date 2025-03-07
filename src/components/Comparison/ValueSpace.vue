@@ -16,6 +16,7 @@
             ></div>
           </div>
         </div>
+        <p style="text-align: center; color: #747474; margin-top: 2.25em;">The value space is a t-SNE visualization that maps the 10-dimensional value vectors of different models and countries to a lower-dimensional space.</p>
       </div>
     </div>
   </div>
