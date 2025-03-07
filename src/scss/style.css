@@ -227,6 +227,20 @@ button,.button {
         /* background: #50b8ff; */
         opacity: .9;
     }
+    &.border{
+        border: 1px solid var(--theme-color) !important;
+        background: #fff;
+        color: var(--theme-color);
+    }
+}
+.el-button.is-plain{
+    border-color: var(--theme-color);
+    color: var(--theme-color);
+    background: #fff;
+    &:hover{
+        background: #fff;
+        color: var(--theme-color);
+    }
 }
 
 .tooltip {
