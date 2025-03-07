@@ -53,9 +53,9 @@
               </li>
             </ul>
             <p class="p">
-              A holistic, adaptive, and pluralistic evaluation platform for LLM
-              values, grounded in basic values and generative, evolving
-              assessments.
+              A comprehensive, self-evolving, and pluralistic evaluation
+              platform for LLM values, grounded in basic values and generative,
+              evolving assessments.
             </p>
             <div>
               <router-link to="/leaderboard/leaderboard">
@@ -268,7 +268,11 @@ import postsComponent from "../components/Home/posts.vue";
 
     &:hover {
       span {
-        background: linear-gradient(270deg, var(--theme-color) 0%, #8661c5 100%);
+        background: linear-gradient(
+          270deg,
+          var(--theme-color) 0%,
+          #8661c5 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
