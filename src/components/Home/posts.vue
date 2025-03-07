@@ -71,7 +71,7 @@ const posts = ref([
   {
     title:
       "Value Compass Leaderboard: A Platform for Fundamental and Validated Evaluation of LLMs Values",
-    date: "2015-1-13",
+    date: "2025-1-13",
     image: "architecture_value.png",
     tags: ["evaluation"],
     permalink: "/value_compass_leaderboard",
@@ -79,7 +79,7 @@ const posts = ref([
   {
     title:
       "The Road to Artificial SuperIntelligence: A Comprehensive Survey of Superalignment",
-    date: "2014-12-25",
+    date: "2024-12-25",
     image: "scalable_oversigh_ techniques.png",
     tags: ["analysis"],
     permalink: "/survey_of_superalignment",
