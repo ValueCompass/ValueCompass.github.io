@@ -56,51 +56,75 @@
           {{ currentModel }} is an API model produced by
           {{ currentModelInfo.developer }}.
         </div>
-        <div class="model-props" v-if="currentModelInfo">
-          <div class="model-prop">
-            <!-- <SvgIcon class="prop-icon" name="Affiliation-icon"></SvgIcon> -->
-            <span class="prop-name">Developer: </span>
-            <span class="prop-content">{{ currentModelInfo.affiliation }}</span>
+        <div
+          style="
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 1.5em;
+          "
+        >
+          <div class="model-props" v-if="currentModelInfo">
+            <div class="model-prop">
+              <!-- <SvgIcon class="prop-icon" name="Affiliation-icon"></SvgIcon> -->
+              <span class="prop-name">Developer: </span>
+              <span class="prop-content">{{
+                currentModelInfo.affiliation
+              }}</span>
+            </div>
+            <div class="model-prop">
+              <!-- <SvgIcon class="prop-icon" name="website-icon"></SvgIcon> -->
+              <span class="prop-name">Website/GitHub: </span>
+              <span class="prop-content"
+                ><a
+                  :href="ensureHttps(currentModelInfo.website)"
+                  target="_blank"
+                  >{{ currentModelInfo.website }}</a
+                ></span
+              >
+            </div>
+            <div class="model-prop">
+              <!-- <SvgIcon class="prop-icon" name="paper-icon"></SvgIcon> -->
+              <span class="prop-name">Paper/Report: </span>
+              <span class="prop-content"
+                ><a
+                  :href="ensureHttps(currentModelInfo.report)"
+                  target="_blank"
+                  >{{ currentModelInfo.report }}</a
+                ></span
+              >
+            </div>
+            <div class="model-prop">
+              <span class="prop-name">Type: </span>
+              <span class="prop-content"
+                >{{ currentModelInfo["type"] }}-Source</span
+              >
+            </div>
+            <div class="model-prop">
+              <!-- <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon> -->
+              <span class="prop-name">Publish Date: </span>
+              <span class="prop-content">{{
+                currentModelInfo["release date"].split(" ")[0]
+              }}</span>
+            </div>
+            <div class="model-prop">
+              <!-- <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon> -->
+              <span class="prop-name">Measurement Date: </span>
+              <span class="prop-content">2025/2</span>
+            </div>
           </div>
-          <div class="model-prop">
-            <!-- <SvgIcon class="prop-icon" name="website-icon"></SvgIcon> -->
-            <span class="prop-name">Website/GitHub: </span>
-            <span class="prop-content"
-              ><a
-                :href="ensureHttps(currentModelInfo.website)"
-                target="_blank"
-                >{{ currentModelInfo.website }}</a
-              ></span
+          <div style="width: 9em">
+            <el-button
+              style="font-size: 0.875em"
+              plain
+              color="#004f8f"
+              @click="downloadAll"
+              :disabled="downloadDisabled"
+              :loading="downloadDisabled"
             >
-          </div>
-          <div class="model-prop">
-            <!-- <SvgIcon class="prop-icon" name="paper-icon"></SvgIcon> -->
-            <span class="prop-name">Paper/Report: </span>
-            <span class="prop-content"
-              ><a
-                :href="ensureHttps(currentModelInfo.report)"
-                target="_blank"
-                >{{ currentModelInfo.report }}</a
-              ></span
-            >
-          </div>
-          <div class="model-prop">
-            <span class="prop-name">Type: </span>
-            <span class="prop-content"
-              >{{ currentModelInfo["type"] }}-Source</span
-            >
-          </div>
-          <div class="model-prop">
-            <!-- <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon> -->
-            <span class="prop-name">Publish Date: </span>
-            <span class="prop-content">{{
-              currentModelInfo["release date"].split(" ")[0]
-            }}</span>
-          </div>
-          <div class="model-prop">
-            <!-- <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon> -->
-            <span class="prop-name">Measurement Date: </span>
-            <span class="prop-content">2025/2</span>
+              Download All
+            </el-button>
           </div>
         </div>
       </div>
@@ -123,7 +147,13 @@
         <div class="chart-main-chart" :class="openCaseStatus ? '' : 'close'">
           <span class="case-open-btn" @click="openCase(true)">Cases</span>
           <div class="chart-container">
-            <div class="chart" ref="chartDom"></div>
+            <div class="charts-box">
+              <EchartComponent
+                class="chart"
+                @setCurrentCaseData="setCurrentCaseData"
+                ref="chartDom0"
+              ></EchartComponent>
+            </div>
           </div>
           <div class="chart-text-main">
             <div class="chart-menu">
@@ -179,6 +209,37 @@
           {{ tabList[currentTab].name }} Evaluation Results and cases
         </p>
       </div>
+
+      <div class="download-charts-box">
+        <EchartComponent
+          class="chart"
+          :hasHightlight="false"
+          @setCurrentCaseData="setCurrentCaseData"
+          :class="{ show: currentTab == 0 }"
+          ref="chartDom1"
+        ></EchartComponent>
+        <EchartComponent
+          class="chart"
+          :hasHightlight="false"
+          @setCurrentCaseData="setCurrentCaseData"
+          :class="{ show: currentTab == 1 }"
+          ref="chartDom2"
+        ></EchartComponent>
+        <EchartComponent
+          class="chart"
+          :hasHightlight="false"
+          @setCurrentCaseData="setCurrentCaseData"
+          :class="{ show: currentTab == 2 }"
+          ref="chartDom3"
+        ></EchartComponent>
+        <EchartComponent
+          class="chart"
+          :hasHightlight="false"
+          @setCurrentCaseData="setCurrentCaseData"
+          :class="{ show: currentTab == 3 }"
+          ref="chartDom4"
+        ></EchartComponent>
+      </div>
     </div>
   </div>
 </template>
@@ -190,7 +251,16 @@ import * as echarts from "echarts";
 import swiper from "../components/swiper.vue";
 import { getKeyValue, ensureHttps, extractDomain } from "../utils/common.js";
 
-const chartDom = ref(null);
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import EchartComponent from "../components/Analysis/EchartComponent.vue";
+
+const chartDom0 = ref(null);
+const chartDom1 = ref(null);
+const chartDom2 = ref(null);
+const chartDom3 = ref(null);
+const chartDom4 = ref(null);
+
 // const barChart = ref(null);
 let chartInstance = null;
 let barInstance = null;
@@ -287,13 +357,18 @@ const fetchData = async () => {
             currentModel.value = modellist.value[0];
           }
           currentModelInfo.value = modelInfo[currentModel.value];
-          setRadarChart(Schwartz_data[currentModel.value]);
+          chartDom0.value.setRadarChart(Schwartz_data[currentModel.value]);
           currentCase = getCaseData(Schwartz_case, currentModel.value);
 
           chartMenu.value = Object.keys(currentCase).sort();
           changeMenu(chartMenu.value[0]);
           currentChartTab.value = chartMenu.value[0];
           currentCaseData.value = currentCase[currentChartTab.value];
+
+          chartDom1.value.setRadarChart(Schwartz_data[currentModel.value]);
+          chartDom2.value.setRadarChart(MFT_data[currentModel.value]);
+          chartDom3.value.setRadarChart(Risk_data[currentModel.value]);
+          chartDom4.value.setRadarChart(FULVa_data[currentModel.value]);
         })
       );
   } catch (error) {
@@ -335,8 +410,6 @@ const fetchOtherData = async () => {
 fetchData();
 fetchOtherData();
 
-let maxValue = 0;
-let minValue = 100;
 function getCaseData(arr, model) {
   const arr1 = arr.filter((item) => {
     return item.model == model;
@@ -351,225 +424,10 @@ function getCaseData(arr, model) {
     return acc;
   }, {});
 }
-function setRadarChart(data) {
-  const values = Object.values(data);
-  maxValue = Math.ceil(Math.max(...values) * 1) / 1;
-  minValue = Math.floor(Math.min(...values) * 1) / 1 - 10;
-  // 获取dada
-  const indicator = Object.keys(data).map((item, index) => {
-    return {
-      name: item,
-      color: index == 0 ? "rgba(16, 147, 255, 1)" : "black",
-      axisLabel: { show: index == 0 ? true : false },
-      min: minValue,
-      max: maxValue,
-    };
-  });
-  const r_data = Object.values(data);
-  chartInstance.setOption({
-    radar: {
-      splitArea: {
-        areaStyle: {
-          color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-        },
-      },
-      splitNumber: 5,
-      axisName: {
-        fontSize: 14,
-        color: "black",
-        formatter: function (value) {
-          return value.split("&").join("&\n"); // 将换行符拆分为数组
-        },
-      },
-      axisLabel: {
-        formatter: function (value) {
-          return value.toFixed(0); // 保留一位小数
-        },
-      },
-      triggerEvent: true,
-      indicator: indicator,
-    },
-    series: [
-      {
-        type: "radar",
-        symbolSize: 8,
-        itemStyle: {
-          color: "#1093FF",
-        },
-        data: [
-          {
-            value: r_data,
-            areaStyle: {
-              opacity: 0.3,
-              color: "#1093FF",
-            },
-            lineStyle: {
-              width: 2,
-              color: "#1093FF",
-            },
-          },
-        ],
-      },
-    ],
-  });
-}
-function setRadarHighlight(data, item) {
-  const indicator = Object.keys(data).map((indica, index) => {
-    return {
-      name: indica,
-      color: item == indica ? "rgba(16, 147, 255, 1)" : "black",
-      axisLabel: { show: index == 0 ? true : false },
-      min: minValue,
-      max: maxValue,
-    };
-  });
-  chartInstance.setOption({
-    radar: {
-      splitArea: {
-        areaStyle: {
-          color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-        },
-      },
-      splitNumber: 5,
-      axisName: {
-        fontSize: 14,
-        color: "black",
-        formatter: function (value) {
-          return value.split("&").join("&\n"); // 将换行符拆分为数组
-        },
-      },
-      triggerEvent: true,
-      indicator: indicator,
-    },
-  });
-}
+
 // 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
 onMounted(async () => {
   await nextTick(); // 确保DOM已经渲染完成
-  chartInstance = echarts.init(chartDom.value);
-  const option = {
-    radar: {
-      splitArea: {
-        areaStyle: {
-          color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-        },
-      },
-      axisLabel: {
-        show: true,
-        fontSize: 14,
-      },
-      axisName: {
-        fontSize: 14,
-        color: "black",
-      },
-      triggerEvent: true,
-      indicator: [
-        { name: "Benevolence", max: 1, color: "rgba(16, 147, 255, 1)" },
-        { name: "Achievement", max: 1, axisLabel: { show: false } },
-        { name: "Universalism", max: 1, axisLabel: { show: false } },
-        { name: "Tradition", max: 1, axisLabel: { show: false } },
-        { name: "Stimulation", max: 1, axisLabel: { show: false } },
-        { name: "Self-direction", max: 1, axisLabel: { show: false } },
-        { name: "Security", max: 1, axisLabel: { show: false } },
-        { name: "Power", max: 1, axisLabel: { show: false } },
-        { name: "Hedonism", max: 1, axisLabel: { show: false } },
-        { name: "Conformity", max: 1, axisLabel: { show: false } },
-      ],
-    },
-  };
-  chartInstance.setOption(option);
-  // chartInstance.on("mouseover", function (params) {
-  //   if (params.componentType === "radar" && params.targetType == "axisName") {
-  //     // 修改雷达图的颜色
-  //     const radar = chartInstance.getOption().radar[0];
-  //     const indicator = radar.indicator.map((item) => {
-  //       if (item.name == params.name && item.color !== "rgba(16, 147, 255, 1)") {
-  //         item.color = "green";
-  //       }
-  //       return item;
-  //     });
-  //     chartInstance.setOption({
-  //       radar: {
-  //         splitArea: {
-  //           areaStyle: {
-  //             color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-  //           },
-  //         },
-  //         axisName: {
-  //           fontSize: 14,
-  //           color: "#fff",
-  //         },
-  //         triggerEvent: true,
-  //         indicator: indicator,
-  //       },
-  //     });
-  //   }
-  // });
-  chartInstance.on("click", function (params) {
-    if (params.componentType === "radar" && params.targetType == "axisName") {
-      // 修改雷达图的颜色
-      const radar = chartInstance.getOption().radar[0];
-      const indicator = radar.indicator.map((item) => {
-        params.name = params.name.replace(/[\r\n]/g, "");
-        if (item.name != params.name && item.color == "rgba(16, 147, 255, 1)") {
-          delete item.color;
-        }
-        if (
-          item.name == params.name &&
-          item.color !== "rgba(16, 147, 255, 1)"
-        ) {
-          item.color = "rgba(16, 147, 255, 1)";
-          currentChartTab.value = item.name;
-          currentCaseData.value = currentCase[currentChartTab.value];
-        }
-        return item;
-      });
-      chartInstance.setOption({
-        radar: {
-          splitArea: {
-            areaStyle: {
-              color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-            },
-          },
-          axisName: {
-            fontSize: 14,
-            color: "black",
-          },
-          triggerEvent: true,
-          indicator: indicator,
-        },
-      });
-    }
-  });
-  chartInstance.on("mouseout", function (params) {
-    if (params.componentType === "radar" && params.targetType == "axisName") {
-      const radar = chartInstance.getOption().radar[0];
-      const indicator = radar.indicator.map((item) => {
-        if (
-          item.name == params.name &&
-          item.color !== "rgba(16, 147, 255, 1)"
-        ) {
-          delete item.color;
-        }
-        return item;
-      });
-      chartInstance.setOption({
-        radar: {
-          splitArea: {
-            areaStyle: {
-              color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-            },
-          },
-          axisName: {
-            fontSize: 14,
-            color: "black",
-          },
-          triggerEvent: true,
-          indicator: indicator,
-        },
-      });
-    }
-  });
 });
 
 const handleCheckedModelChange = (value) => {
@@ -579,13 +437,13 @@ const changeMenu = (item) => {
   currentChartTab.value = item;
   currentCaseData.value = currentCase[currentChartTab.value];
   if (currentTab.value == 0) {
-    setRadarHighlight(Schwartz_data[currentModel.value], item);
+    chartDom0.value.setRadarHighlight(Schwartz_data[currentModel.value], item);
   } else if (currentTab.value == 1) {
-    setRadarHighlight(MFT_data[currentModel.value], item);
+    chartDom0.value.setRadarHighlight(MFT_data[currentModel.value], item);
   } else if (currentTab.value == 2) {
-    setRadarHighlight(Risk_data[currentModel.value], item);
+    chartDom0.value.setRadarHighlight(Risk_data[currentModel.value], item);
   } else if (currentTab.value == 3) {
-    setRadarHighlight(FULVa_data[currentModel.value], item);
+    chartDom0.value.setRadarHighlight(FULVa_data[currentModel.value], item);
   }
 };
 const submit = () => {
@@ -596,16 +454,16 @@ const submit = () => {
   console.log(currentTab.value);
   console.log(currentModel.value);
   if (currentTab.value == 0) {
-    setRadarChart(Schwartz_data[currentModel.value]);
+    chartDom0.value.setRadarChart(Schwartz_data[currentModel.value]);
     currentCase = getCaseData(Schwartz_case, currentModel.value);
   } else if (currentTab.value == 1) {
-    setRadarChart(MFT_data[currentModel.value]);
+    chartDom0.value.setRadarChart(MFT_data[currentModel.value]);
     currentCase = getCaseData(MFT_case, currentModel.value);
   } else if (currentTab.value == 2) {
-    setRadarChart(Risk_data[currentModel.value]);
+    chartDom0.value.setRadarChart(Risk_data[currentModel.value]);
     currentCase = getCaseData(Risk_case, currentModel.value);
   } else if (currentTab.value == 3) {
-    setRadarChart(FULVa_data[currentModel.value]);
+    chartDom0.value.setRadarChart(FULVa_data[currentModel.value]);
     currentCase = getCaseData(FULVa_case, currentModel.value);
   }
   console.log(currentCase);
@@ -619,16 +477,16 @@ const currentTab = ref(0);
 const tabSwitch = (index) => {
   currentTab.value = index;
   if (currentTab.value == 0) {
-    setRadarChart(Schwartz_data[currentModel.value]);
+    chartDom0.value.setRadarChart(Schwartz_data[currentModel.value]);
     currentCase = getCaseData(Schwartz_case, currentModel.value);
   } else if (currentTab.value == 1) {
-    setRadarChart(MFT_data[currentModel.value]);
+    chartDom0.value.setRadarChart(MFT_data[currentModel.value]);
     currentCase = getCaseData(MFT_case, currentModel.value);
   } else if (currentTab.value == 2) {
-    setRadarChart(Risk_data[currentModel.value]);
+    chartDom0.value.setRadarChart(Risk_data[currentModel.value]);
     currentCase = getCaseData(Risk_case, currentModel.value);
   } else if (currentTab.value == 3) {
-    setRadarChart(FULVa_data[currentModel.value]);
+    chartDom0.value.setRadarChart(FULVa_data[currentModel.value]);
     currentCase = getCaseData(FULVa_case, currentModel.value);
   }
 
@@ -680,6 +538,91 @@ const handleClickOutside = (event) => {
   ) {
     visible.value = false;
   }
+};
+
+const setCurrentCaseData = (name) => {
+  currentChartTab.value = name;
+  currentCaseData.value = currentCase[currentChartTab.value];
+};
+
+// download all
+const downloadDisabled = ref(false);
+const downloadAll = async () => {
+  console.log("downloadAll");
+  if (downloadDisabled.value) {
+    return;
+  }
+  downloadDisabled.value = true;
+  await downloadChartsAsPDF(null);
+  downloadDisabled.value = false;
+};
+const SchwartzTableRef = ref(null);
+const MFTTableRef = ref(null);
+const RiskTableRef = ref(null);
+const FULVaTableRef = ref(null);
+
+const downloadChartsAsPDF = async (pdf) => {
+  const charts = [
+    [
+      {
+        name: "Schwartz Theory of Basic Values",
+        chart: chartDom1.value.$refs.chartDom,
+      },
+      {
+        name: "Moral Foundation Theory",
+        chart: chartDom2.value.$refs.chartDom,
+      },
+      {
+        name: "Safety Taxonomy",
+        chart: chartDom3.value.$refs.chartDom,
+      },
+      {
+        name: "LLMs' Unique Value System",
+        chart: chartDom4.value.$refs.chartDom,
+      },
+    ],
+  ];
+  console.log(pdf);
+  if (!pdf) {
+    pdf = new jsPDF("p", "mm", "a4");
+  }
+  // 获取页面宽高
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 10; // 设置统一的边距
+
+  let top = margin;
+  for (let j = 0; j < charts.length; j++) {
+    if (j > 0) {
+      pdf.addPage();
+      top = margin;
+    }
+    for (let i = 0; i < charts[j].length; i++) {
+      const canvas = await html2canvas(charts[j][i].chart);
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = pdf.getImageProperties(imgData);
+      const setImgWidth = pageWidth - 2 * margin;
+      const setImgHeight = (imgProps.height * setImgWidth) / imgProps.width;
+
+      if (top + setImgHeight > pageHeight - margin) {
+        pdf.addPage();
+        top = margin;
+      }
+
+      // 添加文字并居中
+      const text = charts[j][i].name;
+      const textWidth = pdf.getTextWidth(text);
+      const textX = (pageWidth - textWidth) / 2;
+      pdf.text(text, textX, top); // 在顶部距离上方添加文字
+      top += 8; // 文字高度
+
+      // 添加图像
+      pdf.addImage(imgData, "PNG", margin, top, setImgWidth, setImgHeight);
+      top += setImgHeight + margin + 5;
+    }
+  }
+
+  pdf.save("charts.pdf");
 };
 </script>
 
@@ -744,14 +687,22 @@ const handleClickOutside = (event) => {
     margin-top: 1.36em;
   }
   .model-props {
-    margin-top: 1.5em;
+    position: relative;
+    width: calc(100% - 10em);
+    line-height: 1.6;
     display: flex;
-    gap: 2em;
+    flex-wrap: wrap;
+    // gap: 3em;
     // justify-content: space-between;
     align-items: center;
     .model-prop {
+      padding-right: 1.8em;
       display: flex;
       align-items: center;
+      font-size: 1em;
+      &:last-child {
+        padding-right: 0;
+      }
       .prop-icon {
         width: 1.5em;
         height: 1.5em;
@@ -759,16 +710,14 @@ const handleClickOutside = (event) => {
         color: var(--text-color) !important;
       }
       .prop-name {
-        font-size: 1.125em;
         margin-right: 0.375em;
         white-space: nowrap;
       }
       .prop-content {
-        max-width: 8em;
+        max-width: 6em;
         white-space: nowrap; /* 不换行 */
         overflow: hidden; /* 超出部分隐藏 */
         text-overflow: ellipsis;
-        font-size: 1.125em;
         a {
           text-decoration: underline;
           color: #657171;
@@ -847,13 +796,17 @@ const handleClickOutside = (event) => {
         // min-width: 640px;
         // flex: 1;
         position: relative;
-        .chart {
+        .charts-box {
           z-index: 2;
           position: absolute;
           left: 0;
           top: 0;
           width: 100%;
           height: 100%;
+          .chart {
+            width: 100%;
+            height: 100%;
+          }
         }
       }
       .chart-text-main {
@@ -978,6 +931,18 @@ const handleClickOutside = (event) => {
     .dwn-btn {
       margin-top: 4em;
       text-align: center;
+    }
+  }
+
+  .download-charts-box {
+    position: absolute;
+    left: -99999px;
+    top: -99999px;
+    width: 1100px;
+    height: 700px;
+    .chart {
+      width: 100%;
+      height: 100%;
     }
   }
 }
