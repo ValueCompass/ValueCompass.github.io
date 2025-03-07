@@ -3,7 +3,22 @@
     <div>
       <div class="title-content">
         <h2>Compare Pool</h2>
-        <div class="compare-model-list">
+        <div class="compare-model-list" style="position: relative">
+          <el-button
+            style="
+              font-size: 0.875em;
+              position: absolute;
+              right: 0;
+              bottom: 2.2em;
+            "
+            plain
+            color="#004f8f"
+            @click="downloadAll"
+            :disabled="downloadDisabled"
+            :loading="downloadDisabled"
+          >
+            Download All
+          </el-button>
           <ul>
             <li
               class="model-li"
@@ -33,7 +48,7 @@
                 </el-tooltip>
                 <span class="dev">{{ item.model_info.developer }}</span>
                 <span class="date">{{
-                  item.model_info["release date"].split(" ")[0].substring(0,7)
+                  item.model_info["release date"].split(" ")[0].substring(0, 7)
                 }}</span>
               </div>
             </li>
@@ -104,7 +119,11 @@
           <el-tab-pane
             v-for="tab in tabList"
             :key="tab.index"
-            :label="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + tab.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"
+            :label="
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+              tab.name +
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+            "
             :name="tab.index"
           ></el-tab-pane>
         </el-tabs>
@@ -127,21 +146,25 @@
         ></selectBoxComponent> -->
 
         <DimensionMeasurementTabs
-          style="margin:.5em 0 2.5em"
+          style="margin: 0.5em 0 2.5em"
           v-show="currentTab == 0 || currentTab == 1"
-          :DimensionMeasurementTabIndex = DimensionMeasurementTabIndex
+          :DimensionMeasurementTabIndex="DimensionMeasurementTabIndex"
           @handleDimensionMeasurementTabsChange="
             handleDimensionMeasurementTabsChange
           "
         ></DimensionMeasurementTabs>
 
         <!-- table -->
-        <div class="table-box" v-show="currentTab == 0">
+        <div class="table-box download-box" :class="{ show: currentTab == 0 }">
           <!-- <TableComponent ref="TableComponentRef"></TableComponent> -->
-          <div v-show="DimensionMeasurementTabIndex == 0">
+          <div
+            class="download-box"
+            :class="{ show: DimensionMeasurementTabIndex == 0 }"
+          >
             <h4>Schwartz Theory of Basic Values</h4>
             <el-table
               :data="Schwartz_table_data"
+              ref="SchwartzTableRef"
               border
               style="width: 100%"
               :default-sort="{ prop: 'Score', order: 'descending' }"
@@ -154,8 +177,8 @@
                 :formatter="formatter"
               >
                 <template #header>
-                <span>Average</span>
-              </template>
+                  <span>Average</span>
+                </template>
               </el-table-column>
               <template
                 v-for="(item, index) in Schwartz_table_columns_checked"
@@ -171,10 +194,14 @@
             </el-table>
           </div>
 
-          <div v-show="DimensionMeasurementTabIndex == 1">
+          <div
+            class="download-box"
+            :class="{ show: DimensionMeasurementTabIndex == 1 }"
+          >
             <h4>Moral Foundations Theory</h4>
             <el-table
               :data="MFT_table_data"
+              ref="MFTTableRef"
               border
               style="width: 100%"
               :default-sort="{ prop: 'Score', order: 'descending' }"
@@ -187,8 +214,8 @@
                 :formatter="formatter"
               >
                 <template #header>
-                <span>Average</span>
-              </template>
+                  <span>Average</span>
+                </template>
               </el-table-column>
               <template
                 v-for="(item, index) in MFT_table_columns_checked"
@@ -204,10 +231,14 @@
             </el-table>
           </div>
 
-          <div v-show="DimensionMeasurementTabIndex == 2">
+          <div
+            class="download-box"
+            :class="{ show: DimensionMeasurementTabIndex == 2 }"
+          >
             <h4>Safety Taxonomy</h4>
             <el-table
               :data="Risk_table_data"
+              ref="RiskTableRef"
               border
               style="width: 100%"
               :default-sort="{ prop: 'Score', order: 'descending' }"
@@ -220,8 +251,8 @@
                 :formatter="formatter"
               >
                 <template #header>
-                <span>Average</span>
-              </template>
+                  <span>Average</span>
+                </template>
               </el-table-column>
 
               <template
@@ -238,10 +269,14 @@
             </el-table>
           </div>
 
-          <div v-show="DimensionMeasurementTabIndex == 3">
+          <div
+            class="download-box"
+            :class="{ show: DimensionMeasurementTabIndex == 3 }"
+          >
             <h4>LLMs' Unique Value System</h4>
             <el-table
               :data="FULVa_table_data"
+              ref="FULVaTableRef"
               border
               style="width: 100%"
               :default-sort="{ prop: 'Score', order: 'descending' }"
@@ -254,8 +289,8 @@
                 :formatter="formatter"
               >
                 <template #header>
-                <span>Average</span>
-              </template>
+                  <span>Average</span>
+                </template>
               </el-table-column>
 
               <template
@@ -275,7 +310,7 @@
           <!-- <h4>LLMs' Unique Value System</h4> -->
         </div>
         <!-- echart -->
-        <div v-show="currentTab == 1">
+        <div class="download-box" :class="{ show: currentTab == 1 }">
           <VisualizationComponent
             ref="VisualizationComponentProps"
             :DimensionMeasurementTabIndex="DimensionMeasurementTabIndex"
@@ -283,13 +318,13 @@
         </div>
 
         <!-- Value Space -->
-        <div v-show="currentTab == 3">
+        <div class="download-box" :class="{ show: currentTab == 3 }">
           <ValueSpaceComponent
             ref="ValueSpaceComponentProps"
           ></ValueSpaceComponent>
         </div>
         <!-- Cultural Alignment -->
-        <div v-show="currentTab == 2">
+        <div class="download-box" :class="{ show: currentTab == 2 }">
           <CulturalAlignmentComponent
             ref="CulturalAlignmentComponentProps"
           ></CulturalAlignmentComponent>
@@ -320,6 +355,8 @@ import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
 import DimensionMeasurementTabs from "../components/DimensionMeasurementTabs.vue";
 import GlobalData from "@/utils/common-data";
 
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const VisualizationComponentProps = ref(null);
 const CulturalAlignmentComponentProps = ref(null);
@@ -641,8 +678,8 @@ const handleClickOutside = (event) => {
 };
 
 onActivated(() => {
-  currentTab.value = 0
-  DimensionMeasurementTabIndex.value = 0
+  currentTab.value = 0;
+  DimensionMeasurementTabIndex.value = 0;
   if (isFirstEnter) {
     isFirstEnter = false;
   } else {
@@ -731,6 +768,114 @@ const fitterChange = (filerData) => {
 const DimensionMeasurementTabIndex = ref(0);
 const handleDimensionMeasurementTabsChange = (index) => {
   DimensionMeasurementTabIndex.value = index;
+};
+
+// download all
+const downloadDisabled = ref(false);
+const downloadAll = async () => {
+  console.log("downloadAll");
+  if (downloadDisabled.value) {
+    return;
+  }
+  downloadDisabled.value = true;
+  await downloadChartsAsPDF(null);
+  downloadDisabled.value = false;
+};
+const SchwartzTableRef = ref(null);
+const MFTTableRef = ref(null);
+const RiskTableRef = ref(null);
+const FULVaTableRef = ref(null);
+
+const downloadChartsAsPDF = async (pdf) => {
+  const charts = [
+    [
+      {
+        name: "Schwartz Theory of Basic Values",
+        chart: SchwartzTableRef.value.$el,
+      },
+      {
+        name: "Moral Foundation Theory",
+        chart: MFTTableRef.value.$el,
+      },
+      {
+        name: "Safety Taxonomy",
+        chart: RiskTableRef.value.$el,
+      },
+      {
+        name: "LLMs' Unique Value System",
+        chart: FULVaTableRef.value.$el,
+      },
+    ],
+    [
+      {
+        name: "Schwartz Theory of Basic Values",
+        chart: VisualizationComponentProps.value.$refs.chartDom1.$refs.chartDom,
+      },
+      {
+        name: "Moral Foundation Theory",
+        chart: VisualizationComponentProps.value.$refs.chartDom2.$refs.chartDom,
+      },
+      {
+        name: "Safety Taxonomy",
+        chart: VisualizationComponentProps.value.$refs.chartDom3.$refs.chartDom,
+      },
+      {
+        name: "LLMs' Unique Value System",
+        chart: VisualizationComponentProps.value.$refs.chartDom4.$refs.chartDom,
+      },
+    ],
+    [
+      {
+        name: "Culture Heatmap",
+        chart: CulturalAlignmentComponentProps.value.$refs.chartDom,
+      },
+      {
+        name: "Value Space",
+        chart: ValueSpaceComponentProps.value.$refs.chartDom,
+      },
+    ],
+  ];
+  console.log(pdf);
+  if (!pdf) {
+    pdf = new jsPDF("p", "mm", "a4");
+  }
+  // 获取页面宽高
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 10; // 设置统一的边距
+
+  let top = margin;
+  for (let j = 0; j < charts.length; j++) {
+    if (j > 0) {
+      pdf.addPage();
+      top = margin;
+    }
+    for (let i = 0; i < charts[j].length; i++) {
+      const canvas = await html2canvas(charts[j][i].chart);
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = pdf.getImageProperties(imgData);
+      const setImgWidth = pageWidth - 2 * margin;
+      const setImgHeight = (imgProps.height * setImgWidth) / imgProps.width;
+
+      if (top + setImgHeight > pageHeight - margin) {
+        pdf.addPage();
+        top = margin;
+      }
+
+      // 添加文字并居中
+      const text = charts[j][i].name;
+      const textWidth = pdf.getTextWidth(text);
+      const textX = (pageWidth - textWidth) / 2;
+      pdf.text(text, textX, top); // 在顶部距离上方添加文字
+      top += 8; // 文字高度
+
+      // 添加图像
+      pdf.addImage(imgData, "PNG", margin, top, setImgWidth, setImgHeight);
+      top += setImgHeight + margin + 5;
+    }
+  }
+
+  pdf.save("charts.pdf");
 };
 </script>
 
@@ -833,7 +978,7 @@ const handleDimensionMeasurementTabsChange = (index) => {
 
 :deep(.el-tabs) {
   --el-tabs-header-height: 2.1em;
-  .el-tabs__active-bar{
+  .el-tabs__active-bar {
     transition: all 0s;
   }
 }
@@ -850,9 +995,23 @@ const handleDimensionMeasurementTabsChange = (index) => {
       color: var(--theme-color) !important;
     }
     &:hover {
-      color: #47ACFF;
-      border-color: #47ACFF;
+      color: #47acff;
+      border-color: #47acff;
     }
+  }
+}
+
+.download-box {
+  width: 100%;
+  position: absolute;
+  top: -99999px;
+  right: -99999px;
+  opacity: 0;
+  &.show {
+    position: relative;
+    top: 0;
+    right: 0;
+    opacity: 1;
   }
 }
 </style>

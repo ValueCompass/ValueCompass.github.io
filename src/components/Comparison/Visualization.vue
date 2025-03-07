@@ -8,19 +8,19 @@
         </div>
       </div> -->
       <div class="echart-list">
-        <div v-show="props.DimensionMeasurementTabIndex == 0">
+        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 0 }">
           <p>Schwartz Theory of Basic Values</p>
           <EchartComponent ref="chartDom1"></EchartComponent>
         </div>
-        <div v-show="props.DimensionMeasurementTabIndex == 1">
+        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 1 }">
           <p>Moral Foundation Theory</p>
           <EchartComponent ref="chartDom2"></EchartComponent>
         </div>
-        <div v-show="props.DimensionMeasurementTabIndex == 2">
+        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 2 }">
           <p>Safety Taxonomy</p>
           <EchartComponent ref="chartDom3"></EchartComponent>
         </div>
-        <div v-show="props.DimensionMeasurementTabIndex == 3">
+        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 3 }">
           <p>LLMs' Unique Value System</p>
           <EchartComponent ref="chartDom4"></EchartComponent>
         </div>
@@ -156,6 +156,20 @@ defineExpose({
     font-weight: 600;
     font-size: 1.2em;
     margin-bottom: 30px;
+  }
+}
+
+.download-box {
+  width: 100%;
+  position: absolute;
+  top: -99999px;
+  right: -99999px;
+  opacity: 0;
+  &.show {
+    position: relative;
+    top: 0;
+    right: 0;
+    opacity: 1;
   }
 }
 </style>
