@@ -587,6 +587,7 @@ const getModelDetail = () => {
   Schwartz_table_data.value = [];
   MFT_table_data.value = [];
   Risk_table_data.value = [];
+  FULVa_table_data.value = [];
   for (let i = 0; i < checkedModelDetailList.value.length; i++) {
     // for table
     let Schwartz_obj = {};
