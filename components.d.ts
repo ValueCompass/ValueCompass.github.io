@@ -11,7 +11,7 @@ declare module 'vue' {
     ComparePool: typeof import('./src/components/ComparePool.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
     DimensionMeasurementTabs: typeof import('./src/components/DimensionMeasurementTabs.vue')['default']
-    Echart: typeof import('./src/components/Comparison/echart.vue')['default']
+    Echart: typeof import('./src/components/Analysis/echart.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCascader: typeof import('element-plus/es')['ElCascader']

@@ -1015,4 +1015,27 @@ const downloadChartsAsPDF = async (pdf) => {
     opacity: 1;
   }
 }
+
+.table-box {
+  .download-box:nth-child(1) {
+    .el-table {
+      --el-table-header-bg-color: #fff2e2;
+    }
+  }
+  .download-box:nth-child(2) {
+    .el-table {
+      --el-table-header-bg-color: #fdeaf3;
+    }
+  }
+  .download-box:nth-child(3) {
+    .el-table {
+      --el-table-header-bg-color: #dcf5f8;
+    }
+  }
+  .download-box:nth-child(4) {
+    .el-table {
+      --el-table-header-bg-color: #e7f1f9;
+    }
+  }
+}
 </style>
