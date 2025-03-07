@@ -14,7 +14,7 @@
         <p class="title">
           <span>Score：</span>{{ item.score.toFixed(4) }}
         </p>
-        <p class="title">{{ "Case" + (index + 1) + "-" + item.label.charAt(0).toUpperCase() + item.label.slice(1) }} Score</p>
+        <p class="title">{{ "Case" + (index + 1) + " - " }}<i style="font-style: normal;">{{ item.label }}</i> Score</p>
         <div class="chart-content-desc">
           <!-- <img src="@/assets/images/Avatar-Q.png" alt="Q" /> -->
           <span class="span">Q</span>
