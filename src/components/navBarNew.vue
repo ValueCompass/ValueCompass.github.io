@@ -39,7 +39,6 @@
           @mouseleave="mouseleave"
           :class="{ active: $route.path.indexOf('/leaderboard/') != -1 }"
         >
-          <a></a>
           <router-link to="/leaderboard/leaderboard">Leaderboard</router-link>
           <!-- <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
@@ -149,11 +148,13 @@ const copyText = (text: string) => {
     ul.nav-ul {
       display: flex;
       flex-direction: row;
+      align-items: center;
       & > li {
         &.icon-li {
           padding: 0.5em 0;
           a {
             font-size: 1em;
+            padding: 0;
           }
           .SvgIcon {
             width: 1.5em;
@@ -177,16 +178,18 @@ const copyText = (text: string) => {
             transform: scaleY(1);
           }
         }
-        padding: 0.5em 0.75em;
+        
         margin-left: 2.68em;
 
         font-weight: 700;
         line-height: 1.68em;
         position: relative;
-        cursor: pointer;
+        // cursor: pointer;
         a {
           color: var(--text-color);
           font-size: 1.125em;
+          padding: 0.2em 0.45em;
+          line-height: 1.4;
         }
         .router-link-exact-active {
           color: var(--theme-color) !important;
@@ -200,7 +203,6 @@ const copyText = (text: string) => {
         }
         .down-arrow {
           vertical-align: middle;
-          margin-left: 0.4em;
           margin-top: -0.4em;
           width: 1.6em;
           height: 1.6em;
@@ -227,14 +229,11 @@ const copyText = (text: string) => {
             font-weight: 700;
             margin-bottom: 1.5em;
             line-height: 1.2;
-            padding: 0 0.75em;
             &:last-child {
               margin-bottom: 0;
             }
-            &:hover {
-              & > a {
-                color: var(--theme-color);
-              }
+            a:hover {
+              color: var(--theme-color);
             }
           }
         }
