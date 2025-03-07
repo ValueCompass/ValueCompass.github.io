@@ -484,7 +484,8 @@ const fetchData = async () => {
           if (setModelName) {
             checkedModelNameList.value = setModelName;
           } else {
-            checkedModelNameList.value.push(modelNameList.value[0]);
+            const defaultModels = modelNameList.value.slice(0, 2);
+            checkedModelNameList.value = defaultModels;
           }
           submit();
         })
