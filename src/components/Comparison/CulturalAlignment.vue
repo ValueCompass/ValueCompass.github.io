@@ -8,6 +8,7 @@
             ref="chartDom"
             style="width: 1200px; height: 600px; margin: 0 auto"
           ></div>
+          <p style="text-align: center; color: #747474;;">The heatmap illustrates the Pearson correlation between the values of various models and countries.</p>
         </div>
       </div>
     </div>
@@ -148,7 +149,7 @@ onMounted(async () => {
     },
 
     grid: {
-      height: "50%",
+      height: "60%",
 
       top: "10%",
       left: "2%",
@@ -196,8 +197,7 @@ onMounted(async () => {
       orient: "horizontal",
 
       left: "center",
-
-      bottom: "15%",
+      bottom: "10%",
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
       color: ["#690320", "#E0785F", "#eeeeee", "#4795C3", "#083669"],

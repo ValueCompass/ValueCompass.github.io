@@ -27,6 +27,12 @@
               platform for LLM values, grounded in basic values and generative,
               evolving assessments.
             </p>
+            <p class="p">
+              <a href="https://arxiv.org/pdf/2501.07071" target="_blank" class="view-more-btn">
+                <span>Read paper</span>
+                <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+              </a>
+            </p>
             <ul>
               <li>
                 <p>4</p>
@@ -262,7 +268,7 @@ const vDrag = {
     padding-left: 2em;
     ul {
       padding: 0.75em 0;
-      margin: 0.75em 0;
+      margin: 1.2em 0;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
@@ -368,5 +374,18 @@ const vDrag = {
 
 :deep(.el-affix--fixed) {
   z-index: 2001 !important;
+}
+
+.view-more-btn{
+  margin-top: .6em;
+  display: flex;
+  align-items: center;
+  color: var(--theme-color);
+  svg{
+    width: 1.2em;
+    height: 1.2em;
+    margin-left: .2em;
+    
+  }
 }
 </style>
