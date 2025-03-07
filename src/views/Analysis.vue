@@ -97,6 +97,11 @@
               currentModelInfo["release date"].split(" ")[0]
             }}</span>
           </div>
+          <div class="model-prop">
+            <!-- <SvgIcon class="prop-icon" name="publish-icon"></SvgIcon> -->
+            <span class="prop-name">Measurement Date: </span>
+            <span class="prop-content">2025/2</span>
+          </div>
         </div>
       </div>
     </div>
@@ -741,7 +746,7 @@ const handleClickOutside = (event) => {
   .model-props {
     margin-top: 1.5em;
     display: flex;
-    gap: 3em;
+    gap: 2em;
     // justify-content: space-between;
     align-items: center;
     .model-prop {
@@ -878,7 +883,7 @@ const handleClickOutside = (event) => {
             gap: 0.4em 0;
             align-items: flex-end;
             li {
-              max-width: 5.5em;
+              max-width: 8em;
               font-size: 1em;
               line-height: 1.3em;
               padding: 0.25em 0.7em;
