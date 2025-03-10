@@ -9,15 +9,17 @@
       <div>
         <p class="title">How It Works – Understanding the Evaluation Process</p>
         <p>
-          The score is calculated as a weighted sum across multiple value
-          dimensions, with weights customizable based on user needs.
+          This score is the average across value dimensions from the "selected
+          point" above, which can be adjusted based on the user's needs.
         </p>
-        <p style="text-align: center; margin: 1em 0">
+        <!-- <p style="text-align: center; margin: 1em 0">
           <img src="@/assets/images/score-computingFormula.png" alt="" />
-        </p>
+        </p> -->
         <p>
-          Each model’s score is dynamically calculated based on these value
-          systems, using an evolving framework to ensure its validity.
+          More details on datasets and evaluation methods can be found in
+          <a href="https://arxiv.org/pdf/2501.07071" target="_blank"
+            >[Value Compass Leaderboard]</a
+          >.
         </p>
       </div>
       <!-- </div> -->
@@ -42,24 +44,32 @@ defineExpose({
 .score-intro-template {
   p {
     font-size: 1.25em;
-
+    margin-top: 1.2em;
     line-height: 150%; /* 36px */
+    color: #000;
   }
   p.title {
     color: #004f8f;
     font-size: 1.5em;
     font-weight: 600;
     margin-bottom: 0.8em;
+    margin-top: 0;
     font-style: italic;
+    text-align: center;
   }
   img {
     width: 22em;
+  }
+  a {
+    white-space: nowrap;
+    color: var(--theme-color);
+    text-decoration: underline;
   }
 
   :deep(.el-dialog) {
     --el-dialog-content-font-size: 1em;
     --el-dialog-border-radius: 0.75em;
-    padding: 5em 4.5em;
+    padding: 5em 3.5em;
     .el-dialog__header {
       padding-bottom: 0;
     }
@@ -68,8 +78,8 @@ defineExpose({
       height: 1.5em;
       top: 1.25em;
       right: 1.25em;
-      &:hover{
-        .el-dialog__close{
+      &:hover {
+        .el-dialog__close {
           color: #909399;
         }
       }

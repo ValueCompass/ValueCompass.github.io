@@ -52,10 +52,10 @@
             </div>
           </el-popover>
         </div>
-        <div class="desc" v-if="currentModelInfo">
+        <!-- <div class="desc" v-if="currentModelInfo">
           {{ currentModel }} is an API model produced by
           {{ currentModelInfo.developer }}.
-        </div>
+        </div> -->
         <div
           style="
             display: flex;
