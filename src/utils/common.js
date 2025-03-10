@@ -53,3 +53,22 @@ export const extractDomain = (url) => {
   const domain = new URL(httpsUrl).hostname.split('.')[0];
   return domain;
 };
+
+export const getCurrentDateTime = () => {
+  var now = new Date();
+  var year = now.getFullYear(); // 获取完整的年份
+  var month = now.getMonth() + 1; // 获取当前月份，需要加1因为月份是从0开始的
+  var day = now.getDate(); // 获取当前日
+  var hours = now.getHours(); // 获取当前小时数
+  var minutes = now.getMinutes(); // 获取当前分钟数
+  var seconds = now.getSeconds(); // 获取当前秒数
+
+  // 补零函数
+  function addZero(i) {
+    return (i < 10 ? "0" : "") + i;
+  }
+
+  // 格式化输出
+  return year + "-" + addZero(month) + "-" + addZero(day) + " " +
+    addZero(hours) + ":" + addZero(minutes) + ":" + addZero(seconds);
+}
