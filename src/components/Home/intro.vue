@@ -6,11 +6,11 @@
         <h2>Aligning AI with Basic Human Values</h2>
         <div>
           <p>
-            To advance AI towards a human-machine symbiotic future, we introduce the <b>Value Compass Project</b>—an interdisciplinary initiative that integrates social science, ethics, and human values to redefine LLM alignment. Grounded on universal, pluralistic and adaptive human values, our research focuses on three core areas:
+            To advance AI towards a human-machine symbiotic future, we introduce the <b>Value Compass Project</b>—an interdisciplinary initiative that integrates social science, ethics, and human values to redefine LLM alignment. Grounded in universal, pluralistic and adaptive human values, our research focuses on three core areas:
           </p>
           <b
             ><p>
-              1.     Effectiveand Adaptive Alignment Algorithms <br />2.    
+              1.     Effective and Adaptive Alignment Algorithms <br />2.    
               Reliable and Validated Value Evaluation <br />3.    
               Interdisciplinary Studies on AI Values and Machine Ethics
             </p></b

@@ -1,24 +1,43 @@
 <template>
   <div class="select-container">
-    
+    <div class="select-date">
+      <SvgIcon class="select-date-icon" name="select-date"></SvgIcon>
+      <el-select
+        v-model="value1"
+        placeholder="Measurement Date"
+        style="width: 4.5em"
+        aria-label="Measurement Date"
+      >
+        <el-radio-group v-model="value1" style="width: 100%">
+          <el-option
+            v-for="item in dates"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+            <el-radio :value="item.value">{{ item.label }}</el-radio>
+          </el-option>
+        </el-radio-group>
+      </el-select>
+    </div>
     <div class="select-points-box">
       <ul class="label">
-      <li
-        :class="selectedIndex == index ? 'on' : ''"
-        v-for="(item, index) in options"
-        :key="index"
-        @click="hancelTypeIndexChange(index)"
-      >
-        <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
-        <span>{{ item.label }}</span>
-        <SvgIcon
-          class="info"
-          name="info"
-          @click.stop="showIntro(index)"
-        ></SvgIcon>
-      </li>
-    </ul>
-      <p style="margin: 1em 0;font-size:1.25em"><b>Selected Points</b></p>
+        <li
+          :class="selectedIndex == index ? 'on' : ''"
+          v-for="(item, index) in options"
+          :key="index"
+          @click="hancelTypeIndexChange(index)"
+        >
+          <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
+          <span>{{ item.label }}</span>
+          <SvgIcon
+            class="info"
+            name="info"
+            @click.stop="showIntro(index)"
+          ></SvgIcon>
+        </li>
+      </ul>
+      <p style="margin: 1em 0; font-size: 1.25em"><b>Selected Points</b></p>
       <el-checkbox-group
         v-model="checkedPoints"
         @change="handleCheckedPointsChange"
@@ -70,6 +89,14 @@
 <script setup lang="ts">
 import { ref, defineEmits, defineExpose } from "vue";
 import { Check, Close } from "@element-plus/icons-vue";
+
+const value1 = ref("2025-02");
+const dates = [
+  {
+    value: "2025-02",
+    label: "2025-02",
+  },
+];
 
 const tablePointDetailShow = ref(false);
 
@@ -267,7 +294,9 @@ defineExpose({
 
 <style scoped lang="scss">
 .select-container {
+  position: relative;
   ul {
+    width: calc(100% - 6em);
     display: flex;
     flex-direction: row;
     align-content: center;
@@ -276,7 +305,7 @@ defineExpose({
       line-height: 1.4;
       margin: 0 0.2em;
       cursor: pointer;
-      padding: .65em 3em;
+      padding: 0.65em 3%;
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
@@ -288,21 +317,21 @@ defineExpose({
       span {
         white-space: nowrap;
         font-size: 1em;
-        
+
         margin: 0 0.5em;
       }
       &:hover {
         // background: #47acff;
-        color: #1093FF;
+        color: #1093ff;
       }
       &.on {
-        border-color: #004F8F;
-        color: #004F8F;
+        border-color: #004f8f;
+        color: #004f8f;
       }
 
       svg {
         vertical-align: middle;
-        
+
         &.point-type-icon {
           // transform: translateY(-.2em);
           width: 1.5em;
@@ -335,7 +364,7 @@ defineExpose({
       color: var(--theme-color);
       border-color: var(--theme-color);
     }
-    .apply-btn{
+    .apply-btn {
       background: var(--theme-color);
       color: #fff;
     }
@@ -376,6 +405,35 @@ defineExpose({
   }
   .el-checkbox__inner {
     opacity: 0;
+  }
+}
+
+.select-date {
+  position: absolute;
+  right: 3em;
+  top: 1.8em;
+  .select-date-icon {
+    position: absolute;
+    left: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.5em;
+    height: 1.5em;
+  }
+}
+:deep(.el-select) {
+  .el-select__wrapper {
+    padding: 0 0.8em !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    .el-select__placeholder {
+      opacity: 0;
+    }
+    .el-select__caret {
+      color: #000 !important;
+      font-weight: 600 !important;
+      font-size: 1.2em;
+    }
   }
 }
 </style>
