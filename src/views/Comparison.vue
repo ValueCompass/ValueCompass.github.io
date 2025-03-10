@@ -351,7 +351,12 @@ import TableComponent from "../components/Comparison/Table.vue";
 import ValueSpaceComponent from "../components/Comparison/ValueSpace.vue";
 import CulturalAlignmentComponent from "../components/Comparison/CulturalAlignment.vue";
 import selectBoxComponent from "../components/selectBox.vue";
-import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
+import {
+  getKeyValue,
+  mergeObj,
+  getAvaData,
+  getCurrentDateTime,
+} from "../utils/common.js";
 import DimensionMeasurementTabs from "../components/DimensionMeasurementTabs.vue";
 import GlobalData from "@/utils/common-data";
 
@@ -876,8 +881,8 @@ const downloadChartsAsPDF = async (pdf) => {
       top += setImgHeight + margin + 5;
     }
   }
-
-  pdf.save("charts.pdf");
+  const pdfName = checkedModelNameList.value.join("+") + "_" + getCurrentDateTime();
+  pdf.save(pdfName + ".pdf");
 };
 </script>
 

@@ -249,7 +249,7 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import * as echarts from "echarts";
 import swiper from "../components/swiper.vue";
-import { getKeyValue, ensureHttps, extractDomain } from "../utils/common.js";
+import { getKeyValue, ensureHttps, extractDomain, getCurrentDateTime } from "../utils/common.js";
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -622,7 +622,8 @@ const downloadChartsAsPDF = async (pdf) => {
     }
   }
 
-  pdf.save("charts.pdf");
+  const pdfName = currentModel.value + "_" + getCurrentDateTime();
+  pdf.save(pdfName + ".pdf");
 };
 </script>
 
