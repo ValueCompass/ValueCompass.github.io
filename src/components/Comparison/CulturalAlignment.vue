@@ -27,6 +27,7 @@ import axios from "axios";
 import * as echarts from "echarts";
 import { getKeyValue } from "@/utils/common.js";
 
+const checkedModels = ref([]);
 const chartDom = ref(null);
 let chartInstance = null;
 const allHeatMapData = ref();
@@ -35,7 +36,7 @@ let countries = [];
 
 const getAllHeatMapData = async () => {
   return axios.get("./data/value_sim_heatmap.json").then((value_space_data) => {
-    // console.log(value_space_data.data);
+    console.log(value_space_data);
     allHeatMapData.value = value_space_data.data;
     const obj = {};
     for (let i = 0; i < value_space_data.data.models.length; i++) {
@@ -47,8 +48,9 @@ const getAllHeatMapData = async () => {
   });
 };
 const setHotChart = (modelNameList) => {
+  checkedModels.value = modelNameList;
   let allHeatMapDataFilter = [];
-  if (modelNameList) {
+  if (modelNameList && modelNameList.length > 0) {
     let cosine_sim_matrixArr = [];
     for (var i = 0; i < modelNameList.length; i++) {
       cosine_sim_matrixArr.push(allHeatMapDataObject.value[modelNameList[i]]);
@@ -61,8 +63,8 @@ const setHotChart = (modelNameList) => {
   } else {
     // allHeatMapDataFilter = allHeatMapData.value;
     allHeatMapDataFilter = {
-      cosine_sim_matrix: [allHeatMapData.value.cosine_sim_matrix[0]],
-      models: [allHeatMapData.value.models[0]],
+      cosine_sim_matrix: [allHeatMapData.value.cosine_sim_matrix[0], allHeatMapData.value.cosine_sim_matrix[1]],
+      models: [allHeatMapData.value.models[0], allHeatMapData.value.models[1]],
       countries: countries,
     };
   }
@@ -128,8 +130,8 @@ defineExpose({
 
 // 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
 onMounted(async () => {
-  await nextTick(); // 确保DOM已经渲染完成
   await getAllHeatMapData();
+  await nextTick(); // 确保DOM已经渲染完成
 
   // const hours = ["Germany", "France", "USA", "Britain", "Russia", "China"];
   // console.log("allHeatMapData.value.countries", allHeatMapData.value);
@@ -228,7 +230,7 @@ onMounted(async () => {
   };
   chartInstance.setOption(option);
 
-  setHotChart();
+  setHotChart(checkedModels.value);
 });
 </script>
 <style>
