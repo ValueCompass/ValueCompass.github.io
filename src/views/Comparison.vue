@@ -356,6 +356,7 @@ import {
   mergeObj,
   getAvaData,
   getCurrentDateTime,
+  downloadAsPDF,
 } from "../utils/common.js";
 import DimensionMeasurementTabs from "../components/DimensionMeasurementTabs.vue";
 import GlobalData from "@/utils/common-data";
@@ -842,47 +843,8 @@ const downloadChartsAsPDF = async (pdf) => {
       },
     ],
   ];
-  console.log(pdf);
-  if (!pdf) {
-    pdf = new jsPDF("p", "mm", "a4");
-  }
-  // 获取页面宽高
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 10; // 设置统一的边距
-
-  let top = margin;
-  for (let j = 0; j < charts.length; j++) {
-    if (j > 0) {
-      pdf.addPage();
-      top = margin;
-    }
-    for (let i = 0; i < charts[j].length; i++) {
-      const canvas = await html2canvas(charts[j][i].chart);
-      const imgData = canvas.toDataURL("image/png");
-      const imgProps = pdf.getImageProperties(imgData);
-      const setImgWidth = pageWidth - 2 * margin;
-      const setImgHeight = (imgProps.height * setImgWidth) / imgProps.width;
-
-      if (top + setImgHeight > pageHeight - margin) {
-        pdf.addPage();
-        top = margin;
-      }
-
-      // 添加文字并居中
-      const text = charts[j][i].name;
-      const textWidth = pdf.getTextWidth(text);
-      const textX = (pageWidth - textWidth) / 2;
-      pdf.text(text, textX, top); // 在顶部距离上方添加文字
-      top += 8; // 文字高度
-
-      // 添加图像
-      pdf.addImage(imgData, "PNG", margin, top, setImgWidth, setImgHeight);
-      top += setImgHeight + margin + 5;
-    }
-  }
-  const pdfName = checkedModelNameList.value.join("+") + "_" + getCurrentDateTime();
-  pdf.save(pdfName + ".pdf");
+  const pdfName = "Comparison_" + getCurrentDateTime();
+  await downloadAsPDF(charts,checkedModelDetailList.value,pdfName)
 };
 </script>
 
