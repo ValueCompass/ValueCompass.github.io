@@ -708,6 +708,15 @@ const handleMouseUp = () => {
   .el-scrollbar__bar.is-horizontal {
     height: 10px;
   }
+
+  &.el-table--fit .el-table__inner-wrapper:before{
+    display: none;
+  }
+  tr:last-child{
+    td.el-table__cell{
+      border-bottom: none !important;
+    }
+  }
 }
 
 .el-select-dropdown__item.is-hovering {
