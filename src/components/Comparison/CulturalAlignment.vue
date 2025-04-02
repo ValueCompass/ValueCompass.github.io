@@ -202,7 +202,7 @@ onMounted(async () => {
       bottom: "10%",
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
-      color: ["#690320", "#E0785F", "#eeeeee", "#4795C3", "#083669"],
+      color: ["#CF1322", "#FFA39E","#eeeeee","#91D5FF","#096DD9"],
       textStyle: { color: "#000" },
     },
 
