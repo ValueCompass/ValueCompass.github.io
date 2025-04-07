@@ -178,6 +178,7 @@ const vDrag = {
       const disY = e.clientY - el.offsetTop;
 
       document.onmousemove = function (e) {
+        console.log("onmousemove")
         isDragging = true;
         let left = e.clientX - disX;
         let top = e.clientY - disY;

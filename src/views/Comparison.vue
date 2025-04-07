@@ -531,9 +531,9 @@ const submit = () => {
 };
 
 const closeModel = (modelName, index) => {
-  if (checkedModelNameList.value.length <= 1) {
-    return;
-  }
+  // if (checkedModelNameList.value.length <= 1) {
+  //   return;
+  // }
   checkedModelNameList.value.splice(index, 1);
   submit();
 };
@@ -647,6 +647,7 @@ const getModelDetail = () => {
   //   MFT_table_columns_checked.value )
 
   // for echart
+  console.log("sssss",checkedModelDetailList.value)
   VisualizationComponentProps.value.setRadarChart(checkedModelDetailList.value);
 
   // for value space
@@ -655,6 +656,7 @@ const getModelDetail = () => {
   );
 
   // for setHotChart
+  console.log("ssssaaas",checkedModelDetailList.value)
   CulturalAlignmentComponentProps.value.setHotChart(checkedModelNameList.value);
   console.log("checkedModelDetailList.value", checkedModelDetailList.value);
 };

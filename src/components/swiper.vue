@@ -4,13 +4,14 @@
     :navigation="true"
     :pagination="{ clickable: true }"
     @swiper="onSwiper"
+    
   >
     <swiper-slide
       class="swiper-slide"
       v-for="(item, index) in caseData"
       :key="item.model + index"
     >
-      <div class="swiper-main" tabindex=0>
+      <div class="swiper-main swiper-no-swiping" tabindex=0>
         <p class="title">
           <span>Score：</span>{{ item.score.toFixed(4) }}
         </p>
@@ -131,29 +132,37 @@ export default {
 }
 
 :deep(.swiper-pagination-bullet) {
-  width: 1em;
-  height: 3px;
+  width: 1.25em;
+  height: 4px;
   background-color: var(--text-color);
   opacity: 0.3;
   border-radius: 1px;
 }
 :deep(.swiper-pagination-bullet-active) {
-  width: 1.25em;
+  width: 1.5em;
   opacity: 1;
 }
 :deep(.swiper-button-prev),
 :deep(.swiper-button-next) {
-  width: 22px;
-  height: 22px;
+  width: 2.5em;
+  height: 3em;
   color: var(--text-color);
+}
+:deep(.swiper-button-prev) {
+  left: 0;
+}
+:deep(.swiper-button-next) {
+  right: 0;
 }
 :deep(.swiper-button-prev:after),
 :deep(.swiper-button-next:after) {
-  font-size: 1em;
+  font-size: 1.5em;
 }
 :deep(.highlight i) {
   color: rgba(0, 79, 143, 1);
   font-weight: 500;
   line-height: 1.8em;
 }
+
+
 </style>

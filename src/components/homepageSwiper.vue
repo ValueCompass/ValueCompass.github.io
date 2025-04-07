@@ -160,8 +160,11 @@ const tabClick = (index) => {
 };
 
 const showIntro = (index) => {
-  tabClick(index);
+  
   dialogTableVisible.value = true;
+  setTimeout(() => {
+    tabClick(index);
+  }, 100);
 };
 
 defineExpose({
@@ -220,7 +223,7 @@ defineExpose({
 .swiper-slide {
   .swiper-main {
     color: #000;
-    padding: 0 2.4em 2em;
+    padding: 0 3.4em 2em;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -262,15 +265,15 @@ defineExpose({
 
 :deep(.swiper) {
   .swiper-pagination-bullet {
-    width: 1em;
-    height: 3px;
+    width: 2em;
+    height: 4px;
     background-color: var(--text-color);
     opacity: 0.3;
     border-radius: 1px;
   }
 
   .swiper-pagination-bullet-active {
-    width: 1.25em;
+    width: 2.25em;
     opacity: 1;
   }
   .swiper-button-prev,
@@ -279,15 +282,15 @@ defineExpose({
     height: 3em;
     color: var(--text-color);
     &:after {
-      font-size: 1.4em;
+      font-size: 2em;
       font-weight: 700;
     }
   }
   .swiper-button-prev {
-    left: -1em;
+    left: 0;
   }
   .swiper-button-next {
-    right: -1em;
+    right: 0;
   }
 }
 
@@ -300,7 +303,7 @@ defineExpose({
 :deep(.el-dialog) {
   --el-dialog-content-font-size: 1em;
   --el-dialog-border-radius: 0.75em;
-  padding: 1em 2em;
+  padding: 1em 1em;
   .el-dialog__header {
     padding-bottom: 0;
   }

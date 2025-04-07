@@ -29,58 +29,63 @@ const chartDom = ref(null);
 let chartInstance = null;
 
 const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
-  const allValues = modelList.flatMap(item => 
-    Object.entries(item[MeasurementDimensionName])
-      .filter(([key, value]) => key !== 'model_name' && key !== 'Score')
-      .map(([key, value]) => value)
-  );
-  const maxValue = Math.ceil(Math.max(...allValues) * 1) / 1;
-  const minValue = Math.floor(Math.min(...allValues) * 1) / 1 - 10;
-
-  let keys = [];
-  if (filerData) {
-    keys = filerData;
-  } else {
-    keys = Object.keys(modelList[0][MeasurementDimensionName]);
-  }
-  let Schwartz_indicator = keys // Object.keys(modelList[0].Schwartz_data)
-    .filter((item) => item != "model_name" && item != "Score")
-    .map((item, index) => {
-      return {
-        name: item,
-        color: index == 0 ? "#000" : "#000",
-        axisLabel: { show: index == 0 ? true : false },
-        min: minValue,
-        max: maxValue,
-      };
-    });
-
+  console.log(modelList);
   let Schwartz_data = [];
-  let legendName = []
-  for (let i = 0; i < modelList.length; i++) {
-    let item = [];
-    for (let j = 0; j < Schwartz_indicator.length; j++) {
-      item.push(
-        modelList[i][MeasurementDimensionName][Schwartz_indicator[j].name]
-      );
+  let legendName = [];
+  let Schwartz_indicator = [];
+  if (modelList.length > 0) {
+    const allValues = modelList.flatMap((item) =>
+      Object.entries(item[MeasurementDimensionName])
+        .filter(([key, value]) => key !== "model_name" && key !== "Score")
+        .map(([key, value]) => value)
+    );
+    const maxValue = Math.ceil(Math.max(...allValues) * 1) / 1;
+    const minValue = Math.floor(Math.min(...allValues) * 1) / 1 - 10;
+
+    let keys = [];
+    if (filerData) {
+      keys = filerData;
+    } else {
+      keys = Object.keys(modelList[0][MeasurementDimensionName]);
     }
-    Schwartz_data.push({
-      name: modelList[i].model_name,
-      value: item,
-      areaStyle: {
-        opacity: 0,
-        color: "#1093FF",
-      },
-      lineStyle: {
-        width: 2,
-        color: modelList[i].color,
-      },
-      itemStyle: {
-        color: modelList[i].color,
-      },
-    });
-    legendName.push(modelList[i].model_name)
+    Schwartz_indicator = keys // Object.keys(modelList[0].Schwartz_data)
+      .filter((item) => item != "model_name" && item != "Score")
+      .map((item, index) => {
+        return {
+          name: item,
+          color: index == 0 ? "#000" : "#000",
+          axisLabel: { show: index == 0 ? true : false },
+          min: minValue,
+          max: maxValue,
+        };
+      });
+
+    for (let i = 0; i < modelList.length; i++) {
+      let item = [];
+      for (let j = 0; j < Schwartz_indicator.length; j++) {
+        item.push(
+          modelList[i][MeasurementDimensionName][Schwartz_indicator[j].name]
+        );
+      }
+      Schwartz_data.push({
+        name: modelList[i].model_name,
+        value: item,
+        areaStyle: {
+          opacity: 0,
+          color: "#1093FF",
+        },
+        lineStyle: {
+          width: 2,
+          color: modelList[i].color,
+        },
+        itemStyle: {
+          color: modelList[i].color,
+        },
+      });
+      legendName.push(modelList[i].model_name);
+    }
   }
+
   chartInstance.setOption({
     legend: {
       data: legendName,
@@ -92,8 +97,8 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
     },
     radar: {
       // 设置雷达图的中心和半径
-      center: ['50%', '50%'],
-      radius: '65%', // 增大半径以留出更多空间给文字
+      center: ["50%", "50%"],
+      radius: "65%", // 增大半径以留出更多空间给文字
       splitArea: {
         areaStyle: {
           color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
