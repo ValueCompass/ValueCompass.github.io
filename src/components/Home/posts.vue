@@ -144,7 +144,7 @@ const posts = ref([
       }
       .article__date {
         time {
-          color: #999;
+          color: #6e6e6e;
           font-size: 1em;
           font-style: normal;
           font-weight: 400;

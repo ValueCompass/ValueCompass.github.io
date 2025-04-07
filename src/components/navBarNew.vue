@@ -16,7 +16,7 @@
           @mouseleave="mouseleave"
           class="has-child-nav"
         >
-          <a href="https://valuecompass.github.io/Research/papers">Research</a>
+          <a href="https://valuecompass.github.io/Research/papers/">Research</a>
           <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li>
