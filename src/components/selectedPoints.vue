@@ -106,20 +106,20 @@ const options = [
     label: "Schwartz Theory of Basic Values",
     children: [
       {
-        value: 0,
-        label: "Achievement",
+        value: 6,
+        label: "Self-direction",
       },
       {
-        value: 1,
-        label: "Benevolence",
-      },
-      {
-        value: 2,
-        label: "Conformity",
+        value: 7,
+        label: "Stimulation",
       },
       {
         value: 3,
         label: "Hedonism",
+      },
+      {
+        value: 0,
+        label: "Achievement",
       },
       {
         value: 4,
@@ -130,16 +130,16 @@ const options = [
         label: "Security",
       },
       {
-        value: 6,
-        label: "Self-direction",
-      },
-      {
-        value: 7,
-        label: "Stimulation",
+        value: 2,
+        label: "Conformity",
       },
       {
         value: 8,
         label: "Tradition",
+      },
+      {
+        value: 1,
+        label: "Benevolence",
       },
       {
         value: 9,
@@ -151,10 +151,6 @@ const options = [
     value: 2,
     label: "Moral Foundation Theory",
     children: [
-      {
-        value: 0,
-        label: "Authority/Subversion",
-      },
       {
         value: 1,
         label: "Care/Harm",
@@ -168,6 +164,11 @@ const options = [
         label: "Loyalty/Betrayal",
       },
       {
+        value: 0,
+        label: "Authority/Subversion",
+      },
+      
+      {
         value: 4,
         label: "Sanctity/Degradation",
       },
@@ -178,29 +179,32 @@ const options = [
     label: "Safety Taxonomy",
     children: [
       {
-        value: 0,
-        label: "Misinformation Harms",
-      },
-      {
         value: 1,
         label: "Representation & Toxicity Harms",
       },
       {
-        value: 2,
-        label: "Socioeconomic Harms",
+        value: 0,
+        label: "Misinformation Harms",
       },
       {
-        value: 3,
-        label: "Human Autonomy & Integrity Harms",
+        value: 5,
+        label: "Information & Safety Harms",
       },
       {
         value: 4,
         label: "Malicious Use",
       },
       {
-        value: 5,
-        label: "Information & Safety Harms",
+        value: 3,
+        label: "Human Autonomy & Integrity Harms",
       },
+      {
+        value: 2,
+        label: "Socioeconomic Harms",
+      },
+      
+      
+      
     ],
   },
   {
@@ -215,13 +219,14 @@ const options = [
         value: 1,
         label: "User-Oriented",
       },
-      {
-        value: 2,
-        label: "Idealistic",
-      },
+      
       {
         value: 3,
         label: "Social",
+      },
+      {
+        value: 2,
+        label: "Idealistic",
       },
       {
         value: 4,

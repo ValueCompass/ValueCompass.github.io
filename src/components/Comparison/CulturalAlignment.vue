@@ -62,9 +62,14 @@ const setHotChart = (modelNameList) => {
     };
   } else {
     // allHeatMapDataFilter = allHeatMapData.value;
+    // allHeatMapDataFilter = {
+    //   cosine_sim_matrix: [allHeatMapData.value.cosine_sim_matrix[0], allHeatMapData.value.cosine_sim_matrix[1]],
+    //   models: [allHeatMapData.value.models[0], allHeatMapData.value.models[1]],
+    //   countries: countries,
+    // };
     allHeatMapDataFilter = {
-      cosine_sim_matrix: [allHeatMapData.value.cosine_sim_matrix[0], allHeatMapData.value.cosine_sim_matrix[1]],
-      models: [allHeatMapData.value.models[0], allHeatMapData.value.models[1]],
+      cosine_sim_matrix: [],
+      models: [],
       countries: countries,
     };
   }

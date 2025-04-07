@@ -11,12 +11,22 @@
           >
             <div
               class="chart"
-              style="width: 1180px; height: 700px;background-color: #121f37;padding: 2em 0;border-radius: .5em;"
+              style="
+                width: 1180px;
+                height: 700px;
+                background-color: #121f37;
+                padding: 2em 0;
+                border-radius: 0.5em;
+              "
               ref="chartDom"
             ></div>
           </div>
         </div>
-        <p style="text-align: center; color: #747474; margin-top: 2.25em;">The value space is a t-SNE visualization that maps the 10-dimensional value vectors of different models and countries to a lower-dimensional space.</p>
+        <p style="text-align: center; color: #747474; margin-top: 2.25em">
+          The value space is a t-SNE visualization that maps the 10-dimensional
+          value vectors of different models and countries to a lower-dimensional
+          space.
+        </p>
       </div>
     </div>
   </div>
@@ -260,6 +270,9 @@ const getAxiosData = (url) => {
 };
 const setValueSpacesData = async (modelNameList) => {
   // console.log(modelNameList)
+  if (modelNameList.length == 0) {
+    return;
+  }
   const modelName = modelNameList.map(function (item) {
     return item.model_name;
   });

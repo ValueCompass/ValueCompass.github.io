@@ -23,7 +23,7 @@
               label="Rank"
               sortable
               width="188"
-              fixed
+              
             >
               <template #header>
                 <span style="padding-left: 3em">Rank</span>
@@ -70,11 +70,15 @@
               label="Model Name"
               width="304"
               sortable
-              fixed
+              
             >
               <template #default="scope">
                 <p class="table-color">
-                  {{ scope.row.modelName }}
+                  <span
+                    style="cursor: pointer"
+                    @click="handleDetailClick(scope.row)"
+                    >{{ scope.row.modelName }}</span
+                  >
                 </p>
               </template>
             </el-table-column>
@@ -254,7 +258,7 @@
                   <SvgIcon
                     class="add disabled"
                     name="add-disabled"
-                    style="padding: 0 1.2em;"
+                    style="padding: 0 1.2em"
                   ></SvgIcon>
                 </div>
 
@@ -265,7 +269,7 @@
                     placement="top"
                   >
                     <SvgIcon
-                      style="color: var(--theme-color); padding: 0 1.2em;"
+                      style="color: var(--theme-color); padding: 0 1.2em"
                       class="add"
                       name="model-checked-icon"
                       @click="compareBtnClick(scope.row)"
@@ -281,7 +285,7 @@
                     class="jump"
                     name="jump"
                     @click="handleDetailClick(scope.row)"
-                    style="padding: 0 1em; color: var(--theme-color);"
+                    style="padding: 0 1em; color: var(--theme-color)"
                   ></SvgIcon>
                 </el-tooltip>
               </template>
@@ -709,11 +713,11 @@ const handleMouseUp = () => {
     height: 10px;
   }
 
-  &.el-table--fit .el-table__inner-wrapper:before{
+  &.el-table--fit .el-table__inner-wrapper:before {
     display: none;
   }
-  tr:last-child{
-    td.el-table__cell{
+  tr:last-child {
+    td.el-table__cell {
       border-bottom: none !important;
     }
   }
@@ -728,9 +732,9 @@ const handleMouseUp = () => {
   left: 5.5em;
 }
 
-
-svg{
-  &.add, &.jump{
+svg {
+  &.add,
+  &.jump {
     cursor: pointer;
   }
 }
