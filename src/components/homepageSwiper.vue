@@ -278,8 +278,8 @@ defineExpose({
   }
   .swiper-button-prev,
   .swiper-button-next {
-    width: 3em;
-    height: 3em;
+    width: 5em;
+    height: 6em;
     color: var(--text-color);
     &:after {
       font-size: 2em;
@@ -287,10 +287,10 @@ defineExpose({
     }
   }
   .swiper-button-prev {
-    left: 0;
+    left: -2em;
   }
   .swiper-button-next {
-    right: 0;
+    right: -2em;
   }
 }
 

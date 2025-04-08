@@ -23,6 +23,20 @@ const props = defineProps({
   },
 });
 
+let nameFontSize = 14;
+const clientWidth = document.body.clientWidth;
+if (clientWidth > 1800) {
+  nameFontSize = 14; //1800以上
+} else if (clientWidth > 1650) {
+  nameFontSize = 13; //1650~1800
+} else if (clientWidth > 1500) {
+  nameFontSize = 12; //1500~1650
+} else if (clientWidth > 1400) {
+  nameFontSize = 11; //1400~ 1500
+} else {
+  nameFontSize = 10; // 1400以下
+}
+
 const chartDom = ref(null);
 let chartInstance = null;
 
@@ -36,7 +50,7 @@ const setRadarChart = (data) => {
   // 获取dada
   const indicator = Object.keys(data).map((item, index) => {
     return {
-      name: item,
+      name: item + " (" + data[item].toFixed(2) + ")",
       color:
         props.hasHightlight && index == 0 ? "rgba(16, 147, 255, 1)" : "black",
       axisLabel: { show: index == 0 ? true : false },
@@ -95,7 +109,7 @@ const setRadarChart = (data) => {
 const setRadarHighlight = (data, item) => {
   const indicator = Object.keys(data).map((indica, index) => {
     return {
-      name: indica,
+      name: indica + " (" + data[indica].toFixed(2) + ")",
       color: item == indica ? "rgba(16, 147, 255, 1)" : "black",
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
@@ -111,7 +125,7 @@ const setRadarHighlight = (data, item) => {
       },
       splitNumber: 5,
       axisName: {
-        fontSize: 14,
+        fontSize: nameFontSize,
         color: "black",
         formatter: function (value) {
           return value.split("&").join("&\n"); // 将换行符拆分为数组
@@ -204,8 +218,9 @@ onMounted(async () => {
           item.color !== "rgba(16, 147, 255, 1)"
         ) {
           item.color = "rgba(16, 147, 255, 1)";
-
-          emit("setCurrentCaseData", item.name);
+          let name = item.name;
+          name = name.split(" (")[0];
+          emit("setCurrentCaseData", name);
         }
         return item;
       });
@@ -217,7 +232,7 @@ onMounted(async () => {
             },
           },
           axisName: {
-            fontSize: 14,
+            fontSize: nameFontSize,
             color: "black",
           },
           triggerEvent: true,
@@ -246,7 +261,7 @@ onMounted(async () => {
             },
           },
           axisName: {
-            fontSize: 14,
+            fontSize: nameFontSize,
             color: "black",
           },
           triggerEvent: true,
