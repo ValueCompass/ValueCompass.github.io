@@ -98,14 +98,10 @@
               sortable
             >
               <template #header>
-                Score
+                <span style="padding-right:1.2em">Score</span>
 
                 <SvgIcon
-                  style="
-                    width: 1.2em;
-                    height: 1.2em;
-                    transform: translateY(0.2em);
-                  "
+                  class="show-intro-icon"
                   name="icon-question"
                   @click="showScoreIntro(true)"
                 ></SvgIcon>
@@ -727,9 +723,22 @@ const handleMouseUp = () => {
   background: transparent !important;
 }
 
+.show-intro-icon{
+  width: 1.2em;
+  height: 1.2em;
+  position: absolute;
+  left: 3em;
+  top: 50%;
+  transform: translateY(calc(-50% + 2px));
+
+}
 .points-show {
   position: absolute;
   left: 5.5em;
+  width: 1.6em;
+  height: 1.6em;
+  top: 50%;
+  transform: translateY(calc(-50% + 2px));
 }
 
 svg {

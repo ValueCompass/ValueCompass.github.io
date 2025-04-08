@@ -13,9 +13,9 @@
     >
       <div class="swiper-main swiper-no-swiping" tabindex=0>
         <p class="title">
-          <span>Score：</span>{{ item.score.toFixed(4) }}
+          <span>{{ "Case" + (index + 1) }} Score：</span>{{ item.score.toFixed(4) }} &nbsp;(<text style="text-transform: capitalize;">{{ item.label }}</text> Score)
         </p>
-        <p class="title">{{ "Case" + (index + 1) + " - " }}<i style="font-style: normal;">{{ item.label }}</i> Score</p>
+        <!-- <p class="title">{{ "Case" + (index + 1) + " - " }}<i style="font-style: normal;">{{ item.label }}</i> Score</p> -->
         <div class="chart-content-desc">
           <!-- <img src="@/assets/images/Avatar-Q.png" alt="Q" /> -->
           <span class="span">Q</span>
@@ -101,7 +101,8 @@ export default {
     overflow: auto;
   }
   .title {
-    font-size: 1em;
+    font-weight: bold;
+    font-size: 1.25em;
     line-height: 2em;
     span {
       color: #0b70c3;
@@ -124,7 +125,7 @@ export default {
     p {
       flex: 1;
       overflow: hidden;
-      font-size: 0.875em;
+      font-size: 1.125em;
       line-height: 1.8em;
       white-space: pre-wrap;
     }
@@ -144,15 +145,15 @@ export default {
 }
 :deep(.swiper-button-prev),
 :deep(.swiper-button-next) {
-  width: 2.5em;
-  height: 3em;
+  width: 5em;
+  height: 5em;
   color: var(--text-color);
 }
 :deep(.swiper-button-prev) {
-  left: 0;
+  left: -1em;
 }
 :deep(.swiper-button-next) {
-  right: 0;
+  right: -1em;
 }
 :deep(.swiper-button-prev:after),
 :deep(.swiper-button-next:after) {

@@ -866,7 +866,7 @@ const downloadChartsAsPDF = async (pdf) => {
     }
 
     .chart-main-chart.close {
-      height: 34em;
+      height: 37em;
       .case-open-btn {
         opacity: 1;
         z-index: 1;
