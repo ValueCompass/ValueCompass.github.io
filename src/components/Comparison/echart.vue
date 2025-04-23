@@ -6,7 +6,7 @@
           <div
             class="chart"
             ref="chartDom"
-            style="width: 1100px; height: 700px; margin: 0 auto"
+            style="width: 1200px; height: 700px; margin: 0 auto"
           ></div>
         </div>
       </div>
@@ -21,9 +21,16 @@ import {
   onUnmounted,
   nextTick,
   defineExpose,
+  defineProps,
 } from "vue";
 import axios from "axios";
 import * as echarts from "echarts";
+const props = defineProps({
+  type: {
+    type: Number,
+    required: true,
+  },
+});
 
 const chartDom = ref(null);
 let chartInstance = null;
@@ -40,7 +47,11 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
         .map(([key, value]) => value)
     );
     const maxValue = Math.ceil(Math.max(...allValues) * 1) / 1;
-    const minValue = Math.floor(Math.min(...allValues) * 1) / 1 - 10;
+    let jianNum = 2;
+    if (props.type == 1) {
+      jianNum = 5;
+    }
+    const minValue = Math.floor(Math.min(...allValues) * 1) / 1 - jianNum;
 
     let keys = [];
     if (filerData) {
@@ -91,13 +102,13 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       data: legendName,
       // top: "0%",
       textStyle: {
-        fontSize: 16,
+        fontSize: 14,
         color: "black",
       },
     },
     radar: {
       // 设置雷达图的中心和半径
-      center: ["50%", "50%"],
+      center: ["50%", "56%"],
       radius: "65%", // 增大半径以留出更多空间给文字
       splitArea: {
         areaStyle: {

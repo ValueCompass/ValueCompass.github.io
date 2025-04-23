@@ -152,6 +152,7 @@
                 class="chart"
                 @setCurrentCaseData="setCurrentCaseData"
                 ref="chartDom0"
+                :type="currentTab + 1"
               ></EchartComponent>
             </div>
           </div>
@@ -217,6 +218,7 @@
           @setCurrentCaseData="setCurrentCaseData"
           :class="{ show: currentTab == 0 }"
           ref="chartDom1"
+          :type="1"
         ></EchartComponent>
         <EchartComponent
           class="chart"
@@ -224,6 +226,7 @@
           @setCurrentCaseData="setCurrentCaseData"
           :class="{ show: currentTab == 1 }"
           ref="chartDom2"
+          :type="2"
         ></EchartComponent>
         <EchartComponent
           class="chart"
@@ -231,6 +234,7 @@
           @setCurrentCaseData="setCurrentCaseData"
           :class="{ show: currentTab == 2 }"
           ref="chartDom3"
+          :type="3"
         ></EchartComponent>
         <EchartComponent
           class="chart"
@@ -238,6 +242,7 @@
           @setCurrentCaseData="setCurrentCaseData"
           :class="{ show: currentTab == 3 }"
           ref="chartDom4"
+          :type="4"
         ></EchartComponent>
       </div>
     </div>
@@ -477,16 +482,16 @@ const currentTab = ref(0);
 const tabSwitch = (index) => {
   currentTab.value = index;
   if (currentTab.value == 0) {
-    chartDom0.value.setRadarChart(Schwartz_data[currentModel.value]);
+    chartDom0.value.setRadarChart(Schwartz_data[currentModel.value],1);
     currentCase = getCaseData(Schwartz_case, currentModel.value);
   } else if (currentTab.value == 1) {
-    chartDom0.value.setRadarChart(MFT_data[currentModel.value]);
+    chartDom0.value.setRadarChart(MFT_data[currentModel.value],2);
     currentCase = getCaseData(MFT_case, currentModel.value);
   } else if (currentTab.value == 2) {
-    chartDom0.value.setRadarChart(Risk_data[currentModel.value]);
+    chartDom0.value.setRadarChart(Risk_data[currentModel.value],3);
     currentCase = getCaseData(Risk_case, currentModel.value);
   } else if (currentTab.value == 3) {
-    chartDom0.value.setRadarChart(FULVa_data[currentModel.value]);
+    chartDom0.value.setRadarChart(FULVa_data[currentModel.value],4);
     currentCase = getCaseData(FULVa_case, currentModel.value);
   }
 

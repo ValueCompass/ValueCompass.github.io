@@ -10,19 +10,19 @@
       <div class="echart-list">
         <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 0 }">
           <p>Schwartz Theory of Basic Values</p>
-          <EchartComponent ref="chartDom1"></EchartComponent>
+          <EchartComponent ref="chartDom1" :type="1"></EchartComponent>
         </div>
         <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 1 }">
           <p>Moral Foundation Theory</p>
-          <EchartComponent ref="chartDom2"></EchartComponent>
+          <EchartComponent ref="chartDom2" :type="2"></EchartComponent>
         </div>
         <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 2 }">
           <p>Safety Taxonomy</p>
-          <EchartComponent ref="chartDom3"></EchartComponent>
+          <EchartComponent ref="chartDom3" :type="3"></EchartComponent>
         </div>
         <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 3 }">
           <p>LLMs' Unique Value System</p>
-          <EchartComponent ref="chartDom4"></EchartComponent>
+          <EchartComponent ref="chartDom4" :type="4"></EchartComponent>
         </div>
       </div>
     </div>

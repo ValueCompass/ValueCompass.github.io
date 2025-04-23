@@ -21,6 +21,10 @@ const props = defineProps({
     required: false,
     default: true,
   },
+  type: {
+    type: Number,
+    required: true,
+  },
 });
 
 let nameFontSize = 14;
@@ -43,10 +47,15 @@ let chartInstance = null;
 let maxValue = 0;
 let minValue = 100;
 
-const setRadarChart = (data) => {
+const setRadarChart = (data, typeNum) => {
   const values = Object.values(data);
   maxValue = Math.ceil(Math.max(...values) * 1) / 1;
-  minValue = Math.floor(Math.min(...values) * 1) / 1 - 10;
+  let jianNum = 2;
+  let type = typeNum ? typeNum : props.type;
+  if (type == 1) {
+    jianNum = 5;
+  }
+  minValue = Math.floor(Math.min(...values) * 1) / 1 - jianNum;
   // 获取dada
   const indicator = Object.keys(data).map((item, index) => {
     return {
