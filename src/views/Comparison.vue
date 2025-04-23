@@ -53,9 +53,23 @@
               </div>
             </li>
 
+            <template v-if="checkedModelDetailList.length <= 5">
+              <li
+                v-for="item in 5 - checkedModelDetailList.length"
+                :key="item"
+                class="model-li add-model"
+                v-popover="popoverRef"
+                @click.stop="visible = true"
+                ref="listItem"
+              >
+                <img src="@/assets/images/add-model.svg" alt="add-model" />
+                <p>Add</p>
+              </li>
+            </template>
+
+
             <li
-              v-for="item in 5 - checkedModelDetailList.length"
-              :key="item"
+              v-if="!isSetModelNumMax && checkedModelDetailList.length >= 5"
               class="model-li add-model"
               v-popover="popoverRef"
               @click.stop="visible = true"
@@ -75,7 +89,10 @@
               :reference="currentLi"
             >
               <div id="popoverId">
-                <el-checkbox-group v-model="checkedModelNameList" :max="5">
+                <el-checkbox-group
+                  v-model="checkedModelNameList"
+                  :max="isSetModelNumMax ? 5 : 100"
+                >
                   <el-checkbox
                     v-for="model in modelNameList"
                     :key="model"
@@ -98,7 +115,10 @@
             </el-popover>
           </ul>
           <p class="max-num-tip" style="">
-            The maximum number of comparisons supported is 5
+            The maximum number of comparisons supported is
+            <span @dblclick="isSetModelNumMax = !isSetModelNumMax">{{
+              isSetModelNumMax ? 5 : 100
+            }}</span>
           </p>
         </div>
       </div>
@@ -523,8 +543,9 @@ const tabSwitch = (index) => {
 const submit = () => {
   visible.value = false;
   console.log(checkedModelNameList.value);
-  if (checkedModelNameList.value.length > 5) {
-    alert("最多可添加5个model");
+  if (checkedModelNameList.value.length > 5 && isSetModelNumMax.value) {
+    // alert("最多可添加5个model");
+    // return;
   }
   getModelDetail();
   checkedModel.value = "";
@@ -555,15 +576,16 @@ const FULVa_table_data = ref([]);
 
 const getModelDetail = () => {
   checkedModelDetailList.value = [];
-  if (checkedModelNameList.value.length > 5) {
-    alert("最多可添加5个model");
+  if (checkedModelNameList.value.length > 5 && isSetModelNumMax.value) {
+    // alert("最多可添加5个model");
+    // return;
   }
   // console.log("checkedModelNameList.value", checkedModelNameList.value); // ["GPT-4-Turbo","GPT-4-Turbo"]
   var colorHas = []; // colorList
   for (let i = 0; i < checkedModelNameList.value.length; i++) {
-    if (i >= 5) {
-      break;
-    }
+    // if (i >= 5) {
+    //   break;
+    // }
     console.log(checkedModelDetailList.value);
     let has = false;
     checkedModelDetailList.value.forEach((item) => {
@@ -647,7 +669,7 @@ const getModelDetail = () => {
   //   MFT_table_columns_checked.value )
 
   // for echart
-  console.log("sssss",checkedModelDetailList.value)
+  console.log("sssss", checkedModelDetailList.value);
   VisualizationComponentProps.value.setRadarChart(checkedModelDetailList.value);
 
   // for value space
@@ -656,7 +678,7 @@ const getModelDetail = () => {
   );
 
   // for setHotChart
-  console.log("ssssaaas",checkedModelDetailList.value)
+  console.log("ssssaaas", checkedModelDetailList.value);
   CulturalAlignmentComponentProps.value.setHotChart(checkedModelNameList.value);
   console.log("checkedModelDetailList.value", checkedModelDetailList.value);
 };
@@ -846,8 +868,10 @@ const downloadChartsAsPDF = async (pdf) => {
     ],
   ];
   const pdfName = "Comparison_" + getCurrentDateTime();
-  await downloadAsPDF(charts,checkedModelDetailList.value,pdfName)
+  await downloadAsPDF(charts, checkedModelDetailList.value, pdfName);
 };
+
+const isSetModelNumMax = ref(true);
 </script>
 
 <style scoped lang="scss">
@@ -1007,5 +1031,10 @@ const downloadChartsAsPDF = async (pdf) => {
       --el-table-header-bg-color: #e7f1f9;
     }
   }
+}
+
+.compare-model-list ul {
+  flex-wrap: wrap;
+  padding-right: 8em;
 }
 </style>
