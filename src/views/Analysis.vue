@@ -129,9 +129,37 @@
         </div>
       </div>
     </div>
-    <div class="chart-box">
+    <div>
+      <el-tabs v-model="currentTitleIndex" @tab-click="tabListTitleSwitch">
+        <el-tab-pane
+          v-for="tab in tabListTitle"
+          :key="tab.index"
+          :label="
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+            tab.name +
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+          "
+          :name="tab.index"
+        ></el-tab-pane>
+      </el-tabs>
+    </div>
+    <!-- Value Space -->
+    <div class="download-box" :class="{ show: currentTitleIndex == 2 }">
+      <ValueSpaceComponent ref="ValueSpaceComponentProps"></ValueSpaceComponent>
+    </div>
+    <!-- Cultural Alignment -->
+    <div class="download-box" :class="{ show: currentTitleIndex == 1 }">
+      <CulturalAlignmentComponent
+        ref="CulturalAlignmentComponentProps"
+      ></CulturalAlignmentComponent>
+    </div>
+
+    <div
+      class="chart-box download-box"
+      :class="{ show: currentTitleIndex == 0 }"
+    >
       <div class="chart-tab">
-        <div class="chart-tab-title">Evaluation Results</div>
+        <!-- <div class="chart-tab-title">Evaluation Results</div> -->
         <ul>
           <li
             :class="{ active: currentTab == tab.index }"
@@ -145,7 +173,9 @@
       </div>
       <div class="chart-main">
         <div class="chart-main-chart" :class="openCaseStatus ? '' : 'close'">
-          <span class="case-open-btn" @click="openCase(true)">Cases</span>
+          <div class="case-btn case-open-btn" @click="openCase(true)">
+            <SvgIcon name="hide-case"></SvgIcon><span>Show Cases</span>
+          </div>
           <div class="chart-container">
             <div class="charts-box">
               <EchartComponent
@@ -157,6 +187,9 @@
             </div>
           </div>
           <div class="chart-text-main">
+            <div class="case-btn case-close-btn" @click="openCase(false)">
+              <SvgIcon name="hide-case"></SvgIcon><span>Hide Cases</span>
+            </div>
             <div class="chart-menu">
               <ul>
                 <li
@@ -201,8 +234,7 @@
               </ul>
             </div>
             <div class="chart-content">
-              <span class="case-close-btn" @click="openCase(false)"></span>
-              <swiper :data="currentCaseData"></swiper>
+              <swiper v-if="currentCaseData.length != 0" :data="currentCaseData"></swiper>
             </div>
           </div>
         </div>
@@ -254,11 +286,41 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import * as echarts from "echarts";
 import swiper from "../components/swiper.vue";
-import { getKeyValue, ensureHttps, extractDomain, getCurrentDateTime, downloadAsPDF } from "../utils/common.js";
+import {
+  getKeyValue,
+  ensureHttps,
+  extractDomain,
+  getCurrentDateTime,
+  downloadAsPDF,
+} from "../utils/common.js";
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import EchartComponent from "../components/Analysis/EchartComponent.vue";
+import ValueSpaceComponent from "../components/Comparison/ValueSpace.vue";
+import CulturalAlignmentComponent from "../components/Comparison/CulturalAlignment.vue";
+const CulturalAlignmentComponentProps = ref(null);
+const ValueSpaceComponentProps = ref(null);
+
+const tabListTitle = [
+  {
+    name: "Evaluation Results",
+    index: 0,
+  },
+  {
+    name: "culture heatmap",
+    index: 1,
+  },
+  {
+    name: "Value Space",
+    index: 2,
+  },
+];
+const currentTitleIndex = ref(0);
+
+const tabListTitleSwitch = (index) => {
+  currentTitleIndex.value = index.index;
+};
 
 const chartDom0 = ref(null);
 const chartDom1 = ref(null);
@@ -307,18 +369,6 @@ const tabList = [
     index: 3,
   },
 ];
-const chartTabMenu = [
-  "Benevolence",
-  "Achievement",
-  "Universalism",
-  "Tradition",
-  "Stimulation",
-  "Self-direction",
-  "Security",
-  "Power",
-  "Hedonism",
-  "Conformity",
-];
 const chartMenu = ref([]);
 const currentChartTab = ref("");
 const currentCaseData = ref([]);
@@ -349,41 +399,6 @@ const fetchData = async () => {
         getAxiosData("./data/models_info.json"),
         getAxiosData("./data/Schwartz_scores.json"),
         getAxiosData("./data/Schwartz_cases.json"),
-      ])
-      .then(
-        axios.spread(function (modelInfos, Schwartz_datas, Schwartz_cases) {
-          modelInfo = getKeyValue(modelInfos.data.data);
-          Schwartz_data = getKeyValue(Schwartz_datas.data.data);
-          Schwartz_case = Schwartz_cases.data.data;
-          modellist.value = Object.keys(modelInfo);
-
-          if (!checkedModel.value && !currentModel.value) {
-            checkedModel.value = modellist.value[0];
-            currentModel.value = modellist.value[0];
-          }
-          currentModelInfo.value = modelInfo[currentModel.value];
-          chartDom0.value.setRadarChart(Schwartz_data[currentModel.value]);
-          currentCase = getCaseData(Schwartz_case, currentModel.value);
-
-          chartMenu.value = Object.keys(currentCase).sort();
-          changeMenu(chartMenu.value[0]);
-          currentChartTab.value = chartMenu.value[0];
-          currentCaseData.value = currentCase[currentChartTab.value];
-
-          chartDom1.value.setRadarChart(Schwartz_data[currentModel.value]);
-          chartDom2.value.setRadarChart(MFT_data[currentModel.value]);
-          chartDom3.value.setRadarChart(Risk_data[currentModel.value]);
-          chartDom4.value.setRadarChart(FULVa_data[currentModel.value]);
-        })
-      );
-  } catch (error) {
-    console.error("Fetch error:", error);
-  }
-};
-const fetchOtherData = async () => {
-  try {
-    axios
-      .all([
         getAxiosData("./data/Risk_scores.json"),
         getAxiosData("./data/Risk_cases.json"),
         getAxiosData("./data/MFT_scores.json"),
@@ -393,6 +408,9 @@ const fetchOtherData = async () => {
       ])
       .then(
         axios.spread(function (
+          modelInfos,
+          Schwartz_datas,
+          Schwartz_cases,
           Risk_scores,
           Risk_cases,
           MFT_scores,
@@ -400,20 +418,29 @@ const fetchOtherData = async () => {
           FULVa_scores,
           FULVa_cases
         ) {
+          modelInfo = getKeyValue(modelInfos.data.data);
+          Schwartz_data = getKeyValue(Schwartz_datas.data.data);
+          Schwartz_case = Schwartz_cases.data.data;
           Risk_data = getKeyValue(Risk_scores.data.data);
           Risk_case = Risk_cases.data.data;
           MFT_data = getKeyValue(MFT_scores.data.data);
           MFT_case = MFT_cases.data.data;
           FULVa_data = getKeyValue(FULVa_scores.data.data);
           FULVa_case = FULVa_cases.data.data;
+          modellist.value = Object.keys(modelInfo);
+
+          if (!checkedModel.value && !currentModel.value) {
+            checkedModel.value = modellist.value[0];
+            currentModel.value = modellist.value[0];
+          }
+
+          submit();
         })
       );
   } catch (error) {
     console.error("Fetch error:", error);
   }
 };
-fetchData();
-fetchOtherData();
 
 function getCaseData(arr, model) {
   const arr1 = arr.filter((item) => {
@@ -429,11 +456,6 @@ function getCaseData(arr, model) {
     return acc;
   }, {});
 }
-
-// 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
-onMounted(async () => {
-  await nextTick(); // 确保DOM已经渲染完成
-});
 
 const handleCheckedModelChange = (value) => {
   console.log(value);
@@ -472,30 +494,39 @@ const submit = () => {
     currentCase = getCaseData(FULVa_case, currentModel.value);
   }
   console.log(currentCase);
-  chartMenu.value = Object.keys(currentCase).sort();
+  chartMenu.value = Object.keys(currentCase);
   changeMenu(chartMenu.value[0]);
   currentChartTab.value = chartMenu.value[0];
   currentCaseData.value = currentCase[currentChartTab.value];
+
+  chartDom1.value.setRadarChart(Schwartz_data[currentModel.value]);
+  chartDom2.value.setRadarChart(MFT_data[currentModel.value]);
+  chartDom3.value.setRadarChart(Risk_data[currentModel.value]);
+  chartDom4.value.setRadarChart(FULVa_data[currentModel.value]);
+  CulturalAlignmentComponentProps.value.setHotChart([currentModel.value]);
+  ValueSpaceComponentProps.value.setValueSpacesData([
+    { model_name: currentModel.value },
+  ]);
 };
 
 const currentTab = ref(0);
 const tabSwitch = (index) => {
   currentTab.value = index;
   if (currentTab.value == 0) {
-    chartDom0.value.setRadarChart(Schwartz_data[currentModel.value],1);
+    chartDom0.value.setRadarChart(Schwartz_data[currentModel.value], 1);
     currentCase = getCaseData(Schwartz_case, currentModel.value);
   } else if (currentTab.value == 1) {
-    chartDom0.value.setRadarChart(MFT_data[currentModel.value],2);
+    chartDom0.value.setRadarChart(MFT_data[currentModel.value], 2);
     currentCase = getCaseData(MFT_case, currentModel.value);
   } else if (currentTab.value == 2) {
-    chartDom0.value.setRadarChart(Risk_data[currentModel.value],3);
+    chartDom0.value.setRadarChart(Risk_data[currentModel.value], 3);
     currentCase = getCaseData(Risk_case, currentModel.value);
   } else if (currentTab.value == 3) {
-    chartDom0.value.setRadarChart(FULVa_data[currentModel.value],4);
+    chartDom0.value.setRadarChart(FULVa_data[currentModel.value], 4);
     currentCase = getCaseData(FULVa_case, currentModel.value);
   }
 
-  chartMenu.value = Object.keys(currentCase).sort();
+  chartMenu.value = Object.keys(currentCase);
   changeMenu(chartMenu.value[0]);
   currentChartTab.value = chartMenu.value[0];
   currentCaseData.value = currentCase[currentChartTab.value];
@@ -521,15 +552,24 @@ onActivated(() => {
   if (setModelName) {
     checkedModel.value = setModelName;
     currentModel.value = setModelName;
-    if (isFirstEnter) {
-      isFirstEnter = false;
-    } else {
+  }
+  if (isFirstEnter) {
+    isFirstEnter = false;
+  } else {
+    if (setModelName) {
+      console.log("首页传过来的modelName：" + router.query.modelName);
       submit();
     }
   }
 });
 
 onMounted(() => {
+  const setModelName = router.query.modelName;
+  if (setModelName) {
+    checkedModel.value = setModelName;
+    currentModel.value = setModelName;
+  }
+  fetchData();
   document.addEventListener("click", handleClickOutside);
 });
 const handleClickOutside = (event) => {
@@ -590,11 +630,11 @@ const downloadChartsAsPDF = async (pdf) => {
   const pdfName = currentModel.value + "_" + getCurrentDateTime();
   const modelist = [
     {
-      "model_name": currentModel.value,
-      "model_info": currentModelInfo.value
-    }
-  ]
-  await downloadAsPDF(charts,modelist,pdfName)
+      model_name: currentModel.value,
+      model_info: currentModelInfo.value,
+    },
+  ];
+  await downloadAsPDF(charts, modelist, pdfName);
 };
 </script>
 
@@ -602,7 +642,7 @@ const downloadChartsAsPDF = async (pdf) => {
 .title-content {
   margin-top: 1.5em;
   background: var(--gary-color);
-  padding: 2.25em 6em;
+  padding: 1.5em 3em;
   border-radius: 1em;
   .model {
     display: flex;
@@ -699,7 +739,7 @@ const downloadChartsAsPDF = async (pdf) => {
   }
 }
 .chart-box {
-  margin-top: 3em;
+  margin-top: 1em;
   padding: 0 0 4.5em;
   display: flex;
   .chart-tab {
@@ -715,7 +755,7 @@ const downloadChartsAsPDF = async (pdf) => {
         line-height: 1.35;
         font-size: 1em;
         font-weight: 600;
-        margin-top: 1.5em;
+        margin-bottom: 1.5em;
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -742,28 +782,16 @@ const downloadChartsAsPDF = async (pdf) => {
 
     .chart-main-chart {
       transition: all 0.2s;
-      height: 30em;
+      height: 34em;
       position: relative;
       display: flex;
       // align-items: center;
-      .case-open-btn {
-        opacity: 0;
-        z-index: -1;
-        transition: all 0.2s;
-        font-size: 0.9em;
-        cursor: pointer;
-        position: absolute;
-        top: 1em;
-        left: 80%;
-        background: var(--gary-color) url(@/assets/images/toggle.png) no-repeat
-          3.5em center;
-        background-size: 0.8em auto;
-        padding: 5px 30px 5px 10px;
-      }
+
       .chart-container {
+        margin-top: 1.5em;
         transition: all 0.2s;
         width: 54%;
-        padding-bottom: 35%;
+        padding-bottom: 37%;
         height: 0;
         // min-width: 640px;
         // flex: 1;
@@ -782,11 +810,17 @@ const downloadChartsAsPDF = async (pdf) => {
         }
       }
       .chart-text-main {
-        padding-left: 1em;
+        background: #f5f5f5;
+        padding-top: 2.6em;
         transition: all 0.2s;
         flex: 1;
         overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
         .chart-menu {
+          margin: 0 2.5em;
           position: relative;
           &::after {
             background-color: rgba(194, 194, 194, 1);
@@ -828,25 +862,11 @@ const downloadChartsAsPDF = async (pdf) => {
         .chart-content {
           position: relative;
           width: 100%;
+          flex: 1;
+          overflow: hidden;
           background: var(--gary-color);
           border-radius: 0.375em;
           margin-top: 0.75em;
-          padding-bottom: 0.75em;
-          .case-close-btn {
-            cursor: pointer;
-            position: absolute;
-            left: 1em;
-            top: 1em;
-            z-index: 10;
-            background: var(--gary-color) url(@/assets/images/toggle.png)
-              no-repeat center;
-            background-size: 0.8em auto;
-            display: inline-block;
-            width: 2em;
-            height: 1.2em;
-            transform: rotate(180deg);
-          }
-
           .title {
             color: rgba(16, 147, 255, 1);
             font-size: 1em;
@@ -871,13 +891,14 @@ const downloadChartsAsPDF = async (pdf) => {
     }
 
     .chart-main-chart.close {
-      height: 37em;
+      height: 40em;
       .case-open-btn {
         opacity: 1;
         z-index: 1;
       }
       .chart-container {
         transform: translate(38%, 16%) scale(1.2);
+        margin-top: 0;
       }
       .chart-text-main {
         transform: scaleX(0);
@@ -906,6 +927,44 @@ const downloadChartsAsPDF = async (pdf) => {
     }
   }
 
+  .case-btn {
+    cursor: pointer;
+
+    color: #666;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4em;
+
+    background-size: 0.8em auto;
+    width: 9em;
+    svg {
+      width: 1.2em;
+      height: 1.2em;
+    }
+
+    &:hover {
+      color: #0b70c3;
+    }
+  }
+  .case-close-btn {
+    position: absolute;
+    left: 1.5em;
+    top: 0.75em;
+    z-index: 10;
+  }
+  .case-open-btn {
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.2s;
+    font-size: 0.9em;
+    cursor: pointer;
+    position: absolute;
+    top: 1em;
+    left: 80%;
+
+    padding: 5px 30px 5px 10px;
+  }
   .download-charts-box {
     position: absolute;
     left: -99999px;
@@ -933,5 +992,45 @@ const downloadChartsAsPDF = async (pdf) => {
 :deep(.el-radio) {
   --el-checkbox-text-color: #fff;
   margin-right: 1em;
+}
+
+:deep(.el-tabs) {
+  --el-tabs-header-height: 2.1em;
+  .el-tabs__active-bar {
+    transition: all 0s;
+  }
+
+  .el-tabs__header {
+    --el-font-size-base: 1.25em;
+    --el-color-primary: var(--theme-color);
+    .el-tabs__item {
+      text-transform: capitalize;
+      padding: 0;
+      color: var(--sub-text-color);
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      &.is-active {
+        color: var(--theme-color) !important;
+      }
+      &:hover {
+        color: #47acff;
+        border-color: #47acff;
+      }
+    }
+  }
+}
+
+.download-box {
+  width: 100%;
+  position: absolute;
+  top: -99999px;
+  right: -99999px;
+  opacity: 0;
+  &.show {
+    position: relative;
+    top: 0;
+    right: 0;
+    opacity: 1;
+  }
 }
 </style>
