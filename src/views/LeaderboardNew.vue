@@ -18,13 +18,7 @@
             style="width: 100%"
             ref="tableRef"
           >
-            <el-table-column
-              prop="place"
-              label="Rank"
-              sortable
-              width="188"
-              
-            >
+            <el-table-column prop="place" label="Rank" sortable width="188">
               <template #header>
                 <span style="padding-left: 3em">Rank</span>
               </template>
@@ -70,12 +64,12 @@
               label="Model Name"
               width="304"
               sortable
-              
             >
               <template #default="scope">
                 <p class="table-color">
                   <span
                     style="cursor: pointer"
+                    class="model-name-a"
                     @click="handleDetailClick(scope.row)"
                     >{{ scope.row.modelName }}</span
                   >
@@ -98,7 +92,7 @@
               sortable
             >
               <template #header>
-                <span style="padding-right:1.2em">Score</span>
+                <span style="padding-right: 1.2em">Score</span>
 
                 <SvgIcon
                   class="show-intro-icon"
@@ -723,14 +717,13 @@ const handleMouseUp = () => {
   background: transparent !important;
 }
 
-.show-intro-icon{
+.show-intro-icon {
   width: 1.2em;
   height: 1.2em;
   position: absolute;
   left: 3em;
   top: 50%;
   transform: translateY(calc(-50% + 2px));
-
 }
 .points-show {
   position: absolute;
@@ -746,5 +739,10 @@ svg {
   &.jump {
     cursor: pointer;
   }
+}
+
+.model-name-a:hover {
+  color: var(--theme-color);
+  text-decoration: underline;
 }
 </style>
