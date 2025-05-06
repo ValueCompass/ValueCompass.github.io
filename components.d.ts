@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Am4core: typeof import('./src/components/am4core.vue')['default']
     ComparePool: typeof import('./src/components/ComparePool.vue')['default']
+    Comparison: typeof import('./src/components/Comparison.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
     DimensionMeasurementTabs: typeof import('./src/components/DimensionMeasurementTabs.vue')['default']
     Echart: typeof import('./src/components/Comparison/echart.vue')['default']
@@ -38,6 +39,7 @@ declare module 'vue' {
     HomepageSwiper: typeof import('./src/components/homepageSwiper.vue')['default']
     Intro: typeof import('./src/components/Home/intro.vue')['default']
     Loading: typeof import('./src/components/loading.vue')['default']
+    ModelListCheckbox: typeof import('./src/components/ModelListCheckbox.vue')['default']
     Modules: typeof import('./src/components/Home/modules.vue')['default']
     NavBar: typeof import('./src/components/navBar.vue')['default']
     NavBarNew: typeof import('./src/components/navBarNew.vue')['default']

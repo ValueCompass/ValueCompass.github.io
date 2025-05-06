@@ -74,6 +74,34 @@ export const getCurrentDateTime = () => {
 }
 
 
+// 分组函数
+export const groupByDeveloper = (data) => {
+  const grouped = {};
+
+  data.forEach(model => {
+      if (!grouped[model.developer]) {
+          grouped[model.developer] = [];
+      }
+      grouped[model.developer].push(model);
+  });
+
+  // 对每组数据根据model首字母排序
+  for (const developer in grouped) {
+      grouped[developer].sort((a, b) => a.model.localeCompare(b.model));
+  }
+
+  // 将分组后整个开发者对象按每组第一个model的首字母排序
+  const sortedGrouped = Object.keys(grouped)
+      .sort((a, b) => grouped[a][0].model.localeCompare(grouped[b][0].model))
+      .reduce((obj, key) => {
+          obj[key] = grouped[key];
+          return obj;
+      }, {});
+
+  return sortedGrouped;
+};
+
+
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";

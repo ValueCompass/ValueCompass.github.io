@@ -58,59 +58,41 @@
                 v-for="item in 5 - checkedModelDetailList.length"
                 :key="item"
                 class="model-li add-model"
-                v-popover="popoverRef"
-                @click.stop="visible = true"
-                ref="listItem"
+                :ref="(el) => (buttonRefs[item] = el)"
+                @click="showPopover(item)"
               >
                 <img src="@/assets/images/add-model.svg" alt="add-model" />
                 <p>Add</p>
               </li>
             </template>
 
-
             <li
               v-if="!isSetModelNumMax && checkedModelDetailList.length >= 5"
               class="model-li add-model"
-              v-popover="popoverRef"
-              @click.stop="visible = true"
-              ref="listItem"
+              :ref="(el) => (buttonRefs[0] = el)"
+              @click="showPopover(0)"
             >
               <img src="@/assets/images/add-model.svg" alt="add-model" />
               <p>Add</p>
             </li>
             <el-popover
               ref="popoverRef"
-              :visible="visible"
-              placement="right-start"
-              :width="576"
-              trigger="click"
+              :width="630"
+              v-if="activeIndex !== null"
+              :visible="true"
+              :virtual-ref="buttonRefs[activeIndex]"
               virtual-triggering
-              persistent
-              :reference="currentLi"
+              placement="right"
+              trigger="click"
+              @after-leave="activeIndex = null"
             >
-              <div id="popoverId">
-                <el-checkbox-group
-                  v-model="checkedModelNameList"
-                  :max="isSetModelNumMax ? 5 : 100"
-                >
-                  <el-checkbox
-                    v-for="model in modelNameList"
-                    :key="model"
-                    :value="model"
-                  >
-                    {{ model }}
-                  </el-checkbox>
-                </el-checkbox-group>
-                <div
-                  style="
-                    display: flex;
-                    justify-content: flex-end;
-                    margin-top: 20px;
-                    padding-right: 20px;
-                  "
-                >
-                  <button @click="submit">Submit</button>
-                </div>
+              <div id="popoverId" style="position: relative">
+                <ModelListCheckbox
+                  :modelGropsByDeveloper="modelGropsByDeveloper"
+                  :modelValue="checkedModelNameList"
+                  :isSetModelNumMax="isSetModelNumMax"
+                  @updateCheckboxValue="updateCheckboxValue"
+                ></ModelListCheckbox>
               </div>
             </el-popover>
           </ul>
@@ -371,12 +353,15 @@ import TableComponent from "../components/Comparison/Table.vue";
 import ValueSpaceComponent from "../components/Comparison/ValueSpace.vue";
 import CulturalAlignmentComponent from "../components/Comparison/CulturalAlignment.vue";
 import selectBoxComponent from "../components/selectBox.vue";
+import ModelListCheckbox from "../components/ModelListCheckbox.vue";
+
 import {
   getKeyValue,
   mergeObj,
   getAvaData,
   getCurrentDateTime,
   downloadAsPDF,
+  groupByDeveloper,
 } from "../utils/common.js";
 import DimensionMeasurementTabs from "../components/DimensionMeasurementTabs.vue";
 import GlobalData from "@/utils/common-data";
@@ -408,19 +393,6 @@ const tabList = [
     index: 3,
   },
 ];
-const chartTabMenu = [
-  "Benevolence",
-  "Achievement",
-  "Universalism",
-  "Tradition",
-  "Stimulation",
-  "Self-direction",
-  "Security",
-  "Power",
-  "Hedonism",
-  "Conformity",
-];
-
 var Schwartz_data = null;
 var Schwartz_case = null;
 var Risk_data = null;
@@ -435,6 +407,8 @@ const modelInfo = ref(); //  { 'GPT-4-Turbo': {developer: 'OpenAI', type: 'Close
 const checkedModel = ref([]);
 const popoverRef = ref(null);
 const visible = ref(false);
+
+const modelGropsByDeveloper = ref();
 const modelNameList = ref([]); // [ 'GPT-4-Turbo', 'GPT-4-Turbo' ]
 const checkedModelNameList = ref([]);
 const checkedModelDetailList = ref([]);
@@ -486,6 +460,8 @@ const fetchData = async () => {
             const point = getAvaData(key, [], mergeData);
             modelInfo.value[key].points = (point * 1).toFixed(2);
           }
+
+          modelGropsByDeveloper.value = groupByDeveloper(modelInfo_list);
           modelNameList.value = Object.keys(modelInfo.value);
 
           Schwartz_table_columns.value = Object.keys(
@@ -540,8 +516,14 @@ const tabSwitch = (index) => {
   console.log(index);
   currentTab.value = index.index;
 };
+
+const updateCheckboxValue = (checkedValue) => {
+  checkedModelNameList.value = checkedValue;
+  submit();
+};
 const submit = () => {
   visible.value = false;
+  activeIndex.value = null;
   console.log(checkedModelNameList.value);
   if (checkedModelNameList.value.length > 5 && isSetModelNumMax.value) {
     // alert("最多可添加5个model");
@@ -696,18 +678,6 @@ onMounted(() => {
 
   document.addEventListener("click", handleClickOutside);
 });
-const handleClickOutside = (event) => {
-  // 使用 Popper 的 getPopperElement 方法获取真正的弹窗元素
-  const popperElement = document.getElementById("popoverId");
-  // 判断点击的是否为popover外部，关闭popover
-  if (
-    popoverRef.value &&
-    popperElement &&
-    !popperElement.contains(event.target)
-  ) {
-    visible.value = false;
-  }
-};
 
 onActivated(() => {
   currentTab.value = 0;
@@ -872,6 +842,26 @@ const downloadChartsAsPDF = async (pdf) => {
 };
 
 const isSetModelNumMax = ref(true);
+
+// el-popover交互
+const buttonRefs = ref([]);
+const activeIndex = ref(null);
+
+const showPopover = (index) => {
+  activeIndex.value = activeIndex.value === index ? null : index;
+};
+const handleClickOutside = (event) => {
+  // 如果点击的是按钮或弹出框，不关闭
+  const popoverEl = document.getElementById("popoverId");
+  const clickedInsideButton = buttonRefs.value.some((el) =>
+    el?.contains(event.target)
+  );
+  const clickedInsidePopover = popoverEl?.contains(event.target);
+
+  if (!clickedInsideButton && !clickedInsidePopover) {
+    activeIndex.value = null;
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -897,10 +887,10 @@ const isSetModelNumMax = ref(true);
   margin-top: 1.5em;
   margin-bottom: 3em;
   background: var(--gary-color);
-  padding: 2.25em 6em;
+  padding: 1.5em 3em;
   border-radius: 1em;
   h2 {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: 600;
     line-height: 1.3125em;
     margin-bottom: 1.3125em;
@@ -958,17 +948,6 @@ const isSetModelNumMax = ref(true);
       align-items: center;
     }
   }
-}
-:deep(.el-checkbox__label) {
-  width: 145px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-}
-:deep(.el-checkbox) {
-  --el-checkbox-text-color: var(--text-color);
-  margin-right: 1em;
 }
 
 :deep(.el-tabs) {
