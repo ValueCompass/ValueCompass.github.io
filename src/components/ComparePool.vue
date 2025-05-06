@@ -44,8 +44,8 @@
           v-for="item in 5 - props.compareArr.length"
           :key="item"
           :style="{ 'border-color': item.color }"
-          v-popover="popoverRef"
-          @click.stop="visible = true"
+          :ref="(el) => (buttonRefs[item] = el)"
+          @click="showPopover(item)"
         >
           <!-- <img src="@/assets/images/add-model.svg" alt="add-model" /> -->
           <SvgIcon class="add-model-svg" name="add-model"></SvgIcon>
@@ -53,40 +53,29 @@
         </li>
         <el-popover
           ref="popoverRef"
-          :visible="visible"
-          placement="top"
-          :width="576"
-          trigger="click"
+          :width="630"
+          v-if="activeIndex !== null"
+          :visible="true"
+          :virtual-ref="buttonRefs[activeIndex]"
           virtual-triggering
-          persistent
-          :reference="currentLi"
+          placement="right-start"
+          trigger="click"
+          @after-leave="activeIndex = null"
         >
           <div id="popoverId3">
-            <el-checkbox-group v-model="checkedModelNameList" :max="5">
-              <el-checkbox
-                v-for="model in modelNameList"
-                :key="model"
-                :value="model"
-              >
-                {{ model }}
-              </el-checkbox>
-            </el-checkbox-group>
-            <div
-              style="
-                display: flex;
-                justify-content: flex-end;
-                margin-top: 20px;
-                padding-right: 20px;
-              "
-            >
-              <button @click="submit">Submit</button>
-            </div>
+            <ModelListCheckbox
+              :modelGropsByDeveloper="modelGropsByDeveloper"
+              :modelValue="checkedModelNameList"
+              @updateCheckboxValue="updateCheckboxValue"
+            ></ModelListCheckbox>
           </div>
         </el-popover>
 
         <li class="btn-box">
           <el-button
-            :color="props.compareArr.length < 2 ? '#C2C2C2' : 'var(--theme-color)'"
+            :color="
+              props.compareArr.length < 2 ? '#C2C2C2' : 'var(--theme-color)'
+            "
             @click="compareNow"
             :disabled="props.compareArr.length < 2"
             class="compare-btn"
@@ -114,7 +103,9 @@ import {
 } from "vue";
 import axios from "axios";
 
+import ModelListCheckbox from "../components/ModelListCheckbox.vue";
 import GlobalData from "@/utils/common-data";
+import { groupByDeveloper } from "../utils/common.js";
 
 const props = defineProps({
   compareArr: Array,
@@ -122,6 +113,7 @@ const props = defineProps({
 const popoverRef = ref(null);
 const visible = ref(false);
 const modelNameList = ref([]);
+const modelGropsByDeveloper = ref({});
 const checkedModelNameList = ref([]);
 
 const checkedModelDetailList = ref([]);
@@ -159,18 +151,6 @@ onMounted(() => {
   fetchData();
   document.addEventListener("click", handleClickOutside);
 });
-const handleClickOutside = (event) => {
-  // 使用 Popper 的 getPopperElement 方法获取真正的弹窗元素
-  const popperElement = document.getElementById("popoverId3");
-  // 判断点击的是否为popover外部，关闭popover
-  if (
-    popoverRef.value &&
-    popperElement &&
-    !popperElement.contains(event.target)
-  ) {
-    visible.value = false;
-  }
-};
 
 // 监听 checkedModelDetailList 的变化
 watchEffect(() => {
@@ -178,8 +158,13 @@ watchEffect(() => {
   checkedModelNameList.value = props.compareArr.map((item) => item.modelName);
 });
 
+const updateCheckboxValue = (checkedValue) => {
+  checkedModelNameList.value = checkedValue;
+  submit();
+};
 const submit = () => {
   visible.value = false;
+  activeIndex.value = null;
   emit("comparisonPoolSubmit", checkedModelNameList.value);
 };
 
@@ -191,10 +176,31 @@ const fetchData = async () => {
           return item.model;
         });
         modelNameList.value = modelInfo_list;
+        modelGropsByDeveloper.value = groupByDeveloper(modelInfos.data.data);
       })
     );
   } catch (error) {
     console.error("Fetch error:", error);
+  }
+};
+
+// el-popover交互
+const buttonRefs = ref([]);
+const activeIndex = ref(null);
+
+const showPopover = (index) => {
+  activeIndex.value = activeIndex.value === index ? null : index;
+};
+const handleClickOutside = (event) => {
+  // 如果点击的是按钮或弹出框，不关闭
+  const popoverEl = document.getElementById("popoverId3");
+  const clickedInsideButton = buttonRefs.value.some((el) =>
+    el?.contains(event.target)
+  );
+  const clickedInsidePopover = popoverEl?.contains(event.target);
+
+  if (!clickedInsideButton && !clickedInsidePopover) {
+    activeIndex.value = null;
   }
 };
 </script>
@@ -231,18 +237,6 @@ const fetchData = async () => {
     line-height: 1.3125em;
     padding: 0.2em 0;
   }
-}
-
-:deep(.el-checkbox__label) {
-  width: 145px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-}
-:deep(.el-checkbox) {
-  --el-checkbox-text-color: var(--text-color);
-  margin-right: 1em;
 }
 
 :deep(.el-tabs__header) {
