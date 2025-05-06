@@ -22,7 +22,7 @@
           :key="developer"
         >
           <p
-            style="font-size: 12px; height: 25px; line-height: 16px; opacity: 0"
+            style="font-size: 12px; height: 30px; line-height: 16px; opacity: 0"
             :ref="setRef(developer)"
           >
             {{ developer }}
