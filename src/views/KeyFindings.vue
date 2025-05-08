@@ -1,7 +1,10 @@
 <template>
   <div class="main-container Key-Findings-template">
     <!-- <span class="button read-report-btn" @click="downloadPdf">Read report</span> -->
-    <a class="button read-report-btn" target="_blank" href="/data/leaderboard report-DESKTOP-O9HJ7SM.docx"
+    <a
+      class="button read-report-btn"
+      target="_blank"
+      href="/data/leaderboard report-DESKTOP-O9HJ7SM.docx"
       >Read report</a
     >
     <p class="h1">
@@ -409,6 +412,7 @@ const downloadPdf = () => {
   background: #fff;
   color: var(--theme-color);
   line-height: 1em;
-  font-size: 0.875em;
+  font-size: 14px;
+  font-weight: 700;
 }
 </style>
