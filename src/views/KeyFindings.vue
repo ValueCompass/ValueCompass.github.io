@@ -349,6 +349,7 @@ const downloadPdf = () => {
     margin-bottom: 2.5em;
   }
   .item {
+    border-radius: 1em;
     width: 100%;
     padding: 1.5em 3em;
     background: #f5f5f5;
@@ -385,10 +386,11 @@ const downloadPdf = () => {
     .details {
       padding-left: 12.5em;
       overflow: hidden;
-      font-size: 1em;
+      
       line-height: 1.5;
       & > div {
         white-space: pre-line;
+        font-size: 1.125em;
       }
     }
 
@@ -406,8 +408,8 @@ const downloadPdf = () => {
 }
 .read-report-btn {
   position: absolute;
-  right: 0;
-  top: 2em;
+  right: 3rem;
+  top: 3.3rem;
   border: 1px solid var(--theme-color);
   background: #fff;
   color: var(--theme-color);
