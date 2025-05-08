@@ -47,6 +47,15 @@ const routes: Array<RouteRecordRaw> = [
           requiresFrontEndAuth: true
         },
       },
+      {
+        path: 'keyFindings',
+        name: 'KeyFindings',
+        component: () => import('../views/KeyFindings.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
     ]
   },
   
