@@ -86,7 +86,7 @@
       >
         <div class="leaderboard-nav-container">
           <ul class="nav-child-ul main-container">
-            <li @click="toggleNav">
+            <li>
               <router-link to="/leaderboard/leaderboard">
                 <SvgIcon
                   class="svg-icon"
@@ -95,16 +95,22 @@
                 ><span>Leaderboard</span></router-link
               >
             </li>
-            <li @click="toggleNav">
+            <li>
               <router-link to="/leaderboard/valueAnalysis"
                 ><SvgIcon class="svg-icon" name="icon-ValueAnalysis"></SvgIcon
                 >Analysis</router-link
               >
             </li>
-            <li @click="toggleNav">
+            <li>
               <router-link to="/leaderboard/valueComparison"
                 ><SvgIcon class="svg-icon" name="icon-ValueComparison"></SvgIcon
                 >Comparison</router-link
+              >
+            </li>
+            <li>
+              <router-link to="/leaderboard/keyFindings"
+                ><SvgIcon class="svg-icon" name="icon-keyFindings"></SvgIcon
+                >Key Findings</router-link
               >
             </li>
           </ul>
