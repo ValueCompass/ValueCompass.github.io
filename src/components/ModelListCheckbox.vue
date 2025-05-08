@@ -22,7 +22,7 @@
           :key="developer"
         >
           <p
-            style="font-size: 12px; height: 30px; line-height: 16px; opacity: 0"
+            style="font-size: 12px; height: 12px; line-height: 16px; opacity: 0"
             :ref="setRef(developer)"
           >
             {{ developer }}
@@ -238,6 +238,7 @@ onMounted(async () => {
   gap: 16px 12px;
   align-self: stretch;
   flex-wrap: wrap;
+  margin-bottom: 24px;
 }
 :deep(.el-checkbox__label) {
   width: 156px;
