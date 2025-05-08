@@ -79,6 +79,16 @@ var colors = [
   "#F3CF7F",
   "#E38380",
   "#C49361",
+  "#71AD8A",
+  "#A27BBB",
+  "#7186C9",
+  "#ACD291",
+  "#E195D0",
+  "#ED8B5E",
+  "#96C8E0",
+  "#F3CF7F",
+  "#E38380",
+  "#C49361",
 ];
 
 function setGlChart(gl_data) {
