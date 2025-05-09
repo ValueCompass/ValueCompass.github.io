@@ -19,15 +19,16 @@
           </el-tooltip>
           <el-popover
             ref="popoverRef"
+            v-if="visible"
             :visible="visible"
-            placement="bottom-start"
-            :width="576"
+            placement="right"
+            :width="630"
             trigger="click"
             virtual-triggering
             persistent
           >
             <div id="popoverId2">
-              <el-radio-group
+              <!-- <el-radio-group
                 v-model="checkedModel"
                 @change="handleCheckedModelChange"
               >
@@ -48,7 +49,13 @@
                 "
               >
                 <button @click="submit">Submit</button>
-              </div>
+              </div> -->
+
+              <ModelListRadio
+                :modelGropsByDeveloper="modelGropsByDeveloper"
+                :modelValue="checkedModel"
+                @updateCheckboxValue="updateCheckboxValue"
+              ></ModelListRadio>
             </div>
           </el-popover>
         </div>
@@ -234,7 +241,10 @@
               </ul>
             </div>
             <div class="chart-content">
-              <swiper v-if="currentCaseData.length != 0" :data="currentCaseData"></swiper>
+              <swiper
+                v-if="currentCaseData.length != 0"
+                :data="currentCaseData"
+              ></swiper>
             </div>
           </div>
         </div>
@@ -292,6 +302,7 @@ import {
   extractDomain,
   getCurrentDateTime,
   downloadAsPDF,
+  groupByDeveloper,
 } from "../utils/common.js";
 
 import html2canvas from "html2canvas";
@@ -299,6 +310,7 @@ import jsPDF from "jspdf";
 import EchartComponent from "../components/Analysis/EchartComponent.vue";
 import ValueSpaceComponent from "../components/Comparison/ValueSpace.vue";
 import CulturalAlignmentComponent from "../components/Comparison/CulturalAlignment.vue";
+import ModelListRadio from "../components/ModelListRadio.vue";
 const CulturalAlignmentComponentProps = ref(null);
 const ValueSpaceComponentProps = ref(null);
 
@@ -389,6 +401,8 @@ const checkedModel = ref("GPT-4-Turbo");
 const currentModel = ref("GPT-4-Turbo");
 const currentModelInfo = ref(null);
 
+const modelGropsByDeveloper = ref();
+
 const getAxiosData = (url) => {
   return axios.get(url);
 };
@@ -428,6 +442,8 @@ const fetchData = async () => {
           FULVa_data = getKeyValue(FULVa_scores.data.data);
           FULVa_case = FULVa_cases.data.data;
           modellist.value = Object.keys(modelInfo);
+
+          modelGropsByDeveloper.value = groupByDeveloper(modelInfos.data.data);
 
           if (!checkedModel.value && !currentModel.value) {
             checkedModel.value = modellist.value[0];
@@ -472,6 +488,11 @@ const changeMenu = (item) => {
   } else if (currentTab.value == 3) {
     chartDom0.value.setRadarHighlight(FULVa_data[currentModel.value], item);
   }
+};
+
+const updateCheckboxValue = (checkedValue) => {
+  checkedModel.value = checkedValue;
+  submit();
 };
 const submit = () => {
   currentModel.value = checkedModel.value;
@@ -982,16 +1003,6 @@ const downloadChartsAsPDF = async (pdf) => {
   .swiper-slide {
     width: 100%;
   }
-}
-:deep(.el-radio__label) {
-  width: 145px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-:deep(.el-radio) {
-  --el-checkbox-text-color: #fff;
-  margin-right: 1em;
 }
 
 :deep(.el-tabs) {
