@@ -142,19 +142,21 @@
         </ul> -->
       </div>
       <div class="chart-main" style="">
-        <!-- <selectBoxComponent
+        <SelectedPointsComponent
           v-show="currentTab == 0 || currentTab == 1"
-          @fitterChange="fitterChange"
-        ></selectBoxComponent> -->
+          ref="SelectedPointsRef"
+          :type="1"
+          @applyChange="fitterChange"
+        ></SelectedPointsComponent>
 
-        <DimensionMeasurementTabs
+        <!-- <DimensionMeasurementTabs
           style="margin: 0.5em 0 2.5em"
           v-show="currentTab == 0 || currentTab == 1"
           :DimensionMeasurementTabIndex="DimensionMeasurementTabIndex"
           @handleDimensionMeasurementTabsChange="
             handleDimensionMeasurementTabsChange
           "
-        ></DimensionMeasurementTabs>
+        ></DimensionMeasurementTabs> -->
 
         <!-- table -->
         <div class="table-box download-box" :class="{ show: currentTab == 0 }">
@@ -352,7 +354,7 @@ import VisualizationComponent from "../components/Comparison/Visualization.vue";
 import TableComponent from "../components/Comparison/Table.vue";
 import ValueSpaceComponent from "../components/Comparison/ValueSpace.vue";
 import CulturalAlignmentComponent from "../components/Comparison/CulturalAlignment.vue";
-import selectBoxComponent from "../components/selectBox.vue";
+import SelectedPointsComponent from "../components/selectedPoints.vue"
 import ModelListCheckbox from "../components/ModelListCheckbox.vue";
 
 import {
@@ -393,6 +395,9 @@ const tabList = [
     index: 3,
   },
 ];
+
+const SelectedPointsRef = ref(null);
+
 var Schwartz_data = null;
 var Schwartz_case = null;
 var Risk_data = null;
@@ -490,6 +495,7 @@ const fetchData = async () => {
             checkedModelNameList.value = defaultModels;
           }
           submit();
+          SelectedPointsRef.value.hancelTypeIndexChange(0);
         })
       );
   } catch (error) {
@@ -697,32 +703,39 @@ onActivated(() => {
 let mergeData = null;
 
 const fitterChange = (filerData) => {
-  console.log("filerData", filerData);
+  console.log("!!!filerData", filerData);
+  DimensionMeasurementTabIndex.value = filerData.index;
   // const Schwartz_table_columns_checked = ref([]);
   // const MFT_table_columns_checked = ref([]);
   // const Risk_table_columns_checked = ref([]);
-  if (filerData[1]) {
-    Schwartz_table_columns_checked.value = filerData[1].map((v) => {
-      return v.name;
+  if (filerData.index == 0) {
+    Schwartz_table_columns_checked.value = filerData.checkPoints.map((v) => {
+      return v;
     });
   } else {
-    Schwartz_table_columns_checked.value = Schwartz_table_columns.value;
+    // Schwartz_table_columns_checked.value = Schwartz_table_columns.value;
   }
 
-  if (filerData[2]) {
-    MFT_table_columns_checked.value = filerData[2].map((v) => {
-      return v.name;
+  if (filerData.index == 1) {
+    MFT_table_columns_checked.value = filerData.checkPoints.map((v) => {
+      return v;
     });
   } else {
-    MFT_table_columns_checked.value = MFT_table_columns.value;
+    // MFT_table_columns_checked.value = MFT_table_columns.value;
   }
 
-  if (filerData[3]) {
-    Risk_table_columns_checked.value = filerData[3].map((v) => {
-      return v.name;
+  if (filerData.index == 2) {
+    Risk_table_columns_checked.value = filerData.checkPoints.map((v) => {
+      return v;
     });
   } else {
-    Risk_table_columns_checked.value = Risk_table_columns.value;
+    // Risk_table_columns_checked.value = Risk_table_columns.value;
+  }
+
+  if( filerData.index == 3){
+    FULVa_table_columns_checked.value  = filerData.checkPoints.map((v) => {
+      return v;
+    });
   }
 
   for (let i = 0; i < checkedModelDetailList.value.length; i++) {
@@ -742,6 +755,11 @@ const fitterChange = (filerData) => {
       MFT_table_columns_checked.value,
       mergeData
     );
+    FULVa_table_data.value[i].Score = getAvaData(
+      checkedModelNameList.value[i],
+      FULVa_table_columns_checked.value,
+      mergeData
+    );
   }
 
   // TableComponentRef.value.setTableData(
@@ -759,12 +777,9 @@ const fitterChange = (filerData) => {
       Schwartz_data: Schwartz_table_columns_checked.value,
       MFT_data: MFT_table_columns_checked.value,
       Risk_data: Risk_table_columns_checked.value,
-      FULVa_data: Risk_table_columns_checked.value,
+      FULVa_data: FULVa_table_columns_checked.value,
     }
   );
-  // chartDom1.value.setRadarChart(modelList, "Schwartz_data", filerData && filerData[1] || null);
-  // chartDom2.value.setRadarChart(modelList, "MFT_data",filerData && filerData[2] || null);
-  // chartDom3.value.setRadarChart(modelList, "Risk_data",filerData && filerData[3] || null);
 };
 
 const DimensionMeasurementTabIndex = ref(0);
