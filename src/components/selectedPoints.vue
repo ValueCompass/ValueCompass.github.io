@@ -124,11 +124,15 @@
         </div>
       </div>
     </div>
+
+    <homepageSwiper ref="homepageSwiperRef"></homepageSwiper>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { ref, defineEmits, defineExpose, defineProps } from "vue";
 import { Check, Close } from "@element-plus/icons-vue";
+import homepageSwiper from "@/components/homepageSwiper.vue";
+
 const props = defineProps({
   type: {
     type: Number,
@@ -136,6 +140,8 @@ const props = defineProps({
     default: 0,
   },
 });
+const homepageSwiperRef = ref(null);
+
 const value1 = ref("2025-02");
 const dates = [
   {
@@ -357,8 +363,8 @@ const SchwartzData = {
 };
 
 const selectedIndex = ref(0);
-const points: any = ref([]);
-const checkedPoints: any = ref([]);
+const points = ref([]);
+const checkedPoints = ref([]);
 
 const emit = defineEmits(["applyChange", "swicthChange", "showIntro"]);
 
@@ -381,37 +387,37 @@ const handleCheckAllChange = () => {
   ) {
     checkedPoints.value = [];
   } else {
-    checkedPoints.value = points.value.map((item: any) => {
+    checkedPoints.value = points.value.map((item) => {
       return item.label;
     });
   }
 
   // applyChange();
 };
-const hancelTypeIndexChange = (index: number) => {
+const hancelTypeIndexChange = (index) => {
   // if(selectedIndex.value == index){
   //   return;
   // }
   selectedIndex.value = index;
   points.value = options[index].children;
-  checkedPoints.value = points.value.map((item: any) => {
+  checkedPoints.value = points.value.map((item) => {
     return item.label;
   });
   applyChange();
 };
 // hancelTypeIndexChange(selectedIndex.value)
 
-const handleCheckedPointsChange = (value: string[]) => {
+const handleCheckedPointsChange = (value) => {
   console.log("handleCheckedPointsChange", value);
 };
 
 // 判断是否选中某个 group
-const isGroupChecked = (group: any): boolean => {
-  return group.children.every((child: any) =>
+const isGroupChecked = (group) => {
+  return group.children.every((child) =>
     checkedPoints.value.includes(child.label)
   );
 };
-const checkSubArray = (index: number, groupName: string) => {
+const checkSubArray = (index, groupName) => {
   console.log(index);
   const currentGroup = SchwartzData.group.find((g) => g.name === groupName);
   if (!currentGroup) return;
@@ -438,18 +444,21 @@ const checkSubArray = (index: number, groupName: string) => {
       });
 
     checkedPoints.value = checkedPoints.value.filter(
-      (label: any) => !labelsToRemove.includes(label)
+      (label) => !labelsToRemove.includes(label)
     );
   }
 };
 
-const swicthChange = (val: boolean) => {
+const swicthChange = (val) => {
   console.log("swicthChange", val);
   emit("swicthChange", val);
 };
 
-const showIntro = (index: number) => {
-  emit("showIntro", index);
+const showIntro = (index) => {
+  // emit("showIntro", index);
+  if (homepageSwiperRef.value) {
+    homepageSwiperRef.value.showIntro(index);
+  }
 };
 
 defineExpose({
