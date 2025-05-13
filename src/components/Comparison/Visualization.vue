@@ -151,7 +151,7 @@ defineExpose({
     box-sizing: border-box;
     p {
       text-align: center;
-      margin-bottom: 1em;
+      margin: 1em 0;
     }
     font-weight: 600;
     font-size: 1.2em;
