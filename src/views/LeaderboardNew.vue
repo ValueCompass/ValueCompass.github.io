@@ -9,7 +9,7 @@
           ref="SelectedPointsRef"
           @applyChange="applyChange"
           @swicthChange="swicthChange"
-          @showIntro="showIntro"
+          
         ></SelectedPoints>
         <div class="filter-table" @mousedown="handleMouseDown">
           <el-table
@@ -294,14 +294,12 @@
       @hideComparePool="ComparePoolShow = false"
       :compareArr="compareArr"
     ></ComparePool>
-    <homepageSwiper ref="homepageSwiperRef"></homepageSwiper>
     <div v-if="compareArr.length > 0" style="height: 200px"></div>
 
     <scoreIntro ref="scoreIntroRef"></scoreIntro>
   </div>
 </template>
 <script setup>
-import homepageSwiper from "../components/homepageSwiper.vue";
 import ComparePool from "../components/ComparePool.vue";
 import SelectedPoints from "../components/selectedPoints.vue";
 import { ref, watch, reactive, nextTick } from "vue";
@@ -521,11 +519,6 @@ const showPointsDetail = (e, bool) => {
 };
 const swicthChange = (bool) => {
   tablePointDetailShow.value = bool;
-};
-
-const homepageSwiperRef = ref(null);
-const showIntro = (index) => {
-  homepageSwiperRef.value.showIntro(index);
 };
 
 const tablePointDetailShow = ref(false);
