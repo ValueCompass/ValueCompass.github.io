@@ -19,7 +19,7 @@
       <div class="main-container">
         <div class="intro intro-container">
           <div class="left">
-            <h2>Leaderboard</h2>
+            <h2>Benchmarks</h2>
           </div>
           <div class="right">
             <p class="p">
@@ -92,7 +92,7 @@
                   class="svg-icon"
                   name="icon-AlignmentLeaderboard"
                 ></SvgIcon
-                ><span>Leaderboard</span></router-link
+                ><span>Benchmarks</span></router-link
               >
             </li>
             <li>

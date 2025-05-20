@@ -39,7 +39,7 @@
           @mouseleave="mouseleave"
           :class="{ active: $route.path.indexOf('/leaderboard/') != -1 }"
         >
-          <router-link to="/leaderboard/leaderboard">Leaderboard</router-link>
+          <router-link to="/leaderboard/leaderboard">Benchmarks</router-link>
           <!-- <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li @click="toggleNav">
@@ -60,9 +60,9 @@
           </ul> -->
         </li>
 
-        <li>
+        <!-- <li>
           <router-link to="/TestValues">Test Your Values</router-link>
-        </li>
+        </li> -->
         <li>
           <router-link to="/AboutUs">About Us</router-link>
         </li>

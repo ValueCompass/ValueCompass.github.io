@@ -15,7 +15,7 @@
         <div class="right card">
           <div class="title">
             <img src="@/assets/images/home-icon-leaderboard.png" alt="" />
-            <h4>Leaderboard</h4>
+            <h4>Benchmarks</h4>
           </div>
           <div>
             <ul>
