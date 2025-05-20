@@ -8,7 +8,7 @@
       >Read report</a
     >
     <p class="h1">
-      Insights about LLMs Values from the Value Compass Leaderboard
+      Insights about LLMs Values from the Value Compass Benchmarks
     </p>
     <div v-for="(section, i) in InsightsData" :key="i">
       <h2>{{ section.h2 }}</h2>
@@ -105,7 +105,7 @@ const InsightsData = ref([
         title:
           "There are correlations between LLMs’ values and their practical behaviors, implying the potential of value evaluation for LLMs’ future behavior prediction.",
         details:
-          "In the following figure, given a prompt comparing innovative experiential learning with traditional structured methods, o3-mini prioritizing Self-Direction and Stimulation advocates experiential learning that fosters creativity and critical thinking. In contrast, DeepSeek-R1 favors Conformity then prefers stability and predictability, supporting standardized instruction to ensure foundational knowledge.\n <b>Moreover, there is consistency among relevant dimensions across these diverse value systems.</b> For example, o3-mini performs relatively poorly in the Fairness/Cheating dimension of the Moral Foundation Theory, and correspondingly also underperforms in the Representation & Toxicity Harms dimension of the Safety Taxonomy.\nSuch correlation implies the potential of aligning LLMs from the perspective of high-level values to direct their practical manners in a more generalized and robust manner. However, current correlations are still weak and require further exploration. This leaderboards provides the signal about both the cases and values, as a foundation for further alignment research.",
+          "In the following figure, given a prompt comparing innovative experiential learning with traditional structured methods, o3-mini prioritizing Self-Direction and Stimulation advocates experiential learning that fosters creativity and critical thinking. In contrast, DeepSeek-R1 favors Conformity then prefers stability and predictability, supporting standardized instruction to ensure foundational knowledge.\n <b>Moreover, there is consistency among relevant dimensions across these diverse value systems.</b> For example, o3-mini performs relatively poorly in the Fairness/Cheating dimension of the Moral Foundation Theory, and correspondingly also underperforms in the Representation & Toxicity Harms dimension of the Safety Taxonomy.\nSuch correlation implies the potential of aligning LLMs from the perspective of high-level values to direct their practical manners in a more generalized and robust manner. However, current correlations are still weak and require further exploration. This benchmarks provides the signal about both the cases and values, as a foundation for further alignment research.",
       },
       {
         title: "Static evaluation is prone to over-estimation of LLM safety.",
