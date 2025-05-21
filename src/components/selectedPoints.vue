@@ -362,7 +362,7 @@ const SchwartzData = {
   ],
 };
 
-const selectedIndex = ref(0);
+const selectedIndex = ref(-1);
 const points = ref([]);
 const checkedPoints = ref([]);
 
@@ -395,14 +395,23 @@ const handleCheckAllChange = () => {
   // applyChange();
 };
 const hancelTypeIndexChange = (index) => {
-  // if(selectedIndex.value == index){
-  //   return;
-  // }
+  if (selectedIndex.value == index) {
+    return;
+  }
   selectedIndex.value = index;
   points.value = options[index].children;
-  checkedPoints.value = points.value.map((item) => {
-    return item.label;
-  });
+  if (index == 0) {
+    checkedPoints.value = SchwartzData.group[
+      SchwartzData.group.length - 1
+    ].children.map((item) => {
+      return item.label;
+    });
+  } else {
+    checkedPoints.value = points.value.map((item) => {
+      return item.label;
+    });
+  }
+
   applyChange();
 };
 // hancelTypeIndexChange(selectedIndex.value)

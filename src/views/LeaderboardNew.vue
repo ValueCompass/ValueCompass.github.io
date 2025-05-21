@@ -9,7 +9,6 @@
           ref="SelectedPointsRef"
           @applyChange="applyChange"
           @swicthChange="swicthChange"
-          
         ></SelectedPoints>
         <div class="filter-table" @mousedown="handleMouseDown">
           <el-table
@@ -18,7 +17,13 @@
             style="width: 100%"
             ref="tableRef"
           >
-            <el-table-column prop="place" label="Rank" sortable width="188">
+            <el-table-column
+              prop="place"
+              label="Rank"
+              sortable
+              min-width="150"
+              fixed
+            >
               <template #header>
                 <span style="padding-left: 3em">Rank</span>
               </template>
@@ -62,8 +67,9 @@
               align="left"
               prop="modelName"
               label="Model Name"
-              width="304"
+              min-width="220"
               sortable
+              fixed
             >
               <template #default="scope">
                 <p class="table-color">
@@ -80,8 +86,9 @@
               align="left"
               prop="developer"
               label="Developer"
-              min-width="160"
+              min-width="140"
               sortable
+              fixed
             >
             </el-table-column>
             <el-table-column
@@ -90,6 +97,7 @@
               label="Points"
               min-width="130"
               sortable
+              fixed
             >
               <template #header>
                 <span style="padding-right: 1.2em">Score</span>
@@ -135,6 +143,7 @@
                 :key="index"
               >
                 <el-table-column
+                  class-name="grab-column"
                   :label="item"
                   :prop="item"
                   :formatter="formatter"
@@ -192,7 +201,7 @@
               </template>
             </template>
 
-            <el-table-column label="Type" min-width="70">
+            <el-table-column label="Type" min-width="70" fixed="right">
               <template #default="scope">
                 <el-tooltip
                   effect="customized"
@@ -215,9 +224,10 @@
               label="Release Date"
               min-width="140"
               sortable
+              fixed="right"
             />
 
-            <el-table-column label="Compare" min-width="100">
+            <el-table-column label="Compare" min-width="90" fixed="right">
               <template #default="scope">
                 <div
                   v-if="
@@ -268,7 +278,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="Details" min-width="100">
+            <el-table-column label="Details" min-width="90" fixed="right">
               <template #default="scope">
                 <el-tooltip effect="customized" content="view" placement="top">
                   <SvgIcon
@@ -703,6 +713,22 @@ const handleMouseUp = () => {
     td.el-table__cell {
       border-bottom: none !important;
     }
+  }
+
+  .grab-column {
+    cursor: grab !important;
+    user-select: none;
+  }
+  // fix bug: table中设置了fixed后，一些th的border不显示
+  th {
+    border-bottom: 0 !important;
+  }
+  td {
+    border-top: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-bottom: 0 !important;
+  }
+  .el-scrollbar__wrap {
+    overflow-y: hidden !important;
   }
 }
 
