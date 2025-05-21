@@ -41,10 +41,10 @@
               <p>the image powered by Microsoft Designer</p>
             </div>
             <div class="card-bottom">
-              <div>
+              <div style="display: none;">
                 <img class="logo-img" :src="logoImg" alt="logo" width="128" />
               </div>
-              <div>
+              <div style="width: 100%;">
                 <p>
                   Interestingly,
                   <span class="model-name-span">{{
@@ -177,10 +177,10 @@
               <p>the image powered by Microsoft Designer</p>
             </div>
             <div class="card-bottom">
-              <div>
+              <div style="display: none;">
                 <img class="logo-img" :src="logoImg" alt="logo" width="128" />
               </div>
-              <div>
+              <div style="padding-left: 0;">
                 <p>
                   Interestingly,
                   <span class="model-name-span">{{
@@ -1187,7 +1187,7 @@ defineExpose({
             width: 100px;
           }
           & > div:nth-child(2) {
-            width: calc(100% - 200px);
+            flex: 1;
             padding: 0 1em;
             box-sizing: border-box;
           }

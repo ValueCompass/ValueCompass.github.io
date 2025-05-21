@@ -70,8 +70,11 @@
       </div>
       <div style="background: #f9f9f9">
         <div class="flex main-container" style="padding: 2.8em 0">
-          <div class="left">
-            <div class="card" style="background-color: #fff">
+          <div class="left" style="width: 100%">
+            <div
+              class="card"
+              style="border: 0; display: flex; gap: 6em; align-items: center"
+            >
               <div class="title">
                 <img
                   src="@/assets/images/home-icon-PublicationsHub.png"
@@ -79,23 +82,25 @@
                 />
                 <h4>Publication</h4>
               </div>
-              <p class="p">
-                A collection of published papers on the Value Compass project,
-                detailing our research progress and findings on
-                interdisciplinary analysis, benchmarks, value evaluation, and
-                alignment techniques.
-              </p>
               <div>
-                <a href="https://valuecompass.github.io/Research/papers/">
-                  <span class="view-more-btn">
-                    <span>View more</span>
-                    <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
-                  </span>
-                </a>
+                <p class="p">
+                  A collection of published papers on the Value Compass project,
+                  detailing our research progress and findings on
+                  interdisciplinary analysis, benchmarks, value evaluation, and
+                  alignment techniques.
+                </p>
+                <div>
+                  <a href="https://valuecompass.github.io/Research/papers/">
+                    <span class="view-more-btn">
+                      <span>View more</span>
+                      <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+                    </span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-          <div class="right">
+          <!-- <div class="right">
             <div class="card" style="background-color: #fff">
               <div class="title">
                 <img src="@/assets/images/home-icon-testValues.png" alt="" />
@@ -116,7 +121,7 @@
                 </router-link>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="latest-news main-container" style="padding: 4.5em 0">
