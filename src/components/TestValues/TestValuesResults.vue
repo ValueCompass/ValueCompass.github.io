@@ -34,13 +34,7 @@
                 >
               </div>
               <p>{{ resultDesc }}</p>
-            </div>
-            <div class="card-right">
-              <img class="card-right-img" :src="cultureImg" alt="test" />
-              <!-- <img class="logo-img" :src="logoImg" alt="logo" /> -->
-              <p>the image powered by Microsoft Designer</p>
-            </div>
-            <div class="card-bottom">
+              <div class="card-bottom">
               <div style="display: none;">
                 <img class="logo-img" :src="logoImg" alt="logo" width="128" />
               </div>
@@ -60,6 +54,13 @@
                 </p>
               </div>
             </div>
+            </div>
+            <div class="card-right">
+              <img class="card-right-img" :src="cultureImg" alt="test" />
+              <!-- <img class="logo-img" :src="logoImg" alt="logo" /> -->
+              <p>the image powered by Microsoft Designer</p>
+            </div>
+            
             <!-- <div class="print" @click="print">Download</div> -->
             <div class="print">
               <button class="print-btn" @click="print">Download</button>
@@ -899,17 +900,17 @@ defineExpose({
         align-items: center;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding: 1.5em 5em;
+        padding: 1.5em 5.58em;
         background-color: var(--gary-color);
 
        
       }
       .echart-container {
         .card-item{
-          padding: 2em 2em;
+          padding: 3em 2em;
         }
         display: flex;
-        gap: 1.5em;
+        gap: 1.66em;
         margin-top: 2em;
         .card-item {
           display: block;
@@ -937,7 +938,7 @@ defineExpose({
           }
           ul {
             margin-top: 1em;
-            padding:  0 1em;
+            padding:  0 3.166em 0 0;
             li {
               display: flex;
               flex-direction: row;
@@ -945,11 +946,11 @@ defineExpose({
               align-items: flex-end;
               margin-top: 2.2em;
               font-size: .83em;
+              gap: .6em;
               & > span {
-                width: 8em;
+                width: 9em;
                 display: block;
                 text-align: right;
-                padding-right: 1em;
                 font-weight: 600;
                 box-sizing: border-box;
               }
@@ -964,10 +965,10 @@ defineExpose({
             }
             &.model-list {
               li {
-                margin-top: 4em;
+                padding: .5em 0;
+                height: 3em;
                 & > span {
-                  padding-bottom: 0.4em;
-                  width: 10em;
+                  padding-bottom: 0.3em;
                   // width: 100%;
                   // text-align: left;
                 }
@@ -990,7 +991,6 @@ defineExpose({
   
   .card-left {
     width: 68%;
-    padding: 1em 0;
     .tag-list {
       display: flex;
       flex-wrap: wrap;
@@ -1043,7 +1043,7 @@ defineExpose({
     }
   }
   .card-bottom {
-    margin-top: 30px;
+    margin-top: 1em;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -1056,16 +1056,16 @@ defineExpose({
       width: calc(100% - 150px);
     }
     p:nth-child(1) {
-      line-height: 1.8;
+      line-height: 1.5;
       font-weight: 600;
-      margin-bottom: 0.8em;
+      margin: 0em;
       span {
         font-weight: normal;
       }
       .model-name-span {
-        background: #70BFFF;
+        // background: #70BFFF;
         color: #004F8F;
-        padding: 0.3em 0.5em;
+        padding: 0 0.2em;
         display: inline-block;
         font-weight: 600;
       }
