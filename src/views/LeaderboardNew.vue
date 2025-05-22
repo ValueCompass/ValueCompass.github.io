@@ -152,7 +152,7 @@
                       ? 80
                       : SelectedPointsRef.selectedIndex == 2
                       ? 100
-                      : 135
+                      : 140
                   "
                   sortable
                   align="left"
