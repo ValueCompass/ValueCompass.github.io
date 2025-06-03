@@ -87,7 +87,7 @@
         <div class="leaderboard-nav-container">
           <ul class="nav-child-ul main-container">
             <li>
-              <router-link to="/leaderboard/leaderboard">
+              <router-link to="/benchmarks/benchmarks">
                 <SvgIcon
                   class="svg-icon"
                   name="icon-AlignmentLeaderboard"
@@ -96,19 +96,19 @@
               >
             </li>
             <li>
-              <router-link to="/leaderboard/valueAnalysis"
+              <router-link to="/benchmarks/valueAnalysis"
                 ><SvgIcon class="svg-icon" name="icon-ValueAnalysis"></SvgIcon
                 >Analysis</router-link
               >
             </li>
             <li>
-              <router-link to="/leaderboard/valueComparison"
+              <router-link to="/benchmarks/valueComparison"
                 ><SvgIcon class="svg-icon" name="icon-ValueComparison"></SvgIcon
                 >Comparison</router-link
               >
             </li>
             <li>
-              <router-link to="/leaderboard/keyFindings"
+              <router-link to="/benchmarks/keyFindings"
                 ><SvgIcon class="svg-icon" name="icon-keyFindings"></SvgIcon
                 >Key Findings</router-link
               >

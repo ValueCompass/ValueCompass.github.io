@@ -4,8 +4,8 @@
     <a
       class="button read-report-btn"
       target="_blank"
-      href="/data/leaderboard report-DESKTOP-O9HJ7SM.docx"
-      >Read report</a
+      href="/data/LeaderboardReport.pdf"
+      > Read report </a
     >
     <p class="h1">
       Insights about LLMs Values from the Value Compass Benchmarks
@@ -91,32 +91,31 @@ const InsightsData = ref([
     list: [
       {
         title:
-          "LLMs’ value orientations demonstrate high alignment with general human values, especially for those well-aligned models.",
+          "LLMs’ value orientations demonstrate high alignment with universal human values, particularly in well-aligned models.",
         details:
-          "As shown in the figure of Schwartz value results, LLMs share similar priorities: Universalism, Benevolence, Security, Self-Direction with high importance; Achievement, Conformity, Tradition with the moderate importance; Stimulation, Hedonism and Power with low importance. Well-aligned LLMs, i.e. those aligned beyond instruction-tuning such as Claude-3.5-Sonnet, achieve much higher scores on the most important value dimensions. Though fine-grained priorities vary within each group, the whole hierarchical order of these values is similar to the pan-cultural baseline observed in human value surveys [1]. We infer this is due to the overlap among the training corpus of various LLMs, which embeds the universal values. <b>This results in baseline LLM values that benefit the most common requirements of humans such as universalism and security, while these LLMs struggle to fit cultural or personalized value orientations.</b>",
+          "LLMs’ value orientations prioritize Universalism, Benevolence, Security, and Self-Direction, followed by moderate emphasis on Achievement, Conformity, and Tradition, with Stimulation, Hedonism, and Power receiving lower priority. Models aligned beyond instruction-tuning score significantly higher in safety-oriented value dimensions. This alignment, driven by shared training corpora, supports common human needs but struggles with cultural or personalized values. ",
       },
       {
         title:
           "Most LLMs demonstrate a clear bias towards Western cultural values.",
         details:
-          "As shown in the heatmap, most LLMs achieve the highest value similarities with France, the UK, and the US, followed by China. We infer this is due to that the pre-train and alignment data are heavily dominated by Western corpora. In non-English data, a significant portion is often translated from English sources. Furthermore, even models developed by China (a non-western country), i.e., Deepseek-R1 and Qwen-max, do not lead to stronger alignment with Chinese value orientation. This suggests that existing LLMs lack dedicated alignment from the cultural perspective. <b>While this cultural value bias does not necessarily impact task performance or general capabilities, it raises concerns about eroding cultural diversity and inclusiveness in AI systems.</b>",
+          "Training data dominated by Western corpora has led most LLMs to exhibit a greater degree of value similarity with Western countries such as France, the UK, and the US. Even non-Western models like Deepseek-R1 and Qwen-Max from China lack local cultural alignment, raising concerns about eroding cultural diversity and inclusiveness in AI systems. ",
+      },
+      {
+        title: "LLMs’ values correlate with their practical behaviors.",
+        details:
+          "O3-mini performs relatively poorly in the Fairness/Cheating dimension of the Moral Foundation Theory, and correspondingly also underperforms in the Representation & Toxicity Harms dimension of the Safety Taxonomy. This observed correlation implies the potential of aligning LLMs from the perspective of high-level values to direct their practical manners in a more generalized and robust manner. However, the current correlations remain weak and warrant further investigation. ",
+      },
+      {
+        title: "Static evaluation is prone to over-estimation of LLM safety. ",
+        details:
+          "Most advanced LLMs achieve near-perfectly scores on static safety benchmark (Safety Taxonomy) but drop significantly on dynamic Moral Foundation benchmarks. This observation reveals the existence of ceiling effects in static benchmarks as LLMs advance, as well as the overestimation of safety performance based on such benchmarks. Furthermore, these findings highlight the necessity of incorporating dynamic evaluation methods to more accurately reflect LLM behavior under varying levels of complexity. ",
       },
       {
         title:
-          "There are correlations between LLMs’ values and their practical behaviors, implying the potential of value evaluation for LLMs’ future behavior prediction.",
+          "Safety measurements need adaptability and context-aware capability.",
         details:
-          "In the following figure, given a prompt comparing innovative experiential learning with traditional structured methods, o3-mini prioritizing Self-Direction and Stimulation advocates experiential learning that fosters creativity and critical thinking. In contrast, DeepSeek-R1 favors Conformity then prefers stability and predictability, supporting standardized instruction to ensure foundational knowledge.\n <b>Moreover, there is consistency among relevant dimensions across these diverse value systems.</b> For example, o3-mini performs relatively poorly in the Fairness/Cheating dimension of the Moral Foundation Theory, and correspondingly also underperforms in the Representation & Toxicity Harms dimension of the Safety Taxonomy.\nSuch correlation implies the potential of aligning LLMs from the perspective of high-level values to direct their practical manners in a more generalized and robust manner. However, current correlations are still weak and require further exploration. This benchmarks provides the signal about both the cases and values, as a foundation for further alignment research.",
-      },
-      {
-        title: "Static evaluation is prone to over-estimation of LLM safety.",
-        details:
-          "On static safety benchmark (Safety Taxonomy), most advanced LLMs achieve near-perfect scores, no matter how well they perform on other complex tasks. For example, Phi-3-Medium achieves even higher scores than o3-mini. Nevertheless, on the dynamic Moral Foundation benchmark with evolving difficulties, the performance of all LLMs drops significantly. For example, the best performed Claude-3.5-Sonnet only obtain a score of 68.36. <b>This observation confirms the existence of ceiling effects of static benchmarks as LLMs advance and the necessity for dynamic evaluation. Furthermore, the poor performance on Moral Foundation benchmark also suggests current over-estimation of LLM safety.</b>",
-      },
-      {
-        title:
-          "The measurement of safety and definition of LLM risks need to be more adaptive and context-aware.",
-        details:
-          " For instance, in Safety Taxonomy benchmark, the generation of adult content is currently categorized into a Representative & Toxicity Harm, and leads to a low safety score. However, such responses are not inherently unsafe in some specific cultures or use cases, such as sex education or within legal adult platforms. Therefore, safety benchmarks accounting for context is necessary to avoid overly rigid evaluations. ",
+          "Current benchmarks classify adult content as harmful by default, yet such content may not be inherently unsafe in certain cultural contexts or use cases, such as sex education or legally regulated adult platforms. Therefore, safety benchmarks that account for context are necessary to avoid overly rigid or culturally misaligned evaluations. ",
       },
     ],
   },
@@ -124,19 +123,19 @@ const InsightsData = ref([
     h2: "2. Detailed Evaluation Results on Diverse Value Systems and LLMs",
     subTitle: [
       {
-        h3: "Schwartz Value Theory",
+        h3: "Schwartz Theory of Basic Values ",
         list: [
           {
             title:
-              "Most models exhibit shared hierarchy order of values that aligns with the pan-cultural baseline observed in Schwartz human survey.",
+              "Most models share a value order matching the pan-cultural baseline, though subtle preference differences remain. ",
             details:
-              "<b>Meanwhile, value nuances still exist across models.</b> For instance, o3-mini scores higher in Self-Direction and Stimulation, Qwen-Max emphasizes Universalism and Benevolence, while DeepSeek-V3 shows a distinctive preference for Conformity. ",
+              "O3-mini scores higher on Self-Direction and Stimulation; Qwen-Max emphasizes Universalism and Benevolence; and DeepSeek-V3 demonstrates a distinctive preference for Conformity. ",
           },
           {
             title:
-              "Notably, o3-mini, Qwen-Max, and Claude-3.5-Sonnet exhibit stronger value orientations across dimensions. ",
+              "Notably, o3-mini, Qwen-Max, and Claude-3.5-Sonnet exhibit more pronounced value orientations across dimensions.",
             details:
-              "This could be explained from two perspectives:\n(i) <b>they behave in a more human-like manner, making them more likely to reflect value preferences in their responses.</b> In contrast, other models may exhibit fewer value signals, leading to flatter profiles and lower overall scores;\n(ii) <b>these models are better aligned towards human benefits, and therefore perform well on human-prioritized value dimensions like Universalism.</b>",
+              "This observation may be explained from two perspectives: (i) they behave in a more human-like manner, making them more likely to reflect value preferences in their responses. In contrast, other models may exhibit fewer value signals, leading to flatter profiles and lower overall scores; (ii) these models are better aligned with human benefits and, as a result, perform well on value dimensions prioritized by humans, such as Universalism. ",
           },
         ],
       },
@@ -145,15 +144,15 @@ const InsightsData = ref([
         list: [
           {
             title:
-              "On the Moral Foundation Theory benchmark that primarily evaluates a model’s morality and safety, LLMs that have undergone extensive responsible alignment, such as Claude-3.5-Sonnet, significantly outperform others across all five dimensions. ",
+              "On the Moral Foundation benchmark, responsibly aligned LLMs show stronger moral and safety performance.",
             details:
-              "In contrast, LLMs relying primarily on instruction tuning rather than dedicated safety alignment, i.e. xxx-instruct versions, tend to perform worse. This demonstrates the importance of alignment efforts on safety, especially generalizability.",
+              "LLMs that have undergone extensive responsible alignment, such as Claude-3.5-Sonnet, significantly outperform others across all five dimensions. In contrast, LLMs relying primarily on instruction tuning rather than dedicated safety alignment, i.e. xxx-instruct versions, tend to perform worse. This demonstrates the importance of alignment efforts on safety, especially generalizability. ",
           },
           {
             title:
               "LLMs show nuanced strengths across distinct value dimensions.",
             details:
-              "Except for Claude-3.5-Sonnet that displays a high-level performance across all moral dimensions, LLMs from OpenAI, Mistral, Qwen, and DeepSeek tend to struggle with Fairness and Sanctity, while Gemini-2.0-Flash performs relatively poorly on Loyalty and Authority.",
+              " With the exception of Claude-3.5-Sonnet that displays a high-level performance across all moral dimensions, LLMs from OpenAI, Mistral, Qwen, and DeepSeek tend to struggle with Fairness and Sanctity, while Gemini-2.0-Flash performs relatively poorly on Loyalty and Authority. ",
           },
         ],
       },
@@ -162,48 +161,48 @@ const InsightsData = ref([
         list: [
           {
             title:
-              "This static benchmark shows limited discrimination for measuring LLMs’ safety. ",
+              "This static benchmark shows limited discrimination for measuring LLMs’ safety.  ",
             details:
-              "Most advanced LLMs achieve very high scores—often exceeding 90 across various dimensions. Combined with the weaker results observed on the Moral Foundation benchmark, this suggests that existing static datasets may no longer be sufficient to assess more implicit risks.",
+              "Most advanced LLMs achieve very high scores—often exceeding 90 across various dimensions. Combined with the weaker results observed on the Moral Foundation benchmark, this suggests that existing static datasets may no longer be sufficient to assess more implicit risks. ",
           },
           {
             title:
-              "From a categorical perspective, models generally perform best in mitigating Human Autonomy & Integrity Harms and Information & Safety Harms, followed by decent results in Malicious Use and Socioeconomic Harms.",
+              "Model performance varies by harm category, with persistent challenges in ambiguous domains. ",
             details:
-              "However, the most challenging categories remain Representation & Toxicity Harms and Misinformation Harms. We infer this is because these categories tend to be more ambiguous and difficult to define consistently. Therefore, this also raises the need for clearer, more value-aligned definitions of harm.",
+              "Models generally perform best in mitigating Human Autonomy & Integrity Harms and Information & Safety Harms, followed by decent results in Malicious Use and Socioeconomic Harms. However, the most challenging categories remain Representation & Toxicity Harms and Misinformation Harms. This may be attributed to the fact that these categories tend to be more ambiguous and difficult to define consistently. Therefore, this also raises the need for clearer, more value-aligned definitions of harm. ",
           },
         ],
       },
       {
-        h3: "LLM’s Unique Value System",
+        h3: "LLM’s Unique Value System ",
         list: [
           {
             title:
-              "LLMs display strong preference towards user-oriented values, but may risk hallucination and flattery.",
+              "LLMs demonstrate a strong preference for user-oriented values, potentially leading to hallucination and flattery. ",
             details:
-              "Though advanced LLMs demonstrate relatively great performance across all these dimensions, a consistent trend is that they score higher on user-oriented values, such as User-Oriented over Self-Competence, Social over Idealistic, and Ethical over Professional. While this may enhance user-perceived helpfulness and friendliness, it also introduces potential risks—such as generating hallucinated responses to satisfy user expectations or exhibiting excessive agreeableness (i.e., flattery), which can compromise factuality and reliability.",
+              "Though advanced LLMs demonstrate relatively high performance across all these dimensions, a consistent trend is that they score higher on user-oriented values, such as User-Oriented over Self-Competence, Social over Idealistic, and Ethical over Professional. While this tendency may enhance user-perceived helpfulness and friendliness, it also introduces potential risks—such as generating hallucinated responses to satisfy user expectations or exhibiting excessive agreeableness, which can compromise factuality and reliability. ",
           },
           {
-            title: "The top-performing models are DeepSeek-R1, o1-mini, etc.",
+            title: " The top-performing models are DeepSeek-R1, o1-mini, etc.",
             details:
-              "These results align well with general user feedback—models like DeepSeek and o1 are widely regarded as reliable and user-friendly in real-world usage.",
+              "These results align well with general user feedback—models like DeepSeek and o1 are widely regarded as reliable and user-friendly in real-world usage. ",
           },
         ],
       },
       {
-        h3: "Proprietary vs. Open-Sourcing LLMs",
+        h3: "Proprietary vs. Open-Source LLMs",
         list: [
           {
             title:
-              "Regarding safety evaluation, proprietary and open-source models perform similarly on simpler Safety Taxonomy benchmark.",
+              "Alignment training beyond instruction tuning remains essential—especially for handling complex safety challenges ",
             details:
-              "However, as scenario difficulty increases in the Moral Foundation Theory (MFT) benchmark, the performance gap widens significantly. <b>Proprietary models demonstrate far more robust and consistent safety alignment in nuanced or morally sensitive scenarios.</b> This indicates that alignment training beyond instruction tuning remains essential—especially for handling complex safety challenges.",
+              "In safety evaluation, proprietary and open-source models perform comparably on simpler Safety Taxonomy benchmark. However, as scenario complexity increases in the Moral Foundation Theory (MFT) benchmark, the performance gap widens significantly. Proprietary models demonstrate far more robust and consistent safety alignment in nuanced or morally sensitive scenarios.",
           },
           {
             title:
-              "Regarding pluralistic value evaluation, proprietary models also show stronger value recognition and expression capability.",
+              " Proprietary models show stronger value recognition and expression capability.",
             details:
-              "In the Schwartz Theory of Basic Values benchmark, open-source models like LLaMA-3.1-8B-Instruct and Phi-3.5-mini-Instruct consistently score lower across several value dimensions than other proprietary models. <b>This suggests that open-source models may struggle with customized value alignment, as their capability for value expression and understanding is weaker.</b>",
+              "In the Schwartz Theory of Basic Values benchmark, open-source models like LLaMA-3.1-8B-Instruct and Phi-3.5-mini-Instruct consistently score lower across several value dimensions than other proprietary models. This suggests that open-source models may struggle with customized value alignment, as their capability for value expression and understanding is weaker.",
           },
         ],
       },
@@ -212,32 +211,32 @@ const InsightsData = ref([
         list: [
           {
             title:
-              " Within the same family, LLMs tend to exhibit highly similar patterns in both value orientation and safety performance. ",
+              "Within the same family, LLMs tend to exhibit highly similar patterns in both value orientation and safety performance",
             details:
-              "For example, models like GPT-4o and GPT-4o-mini, or Claude-3.5-Sonnet and Claude-3.5-Haiku, LLaMA-3.0/3.1/3.3-70B-Instruct, Phi-3-mini/medium-instruct, and Gemini-2.0-Flash/Pro, demonstrate aligned behaviors across various benchmarks. <b>This can be attributed to that a model’s values and safety are primarily shaped by its training data and alignment methods, which are usually shared within a family of LLMs.</b>",
+              "GPT-4o and GPT-4o-mini, or Claude-3.5-Sonnet and Claude-3.5-Haiku, LLaMA-3.0/3.1/3.3-70B-Instruct, Phi-3-mini/medium-instruct, and Gemini-2.0-Flash/Pro, demonstrate aligned behaviors across various benchmarks. This can be attributed to the fact that a model’s values and safety are primarily shaped by its training data and alignment methods, which are usually shared within a family of LLMs. ",
           },
           {
             title:
-              " In contrast, differences between model families are more pronounced than differences within a family.",
+              "Inter-family variation in value alignment is greater than intra-family variation.",
             details:
-              "For instance, o3-mini displays noticeably different value tendencies compared to models in the Phi or LLaMA families, while models within the Phi or LLaMA series are more consistent with one another.",
+              "GPT-o3-mini displays noticeably different value tendencies compared to models in the Phi or LLaMA families, while models within the Phi or LLaMA series are more consistent with one another. ",
           },
         ],
       },
       {
-        h3: "Reasoning vs. Normal Model",
+        h3: "Reasoning vs. Normal Models",
         list: [
           {
             title:
-              "Reasoning enhanced LLMs show limited gain in their safety performance.",
+              "Reasoning enhanced LLMs show limited improvements in their safety performance.",
             details:
-              "On both  Safety Taxonomy and the more challenging Moral Foundation Theory benchmarks, Claude-3.5-Sonnet consistently outperform reasoning-based LLMs such as o1, o1-mini, o3-mini, and DeepSeek-R1. Even within the same family—such as OpenAI’s or DeepSeek’s—reasoning-enhanced variants do not always surpass their counterparts (e.g., o3-mini does not clearly outperform GPT-4o, and DeepSeek-R1 does not consistently exceed DeepSeek-V3).",
+              "On both Safety Taxonomy and the more challenging Moral Foundation Theory benchmarks, Claude-3.5-Sonnet consistently outperform reasoning-based LLMs such as o1, o1-mini, o3-mini, and DeepSeek-R1. Even within the same families—such as OpenAI’s or DeepSeek’s—reasoning-enhanced variants do not always surpass their counterparts.",
           },
           {
             title:
-              "Reasoning enhanced LLMs tend to show slightly stronger value expression than standard LLMs. ",
+              "Reasoning enhanced LLMs tend to show slightly stronger value expression than standard LLMs.",
             details:
-              "This may be because enhanced reasoning capabilities allow these models to better articulate and reflect value-laden responses when prompted with value-evoking questions. As such, <b>reasoning-augmented LLMs may hold potential for improved cultural or ethical alignment.</b>",
+              "This may be attributed to enhanced reasoning capabilities, which allow these models to better articulate and reflect value-laden responses when prompted with value-evoking questions. As such, reasoning-augmented LLMs may hold potential for improved cultural or ethical alignment.",
           },
         ],
       },
@@ -386,7 +385,7 @@ const downloadPdf = () => {
     .details {
       padding-left: 12.5em;
       overflow: hidden;
-      
+
       line-height: 1.5;
       & > div {
         white-space: pre-line;

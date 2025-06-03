@@ -11,17 +11,17 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/leaderboard',
-    name: 'Leaderboard',
+    path: '/benchmarks',
+    name: 'benchmarks',
     component: () => import('../views/LeaderboardHome.vue'),
-    redirect: '/leaderboard/leaderboard', // 配置重定向
+    redirect: '/benchmarks/benchmarks', // 配置重定向
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
     },
     children:[
       {
-        path: 'leaderboard',
+        path: 'benchmarks',
         name: 'Alignment Leaderboard',
         component: () => import('../views/LeaderboardNew.vue'),
         meta: {

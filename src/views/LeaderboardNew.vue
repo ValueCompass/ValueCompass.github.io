@@ -435,7 +435,7 @@ const applyChange = (value) => {
 const router = useRouter();
 const goAnalysisPage = (modelName) => {
   router.push({
-    path: "/leaderboard/valueAnalysis",
+    path: "/benchmarks/valueAnalysis",
     query: {
       modelName: modelName,
     },
@@ -497,7 +497,7 @@ const comparisonPoolSubmit = (checkedModelNameList) => {
 };
 const compareNow = () => {
   router.push({
-    path: "/leaderboard/valueComparison",
+    path: "/benchmarks/valueComparison",
     query: {
       modelName: compareArrString.value,
     },
