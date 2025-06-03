@@ -6,7 +6,7 @@
       <div class="leaderboard flex main-container">
         <div class="left">
           <div>
-            <router-link to="/leaderboard/leaderboard" aria-label="leaderboard">
+            <router-link to="/benchmarks/benchmarks" aria-label="benchmarks">
               <img src="@/assets/images/leaderboard-image.png" alt="" />
               <div class="cover"></div>
             </router-link>
@@ -58,7 +58,7 @@
               evolving assessments.
             </p>
             <div>
-              <router-link to="/leaderboard/leaderboard">
+              <router-link to="/benchmarks/benchmarks">
                 <span class="view-more-btn">
                   <span>View more</span>
                   <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>

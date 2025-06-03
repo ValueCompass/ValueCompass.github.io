@@ -37,9 +37,9 @@
         <li
           @mouseenter="mouseenter"
           @mouseleave="mouseleave"
-          :class="{ active: $route.path.indexOf('/leaderboard/') != -1 }"
+          :class="{ active: $route.path.indexOf('/benchmarks/') != -1 }"
         >
-          <router-link to="/leaderboard/leaderboard">Benchmarks</router-link>
+          <router-link to="/benchmarks/benchmarks">Benchmarks</router-link>
           <!-- <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li @click="toggleNav">
