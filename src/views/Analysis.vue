@@ -242,7 +242,7 @@
             </div>
             <div class="chart-content">
               <swiper
-                v-if="currentCaseData.length != 0"
+                v-if="currentCaseData && currentCaseData.length != 0"
                 :data="currentCaseData"
               ></swiper>
             </div>
