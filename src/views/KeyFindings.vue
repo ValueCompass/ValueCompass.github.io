@@ -5,8 +5,9 @@
       class="button read-report-btn"
       target="_blank"
       href="/data/LeaderboardReport.pdf"
-      > Read report </a
     >
+      Read report
+    </a>
     <p class="h1">
       Insights about LLMs Values from the Value Compass Benchmarks
     </p>
@@ -55,7 +56,12 @@
             <span>{{ sub.h3 }}</span>
           </h3>
           <div class="item-list">
-            <div v-for="(item, index) in sub.list" :key="index" class="item">
+            <div
+              v-for="(item, index) in sub.list"
+              :key="index"
+              class="item"
+              :class="item.open ? 'open' : ''"
+            >
               <div class="title" @click="toggle(item)">
                 <div class="left">
                   <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
