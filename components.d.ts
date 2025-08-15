@@ -9,7 +9,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     Am4core: typeof import('./src/components/am4core.vue')['default']
     ComparePool: typeof import('./src/components/ComparePool.vue')['default']
+    copy: typeof import('./src/components/CulturalAlignment/CulturalAlignmentIndex copy.vue')['default']
     CulturalAlignment: typeof import('./src/components/Comparison/CulturalAlignment.vue')['default']
+    CulturalAlignmentIndex: typeof import('./src/components/CulturalAlignment/CulturalAlignmentIndex.vue')['default']
+    CulturalAlignmentIndexComparison: typeof import('./src/components/CulturalAlignment/CulturalAlignmentIndexComparison.vue')['default']
     DimensionMeasurementTabs: typeof import('./src/components/DimensionMeasurementTabs.vue')['default']
     Echart: typeof import('./src/components/Comparison/echart.vue')['default']
     EchartComponent: typeof import('./src/components/Analysis/EchartComponent.vue')['default']

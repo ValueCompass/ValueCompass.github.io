@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
     },
-    children:[
+    children: [
       {
         path: 'benchmarks',
         name: 'Alignment Leaderboard',
@@ -58,7 +58,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ]
   },
-  
+
   {
     path: '/TestValues',
     name: 'Test Your Values',
@@ -68,6 +68,38 @@ const routes: Array<RouteRecordRaw> = [
       requiresFrontEndAuth: true
     },
   },
+
+  {
+    path: '/CulturalAlignment',
+    name: 'benchmCulturalAlignmentarks',
+    component: () => import('../views/CulturalAlignment/CulturalAlignmentHome.vue'),
+    redirect: '/CulturalAlignment/index', // 配置重定向
+    meta: {
+      keepAlive: true, //此页面需要缓存
+      requiresFrontEndAuth: true
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'CulturalAlignmentIndex',
+        component: () => import('../views/CulturalAlignment/CulturalAlignmentIndex.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
+      {
+        path: 'comparison',
+        name: 'CulturalAlignmentIndexComparison',
+        component: () => import('../views/CulturalAlignment/CulturalAlignmentIndexComparison.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
+    ]
+  },
+
   {
     path: '/Login',
     name: 'Login',

@@ -63,6 +63,12 @@
         <!-- <li>
           <router-link to="/TestValues">Test Your Values</router-link>
         </li> -->
+
+        <li
+          :class="{ active: $route.path.indexOf('/CulturalAlignment/') != -1 }"
+        >
+          <router-link to="/CulturalAlignment">Cultural Alignment</router-link>
+        </li>
         <li>
           <router-link to="/AboutUs">About Us</router-link>
         </li>
@@ -76,7 +82,8 @@
           </a>
         </li>
         <li class="icon-li">
-          <a aria-label="Github"
+          <a
+            aria-label="Github"
             target="_blank"
             href="https://github.com/microsoft/ValueCompass.git"
             ><SvgIcon class="SvgIcon github-icon" name="github-icon"></SvgIcon
@@ -178,7 +185,7 @@ const copyText = (text: string) => {
             transform: scaleY(1);
           }
         }
-        
+
         margin-left: 2.68em;
 
         font-weight: 700;
