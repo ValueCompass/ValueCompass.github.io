@@ -71,18 +71,18 @@ const routes: Array<RouteRecordRaw> = [
 
   {
     path: '/CulturalAlignment',
-    name: 'benchmCulturalAlignmentarks',
-    component: () => import('../views/CulturalAlignment/CulturalAlignmentHome.vue'),
-    redirect: '/CulturalAlignment/index', // 配置重定向
+    name: 'CulturalAlignment',
+    component: () => import('../views/CulturalAlignment/Index.vue'),
+    // redirect: '/CulturalAlignment', // 配置重定向
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
     },
     children: [
       {
-        path: 'index',
-        name: 'CulturalAlignmentIndex',
-        component: () => import('../views/CulturalAlignment/CulturalAlignmentIndex.vue'),
+        path: '',
+        name: 'CulturalAlignmentHome',
+        component: () => import('../views/CulturalAlignment/Home.vue'),
         meta: {
           keepAlive: true, //此页面需要缓存
           requiresFrontEndAuth: true
@@ -90,12 +90,34 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'comparison',
-        name: 'CulturalAlignmentIndexComparison',
-        component: () => import('../views/CulturalAlignment/CulturalAlignmentIndexComparison.vue'),
+        name: 'CulturalAlignmentComparison',
+        component: () => import('../views/CulturalAlignment/ComparisonViewPush.vue'),
         meta: {
           keepAlive: true, //此页面需要缓存
           requiresFrontEndAuth: true
         },
+
+      },
+
+      {
+        path: 'arena',
+        name: 'CulturalAlignmentArena',
+        component: () => import('../views/CulturalAlignment/Arena.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+
+      },
+      {
+        path: 'TopicSelection',
+        name: 'CulturalAlignmentTopicSelection',
+        component: () => import('../views/CulturalAlignment/TopicSelection.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+
       },
     ]
   },
