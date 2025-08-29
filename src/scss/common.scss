@@ -281,3 +281,22 @@
     }
   }
 }
+
+// select中country
+.country-p {
+  font-size: 1.125rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  gap: 0 .5em;
+
+  .dot {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background: #ccc;
+  }
+}

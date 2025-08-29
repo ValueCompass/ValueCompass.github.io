@@ -1,297 +1,364 @@
 <template>
-  <div style="position: relative">
-    <div class="culture-alignment-container main-container">
-      <div class="left">
-        <div class="select-box cultural-alignment-select-box">
-          <div class="select-box-item item">
-            <span class="label">Model:</span>
-            <div>
-              <el-select
-                class="cultural-alignment-el-select"
-                v-model="modelValue"
-                placeholder="Select a model"
-                popper-class="select-options-cultural"
-              >
-                <el-option
-                  v-for="item in modelOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                  <div class="option-content">
-                    <p>{{ item.value }}</p>
-                    <span class="check-span">
-                      <el-icon v-if="item.value == modelValue"
-                        ><Check
-                      /></el-icon>
-                    </span>
-                  </div>
-                </el-option>
-              </el-select>
-            </div>
-          </div>
-
-          <div class="select-box-item item">
-            <span class="label">Topic:</span>
-            <div>
-              <el-select
-                class="cultural-alignment-el-select"
-                v-model="topicValue"
-                placeholder="Select a topic"
-                popper-class="select-options-cultural topic-select-options"
-              >
-                <template #label="{ label, value }">
-                  <span
-                    style="
-                      font-weight: bold;
-                      padding-right: 2em;
-                      min-width: 5em;
-                      box-sizing: border-box;
-                    "
-                    >{{ findGroupLabel(value) }}</span
+  <div class="page" style="position: relative">
+    <div class="cover-container"></div>
+    <div style="position: relative">
+      <div class="culture-alignment-container main-container">
+        <div>
+          <div class="left">
+            <div class="select-box cultural-alignment-select-box">
+              <div class="select-box-item item">
+                <span class="label">Model:</span>
+                <div>
+                  <el-select
+                    class="cultural-alignment-el-select"
+                    v-model="modelValue"
+                    placeholder="Select a model"
+                    popper-class="select-options-cultural"
                   >
-                  <span
-                    style="
-                      border-left: 1px solid rgba(102, 102, 102, 1);
-                      padding-left: 0.6em;
-                    "
-                  >
-                    {{ value }}</span
-                  >
-                </template>
-                <el-option-group
-                  v-for="group in topicOptions"
-                  :key="group.label"
-                  :label="group.label"
-                >
-                  <el-option
-                    v-for="item in group.options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                    <div class="option-content">
-                      <p>{{ item.value }}</p>
-                      <span class="check-span">
-                        <el-icon v-if="item.value == topicValue"
-                          ><Check
-                        /></el-icon>
-                      </span>
-                    </div>
-                  </el-option>
-                </el-option-group>
-              </el-select>
-            </div>
-          </div>
-
-          <div class="select-box-item item">
-            <span class="label">Question:</span>
-            <div>
-              <el-select
-                class="Question-select cultural-alignment-el-select"
-                v-model="questionValue"
-                placeholder="Select a question"
-                popper-class="select-options-cultural Question-select-options"
-              >
-                <el-option
-                  v-for="item in questionOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                  <div class="option-content">
-                    <p>{{ item.value }}</p>
-                    <span class="check-span">
-                      <el-icon v-if="item.value == questionValue"
-                        ><Check
-                      /></el-icon>
-                    </span>
-                  </div>
-                </el-option>
-              </el-select>
-            </div>
-          </div>
-
-          <div class="btn-box">
-            <el-button
-              type="primary"
-              color="rgba(11, 112, 195, 1)"
-              class="generate-answer-btn"
-              >generate answers</el-button
-            >
-          </div>
-        </div>
-
-        <div class="answer-box">
-          <div class="title">
-            <p>Answer Pool</p>
-            <p>The maximum number of comparisons supported is 3</p>
-          </div>
-
-          <ul>
-            <li class="Neutral">
-              <div class="content" v-if="answerNeutral">
-                <div class="top">
-                  <span class="type-span">Neutral</span>
-                </div>
-                <div class="bottom">
-                  <el-scrollbar>
-                    <p class="p-content">{{ answerNeutral.text }}</p>
-                  </el-scrollbar>
-                </div>
-              </div>
-            </li>
-            <li v-for="(item, index) in chooseAnswerCountriesList" :key="index">
-              <div class="content" v-if="item">
-                <div class="top">
-                  <span
-                    class="check-icon-span"
-                    :style="{ color: getCountryColor(item.country) }"
-                  >
-                    <SvgIcon name="check" class="check-icon"></SvgIcon>
-                  </span>
-
-                  <span
-                    class="country-span"
-                    :style="{ color: getCountryColor(item.country) }"
-                    >{{ item.country }}</span
-                  >
-
-                  <span class="type-span">Aligned</span>
-                  <el-icon class="close-icon" @click="closeAnswer(item, index)"
-                    ><Close
-                  /></el-icon>
-                </div>
-                <div class="bottom">
-                  <el-scrollbar>
-                    <p
-                      class="p-content"
-                      :class="
-                        'p_' + item.country.toLowerCase().split(' ').join('_')
-                      "
+                    <el-option
+                      v-for="item in modelOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     >
-                      {{ item.text }}
-                    </p>
-                  </el-scrollbar>
+                      <div class="option-content">
+                        <p>{{ item.value }}</p>
+                        <span class="check-span">
+                          <el-icon v-if="item.value == modelValue"
+                            ><Check
+                          /></el-icon>
+                        </span>
+                      </div>
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
-              <p v-else class="select-tip">Select a country from the right →</p>
-              <div
-                v-if="item && item.country == setHoverCountry"
-                class="background-container"
-                :style="{
-                  'background-color': setOpacity(
-                    getCountryColorSub(item.country),
-                    0.3
-                  ),
-                }"
-              ></div>
-            </li>
-          </ul>
+
+              <div class="select-box-item item">
+                <span class="label">Topic:</span>
+                <div>
+                  <el-select
+                    class="cultural-alignment-el-select"
+                    v-model="topicValue"
+                    placeholder="Select a topic"
+                    popper-class="select-options-cultural topic-select-options"
+                  >
+                    <template #label="{ label, value }">
+                      <span
+                        style="
+                          font-weight: bold;
+                          padding-right: 2em;
+                          min-width: 5em;
+                          box-sizing: border-box;
+                          font-size: 1.125rem;
+                        "
+                        >{{ findGroupLabel(value) }}</span
+                      >
+                      <span
+                        style="
+                          border-left: 1px solid rgba(102, 102, 102, 1);
+                          padding-left: 0.6em;
+                          font-size: 1.125rem;
+                        "
+                      >
+                        {{ value }}</span
+                      >
+                    </template>
+                    <el-option-group
+                      v-for="group in topicOptions"
+                      :key="group.label"
+                      :label="group.label"
+                    >
+                      <el-option
+                        v-for="item in group.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                        <div class="option-content">
+                          <p>{{ item.value }}</p>
+                          <span class="check-span">
+                            <el-icon v-if="item.value == topicValue"
+                              ><Check
+                            /></el-icon>
+                          </span>
+                        </div>
+                      </el-option>
+                    </el-option-group>
+                  </el-select>
+                </div>
+              </div>
+
+              <div class="select-box-item item">
+                <span class="label">Question:</span>
+                <div>
+                  <el-select
+                    class="Question-select cultural-alignment-el-select"
+                    v-model="questionValue"
+                    placeholder="Select a question"
+                    popper-class="select-options-cultural Question-select-options"
+                  >
+                    <el-option
+                      v-for="item in questionOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                      <div class="option-content">
+                        <p>{{ item.value }}</p>
+                        <span class="check-span">
+                          <el-icon v-if="item.value == questionValue"
+                            ><Check
+                          /></el-icon>
+                        </span>
+                      </div>
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+
+              <div class="btn-box">
+                <el-button
+                  type="primary"
+                  color="rgba(11, 112, 195, 1)"
+                  class="generate-answer-btn"
+                  :loading="isLoadingResult"
+                  :disabled="isLoadingResult"
+                  >generate answers</el-button
+                >
+              </div>
+            </div>
+
+            <div class="answer-box">
+              <div class="title">
+                <p>Answer Pool</p>
+                <p>The maximum number of comparisons supported is 3</p>
+              </div>
+
+              <ul>
+                <li class="Neutral">
+                  <div class="content">
+                    <div class="top">
+                      <span class="type-span">Neutral</span>
+                    </div>
+                    <LoadingDots
+                      class="select-tip"
+                      style="justify-content: center"
+                      v-if="isLoadingResult"
+                      text="Generating"
+                      :size="7"
+                    />
+                    <div v-else class="bottom">
+                      <el-scrollbar v-if="answerNeutral">
+                        <p class="p-content">{{ answerNeutral.text }}</p>
+                      </el-scrollbar>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  v-for="(item, index) in chooseAnswerCountriesList"
+                  :key="index"
+                >
+                  <div class="content" v-if="item">
+                    <div class="top">
+                      <span
+                        class="check-icon-span"
+                        :style="{ color: getCountryColor(item.country) }"
+                      >
+                        <SvgIcon name="check" class="check-icon"></SvgIcon>
+                      </span>
+
+                      <span
+                        class="country-span"
+                        :style="{ color: getCountryColor(item.country) }"
+                        >{{ item.country }}</span
+                      >
+
+                      <span class="type-span">Aligned</span>
+                      <el-icon
+                        class="close-icon"
+                        @click="closeAnswer(item, index)"
+                        ><Close
+                      /></el-icon>
+                    </div>
+                    <div class="bottom">
+                      <el-scrollbar>
+                        <p
+                          class="p-content"
+                          :class="
+                            'p_' +
+                            item.country.toLowerCase().split(' ').join('_')
+                          "
+                        >
+                          {{ item.text }}
+                        </p>
+                      </el-scrollbar>
+                    </div>
+                  </div>
+                  <p v-else class="select-tip">
+                    Select a country from the right →
+                  </p>
+                  <div
+                    v-if="item && item.country == setHoverCountry"
+                    class="background-container"
+                    :style="{
+                      'background-color': setOpacity(
+                        getCountryColorSub(item.country),
+                        0.3
+                      ),
+                    }"
+                  ></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="right" style="position: ">
+            <div class="right-content">
+              <img
+                class="bg"
+                src="@/assets//images/culturalBg.png"
+                alt=""
+                style="z-index: -1"
+              />
+            </div>
+            <div class="country-list">
+              <ul style="position: absolute; left: 0; top: 0">
+                <li
+                  v-for="(item, index) in answerAllCountriesList"
+                  :key="index"
+                  @click="choseCountryToAnswerPool(item, index)"
+                  @mouseenter="mouseenter(item.country)"
+                  @mouseleave="mouseleave(item.country)"
+                  :class="[
+                    'li-country-' +
+                      item.country.toLowerCase().split(' ').join('_'),
+                    {
+                      choosed: chooseAnswerCountriesList.some(
+                        (c) => c?.country === item.country
+                      ),
+                    },
+                  ]"
+                  :style="{ 'border-color': getCountryColorSub(item.country) }"
+                >
+                  <div
+                    class="border-container"
+                    :style="{ 'border-color': getCountryColor(item.country) }"
+                  ></div>
+                  <div
+                    class="background-container"
+                    :style="{
+                      'background-color': setOpacity(
+                        getCountryColorSub(item.country),
+                        0.3
+                      ),
+                    }"
+                  ></div>
+                  <div class="country-img">
+                    <img
+                      :src="getAssetsFile(getCountryIcon(item.country))"
+                      alt=""
+                    />
+                  </div>
+                  <div class="country-text">
+                    <p class="country-name-p">
+                      <!--  -->
+                      <span
+                        class="check-icon-span"
+                        :style="{ color: getCountryColor(item.country) }"
+                      >
+                        <SvgIcon
+                          name="checked-no-icon"
+                          class="checked-no-icon"
+                        ></SvgIcon>
+                        <SvgIcon name="check" class="check-icon"></SvgIcon>
+                      </span>
+
+                      <span
+                        class="country-span"
+                        :style="{ color: getCountryColor(item.country) }"
+                        >{{ item.country }}</span
+                      >
+                      <!--  -->
+                    </p>
+
+                    <LoadingDots
+                      style="margin-top: 0.4em"
+                      v-if="isLoadingResult"
+                      text="Generating"
+                      :size="7"
+                    />
+
+                    <template v-else>
+                      <p class="score-p">
+                        <span>Neutral</span>
+                        <span
+                          class="score-span"
+                          :style="{ background: getCountryColor(item.country) }"
+                          >6</span
+                        >
+                        <span :style="{ color: getCountryColor(item.country) }"
+                          >VS</span
+                        >
+                        <span>Aligned</span
+                        ><span
+                          class="score-span"
+                          :style="{ background: getCountryColor(item.country) }"
+                          >8</span
+                        >
+                      </p>
+                      <p class="culture-arena-p">Culture Arena →</p>
+                      <el-icon
+                        v-if="
+                          chooseAnswerCountriesList.some(
+                            (c) => c?.country === item.country
+                          )
+                        "
+                        class="close-icon"
+                        @click.stop="closeAnswerFromCountry(item.country)"
+                        ><Close
+                      /></el-icon>
+
+                      <!-- <TipPopover
+                    v-if="true"
+                    arrow="down"
+                    style="left: 0"
+                  >
+                    这是一个提示内容
+                  </TipPopover> -->
+                    </template>
+                  </div>
+
+                  <TipPopover
+                    v-if="showTopActiveIndex === index"
+                    arrow="down"
+                    style="left: 0px; font-size: 1.125em"
+                  />
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="right" style="position: ">
-        <div class="right-content">
-          <img
-            class="bg"
-            src="@/assets//images/culturalBg.png"
-            alt=""
-            style="z-index: -1"
-          />
-        </div>
-        <div class="country-list">
-          <ul style="position: absolute; left: 0; top: 0">
-            <li
-              v-for="(item, index) in answerAllCountriesList"
-              :key="index"
-              @click="choseCountryToAnswerPool(item)"
-              @mouseenter="mouseenter(item.country)"
-              @mouseleave="mouseleave(item.country)"
-              :class="[
-                'li-country-' + item.country.toLowerCase().split(' ').join('_'),
-                {
-                  choosed: chooseAnswerCountriesList.some(
-                    (c) => c?.country === item.country
-                  ),
-                },
-              ]"
-              :style="{ 'border-color': getCountryColorSub(item.country) }"
-            >
-              <div
-                class="border-container"
-                :style="{ 'border-color': getCountryColor(item.country) }"
-              ></div>
-              <div
-                class="background-container"
-                :style="{
-                  'background-color': setOpacity(
-                    getCountryColorSub(item.country),
-                    0.3
-                  ),
-                }"
-              ></div>
-              <div class="country-img">
-                <img
-                  :src="getAssetsFile(getCountryIcon(item.country))"
-                  alt=""
-                />
-              </div>
-              <div class="country-text">
-                <p>
-                  <!--  -->
-                  <span
-                    class="check-icon-span"
-                    :style="{ color: getCountryColor(item.country) }"
-                  >
-                    <SvgIcon name="check" class="check-icon"></SvgIcon>
-                  </span>
-
-                  <span
-                    class="country-span"
-                    :style="{ color: getCountryColor(item.country) }"
-                    >{{ item.country }}</span
-                  >
-                  <!--  -->
-                </p>
-                <p>
-                  <span>Neutral</span>
-                  <span
-                    class="score-span"
-                    :style="{ background: getCountryColor(item.country) }"
-                    >6</span
-                  >
-                  <span :style="{ color: getCountryColor(item.country) }"
-                    >VS</span
-                  >
-                  <span>Aligned</span
-                  ><span
-                    class="score-span"
-                    :style="{ background: getCountryColor(item.country) }"
-                    >8</span
-                  >
-                </p>
-                <p>Culture Arena →</p>
-
-                <el-icon
-                  v-if="
-                    chooseAnswerCountriesList.some(
-                      (c) => c?.country === item.country
-                    )
-                  "
-                  class="close-icon"
-                  @click.stop="closeAnswerFromCountry(item.country)"
-                  ><Close
-                /></el-icon>
-              </div>
-            </li>
-          </ul>
-        </div>
+    </div>
+    <div class="competitive-btn" @click="gotArenaPage">
+      <div class="competitive-icon-box">
+        <SvgIcon name="competitive1"></SvgIcon>
+        <SvgIcon name="competitive2"></SvgIcon>
+        <SvgIcon name="competitive1"></SvgIcon>
+      </div>
+      <div class="text">Culture arena</div>
+      <div class="arrow-right-box">
+        <SvgIcon name="arrow-right"></SvgIcon>
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+import LoadingDots from "@/components/common/LoadingDots.vue";
+import TipPopover from "@/components/common/TipPopover.vue";
 
 import { Close, Check } from "@element-plus/icons-vue";
 import {
@@ -305,6 +372,8 @@ import {
 const getAssetsFile = (url) => {
   return new URL(`../../assets/country/${url}`, import.meta.url).href;
 };
+
+const isLoadingResult = ref(false);
 
 const modelValue = ref("");
 
@@ -465,7 +534,10 @@ answerAllCountriesList.value = [
 ];
 const chooseAnswerCountriesList = ref([null, null, null]);
 
-const choseCountryToAnswerPool = (item) => {
+const choseCountryToAnswerPool = (item, cuuentIndex) => {
+  if (isLoadingResult.value) {
+    return;
+  }
   console.log(item);
   // 判断数组中是否已有相同 id
   if (
@@ -484,6 +556,7 @@ const choseCountryToAnswerPool = (item) => {
     console.log("添加成功:", chooseAnswerCountriesList.value);
   } else {
     console.log("数组已满，无法添加");
+    toggleTip(cuuentIndex);
   }
 };
 
@@ -515,14 +588,54 @@ const mouseenter = (country) => {
 const mouseleave = (country) => {
   setHoverCountry.value = "";
 };
+
+// 出现最多添加3个country提示
+const showTopActiveIndex = ref(null);
+let timer = null;
+function toggleTip(index) {
+  // 如果点击同一个 li，则关闭
+  if (showTopActiveIndex.value === index) {
+    showTopActiveIndex.value = null;
+    clearTimeout(timer);
+    return;
+  }
+
+  // 打开新的提示框
+  showTopActiveIndex.value = index;
+
+  // 清除旧的定时器，重新计时
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    showTopActiveIndex.value = null;
+  }, 3000);
+}
+
+const router = useRouter();
+const gotArenaPage = (item) => {
+  router.push({
+    path: "/CulturalAlignment/arena",
+    param: {
+      topic: item.des,
+      question: item.des,
+    },
+    // query: {
+    //   modelName: modelName,
+    // },
+  });
+};
 </script>
 
 <style scoped lang="scss">
 .culture-alignment-container {
   padding: 1em 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: calc(100vw - 230px);
+    margin: 0 auto;
+  }
   .left {
     width: 49%;
     .select-box {
@@ -694,10 +807,11 @@ const mouseleave = (country) => {
   .right {
     position: relative;
     width: 49%;
-    align-self: flex-start;
+    // align-self: flex-start;
+    margin-top: -8em;
     .right-content {
       padding-top: 100%;
-      background: rgba(0, 0, 0, 0.2);
+      // background: rgba(0, 0, 0, 0.2);
       position: relative;
       .bg {
         position: absolute;
@@ -715,6 +829,20 @@ const mouseleave = (country) => {
         width: 100%;
         height: 100%;
         li {
+          cursor: pointer;
+          min-height: 4.9em;
+          box-sizing: border-box;
+          border: 1px solid rgba(128, 0, 0, 1);
+          border-radius: 0.25em;
+          padding: 0.7em;
+          display: flex;
+          flex-direction: row;
+          position: relative;
+          position: absolute;
+          // right: 0;
+          // bottom: 0;
+          background: #fff;
+
           .border-container {
             position: absolute;
             left: -1px;
@@ -737,7 +865,6 @@ const mouseleave = (country) => {
             opacity: 0;
             opacity: 0;
             border-radius: 0.3em;
-            z-index: 1;
           }
 
           &:hover {
@@ -755,8 +882,13 @@ const mouseleave = (country) => {
               opacity: 1;
             }
             .country-text {
-              p:nth-child(3) {
+              p.culture-arena-p {
                 display: block;
+              }
+              p.country-name-p {
+                .check-icon-span .check-icon {
+                  opacity: 1;
+                }
               }
             }
             .country-img {
@@ -769,42 +901,45 @@ const mouseleave = (country) => {
             }
           }
 
-          cursor: pointer;
-          min-height: 4.9em;
-          box-sizing: border-box;
-          border: 1px solid rgba(128, 0, 0, 1);
-          border-radius: 0.25em;
-          padding: 0.7em;
-          display: flex;
-          flex-direction: row;
-          position: relative;
-
           .country-img {
             display: none;
+            position: relative;
             img {
               width: 5.625em;
               display: block;
+              transform: translateY(-1px);
             }
           }
           .country-text {
             position: relative;
-            z-index: 2;
             min-width: 13.9375em;
             display: flex;
             flex-direction: column;
             // gap: 0.374em;
-            p:nth-child(1) {
+            p.country-name-p {
               display: flex;
               flex-direction: row;
               align-items: center;
               gap: 0.375em;
               .check-icon-span {
-                padding: 2px;
+                width: 1.5em;
+                height: 1.5em;
+                position: relative;
                 display: inline-block;
                 display: flex;
+                align-items: center;
+                justify-content: center;
                 .check-icon {
-                  width: 1.25em;
-                  height: 1.25em;
+                  width: 83.333%;
+                  height: 83.333%;
+                  opacity: 0;
+                }
+                .checked-no-icon {
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  left: 0;
+                  top: 0;
                 }
               }
               .country-span {
@@ -815,7 +950,7 @@ const mouseleave = (country) => {
                 text-transform: uppercase;
               }
             }
-            p:nth-child(2) {
+            p.score-p {
               height: 1.667em;
               font-size: 1.125em;
               font-weight: 700;
@@ -834,7 +969,7 @@ const mouseleave = (country) => {
                 border-radius: 4px;
               }
             }
-            p:nth-child(3) {
+            p.culture-arena-p {
               display: none;
               font-size: 1.125em;
               color: rgba(11, 112, 195, 1);
@@ -850,10 +985,6 @@ const mouseleave = (country) => {
               cursor: pointer;
             }
           }
-          position: absolute;
-          // right: 0;
-          // bottom: 0;
-          background: #fff;
         }
         li.li-country-china {
           bottom: 82%;
@@ -876,7 +1007,7 @@ const mouseleave = (country) => {
           left: 17.5%;
           &.choosed {
             & ~ .li-country-singapore {
-              transform: translateY(1.2em);
+              transform: translateY(1.3em);
             }
           }
         }
@@ -904,6 +1035,99 @@ const mouseleave = (country) => {
       height: 2em;
       text-transform: capitalize;
       width: 10.5em;
+    }
+  }
+}
+
+.cover-container {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    270deg,
+    rgba(255, 255, 255, 0.8) 26.74%,
+    rgba(255, 255, 255, 0.95) 54.69%
+  );
+}
+.competitive-btn {
+  padding: 0.75em;
+  z-index: 100;
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translate(0%, -50%);
+  background: linear-gradient(180deg, #ccf0fc 0%, #9bddf9 100%);
+  // border: 2px solid;
+
+  // border-image-source: linear-gradient(180deg, #CCF0FC 0%, #9BDDF9 100%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em 0;
+  color: rgba(5, 64, 140, 1);
+  border-radius: 0.375em;
+  .text {
+    line-height: 1.375;
+  }
+  svg {
+    transition: all 0.3s ease-out;
+  }
+
+  .competitive-icon-box {
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & > svg:nth-child(1) {
+      width: 1em;
+      height: 1em;
+    }
+    & > svg:nth-child(2) {
+      width: 0.4em;
+      height: 0.4em;
+
+      transform: translateY(-0.65em);
+    }
+    & > svg:nth-child(3) {
+      width: 1em;
+      height: 1em;
+      transform: rotateY(180deg);
+    }
+  }
+
+  .arrow-right-box {
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      color: rgba(5, 64, 140, 1);
+      width: 0.8em;
+      height: 0.8em;
+    }
+  }
+
+  &:hover {
+    .competitive-icon-box {
+      & > svg:nth-child(1) {
+        transform: translateX(0.2em);
+      }
+      & > svg:nth-child(2) {
+        transform: scale(1.2) translateY(-0.65em);
+      }
+      & > svg:nth-child(3) {
+        transform: translateX(-0.2em) rotateY(180deg);
+      }
+    }
+
+    .arrow-right-box {
+      svg {
+        transform: translateX(0.3em);
+      }
     }
   }
 }

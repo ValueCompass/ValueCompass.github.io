@@ -1,28 +1,46 @@
 <template>
-  <div style="position: relative">
-    <div class="culture-alignment-container main-container">
-      <div>
-        <h2>
-          Explore Cultural Perspectives – Choose a Topic to Compare Responses
-        </h2>
-        <p>
-          Each topic offers a lens into values, norms, and communication styles
-          across regions. Select one to begin your cultural comparison and
-          reveal key differences in thought and behavior.
-        </p>
-        <ul>
-          <li v-for="(item, index) in topicListShow" :key="index">
-            <div>
-              <img :src="item.img" alt="" />
-              <p>{{ item.des }}</p>
-            </div>
-          </li>
-        </ul>
+  <div class="page" style="position: relative">
+    <div class="cover-container"></div>
+    <div style="position: relative">
+      <div class="culture-alignment-container main-container">
+        <div>
+          <h2>
+            Explore Cultural Perspectives – Choose a Topic to Compare Responses
+          </h2>
+          <p>
+            Each topic offers a lens into values, norms, and communication
+            styles across regions. Select one to begin your cultural comparison
+            and reveal key differences in thought and behavior.
+          </p>
+          <ul>
+            <li
+              v-for="(item, index) in topicListShow"
+              :key="index"
+              @click="goToComparisonPage(item)"
+            >
+              <div>
+                <img :src="item.img" alt="" />
+                <p>{{ item.des }}</p>
+              </div>
+            </li>
+          </ul>
 
-        <div class="btn-container">
-          <el-button class="Change-question-btn">
-            Change question<el-icon class="el-icon--right"><Refresh /></el-icon>
-          </el-button>
+          <div class="btn-container">
+            <el-button class="Change-question-btn">
+              Change question<el-icon class="el-icon--right"
+                ><Refresh
+              /></el-icon>
+            </el-button>
+          </div>
+        </div>
+
+        <div class="bg-container">
+          <img
+            class="bg"
+            src="@/assets//images/culturalBg.png"
+            alt=""
+            style="z-index: -1"
+          />
         </div>
       </div>
     </div>
@@ -30,6 +48,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { Refresh } from "@element-plus/icons-vue";
 
 const getAssetsFile = (url) => {
@@ -50,10 +69,25 @@ const topicListShow = ref([
     des: "Should you help a stranger in need even if it puts your own plans at risk?",
   },
 ]);
+
+const router = useRouter();
+const goToComparisonPage = (item) => {
+  router.push({
+    path: "/CulturalAlignment/comparison",
+    param: {
+      topic: item.des,
+      question: item.des,
+    },
+    // query: {
+    //   modelName: modelName,
+    // },
+  });
+};
 </script>
 
 <style scoped lang="scss">
 .culture-alignment-container {
+  position: relative;
   padding: 2em 0;
   & > div {
     max-width: 74.4375rem;
@@ -78,11 +112,14 @@ const topicListShow = ref([
 
     justify-content: space-between;
     li {
+      background: #fff;
       box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
       width: 32%;
       padding: 1.5em 3em;
       box-sizing: border-box;
       border-radius: 1em;
+      transition: all 0.2s;
+      cursor: pointer;
       p {
         font-size: 1.25em;
         line-height: 1.2;
@@ -92,6 +129,13 @@ const topicListShow = ref([
         display: block;
         margin: 0 auto;
         margin-bottom: 1.5em;
+      }
+      &:hover {
+        box-shadow: 0px 0px 12px 0px rgba(133, 200, 255, 0.4);
+        P {
+          color: rgba(11, 112, 195, 1);
+          font-weight: 600;
+        }
       }
     }
   }
@@ -106,11 +150,49 @@ const topicListShow = ref([
       border: 2px solid rgba(11, 112, 195, 1);
       padding: 0.2em 1.2em;
       border-radius: 6px;
+      &:hover {
+        background: #fff;
+        opacity: 0.8;
+      }
       .el-icon--right {
         font-size: 1.2em;
         margin-left: 0.4em;
       }
     }
   }
+
+  .bg-container {
+    margin-top: -4em;
+    position: absolute;
+    width: 49%;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 784px;
+    background: red;
+    z-index: -1;
+    .bg {
+      // display: none;
+      position: absolute;
+      width: 414.286%;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.cover-container {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    270deg,
+    rgba(255, 255, 255, 0.8) 26.74%,
+    rgba(255, 255, 255, 0.95) 54.69%
+  );
 }
 </style>

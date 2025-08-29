@@ -94,7 +94,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/CulturalAlignment/ComparisonViewPush.vue'),
         meta: {
           keepAlive: true, //此页面需要缓存
-          requiresFrontEndAuth: true
+          requiresFrontEndAuth: true,
+          index: 0,
+          animate: true
         },
 
       },
@@ -105,7 +107,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/CulturalAlignment/Arena.vue'),
         meta: {
           keepAlive: true, //此页面需要缓存
-          requiresFrontEndAuth: true
+          requiresFrontEndAuth: true,
+          index: 1,
+          animate:true
         },
 
       },

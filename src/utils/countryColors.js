@@ -21,14 +21,20 @@ export const countryColorsSub = {
 };
 
 export const countryIcon = {
-    china: "1.png",
-    "south korea": "1.png",
-    japan: "1.png",
-    thailand: "1.png",
-    malaysia: "1.png",
-    singapore: "1.png",
-    indonesia: "1.png",
-    "australia": "1.png"
+    china: "China.png",
+    "south korea": "South-Korea.png",
+    japan: "japan.png",
+    thailand: "Thailand.png",
+    malaysia: "malaysia.png",
+    singapore: "Singapore.png",
+    indonesia: "indonesia.png",
+    "australia": "Australia.png"
+};
+
+export const countryIconBig = {
+    china: "2-China.png",
+    japan: "2-japan.png",
+    singapore: "2-Singapore.png",
 };
 
 // 提供一个取色函数，避免直接访问对象时可能出错
@@ -41,35 +47,39 @@ export function getCountryColorSub(country) {
 }
 
 export function getCountryIcon(country) {
-    return countryIcon[country.toLowerCase()] || "#000"; // 默认黑色
+    return countryIcon[country.toLowerCase()] || "China.png"; // 默认黑色
+}
+
+export function getCountryIconBig(country) {
+    return countryIconBig[country.toLowerCase()] || "China.png"; // 默认黑色
 }
 
 export function setOpacity(color, opacity) {
-  // 1. 处理 #RGB 或 #RRGGBB
-  if (color.startsWith('#')) {
-    let r, g, b;
-    if (color.length === 4) { // #RGB 简写
-      r = parseInt(color[1] + color[1], 16);
-      g = parseInt(color[2] + color[2], 16);
-      b = parseInt(color[3] + color[3], 16);
-    } else if (color.length === 7) { // #RRGGBB
-      r = parseInt(color.slice(1, 3), 16);
-      g = parseInt(color.slice(3, 5), 16);
-      b = parseInt(color.slice(5, 7), 16);
+    // 1. 处理 #RGB 或 #RRGGBB
+    if (color.startsWith('#')) {
+        let r, g, b;
+        if (color.length === 4) { // #RGB 简写
+            r = parseInt(color[1] + color[1], 16);
+            g = parseInt(color[2] + color[2], 16);
+            b = parseInt(color[3] + color[3], 16);
+        } else if (color.length === 7) { // #RRGGBB
+            r = parseInt(color.slice(1, 3), 16);
+            g = parseInt(color.slice(3, 5), 16);
+            b = parseInt(color.slice(5, 7), 16);
+        }
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-  }
 
-  // 2. 处理 rgb(...) → 转换成 rgba
-  if (color.startsWith('rgb(')) {
-    return color.replace('rgb(', 'rgba(').replace(')', `, ${opacity})`);
-  }
+    // 2. 处理 rgb(...) → 转换成 rgba
+    if (color.startsWith('rgb(')) {
+        return color.replace('rgb(', 'rgba(').replace(')', `, ${opacity})`);
+    }
 
-  // 3. 处理 rgba(...) → 替换 alpha 值
-  if (color.startsWith('rgba(')) {
-    return color.replace(/[\d.]+\)$/g, `${opacity})`);
-  }
+    // 3. 处理 rgba(...) → 替换 alpha 值
+    if (color.startsWith('rgba(')) {
+        return color.replace(/[\d.]+\)$/g, `${opacity})`);
+    }
 
-  // 4. 其他情况：原样返回
-  return color;
+    // 4. 其他情况：原样返回
+    return color;
 }
