@@ -1,186 +1,284 @@
 <template>
-  <div style="position: relative">
-    <div class="culture-alignment-container main-container">
-      <div class="top-select-container">
-        <div class="select-box cultural-alignment-select-box">
-          <div>
-            <div class="select-box-item item" style="margin-bottom: 0.375em">
-              <span class="label">Model:</span>
+  <div class="page">
+    <div style="position: relative">
+      <div class="culture-alignment-container main-container">
+        <div>
+          <div class="top-select-container">
+            <div class="select-box cultural-alignment-select-box">
               <div>
-                <el-select
-                  class="cultural-alignment-el-select"
-                  v-model="modelValue"
-                  placeholder="Select a model"
-                  popper-class="select-options-cultural"
+                <div
+                  class="select-box-item item"
+                  style="margin-bottom: 0.375em"
                 >
-                  <el-option
-                    v-for="item in modelOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                    <div class="option-content">
-                      <p>{{ item.value }}</p>
-                      <span class="check-span">
-                        <el-icon v-if="item.value == modelValue"
-                          ><Check
-                        /></el-icon>
-                      </span>
-                    </div>
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
-
-            <div class="select-box-item item">
-              <span class="label">Topic:</span>
-              <div>
-                <el-select
-                  class="cultural-alignment-el-select"
-                  v-model="topicValue"
-                  placeholder="Select a topic"
-                  popper-class="select-options-cultural topic-select-options"
-                >
-                  <el-option-group
-                    v-for="group in topicOptions"
-                    :key="group.label"
-                    :label="group.label"
-                  >
-                    <el-option
-                      v-for="item in group.options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                  <span class="label">Culture:</span>
+                  <div>
+                    <el-select
+                      class="cultural-alignment-el-select country-select"
+                      v-model="countryValue"
+                      placeholder="Select a country"
+                      popper-class="select-options-cultural"
                     >
-                      <div class="option-content">
-                        <p>{{ item.value }}</p>
-                        <span class="check-span">
-                          <el-icon v-if="item.value == topicValue"
-                            ><Check
-                          /></el-icon>
-                        </span>
-                      </div>
-                    </el-option>
-                  </el-option-group>
-                </el-select>
+                      <template #label="{ label, value }">
+                        <p class="country-p">
+                          <span
+                            :style="{ background: getCountryColor(value) }"
+                            class="dot"
+                          ></span>
+                          <span :style="{ color: getCountryColor(value) }">{{
+                            value
+                          }}</span>
+                        </p>
+                      </template>
+                      <el-option
+                        v-for="item in countryList"
+                        :key="item.countryName"
+                        :label="item.countryName"
+                        :value="item.countryName"
+                      >
+                        <div class="option-content">
+                          <p class="country-p">
+                            <span
+                              class="dot"
+                              :style="{
+                                background: getCountryColor(item.countryName),
+                              }"
+                            ></span>
+                            <span
+                              :style="{
+                                color: getCountryColor(item.countryName),
+                              }"
+                              >{{ item.countryName }}</span
+                            >
+                          </p>
+                          <span class="check-span">
+                            <el-icon v-if="item.countryName == countryValue"
+                              ><Check
+                            /></el-icon>
+                          </span>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+
+                <div class="select-box-item item">
+                  <span class="label">Topic:</span>
+                  <div>
+                    <el-select
+                      class="cultural-alignment-el-select"
+                      v-model="topicValue"
+                      placeholder="Select a topic"
+                      popper-class="select-options-cultural topic-select-options"
+                    >
+                      <template #label="{ label, value }">
+                        <span
+                          style="
+                            font-weight: bold;
+                            padding-right: 2em;
+                            min-width: 5em;
+                            box-sizing: border-box;
+                            font-size: 1.125rem;
+                          "
+                          >{{ findGroupLabel(value) }}</span
+                        >
+                        <span
+                          style="
+                            border-left: 1px solid rgba(102, 102, 102, 1);
+                            padding-left: 0.6em;
+                            font-size: 1.125rem;
+                          "
+                        >
+                          {{ value }}</span
+                        >
+                      </template>
+                      <el-option-group
+                        v-for="group in topicOptions"
+                        :key="group.label"
+                        :label="group.label"
+                      >
+                        <el-option
+                          v-for="item in group.options"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        >
+                          <div class="option-content">
+                            <p>{{ item.value }}</p>
+                            <span class="check-span">
+                              <el-icon v-if="item.value == topicValue"
+                                ><Check
+                              /></el-icon>
+                            </span>
+                          </div>
+                        </el-option>
+                      </el-option-group>
+                    </el-select>
+                  </div>
+                </div>
               </div>
+
+              <div>
+                <div class="select-box-item item">
+                  <span class="label">Question:</span>
+                  <div>
+                    <el-select
+                      class="Question-select cultural-alignment-el-select"
+                      v-model="questionValue"
+                      placeholder="Select a question"
+                      popper-class="select-options-cultural Question-select-options"
+                    >
+                      <el-option
+                        v-for="item in questionOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                        <div class="option-content">
+                          <p>{{ item.value }}</p>
+                          <span class="check-span">
+                            <el-icon v-if="item.value == questionValue"
+                              ><Check
+                            /></el-icon>
+                          </span>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="select-box-item item">
+                  <span class="label">Model A:</span>
+                  <div>
+                    <el-select
+                      class="cultural-alignment-el-select"
+                      v-model="modelAValue"
+                      placeholder="Select a model"
+                      popper-class="select-options-cultural"
+                    >
+                      <el-option
+                        v-for="item in modelOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                        <div class="option-content">
+                          <p>{{ item.value }}</p>
+                          <span class="check-span">
+                            <el-icon v-if="item.value == modelAValue"
+                              ><Check
+                            /></el-icon>
+                          </span>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="select-box-item item">
+                  <span class="label">Model B:</span>
+                  <div>
+                    <el-select
+                      class="cultural-alignment-el-select"
+                      v-model="modelBValue"
+                      placeholder="Select a model"
+                      popper-class="select-options-cultural"
+                    >
+                      <el-option
+                        v-for="item in modelOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                        <div class="option-content">
+                          <p>{{ item.value }}</p>
+                          <span class="check-span">
+                            <el-icon v-if="item.value == modelBValue"
+                              ><Check
+                            /></el-icon>
+                          </span>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="btn-box">
+              <el-button
+                type="primary"
+                color="rgba(11, 112, 195, 1)"
+                class="generate-answer-btn"
+                >generate answers</el-button
+              >
             </div>
           </div>
 
-          <div>
-            <div class="select-box-item item">
-              <span class="label">Question:</span>
-              <div>
-                <el-select
-                  class="Question-select cultural-alignment-el-select"
-                  v-model="questionValue"
-                  placeholder="Select a question"
-                  popper-class="select-options-cultural Question-select-options"
-                >
-                  <el-option
-                    v-for="item in questionOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                    <div class="option-content">
-                      <p>{{ item.value }}</p>
-                      <span class="check-span">
-                        <el-icon v-if="item.value == questionValue"
-                          ><Check
-                        /></el-icon>
-                      </span>
-                    </div>
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
+          <div class="center-result-container">
+            <div></div>
+            <div></div>
           </div>
-
-          <div>
-            <div class="select-box-item item">
-              <span class="label">Model A:</span>
-              <div>
-                <el-select
-                  class="cultural-alignment-el-select"
-                  v-model="modelValue"
-                  placeholder="Select a model"
-                  popper-class="select-options-cultural"
-                >
-                  <el-option
-                    v-for="item in modelOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                    <div class="option-content">
-                      <p>{{ item.value }}</p>
-                      <span class="check-span">
-                        <el-icon v-if="item.value == modelValue"
-                          ><Check
-                        /></el-icon>
-                      </span>
-                    </div>
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="select-box-item item">
-              <span class="label">Model B:</span>
-              <div>
-                <el-select
-                  class="cultural-alignment-el-select"
-                  v-model="modelValue"
-                  placeholder="Select a model"
-                  popper-class="select-options-cultural"
-                >
-                  <el-option
-                    v-for="item in modelOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                    <div class="option-content">
-                      <p>{{ item.value }}</p>
-                      <span class="check-span">
-                        <el-icon v-if="item.value == modelValue"
-                          ><Check
-                        /></el-icon>
-                      </span>
-                    </div>
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="btn-box">
-          <el-button
-            type="primary"
-            color="rgba(11, 112, 195, 1)"
-            class="generate-answer-btn"
-            >generate answers</el-button
-          >
         </div>
       </div>
+    </div>
 
-      <div class="center-result-container">
-        <div></div>
-        <div></div>
+    <div class="competitive-btn" @click="goBack">
+      <div class="competitive-icon-box">
+        <SvgIcon name="culture-map"></SvgIcon>
+      </div>
+      <div class="text">Culture Map</div>
+      <div class="arrow-right-box">
+        <SvgIcon name="arrow-right"></SvgIcon>
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 import { Close, Check } from "@element-plus/icons-vue";
-import { countryColors, getCountryColor } from "@/utils/countryColors.js";
+import {
+  countryColors,
+  getCountryColor,
+  getCountryColorSub,
+  getCountryIcon,
+  setOpacity,
+} from "@/utils/countryColors.js";
 
-const modelValue = ref("");
+const countryValue = ref("");
+const countryList = ref([
+  {
+    countryName: "china",
+  },
+  {
+    countryName: "Japan",
+  },
+  {
+    countryName: "south Korea",
+  },
+  {
+    countryName: "Thailand",
+  },
+  {
+    countryName: "malaysia",
+  },
+  {
+    countryName: "Singapore",
+  },
+  {
+    countryName: "indonesia",
+  },
+  {
+    countryName: "Australia",
+  },
+]);
+
+const modelAValue = ref("");
+const modelBValue = ref("");
 
 const modelOptions = ref([
   {
@@ -365,15 +463,33 @@ const closeAnswer = (item, index) => {
   console.log(item, index);
   chooseAnswerCountriesList.value[index] = null;
 };
+
+const findGroupLabel = (val) => {
+  for (const g of topicOptions.value) {
+    const item = g.options.find((o) => o.value === val);
+    if (item) return g.label;
+  }
+  return "";
+};
+
+const router = useRouter();
+const goBack = () => {
+  router.go(-1); // 或者使用 router.back();
+};
 </script>
 
 <style scoped lang="scss">
 .culture-alignment-container {
   padding: 1em 0;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  align-items: center;
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: calc(100vw - 230px);
+    margin: 0 auto;
+  }
 
   .top-select-container {
     width: 100%;
@@ -409,22 +525,86 @@ const closeAnswer = (item, index) => {
     }
   }
 
-  .center-result-container{
+  .center-result-container {
     margin-top: 1.5em;
     width: 100%;
     display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 1.5em;
-      & > div {
-        box-sizing: border-box;
-        width: calc(50% - 0.75em);
-        height: 35em;
-        border: 1px solid rgba(194, 194, 194, 1);
-        border-bottom-left-radius: 1em;
-        border-bottom-right-radius: 1em;
-        border-top: 4px solid rgba(154, 105, 181, 1);
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    & > div {
+      box-sizing: border-box;
+      width: calc(50% - 0.75em);
+      height: 35em;
+      border: 1px solid rgba(194, 194, 194, 1);
+      border-bottom-left-radius: 1em;
+      border-bottom-right-radius: 1em;
+      border-top: 4px solid rgba(154, 105, 181, 1);
+    }
+  }
+}
+
+.competitive-btn {
+  padding: 0.75em;
+  z-index: 100;
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translate(0%, -50%);
+  background: linear-gradient(180deg, #ccf0fc 0%, #9bddf9 100%);
+  // border: 2px solid;
+
+  // border-image-source: linear-gradient(180deg, #CCF0FC 0%, #9BDDF9 100%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em 0;
+  color: rgba(5, 64, 140, 1);
+  border-radius: 0.375em;
+  .text {
+    line-height: 1.375;
+  }
+  svg {
+    transition: all 0.3s ease-out;
+  }
+
+  .competitive-icon-box {
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & > svg:nth-child(1) {
+      width: 1em;
+      height: 1.25em;
+    }
+  }
+
+  .arrow-right-box {
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateY(180deg);
+    svg {
+      color: rgba(5, 64, 140, 1);
+      width: 0.8em;
+      height: 0.8em;
+    }
+  }
+
+  &:hover {
+    .competitive-icon-box {
+      & > svg:nth-child(1) {
+        transform: scaleX(1.25);
       }
+    }
+
+    .arrow-right-box {
+      svg {
+        transform: translateX(0.3em);
+      }
+    }
   }
 }
 </style>

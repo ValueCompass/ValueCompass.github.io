@@ -49,6 +49,7 @@ export default {
 
 <style scoped  lang="scss">
 .footer-component {
+  position: relative;
   // height: 40px;
   background: #f6f6f6;
   width: 100%;
