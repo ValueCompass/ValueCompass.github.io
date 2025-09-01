@@ -183,12 +183,11 @@ const goToComparisonPage = (item) => {
 }
 
 .cover-container {
-  position: absolute;
+  position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  top: 0;
+  bottom: 0;
   background: linear-gradient(
     270deg,
     rgba(255, 255, 255, 0.8) 26.74%,

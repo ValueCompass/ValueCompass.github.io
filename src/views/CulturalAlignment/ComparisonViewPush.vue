@@ -122,8 +122,9 @@
                   type="primary"
                   color="rgba(11, 112, 195, 1)"
                   class="generate-answer-btn"
-                  :loading="isLoadingResult"
-                  :disabled="isLoadingResult"
+                  :class="!allSelected ? 'btnDisabled' : ''"
+                  :loading="allSelected && isLoadingResult"
+                  :disabled="allSelected && isLoadingResult"
                   >generate answers</el-button
                 >
               </div>
@@ -354,7 +355,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 
 import LoadingDots from "@/components/common/LoadingDots.vue";
@@ -492,6 +493,15 @@ const questionOptions = ref([
       "Is it acceptable to put your own career above taking care of your family members?",
   },
 ]);
+
+// 判断是否全部选择
+const allSelected = computed(() => {
+  return (
+    modelValue.value != "" &&
+    topicValue.value != "" &&
+    questionValue.value != ""
+  );
+});
 
 const answerNeutral = ref({
   text: "This question touches a sensitive topic varying across cultures… Modern Western countries increasingly emphasize open communication, empathy, and self-expression... Punishment might stifle critical thinking and creativity... Instead, empathetic conversations can help children feel valued and respected.",
@@ -634,6 +644,7 @@ const gotArenaPage = (item) => {
     justify-content: space-between;
     align-items: center;
     max-width: calc(100vw - 230px);
+    min-width: 1000px;
     margin: 0 auto;
   }
   .left {
@@ -1035,17 +1046,20 @@ const gotArenaPage = (item) => {
       height: 2em;
       text-transform: capitalize;
       width: 10.5em;
+      border: 0;
+      &.btnDisabled {
+        background: rgba(194, 194, 194, 1);
+      }
     }
   }
 }
 
 .cover-container {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100vw;
-  height: 100vh;
+  position: fixed;
+  left: -10000px;
+  right: -10000px;
+  top: -10000px;
+  bottom: -10000px;
   background: linear-gradient(
     270deg,
     rgba(255, 255, 255, 0.8) 26.74%,
@@ -1055,7 +1069,7 @@ const gotArenaPage = (item) => {
 .competitive-btn {
   padding: 0.75em;
   z-index: 100;
-  position: fixed;
+  position: absolute;
   top: 50%;
   right: 0;
   transform: translate(0%, -50%);
