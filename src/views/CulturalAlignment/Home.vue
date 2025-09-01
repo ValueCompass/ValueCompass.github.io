@@ -1,5 +1,5 @@
 <template>
-  <div class="page" style="position: relative;">
+  <div class="page" style="position: relative">
     <div class="cover-container"></div>
     <div style="position: relative">
       <div class="culture-alignment-container main-container">
@@ -421,12 +421,11 @@ allCountryList.value = [
   animation: fadeInUp 1s forwards;
   animation-delay: 2s;
   opacity: 0;
-  position: absolute;
+  position: fixed;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  top: 0;
+  bottom: 0;
   background: linear-gradient(
     270deg,
     rgba(255, 255, 255, 0.4) 26.74%,

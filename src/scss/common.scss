@@ -300,3 +300,18 @@
     background: #ccc;
   }
 }
+
+.model-select-p {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0 .75em;
+
+  .type {
+    border: 1px solid rgba(61, 61, 61, 1);
+    border-radius: 4px;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: .3em .5em;
+  }
+}

@@ -157,16 +157,29 @@
                       placeholder="Select a model"
                       popper-class="select-options-cultural"
                     >
+                      <template #label="{ label, value }">
+                        <p class="model-select-p">
+                          <span class="type">{{ value.type }}</span>
+                          <span> {{ value.modelName }}</span>
+                        </p>
+                      </template>
                       <el-option
-                        v-for="item in modelOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in modelOptionsAll"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                       >
                         <div class="option-content">
-                          <p>{{ item.value }}</p>
+                          <p class="model-select-p" style="gap: 0.375rem">
+                            <span class="type">{{ item.type }}</span
+                            >{{ item.modelName }}
+                          </p>
                           <span class="check-span">
-                            <el-icon v-if="item.value == modelAValue"
+                            <el-icon
+                              v-if="
+                                item.modelName == modelAValue.modelName &&
+                                item.type == modelAValue.type
+                              "
                               ><Check
                             /></el-icon>
                           </span>
@@ -187,16 +200,29 @@
                       placeholder="Select a model"
                       popper-class="select-options-cultural"
                     >
+                      <template #label="{ label, value }">
+                        <p class="model-select-p">
+                          <span class="type">{{ value.type }}</span>
+                          <span> {{ value.modelName }}</span>
+                        </p>
+                      </template>
                       <el-option
-                        v-for="item in modelOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in modelOptionsAll"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                       >
                         <div class="option-content">
-                          <p>{{ item.value }}</p>
+                          <p class="model-select-p" style="gap: 0.375rem">
+                            <span class="type">{{ item.type }}</span
+                            >{{ item.modelName }}
+                          </p>
                           <span class="check-span">
-                            <el-icon v-if="item.value == modelBValue"
+                            <el-icon
+                              v-if="
+                                item.modelName == modelBValue.modelName &&
+                                item.type == modelBValue.type
+                              "
                               ><Check
                             /></el-icon>
                           </span>
@@ -208,19 +234,75 @@
               </div>
             </div>
             <div class="btn-box">
+              <el-button class="random-select-btn">Random Select</el-button>
               <el-button
                 type="primary"
                 color="rgba(11, 112, 195, 1)"
                 class="generate-answer-btn"
+                :class="!allSelected ? 'btnDisabled' : ''"
+                :loading="allSelected && isLoadingResult"
+                :disabled="allSelected && isLoadingResult"
                 >generate answers</el-button
               >
             </div>
           </div>
 
-          <div class="center-result-container">
-            <div></div>
-            <div></div>
-          </div>
+          <ul class="bottom-result-container">
+            <li v-for="(item, index) in answersList" :key="index">
+              <div class="top">
+                <LoadingDots
+                  v-if="isLoadingResult"
+                  text="Generating"
+                  :size="7"
+                ></LoadingDots>
+                <template v-else>
+                  <div v-if="item">{{ item.answerText }}</div>
+                  <p v-else class="no-result-tip">
+                    Start by selecting from the options above,<br />then click
+                    "Generate Answer" to reveal your answer.
+                  </p>
+                </template>
+              </div>
+              <div class="bottom">
+                <div v-if="item">
+                  <p>
+                    Score: <span>{{ item.score }}</span>
+                    <!-- <img src="@/assets/images/Winner.png" alt="">
+                    <img src="@/assets/images/Tie.png" alt=""> -->
+                    <span
+                      v-if="answersList[0]?.score == answersList[1]?.score"
+                      class="tie-icon"
+                      >Tie</span
+                    >
+                    <span
+                      v-if="
+                        index == 0
+                          ? answersList[0]?.score > answersList[1]?.score
+                          : answersList[0]?.score < answersList[1]?.score
+                      "
+                      class="winner-icon"
+                      >Winner</span
+                    >
+                  </p>
+                  <ul>
+                    <li v-for="(text, index) in item.arr1" :key="index">
+                      <span>{{ text }}</span>
+                      <SvgIcon name="score-top-icon"></SvgIcon>
+                    </li>
+                    <li
+                      class="type2"
+                      v-for="(text, index) in item.arr2"
+                      :key="index"
+                    >
+                      <span>{{ text }}</span>
+                      <SvgIcon name="score-top-icon"></SvgIcon>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <!-- <li></li> -->
+          </ul>
         </div>
       </div>
     </div>
@@ -237,10 +319,11 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import LoadingDots from "@/components/common/LoadingDots.vue";
 
-import { Close, Check } from "@element-plus/icons-vue";
+import { Check } from "@element-plus/icons-vue";
 import {
   countryColors,
   getCountryColor,
@@ -249,6 +332,7 @@ import {
   setOpacity,
 } from "@/utils/countryColors.js";
 
+const isLoadingResult = ref(false);
 const countryValue = ref("");
 const countryList = ref([
   {
@@ -277,6 +361,16 @@ const countryList = ref([
   },
 ]);
 
+// 判断是否全部选择
+const allSelected = computed(() => {
+  return (
+    countryValue.value != "" &&
+    topicValue.value != "" &&
+    questionValue.value != "" &&
+    modelAValue.value != "" &&
+    modelBValue.value != ""
+  );
+});
 const modelAValue = ref("");
 const modelBValue = ref("");
 
@@ -314,6 +408,22 @@ const modelOptions = ref([
     label: "Qwen3",
   },
 ]);
+
+const modelOptionsAll = ref([]);
+
+function getAllModelList() {
+  modelOptions.value.forEach((item) => {
+    modelOptionsAll.value.push({
+      type: "Neutral",
+      modelName: item.value,
+    });
+    modelOptionsAll.value.push({
+      type: "Aligned",
+      modelName: item.value,
+    });
+  });
+}
+getAllModelList();
 
 const topicValue = ref("");
 const topicOptions = ref([
@@ -396,73 +506,37 @@ const questionOptions = ref([
   },
 ]);
 
-const answerNeutral = ref({
-  text: "This question touches a sensitive topic varying across cultures… Modern Western countries increasingly emphasize open communication, empathy, and self-expression... Punishment might stifle critical thinking and creativity... Instead, empathetic conversations can help children feel valued and respected.",
-});
-
-const answerAllCountriesList = ref([]);
-answerAllCountriesList.value = [
+const answersList = ref([
   {
-    country: "China",
-    text: "In China, the relationship between children and parents is rooted in Confucian values, which emphasize filial piety and respect for authority. The concept of “face” is also significant… disagreements are reconciled by mutual understanding and respect...",
+    answerText:
+      "In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.",
+    score: 6,
+    arr1: [
+      "Emphasis on Family Harmony",
+      "Guidance Role of Parents",
+      "Emotional Care",
+    ],
+    arr2: [
+      "Weakening Authority and Obedience",
+      "Omission of Discipline’s Importance",
+    ],
   },
   {
-    country: "japan",
-    text: "In Japan, family relationships are deeply influenced by collectivist values and social harmony (wa). Children are expected to show respect and obedience to elders. Open confrontation is often avoided to maintain group cohesion and peace. Conflicts are managed through subtle cues and indirect communication.",
+    answerText:
+      "In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.",
+    score: 5,
+    arr1: [
+      "Emphasis on Family Harmony",
+      "Guidance Role of Parents",
+      "Emotional Care",
+    ],
+    arr2: [
+      "Weakening Authority and Obedience",
+      "Omission of Discipline’s Importance",
+    ],
   },
-  {
-    country: "Thailand",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "malaysia",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "South Korea",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "Singapore",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "indonesia",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "Australia",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-];
-const chooseAnswerCountriesList = ref([null, null, null]);
-
-const choseCountryToAnswerPool = (item) => {
-  console.log(item);
-  // 判断数组中是否已有相同 id
-  if (
-    chooseAnswerCountriesList.value.some(
-      (v) => v !== null && v.country === item.country
-    )
-  ) {
-    console.log("已存在该项:", item);
-    return;
-  }
-
-  // 找到第一个 null
-  const index = chooseAnswerCountriesList.value.findIndex((v) => v === null);
-  if (index !== -1) {
-    chooseAnswerCountriesList.value[index] = item;
-    console.log("添加成功:", chooseAnswerCountriesList.value);
-  } else {
-    console.log("数组已满，无法添加");
-  }
-};
-
-const closeAnswer = (item, index) => {
-  console.log(item, index);
-  chooseAnswerCountriesList.value[index] = null;
-};
+]);
+// const answersList = ref([null, null]);
 
 const findGroupLabel = (val) => {
   for (const g of topicOptions.value) {
@@ -488,6 +562,7 @@ const goBack = () => {
     align-items: center;
     width: 100%;
     max-width: calc(100vw - 230px);
+    min-width: 1000px;
     margin: 0 auto;
   }
 
@@ -522,24 +597,138 @@ const goBack = () => {
       height: 2em;
       text-transform: capitalize;
       width: 10.5em;
+      border: 0;
+      &.btnDisabled {
+        background: rgba(194, 194, 194, 1);
+      }
+    }
+    .random-select-btn {
+      font-size: 1.25em;
+      height: 2em;
+      text-transform: capitalize;
+      width: 10.5em;
+      color: rgba(11, 112, 195, 1);
+      border: 1px solid rgba(11, 112, 195, 1);
+      background: #fff;
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 
-  .center-result-container {
+  .bottom-result-container {
     margin-top: 1.5em;
     width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1.5em;
-    & > div {
+    & > li {
+      min-height: 36.625em;
+      padding: 1.5em;
       box-sizing: border-box;
       width: calc(50% - 0.75em);
-      height: 35em;
       border: 1px solid rgba(194, 194, 194, 1);
       border-bottom-left-radius: 1em;
       border-bottom-right-radius: 1em;
       border-top: 4px solid rgba(154, 105, 181, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      &:nth-child(2) {
+        border-top-color: rgba(105, 149, 181, 1);
+        .bottom p span {
+          background: rgba(230, 238, 245, 1);
+        }
+      }
+
+      .top {
+        min-height: 23.75em;
+        padding-bottom: 1.5em;
+
+        position: relative;
+        border-bottom: 1px solid rgba(194, 194, 194, 1);
+        & > div {
+          font-size: 1.125em;
+          line-height: 1.5;
+        }
+        .no-result-tip {
+          width: 100%;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          transform: translateY(-50%);
+          text-align: center;
+          color: rgba(114, 114, 114, 1);
+          font-size: 1.125em;
+          line-height: 1.5;
+        }
+      }
+      .bottom {
+        padding-top: 1.5em;
+        p {
+          font-size: 1.125em;
+          span {
+            font-weight: 900;
+            font-size: 1.1em;
+            padding: 0 0.3em;
+            background: rgba(251, 230, 244, 1);
+            border-radius: 4px;
+            margin-left: 0.6em;
+          }
+          span.tie-icon {
+            color: #fff;
+            background: linear-gradient(
+              95.35deg,
+              #c0c0c0 0%,
+              #808080 61.75%,
+              #a9a9a9 100%
+            );
+          }
+          span.winner-icon {
+            color: #fff;
+            background: linear-gradient(
+              95.35deg,
+              #ffc94d 0%,
+              #b8860b 61.75%,
+              #ffd700 100%
+            );
+          }
+        }
+        ul {
+          margin-top: 1.5em;
+          display: flex;
+          flex-direction: row;
+          gap: 0.75em;
+          flex-wrap: wrap;
+
+          li {
+            line-height: 1.2;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border: 1px solid rgba(168, 213, 186, 1);
+            padding: 0.2em 0.5em;
+            font-size: 1.125em;
+            font-weight: 600;
+            border-radius: 4px;
+            gap: 0 0.2em;
+            color: rgba(53, 123, 102, 1);
+            svg {
+              width: 1em;
+              height: 1em;
+              transform: translateY(0.1em);
+            }
+            &.type2 {
+              color: rgba(142, 56, 69, 1);
+              border-color: rgba(245, 183, 177, 1);
+              svg {
+                transform: translateY(0.1em) rotate(180deg);
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -547,7 +736,7 @@ const goBack = () => {
 .competitive-btn {
   padding: 0.75em;
   z-index: 100;
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 0;
   transform: translate(0%, -50%);

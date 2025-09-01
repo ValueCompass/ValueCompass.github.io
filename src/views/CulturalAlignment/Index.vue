@@ -15,7 +15,7 @@
       class="cultural-alignment-template"
       style="flex: 1; position: relative; overflow: hidden"
     >
-      <div class="leaderboard-router-view profile-layout">
+      <div class="cultural-alignment-router-view profile-layout">
         <router-view v-slot="{ Component, route }">
           <Transition v-if="route.meta.animate" :name="transitionName" appear>
             <component class="subpage" :is="Component" :key="route.fullPath" />
@@ -61,10 +61,12 @@ watch(
   display: flex;
 }
 
+
+
 /* 左滑进入 / 右滑离开 */
 .slide-left-enter-active,
 .slide-left-leave-active {
-  transition: transform 0.35s ease;
+  transition: transform .5s ease;
 }
 .slide-left-enter-from {
   transform: translateX(100%);
@@ -82,7 +84,7 @@ watch(
 /* 右滑进入 / 左滑返回 */
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: transform 0.35s ease;
+  transition: transform .5s ease;
 }
 .slide-right-enter-from {
   transform: translateX(-100%);
@@ -98,13 +100,13 @@ watch(
 }
 
 /* appear 动画等价于 enter */
-.slide-left-appear-active {
-  transition: transform 0.35s ease;
+/* .slide-left-appear-active {
+  transition: transform .5s ease;
 }
 .slide-left-appear-from {
   transform: translateX(100%);
 }
 .slide-left-appear-to {
   transform: translateX(0);
-}
+} */
 </style>
