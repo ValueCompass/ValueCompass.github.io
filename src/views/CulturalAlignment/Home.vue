@@ -1,5 +1,9 @@
 <template>
-  <div class="page" style="position: relative">
+  <div
+    class="page cultural-alignment-homme-animation-box"
+    :class="{ 'animate-on-load': firstLoad, 'animated-complete': !firstLoad }"
+    style="position: relative"
+  >
     <div class="cover-container"></div>
     <div style="position: relative">
       <div class="culture-alignment-container main-container">
@@ -67,9 +71,9 @@
                     </div>
                     <div class="country-text">
                       <span>A:</span>
-                      <P :style="{ color: getCountryColor(item.country) }">{{
-                        item.answer
-                      }}</P>
+                      <p :style="{ color: getCountryColor(item.country) }">
+                        {{ item.answer }}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -79,10 +83,9 @@
 
           <div class="question-box">
             <span>Q:</span>
-            <P
-              >Is it okay to put my personal happiness above family
-              expectations?</P
-            >
+            <p>
+              Is it okay to put my personal happiness above family expectations?
+            </p>
           </div>
         </div>
       </div>
@@ -90,7 +93,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onActivated, nextTick } from "vue";
 import {
   countryColors,
   getCountryColor,
@@ -135,6 +138,20 @@ allCountryList.value = [
     country: "Australia",
   },
 ];
+
+const firstLoad = ref(true); // 是否首次播放动画
+
+onMounted(() => {
+  // 首次 mounted 后添加动画类
+  nextTick(() => {
+    firstLoad.value = true;
+  });
+});
+
+onActivated(() => {
+  // keep-alive 页面再次激活时，不播放动画，但保持最终状态
+  firstLoad.value = false;
+});
 </script>
 
 <style scoped lang="scss">
@@ -174,8 +191,6 @@ allCountryList.value = [
     justify-content: center;
     width: 49%;
     text-align: left;
-    animation: fadeInUp 0.6s forwards;
-    animation-delay: 2s;
     opacity: 0;
     h1 {
       font-size: 4em;
@@ -214,8 +229,6 @@ allCountryList.value = [
       // background: rgba(0, 0, 0, 0.2);
       position: relative;
       .bg {
-        animation: zoomIn 1s forwards;
-        animation-delay: 1s;
         // opacity: 0;
         position: absolute;
         width: 185%;
@@ -242,11 +255,9 @@ allCountryList.value = [
           background: #ccc;
           display: inline-block;
           opacity: 0;
-          animation: fadeInUp 0.6s forwards;
         }
         span.country-name {
           opacity: 0;
-          animation: fadeInUp 0.6s forwards;
           font-size: 1.125em;
           font-weight: bold;
           transform: translateX(1.3em);
@@ -257,7 +268,6 @@ allCountryList.value = [
         }
         .country-answer-box {
           opacity: 0;
-          animation: fadeInUp 0.6s forwards;
           animation-delay: 8s;
           max-width: 20em;
           width: 45%;
@@ -341,7 +351,6 @@ allCountryList.value = [
         span.country-name {
           left: 11.8%;
           top: 46%;
-          animation-delay: 4.5s;
         }
       }
       .country-malaysia {
@@ -349,7 +358,6 @@ allCountryList.value = [
         span.country-name {
           left: 11.8%;
           top: 61.8%;
-          animation-delay: 5s;
         }
       }
       .country-singapore {
@@ -357,7 +365,6 @@ allCountryList.value = [
         span.country-name {
           left: 15%;
           top: 67.5%;
-          animation-delay: 5.5s;
         }
         .country-answer-box {
           left: 15%;
@@ -370,7 +377,6 @@ allCountryList.value = [
         span.country-name {
           left: 34%;
           top: 70.5%;
-          animation-delay: 6s;
         }
       }
 
@@ -379,14 +385,11 @@ allCountryList.value = [
         span.country-name {
           left: 52.9%;
           top: 92.8%;
-          animation-delay: 6.5s;
         }
       }
     }
 
     .question-box {
-      animation: fadeInUp 0.6s forwards;
-      animation-delay: 7s;
       opacity: 0;
       background: rgba(204, 240, 252, 1);
       box-shadow: 0px 0px 12px 0px rgba(133, 200, 255, 0.4);
@@ -418,8 +421,6 @@ allCountryList.value = [
 }
 
 .cover-container {
-  animation: fadeInUp 1s forwards;
-  animation-delay: 2s;
   opacity: 0;
   position: fixed;
   left: 0;
@@ -434,16 +435,146 @@ allCountryList.value = [
 }
 
 @keyframes fadeInUp {
+  from {
+    opacity: 0;
+  }
   to {
     opacity: 1;
   }
 }
 @keyframes zoomIn {
+  from {
+    width: 185%;
+    transform: translate(-5%, -40%);
+  }
   to {
     //  width: 185%;
     width: 414.286%;
 
     transform: translate(0, -50%);
+  }
+}
+
+.animate-on-load {
+  .culture-alignment-container {
+    .left {
+      animation: fadeInUp 0.6s forwards;
+      animation-delay: 2s;
+    }
+    .right {
+      .right-content {
+        .bg {
+          animation: zoomIn 1s forwards;
+          animation-delay: 1s;
+        }
+      }
+      .country-list {
+        span.dot {
+          animation: fadeInUp 0.6s forwards;
+        }
+        span.country-name {
+          animation: fadeInUp 0.6s forwards;
+        }
+        .country-answer-box {
+          animation: fadeInUp 0.6s forwards;
+          animation-delay: 8s;
+        }
+      }
+
+      .country-china {
+        span.dot,
+        span.country-name {
+          animation-delay: 3s;
+        }
+      }
+
+      .country-south_korea {
+        span.dot,
+        span.country-name {
+          animation-delay: 3.5s;
+        }
+      }
+      .country-japan {
+        span.dot,
+        span.country-name {
+          animation-delay: 4s;
+        }
+      }
+      .country-thailand {
+        span.dot,
+        span.country-name {
+          animation-delay: 4.5s;
+        }
+      }
+      .country-malaysia {
+        span.dot,
+        span.country-name {
+          animation-delay: 5s;
+        }
+      }
+
+      .country-singapore {
+        span.dot,
+        span.country-name {
+          animation-delay: 5.5s;
+        }
+      }
+
+      .country-indonesia {
+        span.dot,
+        span.country-name {
+          animation-delay: 6s;
+        }
+      }
+
+      .country-australia {
+        span.dot,
+        span.country-name {
+          animation-delay: 6.5s;
+        }
+      }
+    }
+
+    .question-box {
+      animation: fadeInUp 0.6s forwards;
+      animation-delay: 7s;
+    }
+  }
+  .cover-container {
+    animation: fadeInUp 1s forwards;
+  }
+}
+
+.animated-complete {
+  .culture-alignment-container {
+    .left {
+      opacity: 1;
+    }
+    .right {
+      .right-content {
+        .bg {
+          width: 414.286%;
+          transform: translate(0, -50%);
+        }
+      }
+      .country-list {
+        span.dot {
+          opacity: 1;
+        }
+        span.country-name {
+          opacity: 1;
+        }
+        .country-answer-box {
+          opacity: 1;
+        }
+      }
+    }
+    .question-box {
+    }
+  }
+
+  .cover-container {
+    opacity: 1;
   }
 }
 </style>

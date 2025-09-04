@@ -15,31 +15,64 @@
       class="cultural-alignment-template"
       style="flex: 1; position: relative; overflow: hidden"
     >
-      <div class="cultural-alignment-router-view profile-layout">
-        <router-view v-slot="{ Component, route }">
-          <Transition v-if="route.meta.animate" :name="transitionName" appear>
-            <component class="subpage" :is="Component" :key="route.fullPath" />
+      <div
+        class="cultural-alignment-router-view"
+        :class="$route.meta.animate ? 'profile-layout' : ''"
+      >
+        <RouterView v-slot="{ Component }">
+          <Transition :name="transitionName" appear>
+            <!-- 关键：用 route.fullPath 作为 key，保证首次切换触发动画 -->
+            <keep-alive>
+              <component
+                :class="$route.meta.animate ? 'subpage' : ''"
+                :is="Component"
+                :key="route.fullPath"
+              />
+            </keep-alive>
           </Transition>
 
-          <component v-else :is="Component" :key="route.fullPath" />
-        </router-view>
+          <!-- <keep-alive v-else>
+            <component :is="Component" :key="route.fullPath" />
+          </keep-alive> -->
+        </RouterView>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref, watch } from "vue";
 
 const route = useRoute();
-const transitionName = ref("slide-left");
+const router = useRouter();
+const transitionName = ref("");
 
+// 你需要的两个页面的 path
+const pageA = "/CulturalAlignment/comparison";
+const pageB = "/CulturalAlignment/arena";
+
+// 记录上一次访问的页面
+const lastPath = ref("");
+
+// watch 路由变化，设置动画
 watch(
-  () => route.meta.index,
-  (to, from) => {
-    if (from == null) return;
-    transitionName.value = to > from ? "slide-left" : "slide-right";
-  }
+  () => route.fullPath,
+  (to) => {
+    console.log("to=", to, "lastPath.value=", lastPath.value);
+    if (lastPath.value === pageA && to === pageB) {
+      transitionName.value = "slide-left"; // A -> B
+    } else if (lastPath.value === pageB && to === pageA) {
+      transitionName.value = "slide-right"; // B -> A
+    } else if (lastPath.value === "" && to === pageB) {
+      // 第一次从其他页面直接跳到 B
+      transitionName.value = "slide-left";
+    } else {
+      transitionName.value = "";
+    }
+
+    lastPath.value = to;
+  },
+  { immediate: true }
 );
 </script>
 
@@ -61,12 +94,26 @@ watch(
   display: flex;
 }
 
+.profile-layout {
+  position: relative;
+  min-height: calc(100vh - 10em);
+  height: 60em;
+  overflow: hidden;
+}
 
+.subpage {
+  position: absolute !important;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  height: 60em;
+  margin-top: -30em;
+}
 
 /* 左滑进入 / 右滑离开 */
 .slide-left-enter-active,
 .slide-left-leave-active {
-  transition: transform .5s ease;
+  transition: transform 0.5s ease;
 }
 .slide-left-enter-from {
   transform: translateX(100%);
@@ -84,7 +131,7 @@ watch(
 /* 右滑进入 / 左滑返回 */
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: transform .5s ease;
+  transition: transform 0.5s ease;
 }
 .slide-right-enter-from {
   transform: translateX(-100%);
@@ -100,13 +147,13 @@ watch(
 }
 
 /* appear 动画等价于 enter */
-/* .slide-left-appear-active {
-  transition: transform .5s ease;
+.slide-left-appear-active {
+  transition: transform 0.5s ease;
 }
 .slide-left-appear-from {
   transform: translateX(100%);
 }
 .slide-left-appear-to {
   transform: translateX(0);
-} */
+}
 </style>
