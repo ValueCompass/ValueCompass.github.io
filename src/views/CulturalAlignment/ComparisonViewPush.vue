@@ -637,7 +637,7 @@ const gotArenaPage = (item) => {
 
 <style scoped lang="scss">
 .culture-alignment-container {
-  padding: 1em 0;
+  padding: 1.2em 0 1em;
 
   & > div {
     display: flex;
@@ -1056,10 +1056,11 @@ const gotArenaPage = (item) => {
 
 .cover-container {
   position: fixed;
-  left: -10000px;
-  right: -10000px;
-  top: -10000px;
-  bottom: -10000px;
+  left: 0px;
+  width: 100vw;
+  height: 200vh;
+  top: 50%;
+  transform: translateY(-50%);
   background: linear-gradient(
     270deg,
     rgba(255, 255, 255, 0.8) 26.74%,
@@ -1070,7 +1071,7 @@ const gotArenaPage = (item) => {
   padding: 0.75em;
   z-index: 100;
   position: absolute;
-  top: 50%;
+  top: 45%;
   right: 0;
   transform: translate(0%, -50%);
   background: linear-gradient(180deg, #ccf0fc 0%, #9bddf9 100%);
