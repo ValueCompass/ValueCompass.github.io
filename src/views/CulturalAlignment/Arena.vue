@@ -267,7 +267,7 @@
               </div>
               <div class="bottom">
                 <div v-if="item">
-                  <p>
+                  <p class="score-p">
                     Score: <span>{{ item.score }}</span>
                     <!-- <img src="@/assets/images/Winner.png" alt="">
                     <img src="@/assets/images/Tie.png" alt=""> -->
@@ -531,6 +531,12 @@ const answersList = ref([
       "Emphasis on Family Harmony",
       "Guidance Role of Parents",
       "Emotional Care",
+      "Emphasis on Family Harmony",
+      "Guidance Role of Parents",
+      "Emotional Care",
+      "Emphasis on Family Harmony",
+      "Guidance Role of Parents",
+      "Emotional Care",
     ],
     arr2: [
       "Weakening Authority and Obedience",
@@ -653,7 +659,7 @@ const goBack = () => {
       justify-content: space-between;
       &:nth-child(2) {
         border-top-color: rgba(105, 149, 181, 1);
-        .bottom p span {
+        .bottom p.score-p span {
           background: rgba(230, 238, 245, 1);
         }
       }
@@ -683,12 +689,14 @@ const goBack = () => {
         }
       }
       .bottom {
-        margin: 0 1.5em;
-        border-top: 1px solid rgba(194, 194, 194, 1);
-        padding-top: 1.5em;
+        // margin: 0 1.5em;
+
         flex: 1;
-        p {
+        p.score-p {
+          margin: 0 1.33em;
           font-size: 1.125em;
+          border-top: 1px solid rgba(194, 194, 194, 1);
+          padding-top: 1.33em;
           span {
             font-weight: 900;
             font-size: 1.1em;
@@ -717,6 +725,7 @@ const goBack = () => {
           }
         }
         ul {
+          padding: 0 1.5em;
           max-height: 7.5em;
           overflow: auto;
           margin-top: 1.5em;
