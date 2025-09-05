@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" style="position: relative; overflow: auto">
     <div style="position: relative">
       <div class="culture-alignment-container main-container">
         <div>
@@ -166,7 +166,7 @@
                       <el-option
                         v-for="item in modelOptionsAll"
                         :key="item"
-                        :label="item"
+                        :label="item.modelName"
                         :value="item"
                       >
                         <div class="option-content">
@@ -209,7 +209,7 @@
                       <el-option
                         v-for="item in modelOptionsAll"
                         :key="item"
-                        :label="item"
+                        :label="item.modelName"
                         :value="item"
                       >
                         <div class="option-content">
@@ -250,18 +250,20 @@
           <ul class="bottom-result-container">
             <li v-for="(item, index) in answersList" :key="index">
               <div class="top">
-                <LoadingDots
-                  v-if="isLoadingResult"
-                  text="Generating"
-                  :size="7"
-                ></LoadingDots>
-                <template v-else>
-                  <div v-if="item">{{ item.answerText }}</div>
-                  <p v-else class="no-result-tip">
-                    Start by selecting from the options above,<br />then click
-                    "Generate Answer" to reveal your answer.
-                  </p>
-                </template>
+                <el-scrollbar>
+                  <LoadingDots
+                    v-if="isLoadingResult"
+                    text="Generating"
+                    :size="7"
+                  ></LoadingDots>
+                  <template v-else>
+                    <div v-if="item">{{ item.answerText }}</div>
+                    <p v-else class="no-result-tip">
+                      Start by selecting from the options above,<br />then click
+                      "Generate Answer" to reveal your answer.
+                    </p>
+                  </template>
+                </el-scrollbar>
               </div>
               <div class="bottom">
                 <div v-if="item">
@@ -319,11 +321,25 @@
   </div>
 </template>
 <script setup>
+const data = [
+  {
+    topicName: "Cultural Values",
+    children: [
+      {
+        topicName2: "",
+        questionList: ["ssssss", "sssss"],
+      },
+    ],
+  },
+  {},
+];
+
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import LoadingDots from "@/components/common/LoadingDots.vue";
 
 import { Check } from "@element-plus/icons-vue";
+
 import {
   countryColors,
   getCountryColor,
@@ -509,7 +525,7 @@ const questionOptions = ref([
 const answersList = ref([
   {
     answerText:
-      "In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.",
+      "In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.",
     score: 6,
     arr1: [
       "Emphasis on Family Harmony",
@@ -554,7 +570,7 @@ const goBack = () => {
 
 <style scoped lang="scss">
 .culture-alignment-container {
-  padding: 1em 0;
+  padding: 1em 0 0.5em;
   & > div {
     display: flex;
     justify-content: space-between;
@@ -624,8 +640,8 @@ const goBack = () => {
     flex-wrap: wrap;
     gap: 1.5em;
     & > li {
-      min-height: 36.625em;
-      padding: 1.5em;
+      // min-height: 36.625em;
+      padding: 1.25em 0;
       box-sizing: border-box;
       width: calc(50% - 0.75em);
       border: 1px solid rgba(194, 194, 194, 1);
@@ -643,12 +659,14 @@ const goBack = () => {
       }
 
       .top {
-        min-height: 23.75em;
-        padding-bottom: 1.5em;
+        height: 23.75em;
+        // overflow: auto;
+        margin-bottom: 1.5em;
 
         position: relative;
-        border-bottom: 1px solid rgba(194, 194, 194, 1);
+        // border-bottom: 1px solid rgba(194, 194, 194, 1);
         & > div {
+          padding: 0 1.5em;
           font-size: 1.125em;
           line-height: 1.5;
         }
@@ -665,7 +683,10 @@ const goBack = () => {
         }
       }
       .bottom {
+        margin: 0 1.5em;
+        border-top: 1px solid rgba(194, 194, 194, 1);
         padding-top: 1.5em;
+        flex: 1;
         p {
           font-size: 1.125em;
           span {
@@ -696,9 +717,12 @@ const goBack = () => {
           }
         }
         ul {
+          max-height: 7.5em;
+          overflow: auto;
           margin-top: 1.5em;
           display: flex;
           flex-direction: row;
+          align-content: flex-start;
           gap: 0.75em;
           flex-wrap: wrap;
 
@@ -737,7 +761,7 @@ const goBack = () => {
   padding: 0.75em;
   z-index: 100;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 0;
   transform: translate(0%, -50%);
   background: linear-gradient(180deg, #ccf0fc 0%, #9bddf9 100%);

@@ -96,8 +96,8 @@ watch(
 
 .profile-layout {
   position: relative;
-  min-height: calc(100vh - 10em);
-  height: 60em;
+  min-height: calc(100vh - 6.375em - 40px);
+  height: 58em;
   overflow: hidden;
 }
 
@@ -106,8 +106,8 @@ watch(
   width: 100%;
   top: 50%;
   left: 0;
-  height: 60em;
-  margin-top: -30em;
+  height: 58em;
+  margin-top: -29em;
 }
 
 /* 左滑进入 / 右滑离开 */
