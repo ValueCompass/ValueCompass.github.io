@@ -101,7 +101,7 @@ import {
   getCountryIcon,
   getCountryIconBig,
   setOpacity,
-} from "@/utils/countryColors.js";
+} from "@/utils/culturalAlignmentData.js";
 const getAssetsFile = (url) => {
   return new URL(`../../assets/country/${url}`, import.meta.url).href;
 };
@@ -131,9 +131,9 @@ allCountryList.value = [
     answer:
       "Family and self must stay in balance. Sacrifice may build stronger bonds.",
   },
-  {
-    country: "indonesia",
-  },
+  // {
+  //   country: "indonesia",
+  // },
   {
     country: "Australia",
   },
