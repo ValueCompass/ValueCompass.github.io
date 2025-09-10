@@ -42,6 +42,7 @@
                     v-model="topicValue"
                     placeholder="Select a topic"
                     popper-class="select-options-cultural topic-select-options"
+                    @change="topicSelectChange"
                   >
                     <template #label="{ label, value }">
                       <span
@@ -52,7 +53,7 @@
                           box-sizing: border-box;
                           font-size: 1.125rem;
                         "
-                        >{{ findGroupLabel(value) }}</span
+                        >{{ value.category }}</span
                       >
                       <span
                         style="
@@ -61,24 +62,26 @@
                           font-size: 1.125rem;
                         "
                       >
-                        {{ value }}</span
+                        {{ value.topic }}</span
                       >
                     </template>
                     <el-option-group
-                      v-for="group in topicOptions"
-                      :key="group.label"
-                      :label="group.label"
+                      v-for="(value, groupKey, index) in topicOptions"
+                      :key="groupKey"
+                      :label="groupKey"
                     >
                       <el-option
-                        v-for="item in group.options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="(value, groupKey2, index) in topicOptions[
+                          groupKey
+                        ]"
+                        :key="groupKey2"
+                        :label="groupKey2"
+                        :value="{ topic: groupKey2, category: groupKey }"
                       >
                         <div class="option-content">
-                          <p>{{ item.value }}</p>
+                          <p>{{ groupKey2 }}</p>
                           <span class="check-span">
-                            <el-icon v-if="item.value == topicValue"
+                            <el-icon v-if="groupKey2 == topicValue.topic"
                               ><Check
                             /></el-icon>
                           </span>
@@ -97,17 +100,26 @@
                     v-model="questionValue"
                     placeholder="Select a question"
                     popper-class="select-options-cultural Question-select-options"
+                    ref="myQuestionSelect"
+                    @visible-change="onVisibleChange"
                   >
+                    <template #label="{ label, value }">
+                      <div class="text-content">
+                        <div>
+                          <p>{{ value }}</p>
+                        </div>
+                      </div>
+                    </template>
                     <el-option
                       v-for="item in questionOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item"
+                      :label="item"
+                      :value="item"
                     >
                       <div class="option-content">
-                        <p>{{ item.value }}</p>
+                        <p>{{ item }}</p>
                         <span class="check-span">
-                          <el-icon v-if="item.value == questionValue"
+                          <el-icon v-if="questionValue && item == questionValue"
                             ><Check
                           /></el-icon>
                         </span>
@@ -125,6 +137,7 @@
                   :class="!allSelected ? 'btnDisabled' : ''"
                   :loading="allSelected && isLoadingResult"
                   :disabled="allSelected && isLoadingResult"
+                  @click="genetateAnswers"
                   >generate answers</el-button
                 >
               </div>
@@ -150,29 +163,29 @@
                       :size="7"
                     />
                     <div v-else class="bottom">
-                      <el-scrollbar v-if="answerNeutral">
-                        <p class="p-content">{{ answerNeutral.text }}</p>
+                      <el-scrollbar v-if="answerNeutralAllCountries">
+                        <p class="p-content">
+                          {{ answerNeutralAllCountries.neutral }}
+                        </p>
                       </el-scrollbar>
+                      <p class="p-content" v-else>No result</p>
                     </div>
                   </div>
                 </li>
-                <li
-                  v-for="(item, index) in chooseAnswerCountriesList"
-                  :key="index"
-                >
+                <li v-for="(item, index) in chooseCountriesList" :key="index">
                   <div class="content" v-if="item">
                     <div class="top">
                       <span
                         class="check-icon-span"
-                        :style="{ color: getCountryColor(item.country) }"
+                        :style="{ color: getCountryColor(item.countryName) }"
                       >
                         <SvgIcon name="check" class="check-icon"></SvgIcon>
                       </span>
 
                       <span
                         class="country-span"
-                        :style="{ color: getCountryColor(item.country) }"
-                        >{{ item.country }}</span
+                        :style="{ color: getCountryColor(item.countryName) }"
+                        >{{ item.countryName }}</span
                       >
 
                       <span class="type-span">Aligned</span>
@@ -188,10 +201,13 @@
                           class="p-content"
                           :class="
                             'p_' +
-                            item.country.toLowerCase().split(' ').join('_')
+                            item.countryName.toLowerCase().split(' ').join('_')
                           "
                         >
-                          {{ item.text }}
+                          {{
+                            answerAlignedAllCountries[item.countryValue]
+                              ?.answer || "no result"
+                          }}
                         </p>
                       </el-scrollbar>
                     </div>
@@ -200,11 +216,11 @@
                     Select a country from the right →
                   </p>
                   <div
-                    v-if="item && item.country == setHoverCountry"
+                    v-if="item && item.countryName == setHoverCountry"
                     class="background-container"
                     :style="{
                       'background-color': setOpacity(
-                        getCountryColorSub(item.country),
+                        getCountryColorSub(item.countryName),
                         0.3
                       ),
                     }"
@@ -225,38 +241,42 @@
             <div class="country-list">
               <ul style="position: absolute; left: 0; top: 0">
                 <li
-                  v-for="(item, index) in answerAllCountriesList"
+                  v-for="(item, index) in allCountriesList"
                   :key="index"
                   @click="choseCountryToAnswerPool(item, index)"
-                  @mouseenter="mouseenter(item.country)"
-                  @mouseleave="mouseleave(item.country)"
+                  @mouseenter="mouseenter(item.countryName)"
+                  @mouseleave="mouseleave(item.countryName)"
                   :class="[
                     'li-country-' +
-                      item.country.toLowerCase().split(' ').join('_'),
+                      item.countryName.toLowerCase().split(' ').join('_'),
                     {
-                      choosed: chooseAnswerCountriesList.some(
-                        (c) => c?.country === item.country
+                      choosed: chooseCountriesList.some(
+                        (c) => c?.countryName === item.countryName
                       ),
                     },
                   ]"
-                  :style="{ 'border-color': getCountryColorSub(item.country) }"
+                  :style="{
+                    'border-color': getCountryColorSub(item.countryName),
+                  }"
                 >
                   <div
                     class="border-container"
-                    :style="{ 'border-color': getCountryColor(item.country) }"
+                    :style="{
+                      'border-color': getCountryColor(item.countryName),
+                    }"
                   ></div>
                   <div
                     class="background-container"
                     :style="{
                       'background-color': setOpacity(
-                        getCountryColorSub(item.country),
+                        getCountryColorSub(item.countryName),
                         0.3
                       ),
                     }"
                   ></div>
                   <div class="country-img">
                     <img
-                      :src="getAssetsFile(getCountryIcon(item.country))"
+                      :src="getAssetsFile(getCountryIcon(item.countryName))"
                       alt=""
                     />
                   </div>
@@ -265,7 +285,7 @@
                       <!--  -->
                       <span
                         class="check-icon-span"
-                        :style="{ color: getCountryColor(item.country) }"
+                        :style="{ color: getCountryColor(item.countryName) }"
                       >
                         <SvgIcon
                           name="checked-no-icon"
@@ -276,8 +296,8 @@
 
                       <span
                         class="country-span"
-                        :style="{ color: getCountryColor(item.country) }"
-                        >{{ item.country }}</span
+                        :style="{ color: getCountryColor(item.countryName) }"
+                        >{{ item.countryName }}</span
                       >
                       <!--  -->
                     </p>
@@ -289,33 +309,50 @@
                       :size="7"
                     />
 
-                    <template v-else>
+                    <template
+                      v-else-if="
+                        answerNeutralAllCountries && answerAlignedAllCountries
+                      "
+                    >
                       <p class="score-p">
                         <span>Neutral</span>
                         <span
                           class="score-span"
-                          :style="{ background: getCountryColor(item.country) }"
-                          >6</span
+                          :style="{
+                            background: getCountryColor(item.countryName),
+                          }"
+                          >{{
+                            answerNeutralAllCountries[item.countryValue]
+                              ?.score || 0
+                          }}</span
                         >
-                        <span :style="{ color: getCountryColor(item.country) }"
+                        <span
+                          :style="{ color: getCountryColor(item.countryName) }"
                           >VS</span
                         >
                         <span>Aligned</span
                         ><span
                           class="score-span"
-                          :style="{ background: getCountryColor(item.country) }"
-                          >8</span
+                          :style="{
+                            background: getCountryColor(item.countryName),
+                          }"
+                          >{{
+                            answerAlignedAllCountries[item.countryValue]
+                              ?.score || 0
+                          }}</span
                         >
                       </p>
-                      <p class="culture-arena-p">Culture Arena →</p>
+                      <p class="culture-arena-p" @click="gotArenaPage(item)">
+                        Culture Arena →
+                      </p>
                       <el-icon
                         v-if="
-                          chooseAnswerCountriesList.some(
-                            (c) => c?.country === item.country
+                          chooseCountriesList.some(
+                            (c) => c?.countryName === item.countryName
                           )
                         "
                         class="close-icon"
-                        @click.stop="closeAnswerFromCountry(item.country)"
+                        @click.stop="closeAnswerFromCountry(item.countryName)"
                         ><Close
                       /></el-icon>
 
@@ -326,6 +363,9 @@
                   >
                     这是一个提示内容
                   </TipPopover> -->
+                    </template>
+                    <template v-else>
+                      <p style="padding: 0.5em 0.5em 0">No result</p>
                     </template>
                   </div>
 
@@ -341,7 +381,7 @@
         </div>
       </div>
     </div>
-    <div class="competitive-btn" @click="gotArenaPage">
+    <div class="competitive-btn" @click="gotArenaPage(null)">
       <div class="competitive-icon-box">
         <SvgIcon name="competitive1"></SvgIcon>
         <SvgIcon name="competitive2"></SvgIcon>
@@ -355,8 +395,9 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 import LoadingDots from "@/components/common/LoadingDots.vue";
 import TipPopover from "@/components/common/TipPopover.vue";
@@ -368,131 +409,30 @@ import {
   getCountryColorSub,
   getCountryIcon,
   setOpacity,
-} from "@/utils/countryColors.js";
+  modelsList,
+  countriesList,
+} from "@/utils/culturalAlignmentData.js";
+
+import { useCulturalAlignmentStore } from "@/stores/culturalAlignmentStore";
+const culturalAlignmentStore = useCulturalAlignmentStore();
 
 const getAssetsFile = (url) => {
   return new URL(`../../assets/country/${url}`, import.meta.url).href;
 };
 
+let question_info_data = null;
+let answer_info_data = null;
+
 const isLoadingResult = ref(false);
 
 const modelValue = ref("");
-
-const modelOptions = ref([
-  {
-    value: "ChatGPT-4o",
-    label: "ChatGPT-4o",
-  },
-  {
-    value: "Claude Opus 4",
-    label: "Claude Opus 4",
-  },
-  {
-    value: "DeepSeek-R1",
-    label: "DeepSeek-R1",
-  },
-  {
-    value: "Gemini-2.5-Pro",
-    label: "Gemini-2.5-Pro",
-  },
-  {
-    value: "Grok-4-0709",
-    label: "Grok-4-0709",
-  },
-  {
-    value: "Llama-3.1",
-    label: "Llama-3.1",
-  },
-  {
-    value: "Phi-3-Medium",
-    label: "Phi-3-Medium",
-  },
-  {
-    value: "Qwen3",
-    label: "Qwen3",
-  },
-]);
+const modelOptions = ref(modelsList);
 
 const topicValue = ref("");
-const topicOptions = ref([
-  {
-    label: "Cultural Values",
-    options: [
-      {
-        value: "Schwartz’s Theory of Basic Values",
-        label: "Schwartz’s Theory of Basic Values",
-      },
-      {
-        value: "Hofstede Cultural Dimensions",
-        label: "Hofstede Cultural Dimensions",
-      },
-    ],
-  },
-  {
-    label: "Social Norms",
-    options: [
-      {
-        value: "GenderRoles",
-        label: "GenderRoles",
-      },
-      {
-        value: "Respect Elders",
-        label: "Respect Elders",
-      },
-      {
-        value: "Family Obligations",
-        label: "Family Obligations",
-      },
-      {
-        value: "Justice and Fairness",
-        label: "Justice and Fairness",
-      },
-    ],
-  },
-  {
-    label: "Behavioral Practices",
-    options: [
-      {
-        value: "Social Relationship",
-        label: "Social Relationship",
-      },
-      {
-        value: "Work Behaviors",
-        label: "Work Behaviors",
-      },
-      {
-        value: "Economic Behaviors",
-        label: "Economic Behaviors",
-      },
-      {
-        value: "Education System and Relationship",
-        label: "Education System and Relationship",
-      },
-    ],
-  },
-]);
+const topicOptions = ref();
 
 const questionValue = ref("");
-const questionOptions = ref([
-  {
-    value:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-    label:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-  },
-  {
-    value:
-      "Should adult children financially support their aging parents, even if it causes personal hardship?",
-    label:
-      "Should adult children financially support their aging parents, even if it causes personal hardship?",
-  },
-  {
-    value:
-      "Is it acceptable to put your own career above taking care of your family members?",
-    label:
-      "Is it acceptable to put your own career above taking care of your family members?",
-  },
-]);
+const questionOptions = ref([]);
 
 // 判断是否全部选择
 const allSelected = computed(() => {
@@ -503,67 +443,88 @@ const allSelected = computed(() => {
   );
 });
 
-const answerNeutral = ref({
-  text: "This question touches a sensitive topic varying across cultures… Modern Western countries increasingly emphasize open communication, empathy, and self-expression... Punishment might stifle critical thinking and creativity... Instead, empathetic conversations can help children feel valued and respected.",
+const answerNeutralAllCountries = ref(null);
+const answerAlignedAllCountries = ref(null);
+
+const allCountriesList = ref(countriesList);
+const chooseCountriesList = ref([null, null, null]);
+
+onMounted(async () => {
+  console.log("onMounted comparison");
+  if (
+    culturalAlignmentStore.question_info_data &&
+    culturalAlignmentStore.answer_info_data
+  ) {
+    question_info_data = culturalAlignmentStore.question_info_data;
+    answer_info_data = culturalAlignmentStore.answer_info_data;
+    topicOptions.value = question_info_data;
+  } else {
+    await fetchData();
+  }
 });
 
-const answerAllCountriesList = ref([]);
-answerAllCountriesList.value = [
-  {
-    country: "China",
-    text: "In China, the relationship between children and parents is rooted in Confucian values, which emphasize filial piety and respect for authority. The concept of “face” is also significant… disagreements are reconciled by mutual understanding and respect...",
-  },
-  {
-    country: "japan",
-    text: "In Japan, family relationships are deeply influenced by collectivist values and social harmony (wa). Children are expected to show respect and obedience to elders. Open confrontation is often avoided to maintain group cohesion and peace. Conflicts are managed through subtle cues and indirect communication.",
-  },
-  {
-    country: "Thailand",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "malaysia",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "South Korea",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "Singapore",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "indonesia",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-  {
-    country: "Australia",
-    text: "Malaysian families are influenced by a mix of Islamic, Chinese, and Indian cultural values. Respect for parents is a common thread, and opposition may be seen as disobedience. However, many families stress guidance and moral instruction over punitive measures.",
-  },
-];
-const chooseAnswerCountriesList = ref([null, null, null]);
+onActivated(() => {
+  console.log("onActivated comparison");
+  const q = JSON.parse(sessionStorage.getItem("currentQuestion"));
+  if (!q) return;
+  topicValue.value = {
+    category: q.category,
+    topic: q.topic,
+  };
+  questionOptions.value = q.questionList;
+  questionValue.value = q.currQuestion;
+
+  modelValue.value = modelOptions.value[0].value;
+  genetateAnswers();
+});
+
+const fetchData = async () => {
+  try {
+    axios
+      .all([
+        axios.get("./data/CulturalAlignment/answer_info.json"),
+        axios.get("./data/CulturalAlignment/question_info.json"),
+      ])
+      .then(
+        axios.spread(function (answer_info, question_info) {
+          question_info_data = question_info.data;
+          answer_info_data = answer_info.data;
+          topicOptions.value = question_info.data;
+
+          culturalAlignmentStore.question_info_data = question_info_data;
+          culturalAlignmentStore.answer_info_data = answer_info_data;
+        })
+      );
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+};
+
+const topicSelectChange = (val) => {
+  console.log("!!topicSelectChange", val);
+  questionValue.value = "";
+  questionOptions.value = question_info_data[val.category][val.topic];
+};
 
 const choseCountryToAnswerPool = (item, cuuentIndex) => {
-  if (isLoadingResult.value) {
+  if (isLoadingResult.value || !answerAlignedAllCountries.value) {
     return;
   }
   console.log(item);
   // 判断数组中是否已有相同 id
   if (
-    chooseAnswerCountriesList.value.some(
-      (v) => v !== null && v.country === item.country
+    chooseCountriesList.value.some(
+      (v) => v !== null && v.countryName === item.countryName
     )
   ) {
     console.log("已存在该项:", item);
     return;
   }
-
   // 找到第一个 null
-  const index = chooseAnswerCountriesList.value.findIndex((v) => v === null);
+  const index = chooseCountriesList.value.findIndex((v) => v === null);
   if (index !== -1) {
-    chooseAnswerCountriesList.value[index] = item;
-    console.log("添加成功:", chooseAnswerCountriesList.value);
+    chooseCountriesList.value[index] = item;
+    console.log("添加成功:", chooseCountriesList.value);
   } else {
     console.log("数组已满，无法添加");
     toggleTip(cuuentIndex);
@@ -572,23 +533,14 @@ const choseCountryToAnswerPool = (item, cuuentIndex) => {
 
 const closeAnswer = (item, index) => {
   console.log(item, index);
-  chooseAnswerCountriesList.value[index] = null;
+  chooseCountriesList.value[index] = null;
 };
 
 const closeAnswerFromCountry = (country) => {
-  const index = chooseAnswerCountriesList.value.findIndex(
-    (item) => item && item.country === country
+  const index = chooseCountriesList.value.findIndex(
+    (item) => item && item.countryName === country
   );
-  console.log("!", index);
-  chooseAnswerCountriesList.value[index] = null;
-};
-
-const findGroupLabel = (val) => {
-  for (const g of topicOptions.value) {
-    const item = g.options.find((o) => o.value === val);
-    if (item) return g.label;
-  }
-  return "";
+  chooseCountriesList.value[index] = null;
 };
 
 const setHoverCountry = ref("");
@@ -621,18 +573,88 @@ function toggleTip(index) {
 }
 
 const router = useRouter();
-const gotArenaPage = (item) => {
+const gotArenaPage = (country) => {
+  sessionStorage.setItem(
+    "currentQuestion",
+    JSON.stringify({
+      category: topicValue.value.category,
+      topic: topicValue.value.topic,
+      questionList: questionOptions.value, // 在topic下的question list
+      currQuestion: questionValue.value, // 选中的question
+    })
+  );
+  sessionStorage.setItem(
+    "currentModel",
+    JSON.stringify(modelValue.value || "")
+  );
+  sessionStorage.setItem("currentCountry", JSON.stringify(country || ""));
+
   router.push({
     path: "/CulturalAlignment/arena",
-    param: {
-      topic: item.des,
-      question: item.des,
-    },
+    // param: {
+    //   topic: item.des,
+    //   question: item.des,
+    // },
     // query: {
     //   modelName: modelName,
     // },
   });
 };
+
+const genetateAnswers = () => {
+  // console.log("genetateAnswers",allSelected.value);
+  if (!allSelected.value) {
+    return;
+  }
+  isLoadingResult.value = true;
+  chooseCountriesList.value = [null, null, null];
+  answerNeutralAllCountries.value = null;
+  answerAlignedAllCountries.value = null;
+  setTimeout(() => {
+    isLoadingResult.value = false;
+    answerNeutralAllCountries.value =
+      answer_info_data[questionValue.value][modelValue.value];
+    answerAlignedAllCountries.value =
+      answer_info_data[questionValue.value][modelValue.value + "_aligned"];
+  }, 2000);
+};
+
+// 当topic切换的时候，question optionslist滚动到最顶部
+const isScrollToTop = ref(true);
+const myQuestionSelect = ref();
+const raf = () => new Promise((r) => requestAnimationFrame(r));
+
+async function resetDropdownScrollTop() {
+  await nextTick();
+  // 等到 DOM & 过渡测量都就绪（两帧更稳）
+  await raf();
+  await raf();
+
+  const popper = myQuestionSelect.value?.popperRef;
+  const wrap = popper?.querySelector(".el-select-dropdown__wrap");
+  if (wrap) {
+    wrap.scrollTop = 0;
+  }
+
+  // 保险：再来一次零延迟，覆盖“自动滚到选中项”的最后一次跳动
+  setTimeout(() => {
+    const _popper = myQuestionSelect.value?.popperRef;
+    const _wrap = _popper?.querySelector(".el-select-dropdown__wrap");
+    if (_wrap) _wrap.scrollTop = 0;
+  }, 0);
+}
+
+function onVisibleChange(visible) {
+  console.log("!!visible", visible);
+  if (isScrollToTop.value) {
+    resetDropdownScrollTop();
+    isScrollToTop.value = false;
+  }
+}
+
+watch(questionOptions, () => {
+  isScrollToTop.value = true;
+});
 </script>
 
 <style scoped lang="scss">

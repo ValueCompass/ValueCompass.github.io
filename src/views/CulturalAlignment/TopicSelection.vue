@@ -19,14 +19,14 @@
               @click="goToComparisonPage(item)"
             >
               <div>
-                <img :src="item.img" alt="" />
-                <p>{{ item.des }}</p>
+                <img :src="item.img ||  getAssetsFile('1.png')" alt="" />
+                <p>{{ item.currQuestion }}</p>
               </div>
             </li>
           </ul>
 
           <div class="btn-container">
-            <el-button class="Change-question-btn">
+            <el-button class="Change-question-btn" @click="RandomSelectQuestion">
               Change question<el-icon class="el-icon--right"
                 ><Refresh
               /></el-icon>
@@ -47,40 +47,85 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Refresh } from "@element-plus/icons-vue";
+import axios from "axios";
+
+import { useCulturalAlignmentStore } from "@/stores/culturalAlignmentStore";
+const culturalAlignmentStore = useCulturalAlignmentStore();
+import {
+  initQuestions,
+  getRandomQuestions,
+} from "@/utils/questionsManager.js";
 
 const getAssetsFile = (url) => {
   return new URL(`../../assets/topic/${url}`, import.meta.url).href;
 };
 
+let question_info_data = null;
+let answer_info_data = null;
+
 const topicListShow = ref([
-  {
-    img: getAssetsFile("1.png"),
-    des: "Do you think kids should be punished when they oppose their parents both in words and actions?",
-  },
-  {
-    img: getAssetsFile("2.png"),
-    des: "Should people always follow the law, even if they believe it is unfair?",
-  },
-  {
-    img: getAssetsFile("3.png"),
-    des: "Should you help a stranger in need even if it puts your own plans at risk?",
-  },
+  // {
+  //   img: getAssetsFile("1.png"),
+  //   currQuestion: "Do you think kids should be punished when they oppose their parents both in words and actions?",
+  // }
 ]);
+
+onMounted(async () => {
+  console.log("onMounted");
+  if (
+    culturalAlignmentStore.question_info_data &&
+    culturalAlignmentStore.answer_info_data
+  ) {
+    question_info_data = culturalAlignmentStore.question_info_data;
+    answer_info_data = culturalAlignmentStore.answer_info_data;
+    initQuestions(question_info_data)
+    RandomSelectQuestion()
+
+  } else {
+    await fetchData();
+  }
+});
+
+const fetchData = async () => {
+  try {
+    axios
+      .all([
+        axios.get("./data/CulturalAlignment/answer_info.json"),
+        axios.get("./data/CulturalAlignment/question_info.json"),
+      ])
+      .then(
+        axios.spread(function (answer_info, question_info) {
+          question_info_data = question_info.data;
+          answer_info_data = answer_info.data;
+
+          initQuestions(question_info_data)
+          RandomSelectQuestion()
+
+          culturalAlignmentStore.question_info_data = question_info_data;
+          culturalAlignmentStore.answer_info_data = answer_info_data;
+        })
+      );
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+};
+
+
+const RandomSelectQuestion = () => {
+  const randomQuestions = getRandomQuestions(3);
+  topicListShow.value = randomQuestions
+};
+
+
 
 const router = useRouter();
 const goToComparisonPage = (item) => {
+  sessionStorage.setItem('currentQuestion', JSON.stringify(item))
   router.push({
     path: "/CulturalAlignment/comparison",
-    param: {
-      topic: item.des,
-      question: item.des,
-    },
-    // query: {
-    //   modelName: modelName,
-    // },
   });
 };
 </script>

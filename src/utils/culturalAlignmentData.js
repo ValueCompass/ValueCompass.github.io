@@ -83,3 +83,103 @@ export function setOpacity(color, opacity) {
     // 4. 其他情况：原样返回
     return color;
 }
+
+
+export const modelsList = [
+    {
+        value: "gpt-4o-mini",
+    },
+    {
+        value: "ChatGPT-4o",
+    },
+    {
+        value: "Claude Opus 4",
+    },
+    {
+        value: "DeepSeek-R1",
+    },
+    {
+        value: "Gemini-2.5-Pro",
+    },
+    {
+        value: "Grok-4-0709",
+    },
+    {
+        value: "Llama-3.1",
+    },
+    {
+        value: "Phi-3-Medium",
+    },
+    {
+        value: "Qwen3",
+    },
+]
+
+export const countriesList = [
+    {
+        countryName: "China",
+        countryValue: "China",
+    },
+    {
+        countryName: "Japan",
+        countryValue: "Japan",
+    },
+    {
+        countryName: "Thailand",
+        countryValue: "Thailand",
+    },
+    {
+        countryName: "Malaysia",
+        countryValue: "Malaysia",
+    },
+    {
+        countryName: "South Korea",
+        countryValue: "South_Korea",
+    },
+    {
+        countryName: "Singapore",
+        countryValue: "Singapore",
+    },
+    // {
+    //     countryName: "indonesia",
+    //     countryValue: "indonesia",
+    // },
+    {
+        countryName: "Australia",
+        countryValue: "Australia",
+    },
+];
+
+
+export const findCategoryAndTopic = (data, question) => {
+  for (const [category, topics] of Object.entries(data)) {
+    for (const [topic, questions] of Object.entries(topics)) {
+      if (questions.includes(question)) {
+        return { category, topic }
+      }
+    }
+  }
+  return null
+}
+
+
+export const  getRandomQuestion = (data)=> {
+  // 随机选一个第一层
+  const categories = Object.keys(data)
+  const randomCategory = categories[Math.floor(Math.random() * categories.length)]
+
+  // 随机选一个第二层
+  const topics = Object.keys(data[randomCategory])
+  const randomTopic = topics[Math.floor(Math.random() * topics.length)]
+
+  // 随机选一个第三层问题
+  const questions = data[randomCategory][randomTopic]
+  const randomQuestion = questions[Math.floor(Math.random() * questions.length)]
+
+  return {
+    category: randomCategory,
+    topic: randomTopic,
+    currQuestion: randomQuestion,
+    questionList: questions
+  }
+}

@@ -73,7 +73,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/CulturalAlignment',
     name: 'CulturalAlignment',
     component: () => import('../views/CulturalAlignment/Index.vue'),
-    // redirect: '/CulturalAlignment', // 配置重定向
+    redirect: '/CulturalAlignment/home', // 配置重定向
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true

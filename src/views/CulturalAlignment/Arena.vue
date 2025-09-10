@@ -21,19 +21,24 @@
                       <template #label="{ label, value }">
                         <p class="country-p">
                           <span
-                            :style="{ background: getCountryColor(value) }"
+                            :style="{
+                              background: getCountryColor(value.countryName),
+                            }"
                             class="dot"
                           ></span>
-                          <span :style="{ color: getCountryColor(value) }">{{
-                            value
-                          }}</span>
+                          <span
+                            :style="{
+                              color: getCountryColor(value.countryName),
+                            }"
+                            >{{ value.countryName }}</span
+                          >
                         </p>
                       </template>
                       <el-option
                         v-for="item in countryList"
                         :key="item.countryName"
                         :label="item.countryName"
-                        :value="item.countryName"
+                        :value="item"
                       >
                         <div class="option-content">
                           <p class="country-p">
@@ -51,7 +56,10 @@
                             >
                           </p>
                           <span class="check-span">
-                            <el-icon v-if="item.countryName == countryValue"
+                            <el-icon
+                              v-if="
+                                item.countryName == countryValue.countryName
+                              "
                               ><Check
                             /></el-icon>
                           </span>
@@ -69,6 +77,7 @@
                       v-model="topicValue"
                       placeholder="Select a topic"
                       popper-class="select-options-cultural topic-select-options"
+                      @change="topicSelectChange"
                     >
                       <template #label="{ label, value }">
                         <span
@@ -79,7 +88,7 @@
                             box-sizing: border-box;
                             font-size: 1.125rem;
                           "
-                          >{{ findGroupLabel(value) }}</span
+                          >{{ value.category }}</span
                         >
                         <span
                           style="
@@ -88,24 +97,26 @@
                             font-size: 1.125rem;
                           "
                         >
-                          {{ value }}</span
+                          {{ value.topic }}</span
                         >
                       </template>
                       <el-option-group
-                        v-for="group in topicOptions"
-                        :key="group.label"
-                        :label="group.label"
+                        v-for="(value, groupKey, index) in topicOptions"
+                        :key="groupKey"
+                        :label="groupKey"
                       >
                         <el-option
-                          v-for="item in group.options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="(value, groupKey2, index) in topicOptions[
+                            groupKey
+                          ]"
+                          :key="groupKey2"
+                          :label="groupKey2"
+                          :value="{ topic: groupKey2, category: groupKey }"
                         >
                           <div class="option-content">
-                            <p>{{ item.value }}</p>
+                            <p>{{ groupKey2 }}</p>
                             <span class="check-span">
-                              <el-icon v-if="item.value == topicValue"
+                              <el-icon v-if="groupKey2 == topicValue.topic"
                                 ><Check
                               /></el-icon>
                             </span>
@@ -126,17 +137,27 @@
                       v-model="questionValue"
                       placeholder="Select a question"
                       popper-class="select-options-cultural Question-select-options"
+                      ref="myQuestionSelect"
+                      @visible-change="onVisibleChange"
                     >
+                      <template #label="{ label, value }">
+                        <div class="text-content">
+                          <div>
+                            <p>{{ value }}</p>
+                          </div>
+                        </div>
+                      </template>
                       <el-option
                         v-for="item in questionOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                       >
                         <div class="option-content">
-                          <p>{{ item.value }}</p>
+                          <p>{{ item }}</p>
                           <span class="check-span">
-                            <el-icon v-if="item.value == questionValue"
+                            <el-icon
+                              v-if="questionValue && item == questionValue"
                               ><Check
                             /></el-icon>
                           </span>
@@ -166,7 +187,6 @@
                       <el-option
                         v-for="item in modelOptionsAll"
                         :key="item"
-                        :label="item.modelName"
                         :value="item"
                       >
                         <div class="option-content">
@@ -209,7 +229,6 @@
                       <el-option
                         v-for="item in modelOptionsAll"
                         :key="item"
-                        :label="item.modelName"
                         :value="item"
                       >
                         <div class="option-content">
@@ -234,7 +253,9 @@
               </div>
             </div>
             <div class="btn-box">
-              <el-button class="random-select-btn">Random Select</el-button>
+              <el-button class="random-select-btn" @click="RandomSelect"
+                >Random Select</el-button
+              >
               <el-button
                 type="primary"
                 color="rgba(11, 112, 195, 1)"
@@ -242,6 +263,7 @@
                 :class="!allSelected ? 'btnDisabled' : ''"
                 :loading="allSelected && isLoadingResult"
                 :disabled="allSelected && isLoadingResult"
+                @click="generateAnswers"
                 >generate answers</el-button
               >
             </div>
@@ -257,7 +279,7 @@
                     :size="7"
                   ></LoadingDots>
                   <template v-else>
-                    <div v-if="item">{{ item.answerText }}</div>
+                    <div v-if="item">{{ item.answer || "No result" }}</div>
                     <p v-else class="no-result-tip">
                       Start by selecting from the options above,<br />then click
                       "Generate Answer" to reveal your answer.
@@ -287,13 +309,16 @@
                     >
                   </p>
                   <ul>
-                    <li v-for="(text, index) in item.arr1" :key="index">
+                    <li
+                      v-for="(text, index) in item.negative_tags"
+                      :key="index"
+                    >
                       <span>{{ text }}</span>
                       <SvgIcon name="score-top-icon"></SvgIcon>
                     </li>
                     <li
                       class="type2"
-                      v-for="(text, index) in item.arr2"
+                      v-for="(text, index) in item.positive_tags"
                       :key="index"
                     >
                       <span>{{ text }}</span>
@@ -321,22 +346,10 @@
   </div>
 </template>
 <script setup>
-const data = [
-  {
-    topicName: "Cultural Values",
-    children: [
-      {
-        topicName2: "",
-        questionList: ["ssssss", "sssss"],
-      },
-    ],
-  },
-  {},
-];
-
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import LoadingDots from "@/components/common/LoadingDots.vue";
+import axios from "axios";
 
 import { Check } from "@element-plus/icons-vue";
 
@@ -346,85 +359,33 @@ import {
   getCountryColorSub,
   getCountryIcon,
   setOpacity,
-} from "@/utils/countryColors.js";
+  modelsList,
+  countriesList,
+  findCategoryAndTopic,
+  getRandomQuestion,
+} from "@/utils/culturalAlignmentData.js";
+
+import { useCulturalAlignmentStore } from "@/stores/culturalAlignmentStore";
+const culturalAlignmentStore = useCulturalAlignmentStore();
+
+let question_info_data = null;
+let answer_info_data = null;
 
 const isLoadingResult = ref(false);
-const countryValue = ref("");
-const countryList = ref([
-  {
-    countryName: "china",
-  },
-  {
-    countryName: "Japan",
-  },
-  {
-    countryName: "south Korea",
-  },
-  {
-    countryName: "Thailand",
-  },
-  {
-    countryName: "malaysia",
-  },
-  {
-    countryName: "Singapore",
-  },
-  {
-    countryName: "indonesia",
-  },
-  {
-    countryName: "Australia",
-  },
-]);
 
-// 判断是否全部选择
-const allSelected = computed(() => {
-  return (
-    countryValue.value != "" &&
-    topicValue.value != "" &&
-    questionValue.value != "" &&
-    modelAValue.value != "" &&
-    modelBValue.value != ""
-  );
-});
+const countryValue = ref("");
+const countryList = ref(countriesList);
+
+const topicValue = ref("");
+const topicOptions = ref();
+
+const questionValue = ref("");
+const questionOptions = ref([]);
+
 const modelAValue = ref("");
 const modelBValue = ref("");
 
-const modelOptions = ref([
-  {
-    value: "ChatGPT-4o",
-    label: "ChatGPT-4o",
-  },
-  {
-    value: "Claude Opus 4",
-    label: "Claude Opus 4",
-  },
-  {
-    value: "DeepSeek-R1",
-    label: "DeepSeek-R1",
-  },
-  {
-    value: "Gemini-2.5-Pro",
-    label: "Gemini-2.5-Pro",
-  },
-  {
-    value: "Grok-4-0709",
-    label: "Grok-4-0709",
-  },
-  {
-    value: "Llama-3.1",
-    label: "Llama-3.1",
-  },
-  {
-    value: "Phi-3-Medium",
-    label: "Phi-3-Medium",
-  },
-  {
-    value: "Qwen3",
-    label: "Qwen3",
-  },
-]);
-
+const modelOptions = ref(modelsList);
 const modelOptionsAll = ref([]);
 
 function getAllModelList() {
@@ -441,137 +402,201 @@ function getAllModelList() {
 }
 getAllModelList();
 
-const topicValue = ref("");
-const topicOptions = ref([
-  {
-    label: "Cultural Values",
-    options: [
-      {
-        value: "Schwartz’s Theory of Basic Values",
-        label: "Schwartz’s Theory of Basic Values",
-      },
-      {
-        value: "Hofstede Cultural Dimensions",
-        label: "Hofstede Cultural Dimensions",
-      },
-    ],
-  },
-  {
-    label: "Social Norms",
-    options: [
-      {
-        value: "GenderRoles",
-        label: "GenderRoles",
-      },
-      {
-        value: "Respect Elders",
-        label: "Respect Elders",
-      },
-      {
-        value: "Family Obligations",
-        label: "Family Obligations",
-      },
-      {
-        value: "Justice and Fairness",
-        label: "Justice and Fairness",
-      },
-    ],
-  },
-  {
-    label: "Behavioral Practices",
-    options: [
-      {
-        value: "Social Relationship",
-        label: "Social Relationship",
-      },
-      {
-        value: "Work Behaviors",
-        label: "Work Behaviors",
-      },
-      {
-        value: "Economic Behaviors",
-        label: "Economic Behaviors",
-      },
-      {
-        value: "Education System and Relationship",
-        label: "Education System and Relationship",
-      },
-    ],
-  },
-]);
+// 判断是否全部选择
+const allSelected = computed(() => {
+  return (
+    countryValue.value != "" &&
+    topicValue.value != "" &&
+    questionValue.value != "" &&
+    modelAValue.value != "" &&
+    modelBValue.value != ""
+  );
+});
 
-const questionValue = ref("");
-const questionOptions = ref([
-  {
-    value:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-    label:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-  },
-  {
-    value:
-      "Should adult children financially support their aging parents, even if it causes personal hardship?",
-    label:
-      "Should adult children financially support their aging parents, even if it causes personal hardship?",
-  },
-  {
-    value:
-      "Is it acceptable to put your own career above taking care of your family members?",
-    label:
-      "Is it acceptable to put your own career above taking care of your family members?",
-  },
-]);
-
-const answersList = ref([
-  {
-    answerText:
-      "In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.",
-    score: 6,
-    arr1: [
-      "Emphasis on Family Harmony",
-      "Guidance Role of Parents",
-      "Emotional Care",
-      "Emphasis on Family Harmony",
-      "Guidance Role of Parents",
-      "Emotional Care",
-      "Emphasis on Family Harmony",
-      "Guidance Role of Parents",
-      "Emotional Care",
-    ],
-    arr2: [
-      "Weakening Authority and Obedience",
-      "Omission of Discipline’s Importance",
-    ],
-  },
-  {
-    answerText:
-      "In China, the relationship between children and parents is deeply rooted in Confucian values, which emphasize filial piety, respect for elders, and the importance of maintaining harmony within the family. Children are expected to honor their parents’ wishes and show deference to their authority, not only out of personal respect but also as a reflection of family integrity and societal expectations. The concept of “face” — maintaining dignity, reputation, and social standing — plays a crucial role in shaping family interactions. Open conflict or overt disobedience is often discouraged, as it may be seen as bringing shame to the family. However, this does not mean that differing opinions are completely suppressed. Instead, disagreements are often handled through subtle, indirect communication, with an emphasis on mutual understanding, patience, and maintaining relational harmony. This cultural approach values long-term respect and cohesion over immediate resolution, fostering a sense of collective responsibility within the family unit.",
-    score: 5,
-    arr1: [
-      "Emphasis on Family Harmony",
-      "Guidance Role of Parents",
-      "Emotional Care",
-    ],
-    arr2: [
-      "Weakening Authority and Obedience",
-      "Omission of Discipline’s Importance",
-    ],
-  },
-]);
-// const answersList = ref([null, null]);
-
-const findGroupLabel = (val) => {
-  for (const g of topicOptions.value) {
-    const item = g.options.find((o) => o.value === val);
-    if (item) return g.label;
+onMounted(async () => {
+  console.log("onMounted");
+  if (
+    culturalAlignmentStore.question_info_data &&
+    culturalAlignmentStore.answer_info_data
+  ) {
+    question_info_data = culturalAlignmentStore.question_info_data;
+    answer_info_data = culturalAlignmentStore.answer_info_data;
+    topicOptions.value = question_info_data;
+  } else {
+    await fetchData();
   }
-  return "";
+});
+
+onActivated(() => {
+  console.log("onActivated comparison");
+  const q = JSON.parse(sessionStorage.getItem("currentQuestion"));
+  if (!q) return;
+  topicValue.value = {
+    category: q.category,
+    topic: q.topic,
+  };
+  questionOptions.value = q.questionList;
+  questionValue.value = q.currQuestion;
+
+  const currModel = JSON.parse(sessionStorage.getItem("currentModel"));
+  if (!currModel) return;
+  modelAValue.value = {
+    type: "Neutral",
+    modelName: currModel,
+  };
+  modelBValue.value = {
+    type: "Aligned",
+    modelName: currModel,
+  };
+
+  const currCountry = JSON.parse(sessionStorage.getItem("currentCountry"));
+  if (!currCountry) return;
+  countryValue.value = currCountry;
+
+  // modelValue.value = modelOptions.value[0].value
+  // generateAnswers()
+});
+
+const fetchData = async () => {
+  try {
+    axios
+      .all([
+        axios.get("./data/CulturalAlignment/answer_info.json"),
+        axios.get("./data/CulturalAlignment/question_info.json"),
+      ])
+      .then(
+        axios.spread(function (answer_info, question_info) {
+          console.log("!!!", answer_info.data, question_info.data);
+          question_info_data = question_info.data;
+          answer_info_data = answer_info.data;
+          topicOptions.value = question_info.data;
+
+          culturalAlignmentStore.question_info_data = question_info_data;
+          culturalAlignmentStore.answer_info_data = answer_info_data;
+        })
+      );
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
 };
+
+const topicSelectChange = (val) => {
+  console.log("!!topicSelectChange", val);
+  questionValue.value = "";
+  questionOptions.value = question_info_data[val.category][val.topic];
+};
+
+const answersList = ref([null, null]);
 
 const router = useRouter();
 const goBack = () => {
   router.go(-1); // 或者使用 router.back();
 };
+
+const RandomSelect = () => {
+  countryValue.value =
+    countriesList[Math.floor(Math.random() * countriesList.length)];
+  const randomQuestion = getRandomQuestion(question_info_data);
+  console.log(randomQuestion);
+  topicValue.value = {
+    category: randomQuestion.category,
+    topic: randomQuestion.topic,
+  };
+  questionOptions.value = randomQuestion.questionList;
+  setTimeout(() => {
+    questionValue.value = randomQuestion.currQuestion;
+  }, 100);
+
+  let RandomModel = modelsList[Math.floor(Math.random() * modelsList.length)];
+  modelAValue.value = {
+    type: "Neutral",
+    modelName: RandomModel.value,
+  };
+  modelBValue.value = {
+    type: "Aligned",
+    modelName: RandomModel.value,
+  };
+};
+
+const generateAnswers = () => {
+  console.log(
+    countryValue.value,
+    topicValue.value,
+    questionValue.value,
+    modelAValue.value,
+    modelBValue.value
+  );
+  if (!allSelected.value) {
+    return;
+  }
+  console.log("generateAnswers");
+  isLoadingResult.value = true;
+  answersList.value = [null, null];
+  setTimeout(() => {
+    isLoadingResult.value = false;
+    let modelA =
+      modelAValue.value.modelName +
+      (modelAValue.value.type == "Aligned" ? "_aligned" : "");
+    let modelB =
+      modelBValue.value.modelName +
+      (modelBValue.value.type == "Aligned" ? "_aligned" : "");
+    console.log(modelA, modelB);
+    answersList.value[0] =
+      answer_info_data?.[questionValue.value]?.[modelA]?.[
+        countryValue.value.countryValue
+      ] ?? {};
+    answersList.value[1] =
+      answer_info_data?.[questionValue.value]?.[modelB]?.[
+        countryValue.value.countryValue
+      ] ?? {};
+    if (modelAValue.value.type == "Neutral" && answersList.value[0]) {
+      answersList.value[0].answer =
+        answer_info_data?.[questionValue.value]?.[modelA]?.neutral;
+    }
+    if (modelBValue.value.type == "Neutral" && answersList.value[1]) {
+      answersList.value[1].answer =
+        answer_info_data?.[questionValue.value]?.[modelB]?.neutral;
+    }
+    console.log("!answersList", answersList.value);
+  }, 2000);
+};
+
+// ----------------------当topic切换的时候，question optionslist滚动到最顶部-------------------------------
+const isScrollToTop = ref(true);
+const myQuestionSelect = ref();
+const raf = () => new Promise((r) => requestAnimationFrame(r));
+
+async function resetDropdownScrollTop() {
+  await nextTick();
+  // 等到 DOM & 过渡测量都就绪（两帧更稳）
+  await raf();
+  await raf();
+
+  const popper = myQuestionSelect.value?.popperRef;
+  const wrap = popper?.querySelector(".el-select-dropdown__wrap");
+  if (wrap) {
+    wrap.scrollTop = 0;
+  }
+
+  // 保险：再来一次零延迟，覆盖“自动滚到选中项”的最后一次跳动
+  setTimeout(() => {
+    const _popper = myQuestionSelect.value?.popperRef;
+    const _wrap = _popper?.querySelector(".el-select-dropdown__wrap");
+    if (_wrap) _wrap.scrollTop = 0;
+  }, 0);
+}
+
+function onVisibleChange(visible) {
+  console.log("!!visible", visible);
+  if (isScrollToTop.value) {
+    resetDropdownScrollTop();
+    isScrollToTop.value = false;
+  }
+}
+
+watch(questionOptions, () => {
+  isScrollToTop.value = true;
+});
 </script>
 
 <style scoped lang="scss">
