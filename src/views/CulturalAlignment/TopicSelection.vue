@@ -47,10 +47,11 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted,onActivated } from "vue";
 import { useRouter } from "vue-router";
 import { Refresh } from "@element-plus/icons-vue";
 import axios from "axios";
+import {getAnswerInfo,getQuestionInfo} from "@/service/api"
 
 import { useCulturalAlignmentStore } from "@/stores/culturalAlignmentStore";
 const culturalAlignmentStore = useCulturalAlignmentStore();
@@ -74,44 +75,46 @@ const topicListShow = ref([
 ]);
 
 onMounted(async () => {
-  console.log("onMounted");
-  if (
-    culturalAlignmentStore.question_info_data &&
-    culturalAlignmentStore.answer_info_data
-  ) {
-    question_info_data = culturalAlignmentStore.question_info_data;
-    answer_info_data = culturalAlignmentStore.answer_info_data;
-    initQuestions(question_info_data)
-    RandomSelectQuestion()
+  console.log("topicSelection onMounted ");
+  await fetchData()
 
-  } else {
-    await fetchData();
-  }
+  // setOptionAndGenarateResult()
+  initQuestions(question_info_data)
+  RandomSelectQuestion()
+});
+
+onActivated(() => {
+  console.log("topicSelection onActivated")
+  // setOptionAndGenarateResult()
 });
 
 const fetchData = async () => {
-  try {
-    axios
-      .all([
-        axios.get("./data/CulturalAlignment/answer_info.json"),
-        axios.get("./data/CulturalAlignment/question_info.json"),
-      ])
-      .then(
-        axios.spread(function (answer_info, question_info) {
-          question_info_data = question_info.data;
-          answer_info_data = answer_info.data;
-
-          initQuestions(question_info_data)
-          RandomSelectQuestion()
-
-          culturalAlignmentStore.question_info_data = question_info_data;
-          culturalAlignmentStore.answer_info_data = answer_info_data;
-        })
-      );
-  } catch (error) {
-    console.error("Fetch error:", error);
+  if (culturalAlignmentStore.question_info_data && culturalAlignmentStore.answer_info_data) {
+  } else {
+    const question_info = await getQuestionInfo()
+    const answer_info = await getAnswerInfo()
+    
+    culturalAlignmentStore.question_info_data = question_info.data;
+    culturalAlignmentStore.answer_info_data = answer_info.data;
   }
+  question_info_data = culturalAlignmentStore.question_info_data;
+  answer_info_data = culturalAlignmentStore.answer_info_data;
 };
+
+const setOptionAndGenarateResult = ()=>{
+  if(!culturalAlignmentStore.isTopicSelectionPageUpdateData){
+    return
+  }
+
+  console.log("setOptionAndGenarateResult")
+  culturalAlignmentStore.isTopicSelectionPageUpdateData = false
+  
+  console.log("question_info_data",question_info_data)
+  initQuestions(question_info_data)
+  RandomSelectQuestion()
+}
+
+
 
 
 const RandomSelectQuestion = () => {
@@ -124,6 +127,7 @@ const RandomSelectQuestion = () => {
 const router = useRouter();
 const goToComparisonPage = (item) => {
   sessionStorage.setItem('currentQuestion', JSON.stringify(item))
+  culturalAlignmentStore.isComparesionPageUpdateData = true
   router.push({
     path: "/CulturalAlignment/comparison",
   });
@@ -135,7 +139,8 @@ const goToComparisonPage = (item) => {
   position: relative;
   padding: 2em 0;
   & > div {
-    max-width: 74.4375rem;
+    max-width: 1190px;
+    width: 90%;
     margin: 0 auto;
   }
   h2 {

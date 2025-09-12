@@ -350,6 +350,7 @@ import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import LoadingDots from "@/components/common/LoadingDots.vue";
 import axios from "axios";
+import {getAnswerInfo,getQuestionInfo} from "@/service/api"
 
 import { Check } from "@element-plus/icons-vue";
 
@@ -414,21 +415,38 @@ const allSelected = computed(() => {
 });
 
 onMounted(async () => {
-  console.log("onMounted");
-  if (
-    culturalAlignmentStore.question_info_data &&
-    culturalAlignmentStore.answer_info_data
-  ) {
-    question_info_data = culturalAlignmentStore.question_info_data;
-    answer_info_data = culturalAlignmentStore.answer_info_data;
-    topicOptions.value = question_info_data;
-  } else {
-    await fetchData();
-  }
+  console.log("arena onMounted ");
+  await fetchData()
+  setOptionAndGenarateResult()
 });
 
 onActivated(() => {
-  console.log("onActivated comparison");
+  console.log("arena onActivated")
+  setOptionAndGenarateResult()
+});
+
+const fetchData = async () => {
+  if (culturalAlignmentStore.question_info_data && culturalAlignmentStore.answer_info_data) {
+  } else {
+    const question_info = await getQuestionInfo()
+    const answer_info = await getAnswerInfo()
+    
+    culturalAlignmentStore.question_info_data = question_info.data;
+    culturalAlignmentStore.answer_info_data = answer_info.data;
+  }
+  question_info_data = culturalAlignmentStore.question_info_data;
+  answer_info_data = culturalAlignmentStore.answer_info_data;
+  topicOptions.value = question_info_data;
+};
+
+const setOptionAndGenarateResult = ()=>{
+  if(!culturalAlignmentStore.isArenaPageUpdateData){
+    return
+  }
+
+  console.log("setOptionAndGenarateResult")
+  culturalAlignmentStore.isArenaPageUpdateData = false
+  
   const q = JSON.parse(sessionStorage.getItem("currentQuestion"));
   if (!q) return;
   topicValue.value = {
@@ -450,35 +468,14 @@ onActivated(() => {
   };
 
   const currCountry = JSON.parse(sessionStorage.getItem("currentCountry"));
-  if (!currCountry) return;
-  countryValue.value = currCountry;
-
-  // modelValue.value = modelOptions.value[0].value
-  // generateAnswers()
-});
-
-const fetchData = async () => {
-  try {
-    axios
-      .all([
-        axios.get("./data/CulturalAlignment/answer_info.json"),
-        axios.get("./data/CulturalAlignment/question_info.json"),
-      ])
-      .then(
-        axios.spread(function (answer_info, question_info) {
-          console.log("!!!", answer_info.data, question_info.data);
-          question_info_data = question_info.data;
-          answer_info_data = answer_info.data;
-          topicOptions.value = question_info.data;
-
-          culturalAlignmentStore.question_info_data = question_info_data;
-          culturalAlignmentStore.answer_info_data = answer_info_data;
-        })
-      );
-  } catch (error) {
-    console.error("Fetch error:", error);
+  console.log("currCountry",currCountry)
+  if (currCountry){
+    countryValue.value = currCountry;
   }
-};
+  
+  answersList.value = [null, null];
+  generateAnswers()
+}
 
 const topicSelectChange = (val) => {
   console.log("!!topicSelectChange", val);
@@ -558,7 +555,7 @@ const generateAnswers = () => {
         answer_info_data?.[questionValue.value]?.[modelB]?.neutral;
     }
     console.log("!answersList", answersList.value);
-  }, 2000);
+  }, 200);
 };
 
 // ----------------------当topic切换的时候，question optionslist滚动到最顶部-------------------------------

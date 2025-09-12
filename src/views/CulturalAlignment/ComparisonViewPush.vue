@@ -137,7 +137,7 @@
                   :class="!allSelected ? 'btnDisabled' : ''"
                   :loading="allSelected && isLoadingResult"
                   :disabled="allSelected && isLoadingResult"
-                  @click="genetateAnswers"
+                  @click="generateAnswers"
                   >generate answers</el-button
                 >
               </div>
@@ -398,6 +398,7 @@
 import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import {getAnswerInfo,getQuestionInfo} from "@/service/api"
 
 import LoadingDots from "@/components/common/LoadingDots.vue";
 import TipPopover from "@/components/common/TipPopover.vue";
@@ -450,21 +451,38 @@ const allCountriesList = ref(countriesList);
 const chooseCountriesList = ref([null, null, null]);
 
 onMounted(async () => {
-  console.log("onMounted comparison");
-  if (
-    culturalAlignmentStore.question_info_data &&
-    culturalAlignmentStore.answer_info_data
-  ) {
-    question_info_data = culturalAlignmentStore.question_info_data;
-    answer_info_data = culturalAlignmentStore.answer_info_data;
-    topicOptions.value = question_info_data;
-  } else {
-    await fetchData();
-  }
+  console.log("comparisonViewPush onMounted ");
+  await fetchData()
+  setOptionAndGenarateResult()
 });
 
 onActivated(() => {
-  console.log("onActivated comparison");
+  console.log("comparisonViewPush onActivated")
+  setOptionAndGenarateResult()
+});
+
+const fetchData = async () => {
+  if (culturalAlignmentStore.question_info_data && culturalAlignmentStore.answer_info_data) {
+  } else {
+    const question_info = await getQuestionInfo()
+    const answer_info = await getAnswerInfo()
+    
+    culturalAlignmentStore.question_info_data = question_info.data;
+    culturalAlignmentStore.answer_info_data = answer_info.data;
+  }
+  question_info_data = culturalAlignmentStore.question_info_data;
+  answer_info_data = culturalAlignmentStore.answer_info_data;
+  topicOptions.value = question_info_data;
+};
+
+const setOptionAndGenarateResult = ()=>{
+  if(!culturalAlignmentStore.isComparesionPageUpdateData){
+    return
+  }
+
+  console.log("setOptionAndGenarateResult")
+  culturalAlignmentStore.isComparesionPageUpdateData = false
+  
   const q = JSON.parse(sessionStorage.getItem("currentQuestion"));
   if (!q) return;
   topicValue.value = {
@@ -473,32 +491,10 @@ onActivated(() => {
   };
   questionOptions.value = q.questionList;
   questionValue.value = q.currQuestion;
-
   modelValue.value = modelOptions.value[0].value;
-  genetateAnswers();
-});
-
-const fetchData = async () => {
-  try {
-    axios
-      .all([
-        axios.get("./data/CulturalAlignment/answer_info.json"),
-        axios.get("./data/CulturalAlignment/question_info.json"),
-      ])
-      .then(
-        axios.spread(function (answer_info, question_info) {
-          question_info_data = question_info.data;
-          answer_info_data = answer_info.data;
-          topicOptions.value = question_info.data;
-
-          culturalAlignmentStore.question_info_data = question_info_data;
-          culturalAlignmentStore.answer_info_data = answer_info_data;
-        })
-      );
-  } catch (error) {
-    console.error("Fetch error:", error);
-  }
-};
+  
+  generateAnswers();
+}
 
 const topicSelectChange = (val) => {
   console.log("!!topicSelectChange", val);
@@ -588,7 +584,8 @@ const gotArenaPage = (country) => {
     JSON.stringify(modelValue.value || "")
   );
   sessionStorage.setItem("currentCountry", JSON.stringify(country || ""));
-
+  
+  culturalAlignmentStore.isArenaPageUpdateData = true
   router.push({
     path: "/CulturalAlignment/arena",
     // param: {
@@ -601,8 +598,8 @@ const gotArenaPage = (country) => {
   });
 };
 
-const genetateAnswers = () => {
-  // console.log("genetateAnswers",allSelected.value);
+const generateAnswers = () => {
+  // console.log("generateAnswers",allSelected.value);
   if (!allSelected.value) {
     return;
   }
@@ -616,7 +613,7 @@ const genetateAnswers = () => {
       answer_info_data[questionValue.value][modelValue.value];
     answerAlignedAllCountries.value =
       answer_info_data[questionValue.value][modelValue.value + "_aligned"];
-  }, 2000);
+  }, 200);
 };
 
 // 当topic切换的时候，question optionslist滚动到最顶部
