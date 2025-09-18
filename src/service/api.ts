@@ -25,3 +25,18 @@ export const getQuestionInfo = (data: any): any => {
     return axios.get("./data/CulturalAlignment/question_info.json");
 }
 
+export const getChatItemInfo = (data: any): any => {
+    // return request.post("/api/calculate_human_value", data)
+
+    const result = {
+        message: "这是我的回复，时间：" + new Date()
+    }
+
+
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve(result);
+        }, 1000);
+    });
+}
+

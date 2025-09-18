@@ -68,6 +68,15 @@ const routes: Array<RouteRecordRaw> = [
       requiresFrontEndAuth: true
     },
   },
+  {
+    path: '/TestValues2',
+    name: 'Test Your Values2',
+    component: () => import('../views/TestValuesChat.vue'),
+    meta: {
+      keepAlive: true, //此页面需要缓存
+      requiresFrontEndAuth: true
+    },
+  },
 
   {
     path: '/CulturalAlignment',
