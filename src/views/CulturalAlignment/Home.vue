@@ -221,9 +221,9 @@ onActivated(() => {
   }
   .right {
     position: relative;
-    width: 49%;
+    width: 45%;
     // align-self: flex-start;
-    margin-top: -8em;
+    margin-top: -6em;
     .right-content {
       padding-top: 100%;
       // background: rgba(0, 0, 0, 0.2);

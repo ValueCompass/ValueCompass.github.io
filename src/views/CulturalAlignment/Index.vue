@@ -76,7 +76,7 @@ watch(
 );
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .cultural-alignment-template {
   min-height: inherit;
   box-sizing: border-box;
@@ -97,7 +97,7 @@ watch(
 .profile-layout {
   position: relative;
   min-height: calc(100vh - 6.375em - 40px);
-  height: 58em;
+  height: 53.5em;
   overflow: hidden;
 }
 
@@ -106,8 +106,8 @@ watch(
   width: 100%;
   top: 50%;
   left: 0;
-  height: 58em;
-  margin-top: -29em;
+  height: 53.5em;
+  margin-top: -25.5em;
 }
 
 /* 左滑进入 / 右滑离开 */

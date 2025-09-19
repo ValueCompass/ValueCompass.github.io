@@ -19,14 +19,17 @@
               @click="goToComparisonPage(item)"
             >
               <div>
-                <img :src="item.img ||  getAssetsFile('1.png')" alt="" />
+                <img :src="item.img || getAssetsFile('1.png')" alt="" />
                 <p>{{ item.currQuestion }}</p>
               </div>
             </li>
           </ul>
 
           <div class="btn-container">
-            <el-button class="Change-question-btn" @click="RandomSelectQuestion">
+            <el-button
+              class="Change-question-btn"
+              @click="RandomSelectQuestion"
+            >
               Change question<el-icon class="el-icon--right"
                 ><Refresh
               /></el-icon>
@@ -47,18 +50,15 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted,onActivated } from "vue";
+import { ref, onMounted, onActivated } from "vue";
 import { useRouter } from "vue-router";
 import { Refresh } from "@element-plus/icons-vue";
 import axios from "axios";
-import {getAnswerInfo,getQuestionInfo} from "@/service/api"
+import { getAnswerInfo, getQuestionInfo } from "@/service/api";
 
 import { useCulturalAlignmentStore } from "@/stores/culturalAlignmentStore";
 const culturalAlignmentStore = useCulturalAlignmentStore();
-import {
-  initQuestions,
-  getRandomQuestions,
-} from "@/utils/questionsManager.js";
+import { initQuestions, getRandomQuestions } from "@/utils/questionsManager.js";
 
 const getAssetsFile = (url) => {
   return new URL(`../../assets/topic/${url}`, import.meta.url).href;
@@ -76,24 +76,27 @@ const topicListShow = ref([
 
 onMounted(async () => {
   console.log("topicSelection onMounted ");
-  await fetchData()
+  await fetchData();
 
   // setOptionAndGenarateResult()
-  initQuestions(question_info_data)
-  RandomSelectQuestion()
+  initQuestions(question_info_data);
+  RandomSelectQuestion();
 });
 
 onActivated(() => {
-  console.log("topicSelection onActivated")
+  console.log("topicSelection onActivated");
   // setOptionAndGenarateResult()
 });
 
 const fetchData = async () => {
-  if (culturalAlignmentStore.question_info_data && culturalAlignmentStore.answer_info_data) {
+  if (
+    culturalAlignmentStore.question_info_data &&
+    culturalAlignmentStore.answer_info_data
+  ) {
   } else {
-    const question_info = await getQuestionInfo()
-    const answer_info = await getAnswerInfo()
-    
+    const question_info = await getQuestionInfo();
+    const answer_info = await getAnswerInfo();
+
     culturalAlignmentStore.question_info_data = question_info.data;
     culturalAlignmentStore.answer_info_data = answer_info.data;
   }
@@ -101,33 +104,28 @@ const fetchData = async () => {
   answer_info_data = culturalAlignmentStore.answer_info_data;
 };
 
-const setOptionAndGenarateResult = ()=>{
-  if(!culturalAlignmentStore.isTopicSelectionPageUpdateData){
-    return
+const setOptionAndGenarateResult = () => {
+  if (!culturalAlignmentStore.isTopicSelectionPageUpdateData) {
+    return;
   }
 
-  console.log("setOptionAndGenarateResult")
-  culturalAlignmentStore.isTopicSelectionPageUpdateData = false
-  
-  console.log("question_info_data",question_info_data)
-  initQuestions(question_info_data)
-  RandomSelectQuestion()
-}
+  console.log("setOptionAndGenarateResult");
+  culturalAlignmentStore.isTopicSelectionPageUpdateData = false;
 
-
-
+  console.log("question_info_data", question_info_data);
+  initQuestions(question_info_data);
+  RandomSelectQuestion();
+};
 
 const RandomSelectQuestion = () => {
   const randomQuestions = getRandomQuestions(3);
-  topicListShow.value = randomQuestions
+  topicListShow.value = randomQuestions;
 };
-
-
 
 const router = useRouter();
 const goToComparisonPage = (item) => {
-  sessionStorage.setItem('currentQuestion', JSON.stringify(item))
-  culturalAlignmentStore.isComparesionPageUpdateData = true
+  sessionStorage.setItem("currentQuestion", JSON.stringify(item));
+  culturalAlignmentStore.isComparesionPageUpdateData = true;
   router.push({
     path: "/CulturalAlignment/comparison",
   });
@@ -184,7 +182,7 @@ const goToComparisonPage = (item) => {
         box-shadow: 0px 0px 12px 0px rgba(133, 200, 255, 0.4);
         P {
           color: rgba(11, 112, 195, 1);
-          font-weight: 600;
+          // font-weight: 600;
         }
       }
     }
@@ -212,9 +210,9 @@ const goToComparisonPage = (item) => {
   }
 
   .bg-container {
-    margin-top: -4em;
+    margin-top: -3em;
     position: absolute;
-    width: 49%;
+    width: 45%;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
