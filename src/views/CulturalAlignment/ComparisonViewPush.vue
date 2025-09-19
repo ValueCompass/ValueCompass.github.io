@@ -398,7 +398,7 @@
 import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import {getAnswerInfo,getQuestionInfo} from "@/service/api"
+import { getAnswerInfo, getQuestionInfo } from "@/service/api";
 
 import LoadingDots from "@/components/common/LoadingDots.vue";
 import TipPopover from "@/components/common/TipPopover.vue";
@@ -452,21 +452,24 @@ const chooseCountriesList = ref([null, null, null]);
 
 onMounted(async () => {
   console.log("comparisonViewPush onMounted ");
-  await fetchData()
-  setOptionAndGenarateResult()
+  await fetchData();
+  setOptionAndGenarateResult();
 });
 
 onActivated(() => {
-  console.log("comparisonViewPush onActivated")
-  setOptionAndGenarateResult()
+  console.log("comparisonViewPush onActivated");
+  setOptionAndGenarateResult();
 });
 
 const fetchData = async () => {
-  if (culturalAlignmentStore.question_info_data && culturalAlignmentStore.answer_info_data) {
+  if (
+    culturalAlignmentStore.question_info_data &&
+    culturalAlignmentStore.answer_info_data
+  ) {
   } else {
-    const question_info = await getQuestionInfo()
-    const answer_info = await getAnswerInfo()
-    
+    const question_info = await getQuestionInfo();
+    const answer_info = await getAnswerInfo();
+
     culturalAlignmentStore.question_info_data = question_info.data;
     culturalAlignmentStore.answer_info_data = answer_info.data;
   }
@@ -475,14 +478,14 @@ const fetchData = async () => {
   topicOptions.value = question_info_data;
 };
 
-const setOptionAndGenarateResult = ()=>{
-  if(!culturalAlignmentStore.isComparesionPageUpdateData){
-    return
+const setOptionAndGenarateResult = () => {
+  if (!culturalAlignmentStore.isComparesionPageUpdateData) {
+    return;
   }
 
-  console.log("setOptionAndGenarateResult")
-  culturalAlignmentStore.isComparesionPageUpdateData = false
-  
+  console.log("setOptionAndGenarateResult");
+  culturalAlignmentStore.isComparesionPageUpdateData = false;
+
   const q = JSON.parse(sessionStorage.getItem("currentQuestion"));
   if (!q) return;
   topicValue.value = {
@@ -492,9 +495,9 @@ const setOptionAndGenarateResult = ()=>{
   questionOptions.value = q.questionList;
   questionValue.value = q.currQuestion;
   modelValue.value = modelOptions.value[0].value;
-  
+
   generateAnswers();
-}
+};
 
 const topicSelectChange = (val) => {
   console.log("!!topicSelectChange", val);
@@ -584,8 +587,8 @@ const gotArenaPage = (country) => {
     JSON.stringify(modelValue.value || "")
   );
   sessionStorage.setItem("currentCountry", JSON.stringify(country || ""));
-  
-  culturalAlignmentStore.isArenaPageUpdateData = true
+
+  culturalAlignmentStore.isArenaPageUpdateData = true;
   router.push({
     path: "/CulturalAlignment/arena",
     // param: {
@@ -656,7 +659,7 @@ watch(questionOptions, () => {
 
 <style scoped lang="scss">
 .culture-alignment-container {
-  padding: 1.2em 0 1em;
+  padding: 0.8em 0 0.8em;
 
   & > div {
     display: flex;
@@ -683,7 +686,7 @@ watch(questionOptions, () => {
       margin-top: 0.75em;
       box-shadow: 0px 0px 12px 0px rgba(133, 200, 255, 0.4);
       border-radius: 1em;
-      padding: 1em 1.5em;
+      padding: 0.8em 1.5em;
       .title {
         display: flex;
         flex-direction: row;
@@ -691,7 +694,7 @@ watch(questionOptions, () => {
         align-items: center;
         gap: 1em;
         p:nth-child(1) {
-          font-size: 2em;
+          font-size: 1.8em;
           font-weight: 700;
           color: rgba(61, 61, 61, 1);
           line-height: 120%;
@@ -713,8 +716,8 @@ watch(questionOptions, () => {
           width: calc(50% - 0.375em);
           border: 2px dashed rgba(194, 194, 194, 1);
           border-radius: 0.375em;
-          height: 15.625em;
-          padding: 0.625em 0;
+          height: 15em;
+          padding: 0.6em 0;
           position: relative;
           &:nth-child(1) {
             border: 2px solid rgba(0, 0, 0, 1);
@@ -748,7 +751,7 @@ watch(questionOptions, () => {
             height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 0.4em;
             .top {
               padding: 0 0.625em;
               box-sizing: border-box;
@@ -803,6 +806,7 @@ watch(questionOptions, () => {
 
               .p-content {
                 padding: 0 0.625em;
+                line-height: 1.3;
               }
               .p_china {
                 color: rgb(128, 0, 0);
@@ -836,9 +840,9 @@ watch(questionOptions, () => {
   }
   .right {
     position: relative;
-    width: 49%;
+    width: 45%;
     // align-self: flex-start;
-    margin-top: -8em;
+    margin-top: -6em;
     .right-content {
       padding-top: 100%;
       // background: rgba(0, 0, 0, 0.2);

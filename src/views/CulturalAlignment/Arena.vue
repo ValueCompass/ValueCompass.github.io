@@ -350,7 +350,7 @@ import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import LoadingDots from "@/components/common/LoadingDots.vue";
 import axios from "axios";
-import {getAnswerInfo,getQuestionInfo} from "@/service/api"
+import { getAnswerInfo, getQuestionInfo } from "@/service/api";
 
 import { Check } from "@element-plus/icons-vue";
 
@@ -416,21 +416,24 @@ const allSelected = computed(() => {
 
 onMounted(async () => {
   console.log("arena onMounted ");
-  await fetchData()
-  setOptionAndGenarateResult()
+  await fetchData();
+  setOptionAndGenarateResult();
 });
 
 onActivated(() => {
-  console.log("arena onActivated")
-  setOptionAndGenarateResult()
+  console.log("arena onActivated");
+  setOptionAndGenarateResult();
 });
 
 const fetchData = async () => {
-  if (culturalAlignmentStore.question_info_data && culturalAlignmentStore.answer_info_data) {
+  if (
+    culturalAlignmentStore.question_info_data &&
+    culturalAlignmentStore.answer_info_data
+  ) {
   } else {
-    const question_info = await getQuestionInfo()
-    const answer_info = await getAnswerInfo()
-    
+    const question_info = await getQuestionInfo();
+    const answer_info = await getAnswerInfo();
+
     culturalAlignmentStore.question_info_data = question_info.data;
     culturalAlignmentStore.answer_info_data = answer_info.data;
   }
@@ -439,14 +442,14 @@ const fetchData = async () => {
   topicOptions.value = question_info_data;
 };
 
-const setOptionAndGenarateResult = ()=>{
-  if(!culturalAlignmentStore.isArenaPageUpdateData){
-    return
+const setOptionAndGenarateResult = () => {
+  if (!culturalAlignmentStore.isArenaPageUpdateData) {
+    return;
   }
 
-  console.log("setOptionAndGenarateResult")
-  culturalAlignmentStore.isArenaPageUpdateData = false
-  
+  console.log("setOptionAndGenarateResult");
+  culturalAlignmentStore.isArenaPageUpdateData = false;
+
   const q = JSON.parse(sessionStorage.getItem("currentQuestion"));
   if (!q) return;
   topicValue.value = {
@@ -468,14 +471,14 @@ const setOptionAndGenarateResult = ()=>{
   };
 
   const currCountry = JSON.parse(sessionStorage.getItem("currentCountry"));
-  console.log("currCountry",currCountry)
-  if (currCountry){
+  console.log("currCountry", currCountry);
+  if (currCountry) {
     countryValue.value = currCountry;
   }
-  
+
   answersList.value = [null, null];
-  generateAnswers()
-}
+  generateAnswers();
+};
 
 const topicSelectChange = (val) => {
   console.log("!!topicSelectChange", val);
@@ -598,7 +601,7 @@ watch(questionOptions, () => {
 
 <style scoped lang="scss">
 .culture-alignment-container {
-  padding: 1em 0 0.5em;
+  padding: 0.8em 0 0.8em;
   & > div {
     display: flex;
     justify-content: space-between;
@@ -616,7 +619,7 @@ watch(questionOptions, () => {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      gap: 1.5em;
+      gap: 1em 1.5em;
       & > div {
         width: calc(50% - 0.75em);
       }
@@ -624,7 +627,7 @@ watch(questionOptions, () => {
       :deep(.el-select) {
         &.Question-select {
           .el-select__wrapper {
-            min-height: 5.1em;
+            min-height: 4.6em;
           }
         }
       }
