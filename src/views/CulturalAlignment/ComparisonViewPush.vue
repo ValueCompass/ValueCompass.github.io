@@ -395,7 +395,15 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onActivated,
+  watch,
+  nextTick,
+  defineEmits,
+} from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { getAnswerInfo, getQuestionInfo } from "@/service/api";
@@ -458,7 +466,7 @@ onMounted(async () => {
 
 onActivated(() => {
   console.log("comparisonViewPush onActivated");
-  setOptionAndGenarateResult();
+  // setOptionAndGenarateResult();
 });
 
 const fetchData = async () => {
@@ -571,6 +579,8 @@ function toggleTip(index) {
   }, 3000);
 }
 
+const emit = defineEmits(["setPageIndex"]);
+
 const router = useRouter();
 const gotArenaPage = (country) => {
   sessionStorage.setItem(
@@ -589,16 +599,11 @@ const gotArenaPage = (country) => {
   sessionStorage.setItem("currentCountry", JSON.stringify(country || ""));
 
   culturalAlignmentStore.isArenaPageUpdateData = true;
-  router.push({
-    path: "/CulturalAlignment/arena",
-    // param: {
-    //   topic: item.des,
-    //   question: item.des,
-    // },
-    // query: {
-    //   modelName: modelName,
-    // },
-  });
+  // router.push({
+  //   path: "/CulturalAlignment/arena",
+  // });
+
+  emit("setPageIndex", 1);
 };
 
 const generateAnswers = () => {
@@ -654,6 +659,10 @@ function onVisibleChange(visible) {
 
 watch(questionOptions, () => {
   isScrollToTop.value = true;
+});
+
+defineExpose({
+  setOptionAndGenarateResult,
 });
 </script>
 

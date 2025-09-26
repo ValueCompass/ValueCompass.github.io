@@ -346,7 +346,15 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, onMounted, onActivated, watch, nextTick } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onActivated,
+  watch,
+  nextTick,
+  defineEmits,
+} from "vue";
 import { useRouter } from "vue-router";
 import LoadingDots from "@/components/common/LoadingDots.vue";
 import axios from "axios";
@@ -422,7 +430,7 @@ onMounted(async () => {
 
 onActivated(() => {
   console.log("arena onActivated");
-  setOptionAndGenarateResult();
+  // setOptionAndGenarateResult();
 });
 
 const fetchData = async () => {
@@ -489,8 +497,12 @@ const topicSelectChange = (val) => {
 const answersList = ref([null, null]);
 
 const router = useRouter();
+
+const emit = defineEmits(["setPageIndex"]);
 const goBack = () => {
-  router.go(-1); // 或者使用 router.back();
+  // router.go(-1); // 或者使用 router.back();
+
+  emit("setPageIndex", 0);
 };
 
 const RandomSelect = () => {
@@ -596,6 +608,10 @@ function onVisibleChange(visible) {
 
 watch(questionOptions, () => {
   isScrollToTop.value = true;
+});
+
+defineExpose({
+  setOptionAndGenarateResult,
 });
 </script>
 
