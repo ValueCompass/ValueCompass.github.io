@@ -127,7 +127,7 @@ const goToComparisonPage = (item) => {
   sessionStorage.setItem("currentQuestion", JSON.stringify(item));
   culturalAlignmentStore.isComparesionPageUpdateData = true;
   router.push({
-    path: "/CulturalAlignment/comparison",
+    path: "/CulturalAlignment/Comparison&Arena",
   });
 };
 </script>

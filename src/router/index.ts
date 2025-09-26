@@ -97,31 +97,29 @@ const routes: Array<RouteRecordRaw> = [
           requiresFrontEndAuth: true
         },
       },
-      {
-        path: 'comparison',
-        name: 'CulturalAlignmentComparison',
-        component: () => import('../views/CulturalAlignment/ComparisonViewPush.vue'),
-        meta: {
-          keepAlive: true, //此页面需要缓存
-          requiresFrontEndAuth: true,
-          index: 0,
-          animate: true
-        },
+      // {
+      //   path: 'comparison',
+      //   name: 'CulturalAlignmentComparison',
+      //   component: () => import('../views/CulturalAlignment/ComparisonViewPush.vue'),
+      //   meta: {
+      //     keepAlive: true, //此页面需要缓存
+      //     requiresFrontEndAuth: true,
+      //     index: 0,
+      //     animate: true
+      //   },
+      // },
 
-      },
-
-      {
-        path: 'arena',
-        name: 'CulturalAlignmentArena',
-        component: () => import('../views/CulturalAlignment/Arena.vue'),
-        meta: {
-          keepAlive: true, //此页面需要缓存
-          requiresFrontEndAuth: true,
-          index: 1,
-          animate:true
-        },
-
-      },
+      // {
+      //   path: 'arena',
+      //   name: 'CulturalAlignmentArena',
+      //   component: () => import('../views/CulturalAlignment/Arena.vue'),
+      //   meta: {
+      //     keepAlive: true, //此页面需要缓存
+      //     requiresFrontEndAuth: true,
+      //     index: 1,
+      //     animate:true
+      //   },
+      // },
       {
         path: 'TopicSelection',
         name: 'CulturalAlignmentTopicSelection',
@@ -132,6 +130,17 @@ const routes: Array<RouteRecordRaw> = [
         },
 
       },
+
+      {
+        path: 'Comparison&Arena',
+        name: 'CulturalAlignmentComparison&Arena',
+        component: () => import('../views/CulturalAlignment/Comparison&Arena.vue'),
+        meta: {
+          keepAlive: true, //此页面需要缓存
+          requiresFrontEndAuth: true
+        },
+      },
+
     ]
   },
 
