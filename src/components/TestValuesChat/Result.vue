@@ -14,76 +14,97 @@
         </div>
 
         <div class="chart-main" v-show="currentTab == 0">
-          <div class="card-item card-print" v-if="myScoreArrValue.length > 0">
-            <div class="card-left">
-              <h2>Hi, {{ input ? input : "User" }}</h2>
-              <h3>Your Core Values are</h3>
-              <div class="tag-list">
-                <span
-                  class="tag"
-                  v-for="(item, index) in myScoreArrValue.slice(0, 3)"
-                  :key="index"
-                  >{{ item.SchwartzTheoryItem }}</span
-                >
-              </div>
-              <p>{{ resultDesc }}</p>
-              <div class="card-bottom">
-                <div style="display: none">
-                  <img class="logo-img" :src="logoImg" alt="logo" width="128" />
-                </div>
-                <div style="width: 100%">
-                  <p>
-                    Interestingly,
-                    <span class="model-name-span">{{
-                      spearmanArrDetailValue[0]
-                        ? spearmanArrDetailValue[0].model
-                        : ""
-                    }}</span>
-                    aligns seamlessly with your value priorities,<br />
-                    <span
-                      >resonating with your mindset and core belief —— much
-                      like finding a close friend.</span
-                    >
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="card-right">
-              <img class="card-right-img" :src="cultureImg" alt="test" />
-              <!-- <img class="logo-img" :src="logoImg" alt="logo" /> -->
-              <p>the image powered by Microsoft Designer</p>
-            </div>
+          <div class="card-print" v-if="myScoreArrValue.length > 0">
+            <img
+              class="bg"
+              style="width: 100%; height: 100%"
+              fit="cover"
+              :src="
+                getAssetsFile(
+                  chwartzTheoryData[sortedValueScore[0].name].img
+                )
+              "
+              alt="test"
+            />
+            <div class="content">
+              <div class="card-left">
+                <div class="box">
+                  <div>
+                    <h2>Hi, {{ valuesRecults?.user_name ? valuesRecults?.user_name : "User" }}</h2>
+                    <h3>Your Core Values are</h3>
+                    <div class="tag-list">
+                      <span
+                        class="tag"
+                        v-for="(item, index) in  sortedValueScore.slice(0, 3)"
+                        :key="index"
+                        :class="item.name+'_tag'"
+                        >{{ item.name }}</span
+                      >
+                    </div>
+                    <p>{{ valuesRecults?.short_comment }}</p>
+                    <div class="card-bottom">
+                      <div style="display: none">
+                        <img
+                          class="logo-img"
+                          :src="logoImg"
+                          alt="logo"
+                          width="128"
+                        />
+                      </div>
+                      <div style="width: 100%">
+                        <p>
+                          Interestingly,
+                          <span class="model-name-span">{{ valuesRecults?.closest_model[0][0] }}</span>
+                          aligns seamlessly with your value priorities,<br />
+                          <span
+                            >resonating with your mindset and core belief ——
+                            much like finding a close friend.</span
+                          >
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-            <!-- <div class="print" @click="print">Download</div> -->
-            <div class="print">
-              <button class="print-btn" @click="print">Download</button>
+                  <div class="print">
+                    <button class="print-btn" @click="print">Download</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-right">
+                <div>
+                  <p>the image powered by Microsoft Designer</p>
+                </div>
+              </div>
             </div>
           </div>
+
           <div class="echart-container">
             <div class="card-item">
               <h2 class="card-chart-title">Your Schwartz Theory Item Scores</h2>
               <p class="card-chart-desc">Detailed Results for Each Item</p>
               <!-- <div ref="barChart" class="bar-chart"></div> -->
-              <ul class="">
-                <li v-for="(item, index) in myScoreArrValue" :key="index">
-                  <span>{{ item.SchwartzTheoryItem }}</span>
+              <!-- <ul class="">
+                <li v-for="(item, index) in sortedValueScore" :key="index">
+                  <span>{{ item.name }}</span>
                   <div>
                     <el-progress
                       :text-inside="true"
                       :stroke-width="12"
-                      :percentage="(item.score / 6) * 100"
-                      color="rgba(172, 210, 145, 1)"
-                      :aria-label="item.SchwartzTheoryItem + 'progress'"
+                      :percentage="(item.value / 10) * 100"
+                      color="rgba(102, 191, 236, 1)"
+                      :aria-label="item.name + 'progress'"
                     >
                       <span
                         class="score-span"
                         style="color: rgba(47, 72, 30, 1)"
-                        >{{ item.score }}</span
+                        >{{ item.value }}</span
                       >
                     </el-progress>
                   </div>
                 </li>
-              </ul>
+              </ul> -->
+
+              <Radar :value="valuesRecults?.value_score"></Radar>
             </div>
             <div class="card-item">
               <h2 class="card-chart-title">The Model Closest to Your Values</h2>
@@ -94,27 +115,36 @@
               <!-- <div ref="radarChart" class="bar-chart"></div> -->
               <ul class="model-list">
                 <li
-                  v-for="(item, index) in spearmanArrDetailValue.slice(0, 5)"
+                  v-for="(item, index) in valuesRecults?.closest_model.slice(0, 5)"
                   :key="index"
                 >
-                  <span>{{ item.model }}</span>
+                  <span>{{ item[0] }}</span>
                   <div>
                     <el-progress
                       :text-inside="true"
-                      :stroke-width="24"
-                      :percentage="item.softmaxItem * 100"
-                      color="rgba(172, 210, 145, 1)"
-                      :aria-label="item.model + 'progress'"
+                      :stroke-width="12"
+                      :percentage="item[1] * 100"
+                      color="rgba(102, 191, 236, 1)"
+                      :aria-label="item[0] + 'progress'"
                     >
                       <span
                         class="score-span"
                         style="color: rgba(47, 72, 30, 1)"
-                        >{{ (item.softmaxItem * 100).toFixed(2) }}%</span
+                        >{{ (item[1] * 100).toFixed(2) }}%</span
                       >
                     </el-progress>
                   </div>
                 </li>
               </ul>
+            </div>
+
+            <div class="card-item">
+              <h2 class="card-chart-title">The Culture Closest to Your Values</h2>
+              <p class="card-chart-desc">
+                Discover the Cultural Sphere That Best Reflects Your Beliefs and Perspectives
+              </p>
+              <D3BubblePack :value="valuesRecults?.closest_cluture"></D3BubblePack>
+              
             </div>
           </div>
         </div>
@@ -130,73 +160,71 @@
         </div>
       </div>
     </div>
-    <div class="modal-box" v-if="showModal">
+    <div class="print-modal-box" v-if="showModal">
       <div class="modal-main">
         <div class="print-main" id="capture" ref="capture">
-          <div class="header">
-            <h2>Hi, {{ input ? input : "User" }}</h2>
-            <div>
-              <img src="@/assets/images/main-logo.png" alt="logo" />
-              <!-- <img
-                class="QRCodeImg"
-                src="@/assets/images/QRCodeImg.png"
-                alt=""
-              /> -->
-              <!-- <SvgIcon
-                class="close"
-                name="close"
-                @click="showModal = false"
-              ></SvgIcon> -->
-            </div>
-          </div>
-          <div class="print-content card-print">
-            <div class="card-left">
-              <!-- <h2>Hi, {{ input ? input : "User" }}</h2> -->
-              <h3>Your Core Values are</h3>
-              <div class="tag-list">
-                <span
-                  class="tag"
-                  v-for="(item, index) in myScoreArrValue.slice(0, 3)"
-                  :key="index"
-                  >{{ item.SchwartzTheoryItem }}</span
-                >
+          <div class="card-print">
+            <img
+              class="bg"
+              style="width: 100%; height: 100%"
+              fit="cover"
+              :src="
+                getAssetsFile(
+                   chwartzTheoryData[sortedValueScore[0].name].img
+                )
+              "
+              alt="test"
+            />
+            <div class="content">
+              <div class="card-left">
+                <div class="box">
+                  <div>
+                    <h2>Hi, {{ valuesRecults?.user_name ? valuesRecults?.user_name : "User" }}</h2>
+                    <h3>Your Core Values are</h3>
+                    <div class="tag-list">
+                      <span
+                        class="tag"
+                        v-for="(item, index) in  sortedValueScore.slice(0, 3)"
+                        :key="index"
+                        :class="item.name+'_tag'"
+                        >{{ item.name }}</span
+                      >
+                    </div>
+                    <p>{{ valuesRecults?.short_comment }}</p>
+                    <div class="card-bottom">
+                      <div style="display: none">
+                        <img
+                          class="logo-img"
+                          :src="logoImg"
+                          alt="logo"
+                          width="128"
+                        />
+                      </div>
+                      <div style="width: 100%">
+                        <p>
+                          Interestingly,
+                          <span class="model-name-span">{{ valuesRecults?.closest_model[0][0] }}</span>
+                          aligns seamlessly with your value priorities,<br />
+                          <span
+                            >resonating with your mindset and core belief ——
+                            much like finding a close friend.</span
+                          >
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p>
-                {{ resultDesc }}
-              </p>
-            </div>
-            <div class="card-right">
-              <img class="card-right-img" :src="cultureImg" alt="test" />
-              <!-- <img class="logo-img" :src="logoImg" alt="logo" /> -->
-              <p>the image powered by Microsoft Designer</p>
-            </div>
-            <div class="card-bottom">
-              <div style="display: none">
-                <img class="logo-img" :src="logoImg" alt="logo" width="128" />
-              </div>
-              <div style="padding-left: 0">
-                <p>
-                  Interestingly,
-                  <span class="model-name-span">{{
-                    spearmanArrDetailValue[0]
-                      ? spearmanArrDetailValue[0].model
-                      : ""
-                  }}</span>
-                  aligns seamlessly with your value priorities,
-                  <span
-                    >resonating with your mindset and core belief —— much like 
-                    finding a close friend.</span
-                  >
-                </p>
-              </div>
-              <div>
-                <img
-                  class="QRCodeImg"
-                  src="@/assets/images/QRCodeImg.png"
-                  alt=""
-                />
+              <div class="card-right">
+                <div></div>
               </div>
             </div>
+
+            <img class="logo" src="@/assets/images/main-logo.png" alt="logo" />
+
+            <img class="QRCodeImg" src="@/assets/images/QRCodeImg.png" alt="" />
+
+            <p class="label-p"><span>the image powered by Microsoft Designer</span></p>
           </div>
         </div>
         <div class="print-btn">
@@ -208,10 +236,9 @@
   </div>
 </template>
 <script setup>
-import testData from "../../utils/test-data2.json";
+import D3BubblePack from './D3BubblePack.vue'
+import Radar from './Radar.vue';
 
-const tabList = ["PVQ40 IVM", "Moral Foundations Questionnaire", "Survey"];
-const currentTest = ref(testData[tabList[0]]);
 import SchwartzTheoryDes from "../../utils/SchwartzTheoryDes.json";
 const chwartzTheoryData = ref(SchwartzTheoryDes["chwartz Theory Item"]);
 
@@ -223,6 +250,14 @@ import axios from "axios";
 import html2canvas from "html2canvas";
 import * as echarts from "echarts";
 import "echarts-gl";
+
+const props = defineProps({
+  valuesRecults: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
+});
 
 // const resultList = ["Overview", "Value Space"];
 const resultList = [
@@ -681,9 +716,9 @@ const chartDom = ref(null);
 let chartInstance = null;
 
 import Spearman from "spearman-rho";
-onMounted(async () => {
-  await nextTick(); // 确保DOM已经渲染完成 console.error(err);
-});
+// onMounted(async () => {
+//   await nextTick(); // 确保DOM已经渲染完成 console.error(err);
+// });
 const myScoreArrValue = ref([
   { SchwartzTheoryItem: "Achievement", score: 1 },
   { SchwartzTheoryItem: "Security", score: 2 },
@@ -828,13 +863,70 @@ defineExpose({
   getData,
   input,
 });
+
+
+
+// 排序后的数组
+const sortedValueScore = computed(() => {
+  const scoreObj = props.valuesRecults?.value_score || {};
+  // 转数组并排序
+  return Object.entries(scoreObj)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value); // 按 value 降序
+});
+
+
+onMounted(()=>{
+  sss()
+})
+const sss = ()=>{
+  console.log("????",props.valuesRecults)
+  const gl_data = {
+          culture: [],
+          human: [
+            {
+              // name: userTestData.tsne_human_caption,
+              name: props.valuesRecults?.user_name ? props.valuesRecults?.user_name : "User",
+              value: props.valuesRecults?.tsne_human,
+            },
+          ],
+          model: [],
+          node: [],
+        };
+        // gl_data.culture = props.valuesRecults?.tsne_cultures.map((item, index) => {
+        //   return {
+        //     name: props.valuesRecults?.tsne_culture_caption[index],
+        //     value: item,
+        //   };
+        // });
+        gl_data.model = props.valuesRecults?.tsne_models.map((item, index) => {
+          return {
+            name: props.valuesRecults?.tsne_model_caption[index],
+            value: item,
+            type: "model",
+            itemStyle: {
+              color: colors[index],
+              opacity: 1,
+            },
+          };
+        });
+        // gl_data.node = props.valuesRecults?.tsne_nodes.map((item, index) => {
+        //   return {
+        //     name: props.valuesRecults?.tsne_node_captions[index],
+        //     value: item,
+        //     type: "node",
+        //     model: props.valuesRecults?.tsne_model_caption[Math.floor(index / 30)],
+        //   };
+        // });
+        setGlChart(gl_data);
+}
 </script>
 
 <style scoped lang="scss">
 .chart-box {
   margin: 0 auto;
   display: flex;
-  padding: 1em;
+  padding: 1em 0;
 
   .loading-main {
     width: 800px;
@@ -902,6 +994,7 @@ defineExpose({
         padding: 1.5em 5.58em;
         background-color: var(--gary-color);
       }
+
       .echart-container {
         .card-item {
           padding: 3em 2em;
@@ -935,19 +1028,19 @@ defineExpose({
           }
           ul {
             margin-top: 1em;
-            padding: 0 3.166em 0 0;
+            // padding: 0 3.166em 0 0;
             li {
-              display: flex;
-              flex-direction: row;
-              flex-wrap: wrap;
-              align-items: flex-end;
-              margin-top: 2.2em;
+              // display: flex;
+              // flex-direction: row;
+              // flex-wrap: wrap;
+              // align-items: flex-end;
+              margin-top: 1em;
               font-size: 0.83em;
               gap: 0.6em;
               & > span {
-                width: 9em;
+                // width: 9em;
                 display: block;
-                text-align: right;
+                // text-align: right;
                 font-weight: 600;
                 box-sizing: border-box;
               }
@@ -981,109 +1074,176 @@ defineExpose({
   }
 }
 .card-print {
-  display: flex;
-  align-items: flex-start !important;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  .card-left {
-    width: 68%;
-    .tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em;
-      .tag {
-        display: inline-block;
-
-        padding: 0 0.66em;
-        background-color: rgba(172, 210, 145, 1);
-        color: rgba(47, 72, 30, 1);
-        border-radius: 2px;
-        font-weight: 600;
-        height: 2em;
-        line-height: 2em;
-      }
-    }
-    h2,
-    h3 {
-      font-size: 1em;
-      font-weight: 600;
-    }
-    h3 {
-      margin: 0.9em 0;
-    }
-    p {
-      margin: 1.3em 0 0;
-      line-height: 1.5em;
-    }
+  padding: 0;
+  position: relative;
+  .bg {
+    border-radius: 0.5em;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    // z-index: -1;
   }
-  .card-right {
-    position: relative;
-    flex: 1;
-    padding-left: 5%;
-    .card-right-img {
-      width: 100%;
-    }
-    .logo-img {
-      width: 3em;
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    p {
-      color: rgba(102, 102, 102, 1);
-      text-transform: capitalize;
-      text-align: right;
-      line-height: 1.2;
-      padding: 0.3em 0;
-      font-size: 0.67em;
-    }
-  }
-  .card-bottom {
-    margin-top: 1em;
+  .content {
     width: 100%;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    & > div:nth-child(1) {
-      width: 150px;
-    }
-    & > div:nth-child(2) {
-      width: calc(100% - 150px);
-    }
-    p:nth-child(1) {
-      line-height: 1.5;
-      font-weight: 600;
-      margin: 0em;
-      span {
-        font-weight: normal;
+
+    .card-left {
+      width: 56.25%;
+      padding: 3em 0;
+      & > .box {
+        height: 100%;
+        transform: translateX(3em);
+        background: rgba(255, 255, 255, 0.8);
+        padding: 2em 1.5em;
+        box-sizing: border-box;
+        border-radius: 0.5em;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
-      .model-name-span {
-        // background: #70BFFF;
-        color: #004f8f;
-        padding: 0 0.2em;
-        display: inline-block;
+
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        .tag {
+          display: inline-block;
+
+          padding: 0 0.66em;
+          background-color: rgba(172, 210, 145, 1);
+          color: rgba(47, 72, 30, 1);
+          border-radius: 2px;
+          font-weight: 600;
+          height: 2em;
+          line-height: 2em;
+
+          &{
+            &.Self-direction_tag{
+             background: rgba(251, 248, 204, 1); 
+            }
+            &.Stimulation_tag{
+             background: rgba(253, 228, 207, 1); 
+            }
+            &.Hedonism_tag{
+             background: rgba(255, 207, 210, 1); 
+            }
+            &.Achievement_tag{
+             background: rgba(241, 192, 232, 1); 
+            }
+            &.Power_tag{
+             background: rgba(207, 186, 240, 1); 
+            }
+            &.Security_tag{
+             background: rgba(163, 196, 243, 1); 
+            }
+            &.Tradition_tag{
+             background: rgba(144, 219, 244, 1); 
+            }
+            &.Conformity_tag{
+             background: rgba(142, 236, 245, 1); 
+            }
+            &.Benevolence_tag{
+             background: rgba(152, 245, 225, 1); 
+            }
+             &.Universalism_tag{
+             background: rgba(185, 251, 192, 1); 
+            }
+          }
+        }
+      }
+      h2,
+      h3 {
+        font-size: 1em;
         font-weight: 600;
       }
+      h3 {
+        margin: 0.9em 0;
+      }
+      p {
+        margin: 1.3em 0 0;
+        line-height: 1.5em;
+      }
     }
-  }
-  .print {
-    width: 100%;
-    text-align: center;
-    .print-btn {
-      margin-top: 40px;
-      font-size: 0.83em;
-      line-height: 1.57em;
-      color: var(--theme-color);
-      cursor: pointer;
-      border: 1px solid var(--theme-color);
-      background-color: transparent;
+    .card-right {
+      box-sizing: border-box;
+      position: relative;
+      flex: 1;
+      align-self: flex-end;
+      transform: translateX(-1em);
+      height: 0;
+      padding-bottom: 54%;
+      & > div {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        padding: 3em 0;
+        height: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        p {
+          color: rgba(102, 102, 102, 1);
+          text-transform: capitalize;
+          text-align: right;
+          line-height: 1.2;
+          padding: 0.3em 0;
+          font-size: 0.67em;
+        }
+      }
+    }
+    .card-bottom {
+      margin-top: 1em;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      & > div:nth-child(1) {
+        width: 150px;
+      }
+      & > div:nth-child(2) {
+        width: calc(100% - 150px);
+      }
+      p:nth-child(1) {
+        line-height: 1.5;
+        font-weight: 600;
+        margin: 0em;
+        span {
+          font-weight: normal;
+        }
+        .model-name-span {
+          // background: #70BFFF;
+          color: #004f8f;
+          padding: 0 0.2em;
+          display: inline-block;
+          font-weight: 600;
+        }
+      }
+    }
+    .print {
+      width: 100%;
+      text-align: right;
+      .print-btn {
+        margin-top: 1em;
+        margin-right: 1em;
+        font-size: 0.83em;
+        line-height: 1.57em;
+        color: var(--theme-color);
+        cursor: pointer;
+        border: 2px solid var(--theme-color);
+        background-color: transparent;
+      }
     }
   }
 }
 
-.modal-box {
+.print-modal-box {
   z-index: 2005;
   position: fixed;
   width: 100%;
@@ -1095,158 +1255,48 @@ defineExpose({
   align-items: center;
   justify-content: center;
   .modal-main {
-    width: 874px;
     margin: 0 auto;
     .print-main {
-      display: flex;
-      flex-wrap: wrap;
+      // display: flex;
+      // flex-wrap: wrap;
       font-size: 16px;
-      box-sizing: border-box;
+      // box-sizing: border-box;
       width: 874px;
-      height: 590px;
-      background-color: #fff;
-      padding: 30px 60px;
       color: #000;
-      .header {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      .card-print .content {
+        min-height: 590px;
         padding-bottom: 1em;
-        align-items: flex-end;
-        h2 {
-          font-size: 1.5em;
-          font-weight: 600;
-        }
-        img {
-          width: 114px;
-        }
-        img.QRCodeImg {
-          width: 45px;
-          margin-left: 50px;
-        }
-        .close {
-          width: 1em;
-          height: 1em;
-        }
-      }
-      .print-content {
-        font-size: 16px;
+        box-sizing: border-box;
         .card-left {
-          width: 61%;
-          padding: 0;
-          .tag-list {
-            display: flex;
-            gap: 0.5em;
-            .tag {
-              font-size: 1em;
-            }
-          }
-          h2 {
-            font-size: 1.5em;
-          }
-          h3 {
-            font-size: 1.125em;
-            margin-top: 0;
-          }
-          p {
-            font-size: 1.125em;
-          }
-        }
-        .card-right {
-          position: relative;
-          width: 35.81%;
-          .card-right-img {
-            width: 100%;
-          }
-          .logo-img {
-            width: 3em;
-            position: absolute;
-            right: 0;
-            top: 0;
-          }
-          p {
-            font-size: 1em;
-            text-align: left;
-          }
-        }
-        .card-bottom {
-          margin-top: 0.5em;
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          align-items: center;
-          & > div:nth-child(1) {
-            width: 100px;
-          }
-          img {
-            width: 100px;
-          }
-          & > div:nth-child(2) {
-            flex: 1;
-            padding: 0 1em;
-            box-sizing: border-box;
-          }
-          p:nth-child(1) {
-            line-height: 1.5;
-            font-size: 1.125em;
-            font-weight: 600;
-            margin-bottom: 0.8em;
-            span {
-              font-size: 0.9em;
-              font-weight: normal;
-            }
-            .model-name-span {
-              padding: 0.3em 0.5em;
-              display: inline-block;
-              font-size: 1em;
-              font-weight: 600;
-            }
-          }
-          p {
-            font-size: 1em;
+          width: 57.3%;
+          h2{
+            font-size:1.2em;
           }
         }
       }
-      // .print-culture {
-      //   display: flex;
-      //   justify-content: space-between;
-      //   align-items: center;
-      //   .print-culture-left {
-      //     padding-right: 1em;
-      //     padding-top: 1em;
-      //     line-height: 1.2;
-      //     font-size: 1.125em;
-      //     .card-bottom{
-      //       margin-top: 20px;
-      //       display: flex;
-      //       flex-direction: row;
-      //       &>div:nth-child(1){
-      //         width: 70px;
-      //       }
-      //       &>div:nth-child(2){
-      //         width: calc(100% - 70px);
-      //       }
-      //     }
-      //   }
-      //   .print-culture-right {
-      //     position: relative;
-      //     .culture-img {
-      //       height: 200px;
-      //     }
-      //     .logo-img {
-      //       width: 3em;
-      //       position: absolute;
-      //       right: 0;
-      //       top: 0;
-      //     }
-      //     p{
-      //       color: rgba(102, 102, 102, 1);
-      //       text-transform: capitalize;
-      //     }
-      //   }
-      // }
+
+      .logo {
+        width: 140px;
+        position: absolute;
+        right: 4em;
+        top: 3em;
+      }
+      .QRCodeImg {
+        width: 100px;
+        position: absolute;
+        right: 4em;
+        bottom: 4em;
+      }
+      .label-p {
+        position: absolute;
+        right: 4em;
+        bottom: 1em;
+        font-style: italic;
+        font-weight: 700;
+        span{
+          font-size: .85em;
+        }
+      }
     }
     .print-btn {
       margin-top: 2em;

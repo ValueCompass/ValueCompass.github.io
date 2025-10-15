@@ -15,11 +15,11 @@
           <el-button :disabled="isListening">
             <svg-icon name="recrod_btn" @click="startRecognition"></svg-icon>
           </el-button>
-          <el-button :disabled="!textareaText.trim()">
+          <el-button :disabled="!textareaText.trim() || isSendLoading">
             <svg-icon
               class="send_btn"
               name="send_btn"
-              :class="!textareaText.trim() ? 'disabled' : ''"
+              :class="!textareaText.trim() || isSendLoading ? 'disabled' : ''"
               @click="sendMessage"
             ></svg-icon>
           </el-button>
@@ -48,7 +48,8 @@ import { ref, onMounted, onBeforeUnmount, defineExpose } from "vue";
 import { ElMessage } from "element-plus";
 
 const props = defineProps({
-  lang: { type: String, default: "zh-CN" }, // 默认中文
+  lang: { type: String, default: "zh-CN" }, //'en-US' "zh-CN" 
+  isSendLoading: { type: Boolean, default: false }, //
 });
 
 const textareaText = ref("");
@@ -142,7 +143,8 @@ const handleEnter = (event) => {
 
 const emit = defineEmits(["sendMessage"]);
 const sendMessage = () => {
-  if (textareaText.value.trim()) {
+  if (!textareaText.value.trim() || props.isSendLoading) {
+  } else {
     emit("sendMessage", textareaText.value.trim());
   }
 };

@@ -21,8 +21,8 @@
           <p>Language cannot be changed during the assessment.</p>
 
           <div class="btn-container">
-            <el-button @click="chooseLanguage('English')">English / 英文</el-button>
-            <el-button @click="chooseLanguage('Chinese')" class="chinese"
+            <el-button @click="chooseLanguage('en-US')">English / 英文</el-button>
+            <el-button @click="chooseLanguage('zh-CN')" class="chinese"
               >中文 / Chinese</el-button
             >
           </div>
