@@ -1,5 +1,24 @@
 <template>
   <div class="topic-container main-container">
+    <div class="skip-div">
+      <el-button @click="skipClick">Skip</el-button>
+    </div>
+    <div>
+      <h2>Enter Your Name (Optional)</h2>
+      <p>
+        Providing your name makes the experience more personal. We’ll use it to
+        address you during the conversation, and it will also appear on your
+        result card. But if you prefer to stay anonymous, you can skip this
+        step.
+      </p>
+      <div class="input-box">
+        <el-input
+          v-model="nickName"
+          class="input"
+          placeholder="Please enter your name or nickname"
+        ></el-input>
+      </div>
+    </div>
     <div>
       <h2>Choose Your Topic</h2>
       <p>
@@ -25,7 +44,12 @@
       </ul>
 
       <div class="btn-container">
-        <el-button class="Change-question-btn" @click="confirmChooseTopics">
+        <el-button
+          class="Change-question-btn"
+          @click="confirmChooseTopics"
+          :disabled="selectedArr.length == 0"
+          :class="selectedArr.length == 0 ? 'disabled' : ''"
+        >
           Confirm and Continue
         </el-button>
       </div>
@@ -48,42 +72,44 @@ const props = defineProps({
   },
 });
 
+const nickName = ref("");
+
 const topicList = ref([
   {
     img: getAssetsFile("1.png"),
-    topicName: "Social Justice & Responsibility",
+    topicName: "Family & Intimacy",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Friendship & Social Life",
+    img: getAssetsFile("2.png"),
+    topicName: "Friendship",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Romance & Partnerships",
+    img: getAssetsFile("3.png"),
+    topicName: "Education",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Social Justice & Responsibility",
+    img: getAssetsFile("4.png"),
+    topicName: "Work & Career",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Freedom & Individual Rights",
+    img: getAssetsFile("5.png"),
+    topicName: "Consumption & Lifestyle",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Work & Professional Ethics",
+    img: getAssetsFile("6.png"),
+    topicName: "Collaboration & Teamwork",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Wealth & Material Values",
+    img: getAssetsFile("7.png"),
+    topicName: "Public Policy & Justice",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Culture & Tradition",
+    img: getAssetsFile("8.png"),
+    topicName: "Religion & Culture",
   },
   {
-    img: getAssetsFile("1.png"),
-    topicName: "Environment & Sustainability",
+    img: getAssetsFile("9.png"),
+    topicName: "Technology & Innovation",
   },
 ]);
 
@@ -107,17 +133,41 @@ function toggle(id) {
   }
 }
 
-
 const emit = defineEmits(["confirmChooseTopics"]);
 const confirmChooseTopics = () => {
-  emit("confirmChooseTopics", selectedArr);
+  emit("confirmChooseTopics", {
+    selectedTopics:selectedArr,
+    nickName:nickName.value
+  });
 };
+
+const skipClick = () =>{
+  emit("confirmChooseTopics", {
+    selectedTopics:[],
+    nickName:""
+  });
+}
 </script>
 
 <style scoped lang="scss">
 .topic-container {
+  padding-bottom: 3em;
   position: relative;
-  padding: 2em 8.5em;
+  // padding: 2em 8.5em;
+  width: 83%;
+  .skip-div{
+    margin: 2em 0 6em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    button{
+      border: 2px solid rgba(11, 112, 195, 1);
+      color: rgba(11, 112, 195, 1);
+      font-size: 1.5em;
+      height: 2.4em;
+      width: 4em;
+    }
+  }
 
   h2 {
     font-size: 2em;
@@ -131,6 +181,23 @@ const confirmChooseTopics = () => {
       margin: 0.5em 0;
     }
   }
+
+  .input-box {
+    width: 70%;
+    margin: 1.5em auto 4em;
+    .input {
+      font-size: 1.5em;
+      height: 2.33em;
+      --el-input-text-color: var(--text-color);
+      --el-input-bg-color: var(--bg-color) !important;
+      --el-input-border-color: rgba(194, 194, 194, 1) !important;
+      --el-input-placeholder-color: rgba(194, 194, 194, 1) !important;
+      --el-input-hover-border-color: rgba(194, 194, 194, 1) !important;
+      --el-input-focus-border: rgba(194, 194, 194, 1) !important;
+      --el-input-focus-border-color: rgba(194, 194, 194, 1) !important;
+    }
+  }
+
   ul {
     margin: 1.5em 0;
     display: flex;
@@ -162,7 +229,6 @@ const confirmChooseTopics = () => {
       img {
         width: 33%;
         display: block;
-        margin: 0 auto;
       }
 
       .check-icon {
@@ -215,18 +281,18 @@ const confirmChooseTopics = () => {
     justify-content: center;
     .Change-question-btn {
       font-size: 1.25em;
-      color: rgba(11, 112, 195, 1);
+      background: rgba(11, 112, 195, 1);
+      color: #fff;
       height: 3em;
-      border: 2px solid rgba(11, 112, 195, 1);
+      // border: 2px solid rgba(11, 112, 195, 1);
       padding: 0.2em 1.2em;
       border-radius: 6px;
       &:hover {
-        background: #fff;
-        opacity: 0.8;
+        opacity: 0.9;
       }
-      .el-icon--right {
-        font-size: 1.2em;
-        margin-left: 0.4em;
+      &.is-disabled {
+        background: rgba(194, 194, 194, 1);
+        color: #fff;
       }
     }
   }

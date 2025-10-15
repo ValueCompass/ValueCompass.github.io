@@ -62,7 +62,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/TestValues',
     name: 'Test Your Values',
-    component: () => import('../views/TestValuesNew2.vue'),
+    component: () => import('../views/TestValuesChat.vue'),
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true
@@ -71,7 +71,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/TestValues2',
     name: 'Test Your Values2',
-    component: () => import('../views/TestValuesChat.vue'),
+    component: () => import('../views/TestValuesNew2.vue'),
     meta: {
       keepAlive: true, //此页面需要缓存
       requiresFrontEndAuth: true

@@ -60,15 +60,18 @@
           </ul> -->
         </li>
 
-        <!-- <li>
-          <router-link to="/TestValues">Test Your Values</router-link>
-        </li> -->
+        
 
         <li
           :class="{ active: $route.path.indexOf('/CulturalAlignment/') != -1 }"
         >
           <router-link to="/CulturalAlignment">Cultural Alignment</router-link>
         </li>
+
+        <li>
+          <router-link to="/TestValues">Test Your Values</router-link>
+        </li>
+        
         <li>
           <router-link to="/AboutUs">About Us</router-link>
         </li>

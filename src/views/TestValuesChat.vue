@@ -5,9 +5,9 @@
       v-show="processIndex == 2"
       @confirmChooseTopics="confirmChooseTopics"
     ></ChooseTopic>
-    <Chat v-show="processIndex == 3" @setProcessIndex="setProcessIndex"></Chat>
+    
     <LoadingMain v-show="processIndex == 4"></LoadingMain>
-    <Result v-show="processIndex == 5"></Result>
+    <Result v-if="processIndex == 5" :valuesRecults="valuesRecults"></Result>
 
     <div class="img-div" v-show="processIndex < 4">
       <div
@@ -42,6 +42,7 @@
       </div>
     </div>
   </div>
+  <Chat v-if="processIndex == 3" :choosedLanguage="choosedLanguage" :choosedTopics="choosedTopics.value" :nickName="nickName" @setProcessIndex="setProcessIndex" @getResults="getResults"></Chat>
 </template>
 <script setup>
 import Home from "../components/TestValuesChat/Home.vue";
@@ -51,26 +52,57 @@ import LoadingMain from "../components/TestValuesChat/LoadingMain.vue";
 
 import Result from "../components/TestValuesChat/Result.vue";
 
+import { getChatResult } from "@/service/api";
+
+
 import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 
 const processIndex = ref(1);
 
-const chooseanguage = ref(1);
-const chooseTopics = ref([]);
+const valuesRecults = ref(null)
+
+const choosedLanguage = ref("en-US");  //'en-US' "zh-CN" 
+const choosedTopics = ref([]);
+const nickName = ref("")
 
 const chooseLanguage = (language) => {
-  chooseanguage.value = language;
+  console.log("!!",language)
+  choosedLanguage.value = language;
   processIndex.value = 2;
 };
 
-const confirmChooseTopics = (topics) => {
-  chooseTopics.value = topics;
+
+const confirmChooseTopics = (data) => {
+  choosedTopics.value = data.selectedTopics;
+  nickName.value = data.nickName
   processIndex.value = 3;
 };
 
 const setProcessIndex = (index) => {
+  console.log("@@@@@@@@@@@",index)
   processIndex.value = index;
 };
+
+const getResults = (userId) =>{
+  console.log("getResults",userId)
+  processIndex.value = 4
+  try {
+    getChatResult()
+      .then((response) => {
+        processIndex.value = 5;
+        console.log(response);
+        valuesRecults.value = response
+      })
+      .catch((err) => {
+        console.log("err");
+        ElMessage.error("发送失败，请重新发送");
+        processIndex.value = 3;
+      })
+      .finally(() => {});
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 const animateOnLoad = ref(false);
 
@@ -164,18 +196,18 @@ onMounted(async () => {
         }
         .img0 {
           opacity: 0.2;
-          transform: translate(30%, 40%) scale(0.6);
+          transform: translate(20%, 40%) scale(0.9);
         }
         .img1 {
-          transform: translate(-165%, -40%) scale(0.4);
+          transform: translate(-210%, -65%) scale(0.7);
           opacity: 0.2;
         }
         .img2 {
-          transform: translate(0, -80%) scale(0.6);
+          transform: translate(10%, -120%) scale(0.69);
           opacity: 0.2;
         }
         .img3 {
-          transform: translate(-190%, 30%) scale(0.5);
+          transform: translate(-210%, -5%) scale(0.68);
           opacity: 0.2;
         }
         .img4 {
@@ -195,18 +227,18 @@ onMounted(async () => {
         }
         .img0 {
           opacity: 0.2;
-          transform: translate(30%, 40%) scale(0.6);
+          transform: translate(20%, 40%) scale(0.9);
         }
         .img1 {
-          transform: translate(calc(-90vw + 10em + 70%), -40%) scale(0.4);
+          transform: translate(calc(-90vw + 10em + 35%), -65%) scale(0.65);
           opacity: 0.2;
         }
         .img2 {
-          transform: translate(0, -80%) scale(0.6);
+          transform: translate(10%, -120%) scale(0.69);
           opacity: 0.2;
         }
         .img3 {
-          transform: translate(calc(-90vw + 10em + 50%), 30%) scale(0.5);
+          transform: translate(calc(-90vw + 10em + 25%), -5%) scale(0.68);
           opacity: 0.2;
         }
         .img4 {

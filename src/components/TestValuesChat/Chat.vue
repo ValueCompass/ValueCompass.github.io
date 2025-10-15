@@ -6,7 +6,10 @@
           <svg-icon name="exit_btn"></svg-icon>
           <span>Exit</span>
         </div>
-        <div class="chat-list-container" style="">
+        <div
+          class="chat-list-container"
+          :class="chatList.length > 1 ? 'setHeight' : ''"
+        >
           <el-scrollbar ref="scrollbarRef">
             <div class="content">
               <ul class="chat-ul">
@@ -29,10 +32,12 @@
         </div>
 
         <div class="input-container">
-          <SpeechToText
-            ref="SpeechToTextRef"
+          <ChatInput
+            ref="ChatInputRef"
             @sendMessage="sendMessage"
-          ></SpeechToText>
+            :isSendLoading="isSendLoading"
+            :lang="choosedLanguage"
+          ></ChatInput>
           <p class="tip-text">
             Your data stays local in your browser. No account needed.
           </p>
@@ -41,13 +46,8 @@
       <div class="right">
         <div class="content">
           <div>
-            <div style="position: relative">
-              <GradientCircle
-                :percentage="chatPercentage * 100"
-                :size="400"
-                
-              />
-             
+            <div>
+              <GradientCircle :percentage="chatPercentage * 100" />
             </div>
             <p>
               Your conversation will begin to light up and fill the outer ring
@@ -55,9 +55,12 @@
             </p>
           </div>
           <div>
-            <span @click="ViewResults" class="button view-btn"
+            <el-button
+              @click="ViewResults"
+              class="button view-btn"
+              color="#0B70C3"
               >End and View Results <i class="icon"></i
-            ></span>
+            ></el-button>
           </div>
         </div>
       </div>
@@ -92,19 +95,29 @@
 
 <script setup>
 import LoadingDots from "@/components/common/LoadingDots.vue";
-import SpeechToText from "@/components/TestValuesChat/SpeechToText.vue";
+import ChatInput from "@/components/TestValuesChat/ChatInput.vue";
 import GradientCircle from "@/components/TestValuesChat/GradientCircle.vue";
 
 import { getChatItemInfo } from "@/service/api";
 
-import { ref, onMounted, defineEmits, nextTick, watch } from "vue";
+import { ref, onMounted, defineEmits, nextTick, watch,toRaw  } from "vue";
 import { ElMessage } from "element-plus";
 
 import { ElMessageBox } from "element-plus";
+import { array, type } from "@amcharts/amcharts4/core";
+
+const props = defineProps({
+  choosedLanguage: { type: String, default: "zh-CN" }, //'en-US'
+  choosedTopics: {type:Array,default:[]},
+  isSendLoading: { type: Boolean, default: false }, //
+  nickName: { type: String, default: "" }, //'en-US'
+});
+
+const chatId = ref(null)
 
 const dialogVisible = ref(false);
 
-const SpeechToTextRef = ref();
+const ChatInputRef = ref();
 const scrollbarRef = ref();
 
 const isSendLoading = ref(false);
@@ -112,18 +125,18 @@ const isSendLoading = ref(false);
 const chatPercentage = ref(0);
 
 const chatList = ref([
-  {
-    type: "model",
-    text: "Do you think people should prioritize logic or emotions when relating to others?",
-  },
-  {
-    type: "user",
-    text: "I think emotions should come first. They help build trust and deeper connections.",
-  },
-  {
-    type: "model",
-    text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
-  },
+  // {
+  //   type: "model",
+  //   text: "Do you think people should prioritize logic or emotions when relating to others?",
+  // },
+  // {
+  //   type: "user",
+  //   text: "I think emotions should come first. They help build trust and deeper connections.",
+  // },
+  // {
+  //   type: "model",
+  //   text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
+  // },
   //   {
   //     type: "user",
   //     text: "Sure — once my friend was really stressed, and instead of giving her practical solutions, I just listened and showed empathy. That helped her open up.",
@@ -206,28 +219,45 @@ watch(
   { deep: true }
 );
 
+onMounted(()=>{
+  console.log("onMounted")
+  chatId.value = generateId()
+  sendMessage(null)
+  //   {
+  //   type: "model",
+  //   text: "Do you think people should prioritize logic or emotions when relating to others?",
+  // },
+})
 const sendMessage = (textareaValue) => {
   if (isSendLoading.value) {
     return;
   }
   isSendLoading.value = true;
-  chatList.value.push({
-    type: "user",
-    text: textareaValue,
-  });
 
-  SpeechToTextRef.value.clear();
+  if(textareaValue){
+    chatList.value.push({
+      type: "user",
+      text: textareaValue,
+    });
+  }
+  ChatInputRef.value.clear();
 
   try {
+    const obj = { language: props.choosedLanguage,choosedTopics:toRaw(props.choosedTopics),nickName:props.nickName, user_response: textareaValue, user_id:chatId.value, }
+    console.log("需要传的参数",obj)
     getChatItemInfo()
       .then((response) => {
         console.log(response);
-        chatList.value.push({ type: "model", text: response.message });
-        if (chatPercentage.value < 1) {
-          chatPercentage.value += 0.11;
-          chatPercentage.value =
-            chatPercentage.value > 1 ? 1 : chatPercentage.value;
-        }
+        chatList.value.push({ type: "model", text: response.question });
+        chatPercentage.value = response.progress_bar
+         if (chatPercentage.value >= 1){
+          chatPercentage.value = 1
+         }
+        // if (chatPercentage.value < 1) {
+        //   chatPercentage.value += 0.11;
+        //   chatPercentage.value =
+        //     chatPercentage.value > 1 ? 1 : chatPercentage.value;
+        // }
       })
       .catch((err) => {
         console.log("err");
@@ -241,32 +271,24 @@ const sendMessage = (textareaValue) => {
   }
 };
 
-const emit = defineEmits(["setProcessIndex"]);
-const ViewResults = () => {
-  console.log("ViewResults");
-  emit("setProcessIndex", 4);
+const emit = defineEmits(["setProcessIndex","getResults"]);
 
-  try {
-    getChatItemInfo()
-      .then((response) => {
-        console.log(response);
-        emit("setProcessIndex", 5);
-      })
-      .catch((err) => {
-        console.log("err");
-        ElMessage.error("发送失败，请重新发送");
-        emit("setProcessIndex", 3);
-      })
-      .finally(() => {});
-  } catch (error) {
-    console.error("Error:", error);
-  }
+const ViewResults = () => {
+  console.log("ViewResults",chatId.value);
+  emit("getResults", chatId.value);
+
 };
 
 const confirmExitClick = () => {
   dialogVisible.value = false;
   emit("setProcessIndex", 1);
 };
+
+
+function generateId() {
+  return 'msg-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -295,7 +317,8 @@ const confirmExitClick = () => {
       );
       display: flex;
       flex-direction: column;
-      gap: 2.8em;
+      justify-content: center;
+      gap: 1.25em;
       position: relative;
       .exit-btn {
         cursor: pointer;
@@ -320,7 +343,13 @@ const confirmExitClick = () => {
       .chat-list-container {
         // height: calc(100% - 10em);
         overflow: hidden;
-        flex: 1;
+        &.setHeight {
+          flex: 1;
+          .content .chat-ul {
+            padding-bottom: 5em;
+          }
+        }
+
         .content {
           // display: none;
           padding: 0 3em;
@@ -332,7 +361,7 @@ const confirmExitClick = () => {
             display: flex;
             flex-direction: column;
             gap: 1em;
-            padding-bottom: 5em;
+            // padding-bottom: 5em;
             li {
               display: flex;
               flex-direction: column;
@@ -342,6 +371,9 @@ const confirmExitClick = () => {
 
               line-height: 1.5;
               box-sizing: border-box;
+              &:nth-child(1) {
+                font-weight: 600;
+              }
               & > div {
                 font-size: 1.25em;
               }
@@ -398,7 +430,6 @@ const confirmExitClick = () => {
               color: rgba(102, 102, 102, 1);
               font-style: italic;
             }
-        
           }
           &:nth-child(2) {
             padding: 4em;
@@ -410,6 +441,11 @@ const confirmExitClick = () => {
               box-sizing: border-box;
               display: flex;
               align-items: center;
+              border: none;
+              background: #0b70c3;
+              &.is-disabled {
+                background: #c2c2c2;
+              }
               .icon {
                 margin-left: 0.5em;
                 width: 1em;
