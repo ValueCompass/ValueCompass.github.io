@@ -119,34 +119,42 @@ export const countriesList = [
     {
         countryName: "China",
         countryValue: "China",
+        key: "China",
     },
     {
         countryName: "Japan",
         countryValue: "Japan",
+        key: "Japan",
     },
     {
         countryName: "Thailand",
         countryValue: "Thailand",
+        key: "Thailand",
     },
     {
         countryName: "Malaysia",
         countryValue: "Malaysia",
+        key: "Malaysia",
     },
     {
         countryName: "South Korea",
         countryValue: "South_Korea",
+        key: "South_Korea",
     },
     {
         countryName: "Singapore",
         countryValue: "Singapore",
+        key: "Singapore",
     },
     // {
     //     countryName: "indonesia",
     //     countryValue: "indonesia",
+    //     key: "indonesia",
     // },
     {
         countryName: "Australia",
         countryValue: "Australia",
+        key: "Australia",
     },
 ];
 

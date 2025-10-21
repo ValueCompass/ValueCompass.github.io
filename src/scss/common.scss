@@ -242,7 +242,10 @@
         }
 
         &.is-hovering {
+          background-color: #E6E6E6 !important;
+        }
 
+        &.is-selected {
           background-color: rgba(204, 240, 252, 1) !important;
         }
 

@@ -6,7 +6,9 @@
         <li v-for="(post, index) in posts" :key="index">
           <a :href="'https://valuecompass.github.io/Research' + post.permalink">
             <div class="img-div">
-              <img :src="getAssetsFile('posts/' + post.image)" alt="" />
+              <div>
+                <img :src="getAssetsFile('posts/' + post.image)" alt="" />
+              </div>
             </div>
             <div class="bottom">
               <h2 class="article__title">
@@ -70,27 +72,27 @@ const posts = ref([
   // },
   {
     title:
-      "Value Compass Leaderboard: A Platform for Fundamental and Validated Evaluation of LLMs Values",
-    date: "2025-1-13",
-    image: "architecture_value.png",
+      "Towards Better Value Principles for Large Language Model Alignment: A Systematic Evaluation and Enhancement",
+    date: "2025-7-27",
+    image: "self_explanation.png",
+    tags: ["evaluation","alignment"],
+    permalink: "/better_value_principles",
+  },
+  {
+    title:
+      "IROTE: Human-like Traits Elicitation of Large Language Model via In-Context Self-Reflective Optimization",
+    date: "2025-8-12",
+    image: "irote.png",
+    tags: ["evaluation","analysis"],
+    permalink: "/irote_llm_traits",
+  },
+  {
+    title:
+      "MoHoBench: Assessing Honesty of Multimodal Large Language Models via Unanswerable Visual Questions",
+    date: "2025-7-29",
+    image: "mohobench.png",
     tags: ["evaluation"],
-    permalink: "/value_compass_leaderboard",
-  },
-  {
-    title:
-      "The Road to Artificial SuperIntelligence: A Comprehensive Survey of Superalignment",
-    date: "2024-12-25",
-    image: "scalable_oversigh_ techniques.png",
-    tags: ["analysis"],
-    permalink: "/survey_of_superalignment",
-  },
-  {
-    title:
-      "Embedding an Ethical Mind - Aligning Text-to-Image Synthesis via Lightweight Value Optimization",
-    date: "2024-10-16",
-    image: "basic_value_space.png",
-    tags: ["alignment"],
-    permalink: "/text2image_alignment",
+    permalink: "/mohobench_mllm_honesty",
   },
 ]);
 </script>
@@ -112,6 +114,18 @@ const posts = ref([
     .img-div {
       padding: 1.19em 1.625em;
       background: #ffffff;
+      &>div{
+        // width: 100%;
+        // padding-top: 50%;
+        // position: relative;
+        // overflow: hidden;
+        // img{
+        //   position: absolute;
+        //   left: 0;
+        //   top: 50%;
+        //   transform: translateY(-50%);
+        // }
+      }
     }
     img {
       width: 100%;

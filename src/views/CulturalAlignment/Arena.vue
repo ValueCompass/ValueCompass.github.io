@@ -17,6 +17,7 @@
                       v-model="countryValue"
                       placeholder="Select a country"
                       popper-class="select-options-cultural"
+                      value-key="key"
                     >
                       <template #label="{ label, value }">
                         <p class="country-p">
@@ -36,7 +37,7 @@
                       </template>
                       <el-option
                         v-for="item in countryList"
-                        :key="item.countryName"
+                        :key="item.key"
                         :label="item.countryName"
                         :value="item"
                       >
@@ -78,6 +79,7 @@
                       placeholder="Select a topic"
                       popper-class="select-options-cultural topic-select-options"
                       @change="topicSelectChange"
+                      value-key="key"
                     >
                       <template #label="{ label, value }">
                         <span
@@ -111,7 +113,11 @@
                           ]"
                           :key="groupKey2"
                           :label="groupKey2"
-                          :value="{ topic: groupKey2, category: groupKey }"
+                          :value="{
+                            topic: groupKey2,
+                            category: groupKey,
+                            key: `${groupKey}-${groupKey2}`,
+                          }"
                         >
                           <div class="option-content">
                             <p>{{ groupKey2 }}</p>
@@ -463,6 +469,7 @@ const setOptionAndGenarateResult = () => {
   topicValue.value = {
     category: q.category,
     topic: q.topic,
+    key: `${q.category}-${q.topic}`,
   };
   questionOptions.value = q.questionList;
   questionValue.value = q.currQuestion;

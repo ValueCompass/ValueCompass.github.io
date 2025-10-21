@@ -17,15 +17,15 @@ export const calculateModelValue = (data: any): any => {
     return request.post("/api/calculate_model_value", data)
 }
 
-export const getAnswerInfo = (data: any): any => {
+export const getAnswerInfo = (): any => {
     return axios.get("./data/CulturalAlignment/answer_info.json");
 }
 
-export const getQuestionInfo = (data: any): any => {
+export const getQuestionInfo = (): any => {
     return axios.get("./data/CulturalAlignment/question_info.json");
 }
 
-export const getChatItemInfo = (data: any): any => {
+export const getChatItemInfo = (): any => {
     // return request.post("/api/v1/chat", data)
 
     const result = {
@@ -34,7 +34,7 @@ export const getChatItemInfo = (data: any): any => {
     }
 
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         setTimeout(function () {
             resolve(result);
         }, 1000);
@@ -42,6 +42,7 @@ export const getChatItemInfo = (data: any): any => {
 }
 
 export const getChatResult = (data: any): any => {
+    console.log(data)
     // return request.post("/api/v1/result", data)
 
     const result = {
@@ -143,7 +144,7 @@ export const getChatResult = (data: any): any => {
 
 
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         setTimeout(function () {
             resolve(result);
         }, 2000);
