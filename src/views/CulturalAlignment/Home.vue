@@ -265,6 +265,8 @@ onActivated(() => {
           // -webkit-text-stroke: 1px rgba(255, 255, 255, 1);
           // text-stroke: 1px rgba(255, 255, 255, 1);
           // font-weight: 900;
+          text-shadow: 2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff,
+            -2px -2px 0 #fff;
         }
         .country-answer-box {
           opacity: 0;

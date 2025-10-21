@@ -43,6 +43,7 @@
                     placeholder="Select a topic"
                     popper-class="select-options-cultural topic-select-options"
                     @change="topicSelectChange"
+                    value-key="key"
                   >
                     <template #label="{ label, value }">
                       <span
@@ -76,7 +77,11 @@
                         ]"
                         :key="groupKey2"
                         :label="groupKey2"
-                        :value="{ topic: groupKey2, category: groupKey }"
+                        :value="{
+                          topic: groupKey2,
+                          category: groupKey,
+                          key: `${groupKey}-${groupKey2}`,
+                        }"
                       >
                         <div class="option-content">
                           <p>{{ groupKey2 }}</p>
@@ -172,7 +177,17 @@
                     </div>
                   </div>
                 </li>
-                <li v-for="(item, index) in chooseCountriesList" :key="index">
+                <li
+                  v-for="(item, index) in chooseCountriesList"
+                  :key="index"
+                  :style="{
+                    borderColor:
+                      item && item.countryName
+                        ? getCountryColor(item.countryName)
+                        : '',
+                    borderStyle: item && item.countryName ? 'solid' : 'dashed',
+                  }"
+                >
                   <div class="content" v-if="item">
                     <div class="top">
                       <span
@@ -499,6 +514,7 @@ const setOptionAndGenarateResult = () => {
   topicValue.value = {
     category: q.category,
     topic: q.topic,
+    key: `${q.category}-${q.topic}`,
   };
   questionOptions.value = q.questionList;
   questionValue.value = q.currQuestion;
