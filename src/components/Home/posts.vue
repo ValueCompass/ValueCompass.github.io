@@ -70,14 +70,7 @@ const posts = ref([
   //   tags: ["evaluation"],
   //   permalink: "/generative_evolving_test",
   // },
-  {
-    title:
-      "Towards Better Value Principles for Large Language Model Alignment: A Systematic Evaluation and Enhancement",
-    date: "2025-7-27",
-    image: "self_explanation.png",
-    tags: ["evaluation","alignment"],
-    permalink: "/better_value_principles",
-  },
+  
   {
     title:
       "IROTE: Human-like Traits Elicitation of Large Language Model via In-Context Self-Reflective Optimization",
@@ -93,6 +86,14 @@ const posts = ref([
     image: "mohobench.png",
     tags: ["evaluation"],
     permalink: "/mohobench_mllm_honesty",
+  },
+  {
+    title:
+      "Towards Better Value Principles for Large Language Model Alignment: A Systematic Evaluation and Enhancement",
+    date: "2025-7-27",
+    image: "value_principles.png",
+    tags: ["evaluation","alignment"],
+    permalink: "/better_value_principles",
   },
 ]);
 </script>
