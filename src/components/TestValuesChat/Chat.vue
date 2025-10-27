@@ -6,60 +6,105 @@
           <svg-icon name="exit_btn"></svg-icon>
           <span>Exit</span>
         </div>
-        <div
-          class="chat-list-container"
-          :class="chatList.length > 1 ? 'setHeight' : ''"
-        >
-          <el-scrollbar ref="scrollbarRef">
-            <div class="content">
-              <ul class="chat-ul">
-                <li
-                  :class="item.type == 'user' ? 'me-chat' : 'model-chat'"
-                  v-for="(item, index) in chatList"
-                  :key="index"
-                >
-                  <div>
-                    {{ item.text }}
-                  </div>
-                </li>
 
-                <li v-if="isSendLoading">
-                  <LoadingDots class="select-tip" text="Generating" :size="7" />
-                </li>
-              </ul>
+        <div class="language-div" v-if="!showChat">
+          <div>
+            <p>Select your language to begin</p>
+            <p>Language cannot be changed during the assessment.</p>
+
+            <div class="btn-container">
+              <el-button @click="chooseLanguage('en-US')"
+                >English / 英文</el-button
+              >
+              <el-button @click="chooseLanguage('zh-CN')" class="chinese"
+                >中文 / Chinese</el-button
+              >
             </div>
-          </el-scrollbar>
+          </div>
         </div>
+        <div class="chat-content" v-else>
+          <div
+            class="chat-list-container"
+            :class="chatList.length > 1 ? 'setHeight' : ''"
+          >
+            <el-scrollbar ref="scrollbarRef">
+              <div class="content">
+                <ul class="chat-ul">
+                  <li
+                    :class="item.type == 'user' ? 'me-chat' : 'model-chat'"
+                    v-for="(item, index) in chatList"
+                    :key="index"
+                  >
+                    <div>
+                      {{ item.text }}
+                    </div>
+                  </li>
 
-        <div class="input-container">
-          <ChatInput
-            ref="ChatInputRef"
-            @sendMessage="sendMessage"
-            :isSendLoading="isSendLoading"
-            :lang="choosedLanguage"
-          ></ChatInput>
-          <p class="tip-text">
-            Your data stays local in your browser. No account needed.
-          </p>
+                  <li v-if="isSendLoading">
+                    <LoadingDots
+                      class="select-tip"
+                      text="Generating"
+                      :size="7"
+                    />
+                  </li>
+                </ul>
+              </div>
+            </el-scrollbar>
+          </div>
+
+          <div class="input-container">
+            <ChatInput
+              ref="ChatInputRef"
+              @sendMessage="sendMessage"
+              :isSendLoading="isSendLoading"
+              :lang="choosedLanguage"
+            ></ChatInput>
+            <p class="tip-text">
+              {{
+                choosedLanguage == "en-US"
+                  ? "Your data stays local in your browser. No account needed."
+                  : "你的数据将保存在本地浏览器中，无需注册账户"
+              }}
+            </p>
+          </div>
         </div>
       </div>
       <div class="right">
         <div class="content">
           <div>
-            <div>
-              <GradientCircle :percentage="chatPercentage * 100" />
+            <div style="position: relative">
+              <GradientCircle
+                :percentage="chatPercentage * 100"
+                :style="{ opacity: showChat ? '1' : '0' }"
+              />
+
+              <img
+                :style="{ opacity: !showChat ? '1' : '0' }"
+                class="compass-img"
+                src="@/assets/images/compass-icon.png"
+                alt=""
+              />
             </div>
-            <p>
-              Your conversation will begin to light up and fill the outer ring
-              of this compass.
+            <p :style="{ opacity: showChat ? '1' : '0' }">
+              {{
+                choosedLanguage == "en-US"
+                  ? "Your conversation will begin to light up and fill the outer ring of this compass."
+                  : "随着对话的深入，罗盘的外环将被点亮。"
+              }}
             </p>
           </div>
-          <div>
+          <div :style="{ opacity: showChat ? '1' : '0' }">
             <el-button
               @click="ViewResults"
               class="button view-btn"
               color="#0B70C3"
-              >End and View Results <i class="icon"></i
+              :disabled="chatPercentage < 1"
+              >{{
+                chooseLanguage == "en-US"
+                  ? "End and View Results"
+                  : "结束并查看结果"
+              }}
+              <i class="icon"></i
             ></el-button>
           </div>
         </div>
@@ -100,20 +145,30 @@ import GradientCircle from "@/components/TestValuesChat/GradientCircle.vue";
 
 import { getChatItemInfo } from "@/service/api";
 
-import { ref, onMounted, defineEmits, nextTick, watch,toRaw  } from "vue";
+import {
+  ref,
+  onMounted,
+  defineEmits,
+  nextTick,
+  watch,
+  toRaw,
+  defineExpose,
+} from "vue";
 import { ElMessage } from "element-plus";
 
 import { ElMessageBox } from "element-plus";
 import { array, type } from "@amcharts/amcharts4/core";
 
 const props = defineProps({
-  choosedLanguage: { type: String, default: "zh-CN" }, //'en-US'
-  choosedTopics: {type:Array,default:[]},
+  // choosedLanguage: { type: String, default: "zh-CN" }, //'en-US'
+  choosedTopics: { type: Array, default: [] },
   isSendLoading: { type: Boolean, default: false }, //
   nickName: { type: String, default: "" }, //'en-US'
 });
 
-const chatId = ref(null)
+const showChat = ref(false); // 默认显示lanuage，lanuage隐藏显示chat
+
+const chatId = ref(null);
 
 const dialogVisible = ref(false);
 
@@ -219,40 +274,54 @@ watch(
   { deep: true }
 );
 
-onMounted(()=>{
-  console.log("onMounted")
-  chatId.value = generateId()
-  sendMessage(null)
+const sendFirstChat = () => {
+  chatId.value = generateId();
+  sendMessage(null);
+};
+
+onMounted(() => {
+  console.log("onMounted");
+
   //   {
   //   type: "model",
   //   text: "Do you think people should prioritize logic or emotions when relating to others?",
   // },
-})
+});
 const sendMessage = (textareaValue) => {
   if (isSendLoading.value) {
     return;
   }
   isSendLoading.value = true;
 
-  if(textareaValue){
+  if (textareaValue) {
     chatList.value.push({
       type: "user",
       text: textareaValue,
     });
   }
-  ChatInputRef.value.clear();
+
+  if (ChatInputRef.value) {
+    ChatInputRef.value.clear();
+  }
 
   try {
-    const obj = { language: props.choosedLanguage,choosedTopics:toRaw(props.choosedTopics),nickName:props.nickName, user_response: textareaValue, user_id:chatId.value, }
-    console.log("需要传的参数",obj)
-    getChatItemInfo()
-      .then((response) => {
+    const obj = {
+      language: choosedLanguage.value,
+      topic_list: toRaw(props.choosedTopics),
+      user_name: props.nickName,
+      user_response: textareaValue,
+      user_id: chatId.value,
+    };
+    console.log("需要传的参数", obj);
+    getChatItemInfo(obj)
+      .then((res) => {
+        let response = res.data;
         console.log(response);
         chatList.value.push({ type: "model", text: response.question });
-        chatPercentage.value = response.progress_bar
-         if (chatPercentage.value >= 1){
-          chatPercentage.value = 1
-         }
+        chatPercentage.value = response.progress_bar;
+        if (chatPercentage.value >= 1) {
+          chatPercentage.value = 1;
+        }
         // if (chatPercentage.value < 1) {
         //   chatPercentage.value += 0.11;
         //   chatPercentage.value =
@@ -262,6 +331,10 @@ const sendMessage = (textareaValue) => {
       .catch((err) => {
         console.log("err");
         ElMessage.error("发送失败，请重新发送");
+
+        if (chatList.value.length == 0) {
+          showChat.value = false;
+        }
       })
       .finally(() => {
         isSendLoading.value = false;
@@ -271,24 +344,34 @@ const sendMessage = (textareaValue) => {
   }
 };
 
-const emit = defineEmits(["setProcessIndex","getResults"]);
+const emit = defineEmits(["setProcessIndex", "getResults"]);
 
 const ViewResults = () => {
-  console.log("ViewResults",chatId.value);
+  console.log("ViewResults", chatId.value);
   emit("getResults", chatId.value);
-
 };
 
 const confirmExitClick = () => {
   dialogVisible.value = false;
   emit("setProcessIndex", 1);
+  location.reload();
 };
 
-
 function generateId() {
-  return 'msg-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+  return "msg-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
 }
 
+const choosedLanguage = ref("");
+const chooseLanguage = (language) => {
+  choosedLanguage.value = language;
+  showChat.value = true;
+
+  sendFirstChat();
+};
+
+defineExpose({
+  sendFirstChat,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -339,6 +422,13 @@ function generateId() {
         span {
           font-size: 1.25em;
         }
+      }
+
+      .chat-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       .chat-list-container {
         // height: calc(100% - 10em);
@@ -420,6 +510,7 @@ function generateId() {
         justify-content: space-between;
         & > div {
           &:nth-child(1) {
+            padding-top: 6em;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -467,6 +558,61 @@ function generateId() {
         }
       }
     }
+  }
+
+  .language-div {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% - 2em));
+    & > div {
+      margin-top: 2.25em;
+      // background: rgba(214, 237, 255, 0.3);
+      border-radius: 1em;
+      padding: 2.25em 3em;
+      width: 30em;
+      p:nth-child(1) {
+        font-size: 2em;
+        line-height: 1.2;
+      }
+      p:nth-child(2) {
+        font-size: 1.25em;
+        line-height: 1.8;
+        margin: 0.5em 0 1em;
+      }
+      .btn-container {
+        display: flex;
+        gap: 2.25em;
+        button {
+          height: 2.9em;
+          background: var(--theme-color);
+          padding: 0 1.2em;
+          color: #fff;
+          font-size: 1.25em;
+          border-radius: 6px;
+          margin: 0;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.9;
+          }
+
+          &.chinese {
+            color: var(--theme-color);
+            border: 2px solid var(--theme-color);
+            background: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  .compass-img {
+    top: 20%;
+    height: 60%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 

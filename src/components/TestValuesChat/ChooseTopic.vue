@@ -1,22 +1,27 @@
 <template>
   <div class="topic-container main-container">
-    <div class="skip-div">
-      <el-button @click="skipClick">Skip</el-button>
-    </div>
-    <div>
-      <h2>Enter Your Name (Optional)</h2>
-      <p>
-        Providing your name makes the experience more personal. We’ll use it to
-        address you during the conversation, and it will also appear on your
-        result card. But if you prefer to stay anonymous, you can skip this
-        step.
-      </p>
-      <div class="input-box">
-        <el-input
-          v-model="nickName"
-          class="input"
-          placeholder="Please enter your name or nickname"
-        ></el-input>
+    <div class="name-conatiner" v-show="showNameContianer">
+      <div>
+        <h2>Enter Your Name (Optional)</h2>
+        <p>
+          Providing your name makes the experience more personal. We’ll use it
+          to address you during the conversation, and it will also appear on
+          your result card. But if you prefer to stay anonymous, you can skip
+          this step.
+        </p>
+        <div class="input-box">
+          <el-input
+            v-model="nickName"
+            class="input"
+            placeholder="Please enter your name or nickname"
+          ></el-input>
+        </div>
+        <div class="button-container">
+          <el-button class="skip-btn" @click="skipClick">Skip</el-button>
+          <el-button class="next-btn" @click="showNameContianer = false"
+            >Next</el-button
+          >
+        </div>
       </div>
     </div>
     <div>
@@ -73,6 +78,7 @@ const props = defineProps({
 });
 
 const nickName = ref("");
+const showNameContianer = ref(true);
 
 const topicList = ref([
   {
@@ -136,17 +142,19 @@ function toggle(id) {
 const emit = defineEmits(["confirmChooseTopics"]);
 const confirmChooseTopics = () => {
   emit("confirmChooseTopics", {
-    selectedTopics:selectedArr,
-    nickName:nickName.value
+    selectedTopics: selectedArr,
+    nickName: nickName.value.trim(),
   });
 };
 
-const skipClick = () =>{
-  emit("confirmChooseTopics", {
-    selectedTopics:[],
-    nickName:""
-  });
-}
+const skipClick = () => {
+  nickName.value = "";
+  showNameContianer.value = false;
+  // emit("confirmChooseTopics", {
+  //   selectedTopics:[],
+  //   nickName:""
+  // });
+};
 </script>
 
 <style scoped lang="scss">
@@ -155,19 +163,6 @@ const skipClick = () =>{
   position: relative;
   // padding: 2em 8.5em;
   width: 83%;
-  .skip-div{
-    margin: 2em 0 6em;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    button{
-      border: 2px solid rgba(11, 112, 195, 1);
-      color: rgba(11, 112, 195, 1);
-      font-size: 1.5em;
-      height: 2.4em;
-      width: 4em;
-    }
-  }
 
   h2 {
     font-size: 2em;
@@ -179,22 +174,6 @@ const skipClick = () =>{
       font-size: 1.25em;
       line-height: 1.8;
       margin: 0.5em 0;
-    }
-  }
-
-  .input-box {
-    width: 70%;
-    margin: 1.5em auto 4em;
-    .input {
-      font-size: 1.5em;
-      height: 2.33em;
-      --el-input-text-color: var(--text-color);
-      --el-input-bg-color: var(--bg-color) !important;
-      --el-input-border-color: rgba(194, 194, 194, 1) !important;
-      --el-input-placeholder-color: rgba(194, 194, 194, 1) !important;
-      --el-input-hover-border-color: rgba(194, 194, 194, 1) !important;
-      --el-input-focus-border: rgba(194, 194, 194, 1) !important;
-      --el-input-focus-border-color: rgba(194, 194, 194, 1) !important;
     }
   }
 
@@ -293,6 +272,62 @@ const skipClick = () =>{
       &.is-disabled {
         background: rgba(194, 194, 194, 1);
         color: #fff;
+      }
+    }
+  }
+
+  .name-conatiner {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.15);
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    & > div {
+      max-width: 1000px;
+      width: 90%;
+      background: #fff;
+      padding: 3em 4.5em;
+      box-sizing: border-box;
+      border-radius: 6px;
+    }
+    .input-box {
+      width: 70%;
+      margin: 2em auto;
+      .input {
+        font-size: 1.5em;
+        height: 2.33em;
+        --el-input-text-color: var(--text-color);
+        --el-input-bg-color: var(--bg-color) !important;
+        --el-input-border-color: rgba(194, 194, 194, 1) !important;
+        --el-input-placeholder-color: rgba(194, 194, 194, 1) !important;
+        --el-input-hover-border-color: rgba(194, 194, 194, 1) !important;
+        --el-input-focus-border: rgba(194, 194, 194, 1) !important;
+        --el-input-focus-border-color: rgba(194, 194, 194, 1) !important;
+      }
+    }
+    .button-container {
+      margin-top: 3em;
+      display: flex;
+      justify-content: center;
+      button {
+        margin: 0 2em;
+        font-size: 1.5em;
+        height: 2.4em;
+        width: 6.667em;
+        &.skip-btn {
+          border: 2px solid rgba(11, 112, 195, 1);
+          color: rgba(11, 112, 195, 1);
+        }
+        &.next-btn {
+          background: rgba(11, 112, 195, 1);
+          color: #fff;
+        }
       }
     }
   }

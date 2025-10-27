@@ -27,9 +27,9 @@ onMounted(() => {
   //   { name: "Middle Eastern Culture", value: 15, color: "#409DDB" },
   //   { name: "African Culture", value: 10, color: "#05408C" },
   // ];
-console.log("!!!,",props.value)
-  const data = formatCultures(props.value)
-  console.log(data)
+  console.log("!!!,", props.value);
+  const data = formatCultures(props.value);
+  console.log(data);
   const svgWidth = 500;
   const svgHeight = 500;
   const packSize = Math.min(svgWidth, svgHeight); // 布局尺寸
@@ -40,7 +40,7 @@ console.log("!!!,",props.value)
 
   const svg = d3.select(svgRef.value);
   svg.selectAll("*").remove(); // 清空
-//   svg.style("background-color", "red"); // 背景红色
+  //   svg.style("background-color", "red"); // 背景红色
 
   function getTextColor(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -52,10 +52,10 @@ console.log("!!!,",props.value)
 
   // 计算圆边界，实现完全居中
   const leaves = root.leaves();
-  const minX = d3.min(leaves, d => d.x - d.r);
-  const maxX = d3.max(leaves, d => d.x + d.r);
-  const minY = d3.min(leaves, d => d.y - d.r);
-  const maxY = d3.max(leaves, d => d.y + d.r);
+  const minX = d3.min(leaves, (d) => d.x - d.r);
+  const maxX = d3.max(leaves, (d) => d.x + d.r);
+  const minY = d3.min(leaves, (d) => d.y - d.r);
+  const maxY = d3.max(leaves, (d) => d.y + d.r);
 
   const offsetX = (svgWidth - (maxX - minX)) / 2 - minX;
   const offsetY = (svgHeight - (maxY - minY)) / 2 - minY;
@@ -107,8 +107,8 @@ console.log("!!!,",props.value)
       .attr("text-anchor", "middle");
 
     allLines.forEach((line, i) => {
-    //   const fontSize = d.r / 4; // 根据圆半径自动调整文字大小
-    const fontSize = 16; // 根据圆半径自动调整文字大小
+      //   const fontSize = d.r / 4; // 根据圆半径自动调整文字大小
+      const fontSize = 16; // 根据圆半径自动调整文字大小
       text
         .append("tspan")
         .attr("x", 0)
@@ -118,7 +118,6 @@ console.log("!!!,",props.value)
     });
   });
 });
-
 
 /**
  * 将 closest_culture 数据转为带 name、value、color 的数组，并按分数降序排列
@@ -133,7 +132,7 @@ function formatCultures(data = []) {
     "Latin American Culture": "#0B70C3",
     "Western Culture": "#66BFEC",
     "Middle Eastern Culture": "#409DDB",
-    "African Culture": "#05408C"
+    "African Culture": "#05408C",
   };
 
   // 转换并排序
@@ -141,11 +140,10 @@ function formatCultures(data = []) {
     .map(([name, score]) => ({
       name,
       value: Math.round((score ?? 0) * 100),
-      color: colorMap[name] || "red"
+      color: colorMap[name] || "#0b70c3",
     }))
     .sort((a, b) => b.value - a.value); // 按 value 从高到低排序
 }
-
 </script>
 
 <style scoped>
