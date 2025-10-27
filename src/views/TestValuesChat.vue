@@ -1,11 +1,15 @@
 <template>
   <div class="main-container test-values-template" style="flex: 1">
-    <Home v-show="processIndex == 1" @chooseLanguage="chooseLanguage"></Home>
+    <Home
+      v-show="processIndex == 1"
+      @chooseLanguage="chooseLanguage"
+      @toTest="toTest"
+    ></Home>
     <ChooseTopic
       v-show="processIndex == 2"
       @confirmChooseTopics="confirmChooseTopics"
     ></ChooseTopic>
-    
+
     <LoadingMain v-show="processIndex == 4"></LoadingMain>
     <Result v-if="processIndex == 5" :valuesRecults="valuesRecults"></Result>
 
@@ -42,7 +46,15 @@
       </div>
     </div>
   </div>
-  <Chat v-if="processIndex == 3" :choosedLanguage="choosedLanguage" :choosedTopics="choosedTopics.value" :nickName="nickName" @setProcessIndex="setProcessIndex" @getResults="getResults"></Chat>
+  <Chat
+    ref="ChatRef"
+    v-show="processIndex == 3"
+    :choosedLanguage="choosedLanguage"
+    :choosedTopics="choosedTopics.value"
+    :nickName="nickName"
+    @setProcessIndex="setProcessIndex"
+    @getResults="getResults"
+  ></Chat>
 </template>
 <script setup>
 import Home from "../components/TestValuesChat/Home.vue";
@@ -54,44 +66,53 @@ import Result from "../components/TestValuesChat/Result.vue";
 
 import { getChatResult } from "@/service/api";
 
-
 import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
+
+const ChatRef = ref(null);
 
 const processIndex = ref(1);
 
-const valuesRecults = ref(null)
+const valuesRecults = ref(null);
 
-const choosedLanguage = ref("en-US");  //'en-US' "zh-CN" 
+const choosedLanguage = ref("en-US"); //'en-US' "zh-CN"
 const choosedTopics = ref([]);
-const nickName = ref("")
+const nickName = ref("");
 
 const chooseLanguage = (language) => {
-  console.log("!!",language)
+  console.log("!!", language);
   choosedLanguage.value = language;
   processIndex.value = 2;
 };
 
+const toTest = () => {
+  processIndex.value = 2;
+};
 
 const confirmChooseTopics = (data) => {
   choosedTopics.value = data.selectedTopics;
-  nickName.value = data.nickName
+  nickName.value = data.nickName;
   processIndex.value = 3;
+
+  // setTimeout(() => {
+  //   ChatRef.value.sendFirstChat()
+  // }, 500);
 };
 
 const setProcessIndex = (index) => {
-  console.log("@@@@@@@@@@@",index)
+  console.log("@@@@@@@@@@@", index);
   processIndex.value = index;
 };
 
-const getResults = (userId) =>{
-  console.log("getResults",userId)
-  processIndex.value = 4
+const getResults = (userId) => {
+  console.log("getResults", userId);
+  processIndex.value = 4;
   try {
-    getChatResult()
-      .then((response) => {
+    getChatResult({ user_id: userId })
+      .then((res) => {
+        let response = res;
         processIndex.value = 5;
         console.log(response);
-        valuesRecults.value = response
+        valuesRecults.value = response;
       })
       .catch((err) => {
         console.log("err");
@@ -102,7 +123,7 @@ const getResults = (userId) =>{
   } catch (error) {
     console.error("Error:", error);
   }
-}
+};
 
 const animateOnLoad = ref(false);
 
@@ -125,7 +146,7 @@ onMounted(async () => {
   position: relative;
   & > div {
     position: relative;
-    z-index: 3;
+    z-index: 2003;
   }
 
   .img-div {

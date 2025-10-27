@@ -15,7 +15,11 @@
           <li>Fully natural language input, no multiple choice</li>
         </ul>
       </div>
-      <div class="language-div">
+
+      <span @click="toTest" class="button github-btn" style="font-size: 1.5em"
+        >Get Started <i class="icon"></i
+      ></span>
+      <!-- <div class="language-div">
         <div>
           <p>Select your language to begin</p>
           <p>Language cannot be changed during the assessment.</p>
@@ -27,7 +31,7 @@
             >
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- <div class="img-div">
       <div class="testValues-img">
@@ -70,6 +74,10 @@ onMounted(async () => {
 const emit = defineEmits(["chooseLanguage"]);
 const chooseLanguage = (language) => {
   emit("chooseLanguage", language);
+};
+
+const toTest = () => {
+  emit("toTest");
 };
 </script>
 
@@ -155,7 +163,7 @@ const chooseLanguage = (language) => {
   }
   .img-div {
     flex: 1;
-    
+
     img {
       width: 100%;
     }
@@ -205,6 +213,31 @@ const chooseLanguage = (language) => {
         .img4 {
           transform: translate(-50%, -50%) rotate(0);
         }
+      }
+    }
+  }
+
+  .github-btn {
+    margin-top: 2.5em;
+    display: inline-block;
+    position: relative;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // line-height: ;
+    .icon {
+      margin-left: 0.5em;
+      width: 1em;
+      height: 1em;
+      background: url(@/assets/images/arrow-right.png) no-repeat left center;
+      background-size: 60% auto;
+      display: inline-block;
+      transform: translate(0, 0.1em);
+      transition: all 0.2s;
+    }
+    &:hover {
+      & > .icon {
+        transform: translate(0.2em, 0.1em);
       }
     }
   }

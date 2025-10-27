@@ -46,7 +46,7 @@ const renderChart = () => {
     radar: [
       {
         indicator: indicators,
-        radius: "70%",
+        radius: "60%",
         splitNumber: 5,
         shape: "circle",
         axisName: {

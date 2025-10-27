@@ -6,7 +6,11 @@
           v-model="textareaText"
           style="width: 100%; font-size: 1.25em"
           type="textarea"
-          placeholder="Share your thoughts in as much detail as you like."
+          :placeholder="
+            lang == 'en-US'
+              ? 'Share your thoughts in as much detail as you like.'
+              : '请尽可能详细地分享你的想法'
+          "
           resize="none"
           :autosize="{ minRows: 1, maxRows: 5 }"
           @keydown.enter.native="handleEnter"
@@ -48,7 +52,7 @@ import { ref, onMounted, onBeforeUnmount, defineExpose } from "vue";
 import { ElMessage } from "element-plus";
 
 const props = defineProps({
-  lang: { type: String, default: "zh-CN" }, //'en-US' "zh-CN" 
+  lang: { type: String, default: "zh-CN" }, //'en-US' "zh-CN"
   isSendLoading: { type: Boolean, default: false }, //
 });
 
@@ -70,7 +74,9 @@ onMounted(() => {
   }
 
   recognition = new SpeechRecognition();
-  recognition.lang = props.lang; // 'en-US'   // 英文
+  recognition.lang = props.lang || "en-US"; // 'en-US'   // 英文
+
+  console.log("recognition.lang====", recognition.lang);
   recognition.interimResults = true;
   recognition.continuous = true;
 
