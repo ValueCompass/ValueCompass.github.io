@@ -1,1 +1,0 @@
-import{bR as s,x as o,u as r,ab as c,a9 as u}from"./index-jTCyu2FD.js";const n={prefix:Math.floor(Math.random()*1e4),current:0},i=Symbol("elIdInjection"),d=()=>c()?u(i,n):n,m=t=>{const e=d(),a=s();return o(()=>r(t)||`${a.value}-id-${e.prefix}-${e.current++}`)};export{d as a,m as u};
