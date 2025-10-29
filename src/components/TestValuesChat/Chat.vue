@@ -100,7 +100,7 @@
               color="#0B70C3"
               :disabled="chatPercentage < 1"
               >{{
-                chooseLanguage == "en-US"
+                choosedLanguage == "en-US"
                   ? "End and View Results"
                   : "结束并查看结果"
               }}
@@ -429,6 +429,7 @@ defineExpose({
         display: flex;
         flex-direction: column;
         justify-content: center;
+        overflow: hidden;
       }
       .chat-list-container {
         // height: calc(100% - 10em);

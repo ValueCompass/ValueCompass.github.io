@@ -7,7 +7,7 @@
                 "You value being true to yourself, constantly seeking unique paths and original thinking.",
                 "You thrive when you have the freedom to pursue your own goals and express your individuality."
             ],
-            "img": "SchwartzTheory/Self-direction.png"
+            "img": "Self-direction.png"
         },
         "Stimulation": {
             "des": [
@@ -17,7 +17,7 @@
                 "You crave change and novelty, always looking for the next stimulating experience.",
                 "Embracing the unknown and chasing exhilarating moments are what keep you inspired."
             ],
-            "img": "SchwartzTheory/Stimulation.png"
+            "img": "Stimulation.png"
         },
         "Hedonism": {
             "des": [
@@ -27,7 +27,7 @@
                 "You know how to appreciate life’s pleasures, making time for relaxation and fun.",
                 "Seeking happiness and satisfaction in your activities is what makes you feel fulfilled."
             ],
-            "img": "SchwartzTheory/Hedonism.png"
+            "img": "Hedonism.png"
         },
         "Achievement": {
             "des": [
@@ -37,7 +37,7 @@
                 "You are ambitious and determined to prove your competence to yourself and others.",
                 "Excelling in what you do and gaining recognition is a key part of who you are."
             ],
-            "img": "SchwartzTheory/Achievement.png"
+            "img": "Achievement.png"
         },
         "Power": {
             "des": [
@@ -47,7 +47,7 @@
                 "You seek opportunities that allow you to demonstrate leadership and command respect.",
                 "Earning authority and influencing outcomes gives you a sense of fulfillment."
             ],
-            "img": "SchwartzTheory/Power.png"
+            "img": "Power.png"
         },
         "Security": {
             "des": [
@@ -57,7 +57,7 @@
                 "You strive to create a predictable and safe life, where both you and others are protected.",
                 "Safety, consistency, and a sense of well-being are important aspects of your life."
             ],
-            "img": "SchwartzTheory/Security.png"
+            "img": "Security.png"
         },
         "Conformity": {
             "des": [
@@ -66,7 +66,7 @@
                 "You value being considerate of others’ expectations and acting with propriety.",
                 "Adhering to accepted standards and being mindful of how your behavior affects others is key for you."
             ],
-            "img": "SchwartzTheory/Conformity.png"
+            "img": "Conformity.png"
         },
         "Tradition": {
             "des": [
@@ -76,7 +76,7 @@
                 "You find meaning in preserving and upholding traditions that connect you to your roots.",
                 "Following rituals and adhering to long-held beliefs are part of who you are."
             ],
-            "img": "SchwartzTheory/Tradition.png"
+            "img": "Tradition.png"
         },
         "Benevolence": {
             "des": [
@@ -86,7 +86,7 @@
                 "Your loyalty and kindness make you a reliable and cherished friend and family member.",
                 "You are guided by a desire to make life better for the people closest to you."
             ],
-            "img": "SchwartzTheory/Benevolence.png"
+            "img": "Benevolence.png"
         },
         "Universalism": {
             "des": [
@@ -94,7 +94,7 @@
                 "Protecting the environment and advocating for equality reflect your broader perspective on life.",
                 "You believe in the interconnectedness of all people and the importance of caring for our shared world"
             ],
-            "img": "SchwartzTheory/Universalism.png"
+            "img": "Universalism.png"
         }
     }
 }

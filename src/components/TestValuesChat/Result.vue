@@ -21,7 +21,8 @@
               fit="cover"
               :src="
                 getAssetsFile(
-                  chwartzTheoryData[sortedValueScore[0].name].img
+                  'SchwartzTheory/' +
+                    chwartzTheoryData[sortedValueScore[0].name].img
                 )
               "
               alt="test"
@@ -30,14 +31,21 @@
               <div class="card-left">
                 <div class="box">
                   <div>
-                    <h2>Hi, {{ valuesRecults?.user_name ? valuesRecults?.user_name : "User" }}</h2>
+                    <h2>
+                      Hi,
+                      {{
+                        valuesRecults?.user_name
+                          ? valuesRecults?.user_name
+                          : "User"
+                      }}
+                    </h2>
                     <h3>Your Core Values are</h3>
                     <div class="tag-list">
                       <span
                         class="tag"
-                        v-for="(item, index) in  sortedValueScore.slice(0, 3)"
+                        v-for="(item, index) in sortedValueScore.slice(0, 3)"
                         :key="index"
-                        :class="item.name+'_tag'"
+                        :class="item.name + '_tag'"
                         >{{ item.name }}</span
                       >
                     </div>
@@ -54,7 +62,9 @@
                       <div style="width: 100%">
                         <p>
                           Interestingly,
-                          <span class="model-name-span">{{ valuesRecults?.closest_model[0][0] }}</span>
+                          <span class="model-name-span">{{
+                            valuesRecults?.closest_model[0][0]
+                          }}</span>
                           aligns seamlessly with your value priorities,<br />
                           <span
                             >resonating with your mindset and core belief ——
@@ -72,7 +82,7 @@
               </div>
               <div class="card-right">
                 <div>
-                  <p>the image powered by Microsoft Designer</p>
+                  <p>The image powered by Microsoft Designer</p>
                 </div>
               </div>
             </div>
@@ -115,10 +125,18 @@
               <!-- <div ref="radarChart" class="bar-chart"></div> -->
               <ul class="model-list">
                 <li
-                  v-for="(item, index) in valuesRecults?.closest_model.slice(0, 5)"
+                  v-for="(item, index) in valuesRecults?.closest_model.slice(
+                    0,
+                    5
+                  )"
                   :key="index"
                 >
-                  <span>{{ item[0] }}</span>
+                  <span
+                    >{{ item[0] }}
+                    <text style="font-size: 0.9em; margin-left: 0.5em"
+                      >{{ (item[1] * 100).toFixed(2) }}%</text
+                    ></span
+                  >
                   <div>
                     <el-progress
                       :text-inside="true"
@@ -127,11 +145,11 @@
                       color="rgba(102, 191, 236, 1)"
                       :aria-label="item[0] + 'progress'"
                     >
-                      <span
+                      <!-- <span
                         class="score-span"
                         style="color: rgba(47, 72, 30, 1)"
                         >{{ (item[1] * 100).toFixed(2) }}%</span
-                      >
+                      > -->
                     </el-progress>
                   </div>
                 </li>
@@ -139,12 +157,16 @@
             </div>
 
             <div class="card-item">
-              <h2 class="card-chart-title">The Culture Closest to Your Values</h2>
+              <h2 class="card-chart-title">
+                The Culture Closest to Your Values
+              </h2>
               <p class="card-chart-desc">
-                Discover the Cultural Sphere That Best Reflects Your Beliefs and Perspectives
+                Discover the Cultural Sphere That Best Reflects Your Beliefs and
+                Perspectives
               </p>
-              <D3BubblePack :value="valuesRecults?.closest_cluture"></D3BubblePack>
-              
+              <D3BubblePack
+                :value="valuesRecults?.closest_culture"
+              ></D3BubblePack>
             </div>
           </div>
         </div>
@@ -170,7 +192,8 @@
               fit="cover"
               :src="
                 getAssetsFile(
-                   chwartzTheoryData[sortedValueScore[0].name].img
+                  'SchwartzTheoryPrint/' +
+                    chwartzTheoryData[sortedValueScore[0].name].img
                 )
               "
               alt="test"
@@ -179,18 +202,35 @@
               <div class="card-left">
                 <div class="box">
                   <div>
-                    <h2>Hi, {{ valuesRecults?.user_name ? valuesRecults?.user_name : "User" }}</h2>
+                    <h2>
+                      Hi,
+                      {{
+                        valuesRecults?.user_name
+                          ? valuesRecults?.user_name
+                          : "User"
+                      }}
+                    </h2>
                     <h3>Your Core Values are</h3>
                     <div class="tag-list">
                       <span
                         class="tag"
-                        v-for="(item, index) in  sortedValueScore.slice(0, 3)"
+                        v-for="(item, index) in sortedValueScore.slice(0, 3)"
                         :key="index"
-                        :class="item.name+'_tag'"
+                        :class="item.name + '_tag'"
                         >{{ item.name }}</span
                       >
                     </div>
-                    <p>{{ valuesRecults?.short_comment }}</p>
+                    <p
+                      style="
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 6;
+                        -webkit-box-orient: vertical;
+                      "
+                    >
+                      {{ valuesRecults?.short_comment }}
+                    </p>
                     <div class="card-bottom">
                       <div style="display: none">
                         <img
@@ -203,8 +243,10 @@
                       <div style="width: 100%">
                         <p>
                           Interestingly,
-                          <span class="model-name-span">{{ valuesRecults?.closest_model[0][0] }}</span>
-                          aligns seamlessly with your value priorities,<br />
+                          <span class="model-name-span">{{
+                            valuesRecults?.closest_model[0][0]
+                          }}</span>
+                          aligns seamlessly with your value priorities,
                           <span
                             >resonating with your mindset and core belief ——
                             much like finding a close friend.</span
@@ -224,7 +266,9 @@
 
             <img class="QRCodeImg" src="@/assets/images/QRCodeImg.png" alt="" />
 
-            <p class="label-p"><span>the image powered by Microsoft Designer</span></p>
+            <p class="label-p">
+              <span>The image powered by Microsoft Designer</span>
+            </p>
           </div>
         </div>
         <div class="print-btn">
@@ -236,8 +280,8 @@
   </div>
 </template>
 <script setup>
-import D3BubblePack from './D3BubblePack.vue'
-import Radar from './Radar.vue';
+import D3BubblePack from "./D3BubblePack.vue";
+import Radar from "./Radar.vue";
 
 import SchwartzTheoryDes from "../../utils/SchwartzTheoryDes.json";
 const chwartzTheoryData = ref(SchwartzTheoryDes["chwartz Theory Item"]);
@@ -864,8 +908,6 @@ defineExpose({
   input,
 });
 
-
-
 // 排序后的数组
 const sortedValueScore = computed(() => {
   const scoreObj = props.valuesRecults?.value_score || {};
@@ -875,51 +917,52 @@ const sortedValueScore = computed(() => {
     .sort((a, b) => b.value - a.value); // 按 value 降序
 });
 
-
-onMounted(()=>{
-  sss()
-})
-const sss = ()=>{
-  console.log("????",props.valuesRecults)
+onMounted(() => {
+  sss();
+});
+const sss = () => {
+  console.log("????", props.valuesRecults);
   const gl_data = {
-          culture: [],
-          human: [
-            {
-              // name: userTestData.tsne_human_caption,
-              name: props.valuesRecults?.user_name ? props.valuesRecults?.user_name : "User",
-              value: props.valuesRecults?.tsne_human,
-            },
-          ],
-          model: [],
-          node: [],
-        };
-        // gl_data.culture = props.valuesRecults?.tsne_cultures.map((item, index) => {
-        //   return {
-        //     name: props.valuesRecults?.tsne_culture_caption[index],
-        //     value: item,
-        //   };
-        // });
-        gl_data.model = props.valuesRecults?.tsne_models.map((item, index) => {
-          return {
-            name: props.valuesRecults?.tsne_model_caption[index],
-            value: item,
-            type: "model",
-            itemStyle: {
-              color: colors[index],
-              opacity: 1,
-            },
-          };
-        });
-        // gl_data.node = props.valuesRecults?.tsne_nodes.map((item, index) => {
-        //   return {
-        //     name: props.valuesRecults?.tsne_node_captions[index],
-        //     value: item,
-        //     type: "node",
-        //     model: props.valuesRecults?.tsne_model_caption[Math.floor(index / 30)],
-        //   };
-        // });
-        setGlChart(gl_data);
-}
+    culture: [],
+    human: [
+      {
+        // name: userTestData.tsne_human_caption,
+        name: props.valuesRecults?.user_name
+          ? props.valuesRecults?.user_name
+          : "User",
+        value: props.valuesRecults?.tsne_human,
+      },
+    ],
+    model: [],
+    node: [],
+  };
+  // gl_data.culture = props.valuesRecults?.tsne_cultures.map((item, index) => {
+  //   return {
+  //     name: props.valuesRecults?.tsne_culture_caption[index],
+  //     value: item,
+  //   };
+  // });
+  gl_data.model = props.valuesRecults?.tsne_models.map((item, index) => {
+    return {
+      name: props.valuesRecults?.tsne_model_caption[index],
+      value: item,
+      type: "model",
+      itemStyle: {
+        color: colors[index],
+        opacity: 1,
+      },
+    };
+  });
+  // gl_data.node = props.valuesRecults?.tsne_nodes.map((item, index) => {
+  //   return {
+  //     name: props.valuesRecults?.tsne_node_captions[index],
+  //     value: item,
+  //     type: "node",
+  //     model: props.valuesRecults?.tsne_model_caption[Math.floor(index / 30)],
+  //   };
+  // });
+  setGlChart(gl_data);
+};
 </script>
 
 <style scoped lang="scss">
@@ -1120,36 +1163,36 @@ const sss = ()=>{
           height: 2em;
           line-height: 2em;
 
-          &{
-            &.Self-direction_tag{
-             background: rgba(251, 248, 204, 1); 
+          & {
+            &.Self-direction_tag {
+              background: rgba(251, 248, 204, 1);
             }
-            &.Stimulation_tag{
-             background: rgba(253, 228, 207, 1); 
+            &.Stimulation_tag {
+              background: rgba(253, 228, 207, 1);
             }
-            &.Hedonism_tag{
-             background: rgba(255, 207, 210, 1); 
+            &.Hedonism_tag {
+              background: rgba(255, 207, 210, 1);
             }
-            &.Achievement_tag{
-             background: rgba(241, 192, 232, 1); 
+            &.Achievement_tag {
+              background: rgba(241, 192, 232, 1);
             }
-            &.Power_tag{
-             background: rgba(207, 186, 240, 1); 
+            &.Power_tag {
+              background: rgba(207, 186, 240, 1);
             }
-            &.Security_tag{
-             background: rgba(163, 196, 243, 1); 
+            &.Security_tag {
+              background: rgba(163, 196, 243, 1);
             }
-            &.Tradition_tag{
-             background: rgba(144, 219, 244, 1); 
+            &.Tradition_tag {
+              background: rgba(144, 219, 244, 1);
             }
-            &.Conformity_tag{
-             background: rgba(142, 236, 245, 1); 
+            &.Conformity_tag {
+              background: rgba(142, 236, 245, 1);
             }
-            &.Benevolence_tag{
-             background: rgba(152, 245, 225, 1); 
+            &.Benevolence_tag {
+              background: rgba(152, 245, 225, 1);
             }
-             &.Universalism_tag{
-             background: rgba(185, 251, 192, 1); 
+            &.Universalism_tag {
+              background: rgba(185, 251, 192, 1);
             }
           }
         }
@@ -1163,7 +1206,7 @@ const sss = ()=>{
         margin: 0.9em 0;
       }
       p {
-        margin: 1.3em 0 0;
+        margin: 1em 0 0;
         line-height: 1.5em;
       }
     }
@@ -1261,22 +1304,39 @@ const sss = ()=>{
       // flex-wrap: wrap;
       font-size: 16px;
       // box-sizing: border-box;
-      width: 874px;
+      width: 1100px;
       color: #000;
       .card-print .content {
-        min-height: 590px;
-        padding-bottom: 1em;
+        // min-height: 750px;
+        height: 750px;
         box-sizing: border-box;
         .card-left {
-          width: 57.3%;
+          width: 720px;
+          padding: 60px 0 100px;
+          & > .box {
+            padding: 2em;
+          }
+          h2,
+          h3,
+          p {
+            font-size: 26px;
+          }
           h2{
-            font-size:1.2em;
+            margin: 0;
+          }
+          .tag-list .tag {
+            font-size: 24px;
+            height: 1.667em;
+            line-height: 1.667em;
           }
         }
       }
+      .label-p span {
+        font-size: 18px !important;
+      }
 
       .logo {
-        width: 140px;
+        width: 205px;
         position: absolute;
         right: 4em;
         top: 3em;
@@ -1285,16 +1345,18 @@ const sss = ()=>{
         width: 100px;
         position: absolute;
         right: 4em;
-        bottom: 4em;
+        bottom: 6em;
       }
       .label-p {
         position: absolute;
         right: 4em;
-        bottom: 1em;
+        bottom: 3em;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 5px;
         font-style: italic;
         font-weight: 700;
-        span{
-          font-size: .85em;
+        span {
+          font-size: 0.85em;
         }
       }
     }

@@ -109,7 +109,7 @@ const getResults = (userId) => {
   try {
     getChatResult({ user_id: userId })
       .then((res) => {
-        let response = res;
+        let response = res.data;
         processIndex.value = 5;
         console.log(response);
         valuesRecults.value = response;

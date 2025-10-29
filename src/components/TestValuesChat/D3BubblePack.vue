@@ -108,12 +108,13 @@ onMounted(() => {
 
     allLines.forEach((line, i) => {
       //   const fontSize = d.r / 4; // 根据圆半径自动调整文字大小
-      const fontSize = 16; // 根据圆半径自动调整文字大小
+      const fontSize = 18; // 根据圆半径自动调整文字大小
       text
         .append("tspan")
         .attr("x", 0)
         .attr("y", (i - allLines.length / 2 + 0.5) * (fontSize + 2))
         .attr("font-size", fontSize)
+        .attr("font-weight", "600") // ✅ 加粗文字
         .text(line);
     });
   });
@@ -124,25 +125,47 @@ onMounted(() => {
  * @param {Array} data - 原始的 closest_culture 数组，例如 [["East Asian Culture", 0.91], ...]
  * @returns {Array} 格式化后的数组
  */
-function formatCultures(data = []) {
-  // 自定义颜色映射
-  const colorMap = {
-    "East Asian Culture": "#9BDDF9",
-    "South Asian Culture": "#0856A7",
-    "Latin American Culture": "#0B70C3",
-    "Western Culture": "#66BFEC",
-    "Middle Eastern Culture": "#409DDB",
-    "African Culture": "#05408C",
-  };
+// function formatCultures(data = []) {
+//   // 自定义颜色映射
+//   const colorMap = {
+//     "East Asian Culture": "#9BDDF9",
+//     "South Asian Culture": "#0856A7",
+//     "Latin American Culture": "#0B70C3",
+//     "Western Culture": "#66BFEC",
+//     "Middle Eastern Culture": "#409DDB",
+//     "African Culture": "#05408C",
+//   };
+//   const colors = ['#9BDDF9',"#0856A7","#0B70C3","#66BFEC", "#409DDB","#05408C"]
 
-  // 转换并排序
-  return data
-    .map(([name, score]) => ({
-      name,
-      value: Math.round((score ?? 0) * 100),
-      color: colorMap[name] || "#0b70c3",
-    }))
-    .sort((a, b) => b.value - a.value); // 按 value 从高到低排序
+//   // 转换并排序
+//   return data
+
+//     .sort((a, b) => b.value - a.value).map(([name, score]) => ({
+//       name,
+//       value: Math.round((score ?? 0) * 100),
+//       color: colorMap[name] || "#0b70c3",
+//     })); // 按 value 从高到低排序
+// }
+
+function formatCultures(data = []) {
+  const colors = [
+    "#9BDDF9",
+    "#66BFEC",
+    "#409DDB",
+    "#0B70C3",
+    "#0856A7",
+    "#05408C",
+  ];
+
+  // 1. 排序（从高到低）
+  const sorted = data.sort((a, b) => b[1] - a[1]);
+
+  // 2. 依次映射颜色（按照排序后的顺序）
+  return sorted.map(([name, score], index) => ({
+    name,
+    value: Math.round((score ?? 0) * 100),
+    color: colors[index % colors.length], // 循环使用颜色，防止数量超出
+  }));
 }
 </script>
 
