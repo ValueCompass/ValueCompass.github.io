@@ -25,7 +25,7 @@ const renderChart = () => {
   // 转成数组并按 value 降序排序
   const sortedArray = Object.entries(dataObj)
     .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value);
+   // .sort((a, b) => b.value - a.value);
 
   // 生成雷达图 indicator 和 values
   const indicators = sortedArray.map(item => ({
@@ -46,7 +46,7 @@ const renderChart = () => {
     radar: [
       {
         indicator: indicators,
-        radius: "60%",
+        radius: "50%",
         splitNumber: 5,
         shape: "circle",
         axisName: {
