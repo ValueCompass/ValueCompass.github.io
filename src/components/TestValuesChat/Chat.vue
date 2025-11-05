@@ -463,7 +463,7 @@ defineExpose({
               line-height: 1.5;
               box-sizing: border-box;
               &:nth-child(1) {
-                font-weight: 600;
+                // font-weight: 600;
               }
               & > div {
                 font-size: 1.25em;
@@ -473,7 +473,7 @@ defineExpose({
               &.me-chat {
                 align-self: flex-end;
                 background: rgba(204, 240, 252, 1);
-                width: 75%;
+                max-width: 75%;
               }
             }
           }

@@ -139,11 +139,11 @@
                   >
                   <div>
                     <el-progress
-                      :text-inside="true"
                       :stroke-width="12"
                       :percentage="item[1] * 100"
                       color="rgba(102, 191, 236, 1)"
                       :aria-label="item[0] + 'progress'"
+                      :show-text="false"
                     >
                       <!-- <span
                         class="score-span"
@@ -168,6 +168,10 @@
                 :value="valuesRecults?.closest_culture"
               ></D3BubblePack>
             </div>
+          </div>
+          <!-- 滚动按钮 -->
+          <div class="scroll-btn" @click="scrollView" v-show="showScrollBtn">
+            <div><span>Scroll to explore more</span> <i class="icon"></i></div>
           </div>
         </div>
 
@@ -918,9 +922,19 @@ const sortedValueScore = computed(() => {
 });
 
 onMounted(() => {
-  sss();
+  handleGlData();
+
+  contentEl = document.getElementById("content");
+  if (contentEl) {
+    contentEl.addEventListener("scroll", handleScroll, { passive: true });
+  }
 });
-const sss = () => {
+
+onUnmounted(() => {
+  contentEl?.removeEventListener("scroll", handleScroll);
+});
+
+const handleGlData = () => {
   console.log("????", props.valuesRecults);
   const gl_data = {
     culture: [],
@@ -962,6 +976,24 @@ const sss = () => {
   //   };
   // });
   setGlChart(gl_data);
+};
+
+const showScrollBtn = ref(true);
+let contentEl = null;
+
+const handleScroll = () => {
+  if (!contentEl) return;
+  showScrollBtn.value = contentEl.scrollTop <= 20;
+};
+
+const scrollView = () => {
+  if (!contentEl) return;
+  // 滚动到下一屏高度
+  contentEl.scrollTo({
+    top: window.innerHeight,
+    behavior: "smooth",
+  });
+  showScrollBtn.value = false;
 };
 </script>
 
@@ -1112,6 +1144,59 @@ const sss = () => {
             }
           }
         }
+      }
+    }
+
+    .scroll-btn {
+      position: fixed;
+      width: 100%;
+      height: 8rem;
+      background: linear-gradient(
+        180deg,
+        rgba(11, 112, 195, 0) 0%,
+        #0b70c3 81.6%
+      );
+      cursor: pointer;
+      left: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-end;
+      color: #fff;
+      padding: 1em;
+      box-sizing: border-box;
+      font-size: 1.25rem;
+      &:hover {
+        .icon {
+          animation: bounce 0.8s infinite;
+        }
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(-3px) rotate(90deg);
+        }
+        50% {
+          transform: translateY(3px) rotate(90deg);
+        }
+      }
+      & > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5em;
+        text-transform: capitalize;
+      }
+      .icon {
+        width: 1em;
+        height: 1em;
+        background: url(@/assets/images/arrow-right.png) no-repeat center;
+        background-size: 60% auto;
+        display: inline-block;
+        transform: rotate(90deg);
+        transition: all 0.2s;
       }
     }
   }
@@ -1321,7 +1406,7 @@ const sss = () => {
           p {
             font-size: 26px;
           }
-          h2{
+          h2 {
             margin: 0;
           }
           .tag-list .tag {
