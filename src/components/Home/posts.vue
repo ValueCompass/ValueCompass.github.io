@@ -112,6 +112,9 @@ const posts = ref([
     box-sizing: border-box;
     margin-bottom: 2.25em;
     transition: all .2s;
+    &>a{
+      display: block;
+    }
     .img-div {
       padding: 1.19em 1.625em;
       background: #ffffff;

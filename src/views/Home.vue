@@ -6,7 +6,7 @@
       <div class="leaderboard flex main-container">
         <div class="left">
           <div>
-            <router-link to="/benchmarks/benchmarks" aria-label="benchmarks">
+            <router-link to="/benchmarks/benchmarks" aria-label="benchmarks" style="display: block;">
               <img src="@/assets/images/leaderboard-image.png" alt="" />
               <div class="cover"></div>
             </router-link>
@@ -58,7 +58,7 @@
               evolving assessments.
             </p>
             <div>
-              <router-link to="/benchmarks/benchmarks">
+              <router-link to="/benchmarks/benchmarks" style="display: block;">
                 <span class="view-more-btn">
                   <span>View more</span>
                   <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
@@ -90,7 +90,7 @@
                   alignment techniques.
                 </p>
                 <div>
-                  <a href="https://valuecompass.github.io/Research/papers/">
+                  <a href="https://valuecompass.github.io/Research/papers/" style="display: block;">
                     <span class="view-more-btn">
                       <span>View more</span>
                       <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
