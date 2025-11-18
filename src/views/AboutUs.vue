@@ -168,6 +168,13 @@ const collaborators = ref([
     institution:
       "Gaoling School of Artificial Intelligence, Renmin University of China",
   },
+  {
+    name: "Roy Lee",
+    photo: "Roy_Lee.png",
+    position: "Assistant Professor",
+    institution:
+      "Information Systems Technology and Design Pillar, SUTD",
+  },
 ]);
 
 const interns = ref([
@@ -294,6 +301,42 @@ const interns = ref([
     institutionOld: "School of Information, Renmin University of China",
     workIntro: "Product Manager",
     institution: "University of Washington",
+  },
+
+  {
+    name: "Jaehyeok Lee",
+    photo: "Jaehyeok_Lee.png",
+    position: "PhD Student",
+    workIntro: "Algorithm Research",
+    institution: "Sungkyunkwan University",
+  },
+  {
+    name: "Qingyuan Gao",
+    photo: "Qingyuan_Gao.png",
+    position: "Undergraduate Student",
+    workIntro: "Product Manager",
+    institution: "Tongji University",
+  },
+  {
+    name: "Qinlin Zhao",
+    photo: "Qinlin_Zhao.png",
+    position: "PhD Student",
+    workIntro: "Algorithm Research",
+    institution: "University of Science and Technology of China",
+  },
+  {
+    name: "San Kim",
+    photo: "San_Kim.png",
+    position: "PhD Student",
+    workIntro: "Algorithm Research",
+    institution: "Pohang University of Science and Technology",
+  },
+  {
+    name: "Xiangxu Zhang",
+    photo: "Xiangxu_Zhang.png",
+    position: "PhD Student",
+    workIntro: "Interdisciplinary Research",
+    institution: "Renmin University of China",
   },
   {
     name: "Tiantian Xue",

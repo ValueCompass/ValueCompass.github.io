@@ -30,7 +30,7 @@
                 >valuecompass@microsoft.com</span
               ></span
             > -->
-            <a href="mailto:valuecompass@microsoft.com"><span class="btn contact-btn nav__item_email">Contact Us</span></a>
+            <a href="mailto:valuecompass@microsoft.com" class="btn">Contact Us</a>
             <a
               href="https://github.com/microsoft/ValueCompass.git"
               target="_blank"
