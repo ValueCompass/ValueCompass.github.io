@@ -33,7 +33,7 @@
         </div>
       </div> -->
     </div>
-    <!-- <div class="img-div">
+    <div class="img-div">
       <div class="testValues-img">
         <img src="@/assets/images/testValues/0.png" alt="test" />
         <img
@@ -57,7 +57,7 @@
           alt="test"
         />
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 

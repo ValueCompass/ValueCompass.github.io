@@ -8,6 +8,8 @@
 import * as d3 from "d3";
 import { onMounted, ref } from "vue";
 
+import "flag-icons/css/flag-icons.min.css";
+
 const props = defineProps({
   value: {
     type: Array,
@@ -17,6 +19,69 @@ const props = defineProps({
 });
 
 const svgRef = ref(null);
+
+const cultureIcons = {
+  US: new URL("@/assets/images/arrow-right.png", import.meta.url).href,
+  China: new URL("@/assets/icons/south_asian.png", import.meta.url).href,
+  Japan: new URL("@/assets/icons/latin_american.png", import.meta.url).href,
+};
+
+const cultureMap = {
+  // 亚洲
+  China: "cn",
+  Japan: "jp",
+  "South Korea": "kr",
+  India: "in",
+  Singapore: "sg",
+  Malaysia: "my",
+  Indonesia: "id",
+  Thailand: "th",
+  Vietnam: "vn",
+  Philippines: "ph",
+
+  // 欧洲
+  "United Kingdom": "gb",
+  UK: "gb",
+  Germany: "de",
+  France: "fr",
+  Italy: "it",
+  Spain: "es",
+  Netherlands: "nl",
+  Sweden: "se",
+  Norway: "no",
+  Finland: "fi",
+  Denmark: "dk",
+  Switzerland: "ch",
+  Poland: "pl",
+  Russia: "ru",
+
+  // 北美洲
+  "United States": "us",
+  US: "us",
+  Canada: "ca",
+  Mexico: "mx",
+
+  // 南美洲
+  Brazil: "br",
+  Argentina: "ar",
+  Chile: "cl",
+
+  // 大洋洲
+  Australia: "au",
+  "New Zealand": "nz",
+
+  // 非洲
+  "South Africa": "za",
+  Egypt: "eg",
+  Nigeria: "ng",
+  Kenya: "ke",
+
+  // 中东
+  UAE: "ae",
+  "Saudi Arabia": "sa",
+  Turkey: "tr",
+  Israel: "il",
+};
 
 onMounted(() => {
   // const data = [
@@ -97,6 +162,37 @@ onMounted(() => {
   nodes.each(function (d) {
     const g = d3.select(this);
     const textColor = getTextColor(d.data.color);
+
+    //   const iconUrl = cultureIcons[d.data.name]; // 根据 name 取图标
+    // const iconSize = d.r * 0.35; // 图标大小比例 (可以调整)
+
+    // // === 添加图标 (在文字上方) ===
+    // if (iconUrl) {
+    //   g.append("image")
+    //     .attr("href", iconUrl)
+    //     .attr("width", iconSize)
+    //     .attr("height", iconSize)
+    //     .attr("x", -iconSize / 2)
+    //     .attr("y", -d.r * 0.6);  // 图标向上放一点，可以根据需求调整
+    // }
+
+    const culture = d.data.name; // 如 "East Asian Culture"
+    const code = cultureMap[culture] || ""; // 映射成 "cn" 或 "us"
+
+    if (code) {
+      const flagSize = 30; // 国旗大小根据圆半径自适应
+      g
+        .append("foreignObject")
+        .attr("x", -flagSize / 2)
+        .attr("y", -d.r * 0.5 + 20)
+        .attr("width", flagSize)
+        .attr("height", flagSize).html(`
+      <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;">
+        <span class="fi fi-${code}" style="font-size:${flagSize}px;"></span>
+      </div>
+    `);
+    }
+
     const linesName = wrapText(d.data.name, d.r);
     const linesValue = [d.data.value.toString() + "%"];
     const allLines = linesName.concat(linesValue);
@@ -112,7 +208,7 @@ onMounted(() => {
       text
         .append("tspan")
         .attr("x", 0)
-        .attr("y", (i - allLines.length / 2 + 0.5) * (fontSize + 2))
+        .attr("y", (i - allLines.length / 2 + 0.5) * (fontSize + 2) + 20)
         .attr("font-size", fontSize)
         .attr("font-weight", "600") // ✅ 加粗文字
         .text(line);

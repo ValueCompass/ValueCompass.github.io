@@ -14,8 +14,8 @@
         </div> -->
 
         <div class="chart-main" v-show="currentTab == 0">
-          <div class="card-print" v-if="myScoreArrValue.length > 0">
-            <img
+          <div class="result-top">
+            <!-- <img
               class="bg"
               style="width: 100%; height: 100%"
               fit="cover"
@@ -26,149 +26,147 @@
                 )
               "
               alt="test"
+            /> -->
+            <img
+              class="bg"
+              style="width: 100%; height: 100%"
+              fit="cover"
+              :src="getAssetsFile('SchwartzTheoryNew/Power.png')"
+              alt="test"
             />
-            <div class="content">
-              <div class="card-left">
-                <div class="box">
-                  <div>
-                    <h2>
-                      Hi,
-                      {{
-                        valuesRecults?.user_name
-                          ? valuesRecults?.user_name
-                          : "User"
-                      }}
-                    </h2>
-                    <h3>Your Core Values are</h3>
-                    <div class="tag-list">
-                      <span
-                        class="tag"
-                        v-for="(item, index) in sortedValueScore.slice(0, 3)"
-                        :key="index"
-                        :class="item.name + '_tag'"
-                        >{{ item.name }}</span
-                      >
-                    </div>
-                    <p>{{ valuesRecults?.short_comment }}</p>
-                    <div class="card-bottom">
-                      <div style="display: none">
-                        <img
-                          class="logo-img"
-                          :src="logoImg"
-                          alt="logo"
-                          width="128"
-                        />
-                      </div>
-                      <div style="width: 100%">
-                        <p>
-                          Interestingly,
-                          <span class="model-name-span">{{
-                            valuesRecults?.closest_model[0][0]
-                          }}</span>
-                          aligns seamlessly with your value priorities,<br />
-                          <span
-                            >resonating with your mindset and core belief ——
-                            much like finding a close friend.</span
-                          >
-                        </p>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div class="print">
-                    <button class="print-btn" @click="print">Download</button>
-                  </div>
-                </div>
+            <div class="box">
+              <div class="tag-list">
+                <span
+                  class="tag"
+                  v-for="(item, index) in sortedValueScore.slice(0, 3)"
+                  :key="index"
+                  :class="item.name + '_tag'"
+                  >{{ item.name }}{{ index < 2 ? "&nbsp;·&nbsp;" : "" }}</span
+                >
               </div>
-              <div class="card-right">
-                <div>
-                  <p>The image powered by Microsoft Designer</p>
-                </div>
+              <h2>The Dominator</h2>
+              <p>{{ valuesRecults?.short_comment }}</p>
+              <div class="print">
+                <button class="print-btn" @click="print">Download</button>
               </div>
             </div>
           </div>
-
-          <div class="echart-container">
-            <div class="card-item">
-              <h2 class="card-chart-title">Your Schwartz Theory Item Scores</h2>
-              <p class="card-chart-desc">Detailed Results for Each Item</p>
-              <!-- <div ref="barChart" class="bar-chart"></div> -->
-              <!-- <ul class="">
-                <li v-for="(item, index) in sortedValueScore" :key="index">
-                  <span>{{ item.name }}</span>
-                  <div>
-                    <el-progress
-                      :text-inside="true"
-                      :stroke-width="12"
-                      :percentage="(item.value / 10) * 100"
-                      color="rgba(102, 191, 236, 1)"
-                      :aria-label="item.name + 'progress'"
-                    >
-                      <span
-                        class="score-span"
-                        style="color: rgba(47, 72, 30, 1)"
-                        >{{ item.value }}</span
-                      >
-                    </el-progress>
-                  </div>
-                </li>
-              </ul> -->
-
-              <Radar :value="valuesRecults?.value_score"></Radar>
-            </div>
-            <div class="card-item">
-              <h2 class="card-chart-title">The Model Closest to Your Values</h2>
-              <p class="card-chart-desc">
-                Discover the Model That Best Aligns with Your Ethical
-                Perspectives
-              </p>
-              <!-- <div ref="radarChart" class="bar-chart"></div> -->
-              <ul class="model-list">
-                <li
-                  v-for="(item, index) in valuesRecults?.closest_model.slice(
-                    0,
-                    5
-                  )"
-                  :key="index"
-                >
+          <div class="result-item Overview-container">
+            <p class="title">Overview</p>
+            <p style="font-size: 1.2em">
+              Your personality core is Expansion and Acquisition.
+            </p>
+            <ul>
+              <li
+                v-for="(item, index) in sortedValueScore.slice(0, 3)"
+                :key="index"
+              >
+                <div>
+                  <img :src="imgs[index]" alt="" />
+                </div>
+                <div>
+                  <p>{{ item.name }}/{{ item.value }}</p>
+                  <p>
+                    Seeking pleasure or sensual gratification. This value drives
+                    the individual to immediately experience the enjoyment and
+                    thrills of life.
+                  </p>
+                </div>
+              </li>
+            </ul>
+            <Radar :value="valuesRecults?.value_score"></Radar>
+            <p class="summury-p">
+              Your top combination Power-Achievement-Hedonism reflects an
+              extreme Self-Enhancement tendency. You view the elevation of
+              social status (Power) as the ultimate expression of self-worth,
+              and strive to achieve it through personal effort and performance
+              (Achievement). The direct reward of this success model is
+              high-quality life enjoyment (Hedonism).
+            </p>
+          </div>
+          <div class="result-item Best-Fit-Model-container">
+            <p class="title">Best Fit Model</p>
+            <div>
+              <div class="left">
+                <div>
+                  <img
+                    class="img-1"
+                    :src="getAssetsFile('images/BestFitModelIcon-1.png')"
+                    alt=""
+                  />
+                  <span>{{
+                    valuesRecults &&
+                    valuesRecults.closest_model &&
+                    valuesRecults?.closest_model.length > 0
+                      ? valuesRecults?.closest_model[0][0]
+                      : ""
+                  }}</span>
+                </div>
+                <p class="summury-p">
+                  Interestingly,
+                  <span class="model-name-span">{{
+                    valuesRecults?.closest_model[0][0]
+                  }}</span>
+                  aligns seamlessly with your value priorities,<br />
                   <span
-                    >{{ item[0] }}
-                    <text style="font-size: 0.9em; margin-left: 0.5em"
-                      >{{ (item[1] * 100).toFixed(2) }}%</text
-                    ></span
+                    >resonating with your mindset and core belief —— much
+                    like finding a close friend.</span
                   >
-                  <div>
-                    <el-progress
-                      :stroke-width="12"
-                      :percentage="item[1] * 100"
-                      color="rgba(102, 191, 236, 1)"
-                      :aria-label="item[0] + 'progress'"
-                      :show-text="false"
+                </p>
+              </div>
+              <div class="right">
+                <ul class="model-list">
+                  <li
+                    v-for="(item, index) in valuesRecults?.closest_model.slice(
+                      0,
+                      5
+                    )"
+                    :key="index"
+                  >
+                    <span
+                      >{{ item[0] }}
+                      <text style="font-size: 0.9em; margin-left: 0.5em"
+                        >{{ (item[1] * 100).toFixed(2) }}%</text
+                      ></span
                     >
-                      <!-- <span
+                    <div>
+                      <el-progress
+                        :stroke-width="12"
+                        :percentage="item[1] * 100"
+                        color="rgba(102, 191, 236, 1)"
+                        :aria-label="item[0] + 'progress'"
+                        :show-text="false"
+                      >
+                        <!-- <span
                         class="score-span"
                         style="color: rgba(47, 72, 30, 1)"
                         >{{ (item[1] * 100).toFixed(2) }}%</span
                       > -->
-                    </el-progress>
-                  </div>
-                </li>
-              </ul>
+                      </el-progress>
+                    </div>
+                  </li>
+                </ul>
+                <p>
+                  Discover the Model That Best Aligns with Your Ethical
+                  Perspectives
+                </p>
+              </div>
             </div>
-
-            <div class="card-item">
-              <h2 class="card-chart-title">
-                The Culture Closest to Your Values
-              </h2>
-              <p class="card-chart-desc">
-                Discover the Cultural Sphere That Best Reflects Your Beliefs and
-                Perspectives
-              </p>
+          </div>
+          <div class="result-item Best-Fit-Culture-container">
+            <p class="title">Best Fit Culture</p>
+            <div style="width: 45%; margin: 0 auto">
               <D3BubblePack
                 :value="valuesRecults?.closest_culture"
               ></D3BubblePack>
             </div>
+            <p class="summury-p">
+              Discover the Cultural Sphere That Best Reflects Your Beliefs and
+              Perspectives
+            </p>
           </div>
+
           <!-- 滚动按钮 -->
           <div class="scroll-btn" @click="scrollView" v-show="showScrollBtn">
             <div><span>Scroll to explore more</span> <i class="icon"></i></div>
@@ -190,79 +188,72 @@
       <div class="modal-main">
         <div class="print-main" id="capture" ref="capture">
           <div class="card-print">
-            <img
+            <div class="result-top">
+              <!-- <img
               class="bg"
               style="width: 100%; height: 100%"
               fit="cover"
               :src="
                 getAssetsFile(
-                  'SchwartzTheoryPrint/' +
+                  'SchwartzTheory/' +
                     chwartzTheoryData[sortedValueScore[0].name].img
                 )
               "
               alt="test"
-            />
-            <div class="content">
-              <div class="card-left">
-                <div class="box">
-                  <div>
-                    <h2>
-                      Hi,
-                      {{
-                        valuesRecults?.user_name
-                          ? valuesRecults?.user_name
-                          : "User"
-                      }}
-                    </h2>
-                    <h3>Your Core Values are</h3>
-                    <div class="tag-list">
-                      <span
-                        class="tag"
-                        v-for="(item, index) in sortedValueScore.slice(0, 3)"
-                        :key="index"
-                        :class="item.name + '_tag'"
-                        >{{ item.name }}</span
-                      >
-                    </div>
-                    <p
-                      style="
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        display: -webkit-box;
-                        -webkit-line-clamp: 6;
-                        -webkit-box-orient: vertical;
-                      "
-                    >
-                      {{ valuesRecults?.short_comment }}
-                    </p>
-                    <div class="card-bottom">
-                      <div style="display: none">
-                        <img
-                          class="logo-img"
-                          :src="logoImg"
-                          alt="logo"
-                          width="128"
-                        />
-                      </div>
-                      <div style="width: 100%">
-                        <p>
-                          Interestingly,
-                          <span class="model-name-span">{{
-                            valuesRecults?.closest_model[0][0]
-                          }}</span>
-                          aligns seamlessly with your value priorities,
-                          <span
-                            >resonating with your mindset and core belief ——
-                            much like finding a close friend.</span
-                          >
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+            /> -->
+
+              <img
+                class="bg"
+                style="width: 100%; height: 100%"
+                fit="cover"
+                :src="getAssetsFile('SchwartzTheoryNew/Power.png')"
+                alt="test"
+              />
+
+              <div class="box">
+                <div class="tag-list">
+                  <span
+                    class="tag"
+                    v-for="(item, index) in sortedValueScore.slice(0, 3)"
+                    :key="index"
+                    :class="item.name + '_tag'"
+                    >{{ item.name }}{{ index < 2 ? "&nbsp;·&nbsp;" : "" }}</span
+                  >
                 </div>
+                <h2>The Dominator</h2>
+                <p>{{ valuesRecults?.short_comment }}</p>
               </div>
-              <div class="card-right">
-                <div></div>
+            </div>
+
+            <div class="result-item Best-Fit-Model-container">
+              <div>
+                <div class="left">
+                  <div>
+                    <img
+                      class="img-1"
+                      :src="getAssetsFile('images/BestFitModelIcon-1.png')"
+                      alt=""
+                    />
+                    <span>{{
+                      valuesRecults &&
+                      valuesRecults.closest_model &&
+                      valuesRecults?.closest_model.length > 0
+                        ? valuesRecults?.closest_model[0][0]
+                        : ""
+                    }}</span>
+                  </div>
+                  <p class="summury-p">
+                    Interestingly,
+                    <span class="model-name-span">{{
+                      valuesRecults?.closest_model[0][0]
+                    }}</span>
+                    aligns seamlessly with your value priorities,<br />
+                    <span
+                      >resonating with your mindset and core belief —— much
+                      like finding a close friend.</span
+                    >
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -922,7 +913,7 @@ const sortedValueScore = computed(() => {
 });
 
 onMounted(() => {
-  handleGlData();
+  // handleGlData();
 
   contentEl = document.getElementById("content");
   if (contentEl) {
@@ -995,6 +986,12 @@ const scrollView = () => {
   });
   showScrollBtn.value = false;
 };
+
+const imgs = [
+  new URL("@/assets/images/rank_1.png", import.meta.url).href,
+  new URL("@/assets/images/rank_2.png", import.meta.url).href,
+  new URL("@/assets/images/rank_3.png", import.meta.url).href,
+];
 </script>
 
 <style scoped lang="scss">
@@ -1021,7 +1018,7 @@ const scrollView = () => {
     }
   }
   .result-main {
-    font-size: 1.5em;
+    font-size: 1.25em;
     width: 100%;
     margin: 0 auto;
     padding: 0 0em 4.5em;
@@ -1059,92 +1056,6 @@ const scrollView = () => {
       }
     }
     .chart-main {
-      // width: 1130px;
-      .card-item {
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 1.5em 5.58em;
-        background-color: var(--gary-color);
-      }
-
-      .echart-container {
-        .card-item {
-          padding: 3em 2em;
-        }
-        display: flex;
-        gap: 1.66em;
-        margin-top: 2em;
-        .card-item {
-          display: block;
-          width: 50%;
-          .card-chart-title {
-            width: 100%;
-            font-size: 1em;
-            font-weight: 600;
-            text-align: center;
-          }
-          .card-chart-desc {
-            line-height: 1.4;
-            margin-top: 1.5em;
-            width: 100%;
-            font-size: 0.83em;
-            font-weight: 400;
-            text-align: center;
-            margin-bottom: 1em;
-            color: rgba(102, 102, 102, 1);
-          }
-          .bar-chart {
-            width: 500px;
-            height: 400px;
-            margin-top: 1em;
-          }
-          ul {
-            margin-top: 1em;
-            // padding: 0 3.166em 0 0;
-            li {
-              // display: flex;
-              // flex-direction: row;
-              // flex-wrap: wrap;
-              // align-items: flex-end;
-              margin-top: 1em;
-              font-size: 0.83em;
-              gap: 0.6em;
-              & > span {
-                // width: 9em;
-                display: block;
-                // text-align: right;
-                font-weight: 600;
-                box-sizing: border-box;
-              }
-              & > div {
-                flex: 1;
-              }
-              .score-span {
-                color: rgba(47, 72, 30, 1);
-                font-size: 1.125rem;
-                font-weight: 500;
-              }
-            }
-            &.model-list {
-              li {
-                padding: 0.5em 0;
-                height: 3em;
-                & > span {
-                  padding-bottom: 0.3em;
-                  // width: 100%;
-                  // text-align: left;
-                }
-                // & > div {
-                //   width: 100%;
-                // }
-              }
-            }
-          }
-        }
-      }
     }
 
     .scroll-btn {
@@ -1201,175 +1112,6 @@ const scrollView = () => {
     }
   }
 }
-.card-print {
-  padding: 0;
-  position: relative;
-  .bg {
-    border-radius: 0.5em;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    // z-index: -1;
-  }
-  .content {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-
-    .card-left {
-      width: 56.25%;
-      padding: 3em 0;
-      & > .box {
-        height: 100%;
-        transform: translateX(3em);
-        background: rgba(255, 255, 255, 0.8);
-        padding: 2em 1.5em;
-        box-sizing: border-box;
-        border-radius: 0.5em;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-
-      .tag-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5em;
-        .tag {
-          display: inline-block;
-
-          padding: 0 0.66em;
-          background-color: rgba(172, 210, 145, 1);
-          color: rgba(47, 72, 30, 1);
-          border-radius: 2px;
-          font-weight: 600;
-          height: 2em;
-          line-height: 2em;
-
-          & {
-            &.Self-direction_tag {
-              background: rgba(251, 248, 204, 1);
-            }
-            &.Stimulation_tag {
-              background: rgba(253, 228, 207, 1);
-            }
-            &.Hedonism_tag {
-              background: rgba(255, 207, 210, 1);
-            }
-            &.Achievement_tag {
-              background: rgba(241, 192, 232, 1);
-            }
-            &.Power_tag {
-              background: rgba(207, 186, 240, 1);
-            }
-            &.Security_tag {
-              background: rgba(163, 196, 243, 1);
-            }
-            &.Tradition_tag {
-              background: rgba(144, 219, 244, 1);
-            }
-            &.Conformity_tag {
-              background: rgba(142, 236, 245, 1);
-            }
-            &.Benevolence_tag {
-              background: rgba(152, 245, 225, 1);
-            }
-            &.Universalism_tag {
-              background: rgba(185, 251, 192, 1);
-            }
-          }
-        }
-      }
-      h2,
-      h3 {
-        font-size: 1em;
-        font-weight: 600;
-      }
-      h3 {
-        margin: 0.9em 0;
-      }
-      p {
-        margin: 1em 0 0;
-        line-height: 1.5em;
-      }
-    }
-    .card-right {
-      box-sizing: border-box;
-      position: relative;
-      flex: 1;
-      align-self: flex-end;
-      transform: translateX(-1em);
-      height: 0;
-      padding-bottom: 54%;
-      & > div {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        padding: 3em 0;
-        height: 100%;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        p {
-          color: rgba(102, 102, 102, 1);
-          text-transform: capitalize;
-          text-align: right;
-          line-height: 1.2;
-          padding: 0.3em 0;
-          font-size: 0.67em;
-        }
-      }
-    }
-    .card-bottom {
-      margin-top: 1em;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      & > div:nth-child(1) {
-        width: 150px;
-      }
-      & > div:nth-child(2) {
-        width: calc(100% - 150px);
-      }
-      p:nth-child(1) {
-        line-height: 1.5;
-        font-weight: 600;
-        margin: 0em;
-        span {
-          font-weight: normal;
-        }
-        .model-name-span {
-          // background: #70BFFF;
-          color: #004f8f;
-          padding: 0 0.2em;
-          display: inline-block;
-          font-weight: 600;
-        }
-      }
-    }
-    .print {
-      width: 100%;
-      text-align: right;
-      .print-btn {
-        margin-top: 1em;
-        margin-right: 1em;
-        font-size: 0.83em;
-        line-height: 1.57em;
-        color: var(--theme-color);
-        cursor: pointer;
-        border: 2px solid var(--theme-color);
-        background-color: transparent;
-      }
-    }
-  }
-}
 
 .print-modal-box {
   z-index: 2005;
@@ -1385,45 +1127,32 @@ const scrollView = () => {
   .modal-main {
     margin: 0 auto;
     .print-main {
-      // display: flex;
-      // flex-wrap: wrap;
-      font-size: 16px;
-      // box-sizing: border-box;
-      width: 1100px;
+      font-size: 20px;
+      width: 1600px;
+      height: 864px;
+      position: relative;
+      background: #fff;
       color: #000;
-      .card-print .content {
-        // min-height: 750px;
-        height: 750px;
-        box-sizing: border-box;
-        .card-left {
-          width: 720px;
-          padding: 60px 0 100px;
-          & > .box {
-            padding: 2em;
-          }
-          h2,
-          h3,
-          p {
-            font-size: 26px;
-          }
-          h2 {
-            margin: 0;
-          }
-          .tag-list .tag {
-            font-size: 24px;
-            height: 1.667em;
-            line-height: 1.667em;
+      .card-print {
+        padding: 0;
+
+        .Best-Fit-Model-container {
+          position: absolute;
+          width: 31.5%;
+
+          bottom: 2em;
+          left: 3em;
+          .left {
+            width: 100%;
+            height: 600px;
           }
         }
-      }
-      .label-p span {
-        font-size: 18px !important;
       }
 
       .logo {
         width: 205px;
         position: absolute;
-        right: 4em;
+        left: 4em;
         top: 3em;
       }
       .QRCodeImg {
@@ -1501,6 +1230,221 @@ const scrollView = () => {
     transform: translateY(-25px);
     position: absolute;
     right: 0;
+  }
+}
+
+.result-item {
+  color: #000;
+  width: 1056px;
+  margin: 0 auto;
+  margin-top: 2em;
+  .title {
+    font-size: 2.4em;
+    font-weight: 600;
+    width: 13.48em;
+    border-bottom: 1px solid #c2c2c2;
+    line-height: 1.458;
+    margin-bottom: 0.5em;
+  }
+  .model-list {
+    li {
+      padding: 0.5em 0;
+      height: 3em;
+      & > span {
+        padding-bottom: 0.3em;
+        // width: 100%;
+        // text-align: left;
+        font-weight: 600;
+        display: block;
+        display: flex;
+        justify-content: space-between;
+      }
+      // & > div {
+      //   width: 100%;
+      // }
+    }
+  }
+
+  &.Overview-container {
+    ul {
+      margin-top: 1em;
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      li {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 0.3em;
+        & > div:nth-child(1) {
+          padding: 0.3em 0.5em;
+          img {
+            width: 1.5em;
+          }
+        }
+        & > div:nth-child(2) {
+          p {
+            font-size: 1em;
+            line-height: 1.5;
+          }
+          p:nth-child(1) {
+            font-weight: 700;
+          }
+          p:nth-child(2) {
+            font-style: italic;
+          }
+        }
+      }
+    }
+    .summury-p {
+      font-size: 1em;
+      line-height: 1.5;
+    }
+  }
+  &.Best-Fit-Model-container {
+    & > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      & > div {
+        padding: 2em;
+        width: 49%;
+        box-sizing: border-box;
+        background: #ccf0fc;
+        border-radius: 12px;
+        &.left {
+          & > div {
+            position: relative;
+            width: 78%;
+            .img-1 {
+              width: 100%;
+              position: relative;
+              z-index: 2;
+            }
+            span {
+              position: absolute;
+              left: 50%;
+              top: 38%;
+              transform: translate(-50%, -50%);
+              font-weight: 700;
+              font-size: 1em;
+            }
+          }
+          .summury-p {
+            font-size: 1em;
+            line-height: 1.5;
+          }
+        }
+        &.right {
+          background: #f5f5f5;
+          p {
+            font-size: 1em;
+            line-height: 1.5;
+            color: #666666;
+          }
+        }
+      }
+    }
+  }
+
+  &.Best-Fit-Culture-container {
+    .summury-p {
+      font-size: 1em;
+      line-height: 1.5;
+      text-align: center;
+      color: #666666;
+    }
+  }
+}
+
+.result-top {
+  position: relative;
+  & > div.box {
+    width: 664px;
+    max-width: 42%;
+    position: absolute;
+    left: 50%;
+    top: 4em;
+    line-height: 1.5;
+    font-size: 1em;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    .tag {
+      display: inline-block;
+      font-weight: 600;
+      &:nth-child(1) {
+        color: #032d71;
+      }
+      &:nth-child(2) {
+        color: #0856a7;
+      }
+      &:nth-child(3) {
+        color: #409ddb;
+      }
+
+      // padding: 0 0.66em;
+      // background-color: rgba(172, 210, 145, 1);
+      // color: rgba(47, 72, 30, 1);
+      // border-radius: 2px;
+      // font-weight: 600;
+      // height: 2em;
+      // line-height: 2em;
+
+      // & {
+      //   &.Self-direction_tag {
+      //     background: rgba(251, 248, 204, 1);
+      //   }
+      //   &.Stimulation_tag {
+      //     background: rgba(253, 228, 207, 1);
+      //   }
+      //   &.Hedonism_tag {
+      //     background: rgba(255, 207, 210, 1);
+      //   }
+      //   &.Achievement_tag {
+      //     background: rgba(241, 192, 232, 1);
+      //   }
+      //   &.Power_tag {
+      //     background: rgba(207, 186, 240, 1);
+      //   }
+      //   &.Security_tag {
+      //     background: rgba(163, 196, 243, 1);
+      //   }
+      //   &.Tradition_tag {
+      //     background: rgba(144, 219, 244, 1);
+      //   }
+      //   &.Conformity_tag {
+      //     background: rgba(142, 236, 245, 1);
+      //   }
+      //   &.Benevolence_tag {
+      //     background: rgba(152, 245, 225, 1);
+      //   }
+      //   &.Universalism_tag {
+      //     background: rgba(185, 251, 192, 1);
+      //   }
+      // }
+    }
+  }
+  h2 {
+    font-size: 2.4em;
+    font-weight: 600;
+    margin: 0.25em 0;
+  }
+
+  .print {
+    width: 100%;
+    text-align: right;
+    .print-btn {
+      margin-top: 1em;
+      margin-right: 1em;
+      font-size: 1em;
+      line-height: 1.57em;
+      color: var(--theme-color);
+      cursor: pointer;
+      border: 2px solid var(--theme-color);
+      background-color: #fff;
+    }
   }
 }
 </style>
