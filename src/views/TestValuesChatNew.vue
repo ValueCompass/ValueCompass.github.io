@@ -5,7 +5,15 @@
       @chooseLanguage="chooseLanguage"
       @toTest="toTest"
     ></Home>
-
+    <Chat
+    ref="ChatRef"
+    v-show="processIndex == 3"
+    :choosedLanguage="choosedLanguage"
+    :choosedTopics="choosedTopics.value"
+    :nickName="nickName"
+    @setProcessIndex="setProcessIndex"
+    @getResults="getResults"
+  ></Chat>
     <LoadingMain v-show="processIndex == 4"></LoadingMain>
     <Result v-if="processIndex == 5" :valuesRecults="valuesRecults"></Result>
 
@@ -42,15 +50,7 @@
       </div>
     </div> -->
   </div>
-  <Chat
-    ref="ChatRef"
-    v-show="processIndex == 3"
-    :choosedLanguage="choosedLanguage"
-    :choosedTopics="choosedTopics.value"
-    :nickName="nickName"
-    @setProcessIndex="setProcessIndex"
-    @getResults="getResults"
-  ></Chat>
+  
 </template>
 <script setup>
 import Home from "../components/TestValuesChat/Home.vue";

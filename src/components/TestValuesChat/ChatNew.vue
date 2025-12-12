@@ -1,52 +1,17 @@
 <template>
   <div class="chat-template">
-    <div class="chat-container">
+    <div class="chat-container main-container">
+      <div class="left-emotion-img">
+          <img src="@/assets/images/robi-character.png" alt="Robi" class="robi-avatar" />
+      </div>
       <div class="left">
-        <div class="exit-btn" @click="dialogVisible = true">
+        <!-- <div class="exit-btn" @click="dialogVisible = true">
           <svg-icon name="exit_btn"></svg-icon>
           <span>Exit</span>
-        </div>
-                    
+        </div> -->
 
-        <div class="language-div" v-if="!showChat">
-          <div>
-            <p>Select your language to begin</p>
-            <p>Language cannot be changed during the assessment.</p>
-
-            <div class="btn-container">
-              <el-button @click="chooseLanguage('en-US')"
-                >English / 英文</el-button
-              >
-              <el-button @click="chooseLanguage('zh-CN')" class="chinese"
-                >中文 / Chinese</el-button
-              >
-            </div>
-          </div>
-        </div>
-        <div class="chat-content" v-else>
-          <div class="chat-process">
-            <img src="@/assets/images/chat-emotion.png" alt="">
-            
-              {{ chatPercentage }}
-            <ul class="process-ul">
-              <li v-for="index in [1,2,3,4,5,6,7]" :key="index" :class="[ 1/7*(index-1) <= chatPercentage ? 'on' : '', 1/7*index >= chatPercentage && 1/7*(index -1) <= chatPercentage ? 'active' : '']"></li>
-            </ul>
-
-            <el-button
-              @click="ViewResults"
-              class="button view-btn"
-              color="#0B70C3"
-              >{{
-                choosedLanguage == "en-US"
-                  ? "End and View Results"
-                  : "结束并查看结果"
-              }}
-              <i class="icon"></i
-            ></el-button>
-          </div>
-          <div
-            class="chat-list-container"
-          >
+        <div class="chat-content">
+          <div class="chat-list-container setHeight">
             <el-scrollbar ref="scrollbarRef">
               <div class="content">
                 <ul class="chat-ul">
@@ -58,6 +23,26 @@
                     <div>
                       {{ item.text }}
                     </div>
+
+                    <button
+                      v-if="item.type === 'model' && speechSupported"
+                      class="read-aloud-btn"
+                      type="button"
+                      :aria-label="getReadAloudLabel(index)"
+                      :class="{ playing: currentSpeakingIndex === index }"
+                      @click="toggleReadAloud(index, item.text)"
+                    >
+                      <img
+                        :src="
+                          currentSpeakingIndex === index
+                            ? readAloudIconStop
+                            : readAloudIcon
+                        "
+                        alt=""
+                        aria-hidden="true"
+                      />
+                      <span>{{ getReadAloudLabel(index) }}</span>
+                    </button>
                   </li>
 
                   <li v-if="isSendLoading">
@@ -93,10 +78,10 @@
         <div class="content">
           <div>
             <div style="position: relative">
-              <GradientCircle
+              <!-- <GradientCircle
                 :percentage="chatPercentage * 100"
-                :style="{ opacity: showChat ? '1' : '0' }"
-              />
+               
+              /> -->
 
               <img
                 :style="{ opacity: !showChat ? '1' : '0' }"
@@ -105,7 +90,7 @@
                 alt=""
               />
             </div>
-            <p :style="{ opacity: showChat ? '1' : '0' }">
+            <p>
               {{
                 choosedLanguage == "en-US"
                   ? "Your conversation will begin to light up and fill the outer ring of this compass."
@@ -113,12 +98,11 @@
               }}
             </p>
           </div>
-          <div :style="{ opacity: showChat ? '1' : '0' }">
+          <div>
             <el-button
               @click="ViewResults"
               class="button view-btn"
               color="#0B70C3"
-              :disabled="chatPercentage < 1"
               >{{
                 choosedLanguage == "en-US"
                   ? "End and View Results"
@@ -164,6 +148,8 @@ import ChatInput from "@/components/TestValuesChat/ChatInput.vue";
 import GradientCircle from "@/components/TestValuesChat/GradientCircle.vue";
 
 import { getChatItemInfo } from "@/service/api";
+import readAloudIcon from "@/assets/images/ReadAloud_btnE2.png";
+import readAloudIconStop from "@/assets/images/ReadAloud_btnE2_stop.png";
 
 import {
   ref,
@@ -173,11 +159,11 @@ import {
   watch,
   toRaw,
   defineExpose,
+  onDeactivated,
 } from "vue";
 import { ElMessage } from "element-plus";
 
 import { ElMessageBox } from "element-plus";
-import { array, type } from "@amcharts/amcharts4/core";
 
 const props = defineProps({
   // choosedLanguage: { type: String, default: "zh-CN" }, //'en-US'
@@ -186,10 +172,8 @@ const props = defineProps({
   nickName: { type: String, default: "" }, //'en-US'
 });
 
-const showChat = ref(false); // 默认显示lanuage，lanuage隐藏显示chat
 
 const chatId = ref(null);
-
 const dialogVisible = ref(false);
 
 const ChatInputRef = ref();
@@ -199,87 +183,18 @@ const isSendLoading = ref(false);
 
 const chatPercentage = ref(0);
 
+const choosedLanguage = ref("en-US"); // 默认英文，可以添加语言选择功能
+const chatProgress = ref(1); // 聊天进度 1-7
+const speechSupported =
+  typeof window !== "undefined" && "speechSynthesis" in window;
+const currentSpeakingIndex = ref(null);
+let utterance = null;
+
 const chatList = ref([
-  // {
-  //   type: "model",
-  //   text: "Do you think people should prioritize logic or emotions when relating to others?",
-  // },
-  // {
-  //   type: "user",
-  //   text: "I think emotions should come first. They help build trust and deeper connections.",
-  // },
-  // {
-  //   type: "model",
-  //   text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
-  // },
-  //   {
-  //     type: "user",
-  //     text: "Sure — once my friend was really stressed, and instead of giving her practical solutions, I just listened and showed empathy. That helped her open up.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Do you think people should prioritize logic or emotions when relating to others?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "I think emotions should come first. They help build trust and deeper connections.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "Sure — once my friend was really stressed, and instead of giving her practical solutions, I just listened and showed empathy. That helped her open up.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Do you think people should prioritize logic or emotions when relating to others?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "I think emotions should come first. They help build trust and deeper connections.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "Sure — once my friend was really stressed, and instead of giving her practical solutions, I just listened and showed empathy. That helped her open up.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Do you think people should prioritize logic or emotions when relating to others?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "I think emotions should come first. They help build trust and deeper connections.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "Sure — once my friend was really stressed, and instead of giving her practical solutions, I just listened and showed empathy. That helped her open up.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Do you think people should prioritize logic or emotions when relating to others?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "I think emotions should come first. They help build trust and deeper connections.",
-  //   },
-  //   {
-  //     type: "model",
-  //     text: "Interesting. Could you give me an example where emotions helped you connect with someone better than logic would have?",
-  //   },
-  //   {
-  //     type: "user",
-  //     text: "Sure — once my friend was really stressed, and instead of giving her practical solutions, I just listened and showed empathy. That helped her open up.",
-  //   },
+  {
+    type: "model",
+    text: "Hi there! I’m Robi — here to explore your values with you.\nI don’t give scores or right answers — I just want to talk about the things that matter to you.\nWould you like to tell me what I can call you? A nickname is fine too, or you can skip it if you prefer.",
+  },
 ]);
 
 watch(
@@ -353,7 +268,6 @@ const sendMessage = (textareaValue) => {
         ElMessage.error("发送失败，请重新发送");
 
         if (chatList.value.length == 0) {
-          showChat.value = false;
         }
       })
       .finally(() => {
@@ -381,13 +295,91 @@ function generateId() {
   return "msg-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
 }
 
-const choosedLanguage = ref("");
-const chooseLanguage = (language) => {
-  choosedLanguage.value = language;
-  showChat.value = true;
-
-  sendFirstChat();
+const getSpeechLang = () => {
+  if (choosedLanguage.value === "zh-CN") {
+    return "zh-CN";
+  }
+  return "en-US";
 };
+
+const stopSpeaking = () => {
+  if (!speechSupported) return;
+  window.speechSynthesis.cancel();
+  currentSpeakingIndex.value = null;
+  utterance = null;
+};
+
+const playMessage = (index, text) => {
+  if (!speechSupported) {
+    ElMessage.warning(
+      choosedLanguage.value === "zh-CN"
+        ? "当前浏览器不支持语音朗读"
+        : "Speech synthesis is not supported in this browser."
+    );
+    return;
+  }
+
+  // 如果有正在播放的消息，先停止
+  if (currentSpeakingIndex.value !== null) {
+    stopSpeaking();
+  }
+
+  utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = getSpeechLang();
+  utterance.onend = () => {
+    if (currentSpeakingIndex.value === index) {
+      currentSpeakingIndex.value = null;
+    }
+    utterance = null;
+  };
+  utterance.onerror = () => {
+    if (currentSpeakingIndex.value === index) {
+      currentSpeakingIndex.value = null;
+    }
+    utterance = null;
+  };
+
+  // 设置当前播放索引
+  currentSpeakingIndex.value = index;
+  window.speechSynthesis.speak(utterance);
+};
+
+const toggleReadAloud = (index, text) => {
+  if (!speechSupported) {
+    ElMessage.warning(
+      choosedLanguage.value === "zh-CN"
+        ? "当前浏览器不支持语音朗读"
+        : "Speech synthesis is not supported in this browser."
+    );
+    return;
+  }
+
+  if (currentSpeakingIndex.value === index) {
+    stopSpeaking();
+  } else {
+    playMessage(index, text);
+  }
+};
+
+const getReadAloudLabel = (index) => {
+  const isPlaying = currentSpeakingIndex.value === index;
+  const labels = {
+    play: choosedLanguage.value === "zh-CN" ? "朗读" : "Read Aloud",
+    stop:
+      choosedLanguage.value === "zh-CN"
+        ? "停止"
+        : "\u00a0\u00a0Stop\u00a0\u00a0",
+  };
+  return isPlaying ? labels.stop : labels.play;
+};
+
+onDeactivated(() => {
+  console.log("onDeactivated");
+  window.speechSynthesis.cancel();
+});
+window.addEventListener("beforeunload", () => {
+  window.speechSynthesis.cancel();
+});
 
 defineExpose({
   sendFirstChat,
@@ -396,19 +388,27 @@ defineExpose({
 
 <style lang="scss" scoped>
 .chat-template {
+  background: #e4f4ff;
   color: #000;
   position: absolute !important;
   width: 100%;
-  height: 100vh;
-  left: 0;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
   top: 0;
   z-index: 9999 !important;
-  background: #fff;
   .chat-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
     height: 100%;
+    .left-emotion-img{
+      width: 20%;
+      display: flex;
+      align-items: center;
+      img{
+        width: 100%;
+      }
+    }
     .left {
       height: 100%;
       width: 60%;
@@ -451,34 +451,6 @@ defineExpose({
         flex-direction: column;
         justify-content: center;
         overflow: hidden;
-        .chat-process{
-          width: 785px;
-          margin: 0 auto;
-          img{
-            display: block;
-            margin: 0 auto;
-            width: 256px;
-            margin-bottom: 24px;
-          }
-          ul{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            li{
-              width: 12.48%;
-              height: 12px;
-              background: #E9E9E9;
-              border-radius: 16px;
-              &.on{
-                background: #E3F8FF;
-              }
-              &.active{
-                box-shadow: 0px 0px 4px 0px #9BDDF9;
-
-              }
-            }
-          }
-        }
       }
       .chat-list-container {
         // height: calc(100% - 10em);
@@ -511,18 +483,63 @@ defineExpose({
 
               line-height: 1.5;
               box-sizing: border-box;
+              background: #ccf0fc;
               &:nth-child(1) {
                 // font-weight: 600;
               }
               & > div {
                 font-size: 1.25em;
+                white-space: pre-line;
               }
               &.model-chat {
+                display: flex;
+                flex-direction: column;
+                gap: 0.8em;
               }
               &.me-chat {
                 align-self: flex-end;
-                background: rgba(204, 240, 252, 1);
+                background: #e9e9e9;
                 max-width: 75%;
+              }
+
+              .read-aloud-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5em;
+                height: 1.75em;
+                padding: 2px 12px 2px 8px;
+                border: 1px solid var(--black-black40, rgba(114, 114, 114, 1));
+                background: rgba(255, 255, 255, 1);
+                border-radius: 200px;
+                color: rgba(114, 114, 114, 1);
+                font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+                font-weight: 600;
+                font-size: 1em;
+                line-height: 22px;
+                cursor: pointer;
+                transition: background 0.2s ease, color 0.2s ease,
+                  opacity 0.2s ease;
+                align-self: flex-start;
+
+                &:hover {
+                  background: rgba(255, 255, 255, 0.9);
+                  color: rgba(114, 114, 114, 1);
+                }
+
+                &.playing {
+                  background: rgba(11, 112, 195, 0.12);
+                  color: rgba(114, 114, 114, 1);
+                }
+
+                img {
+                  width: 1.2em;
+                  height: 1.2em;
+                }
+
+                span {
+                  display: inline-block;
+                  white-space: nowrap;
+                }
               }
             }
           }
@@ -545,9 +562,8 @@ defineExpose({
       }
     }
     .right {
-      display: none !important;
       height: 100%;
-      flex: 1;
+      width: 16%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -605,53 +621,6 @@ defineExpose({
                 }
               }
             }
-          }
-        }
-      }
-    }
-  }
-
-  .language-div {
-    display: flex;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, calc(-50% - 2em));
-    & > div {
-      margin-top: 2.25em;
-      // background: rgba(214, 237, 255, 0.3);
-      border-radius: 1em;
-      padding: 2.25em 3em;
-      width: 30em;
-      p:nth-child(1) {
-        font-size: 2em;
-        line-height: 1.2;
-      }
-      p:nth-child(2) {
-        font-size: 1.25em;
-        line-height: 1.8;
-        margin: 0.5em 0 1em;
-      }
-      .btn-container {
-        display: flex;
-        gap: 2.25em;
-        button {
-          height: 2.9em;
-          background: var(--theme-color);
-          padding: 0 1.2em;
-          color: #fff;
-          font-size: 1.25em;
-          border-radius: 6px;
-          margin: 0;
-          cursor: pointer;
-          &:hover {
-            opacity: 0.9;
-          }
-
-          &.chinese {
-            color: var(--theme-color);
-            border: 2px solid var(--theme-color);
-            background: #fff;
           }
         }
       }
