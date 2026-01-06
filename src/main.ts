@@ -11,10 +11,15 @@ import 'virtual:svg-icons-register'
 import SvgIcon from './components/svgIcon.vue'
 
 import { createPinia } from 'pinia'
+import Vue3Spline from 'vue3-spline'
+
 
 const app = createApp(App);
 app.component('SvgIcon', SvgIcon)
+
+
 app.use(router)
+app.use(Vue3Spline)
 
 app.use(createPinia())
 

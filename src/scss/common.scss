@@ -338,3 +338,16 @@
     padding: .3em .5em;
   }
 }
+
+
+.response-text {
+  .highlight-keyword {
+    background: #FFFCE1;
+    font-weight: 700;
+    font-style: italic;
+    padding: 0 .2em;
+    &.current{
+      background: #FCF014;
+    }
+  }
+}

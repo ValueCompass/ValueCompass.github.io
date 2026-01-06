@@ -46,7 +46,7 @@ const renderChart = () => {
     radar: [
       {
         indicator: indicators,
-        radius: "50%",
+        radius: "80%",
         splitNumber: 5,
         shape: "circle",
         axisName: {
@@ -125,6 +125,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .radar-chart {
   width: 100%;
-  height: 400px;
+  height: 100%;
+  max-height: 480px;
 }
 </style>

@@ -69,6 +69,15 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/page1',
+    name: 'page1',
+    component: () => import('@/components/TestValuesChat/splineViewer.vue'),
+    meta: {
+      keepAlive: true, //此页面需要缓存
+      requiresFrontEndAuth: true
+    },
+  },
+  {
     path: '/TestValues2',
     name: 'Test Your Values2',
     component: () => import('../views/TestValuesNew2.vue'),
@@ -134,7 +143,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'Comparison&Arena',
         name: 'CulturalAlignmentComparison&Arena',
-        component: () => import('../views/CulturalAlignment/Comparison&Arena.vue'),
+        component: () => import('@/views/CulturalAlignment/Comparison&Arena.vue'),
         meta: {
           keepAlive: true, //此页面需要缓存
           requiresFrontEndAuth: true
@@ -163,9 +172,13 @@ const routes: Array<RouteRecordRaw> = [
       keepAlive: false, //此页面需要缓存
       requiresFrontEndAuth: false
     },
-
-
-  }
+  },
+  {
+    path: '/CulturalValueAnnotation',
+    name: 'CulturalValueAnnotation',
+    component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+  },
+  
 ]
 
 const router = createRouter({

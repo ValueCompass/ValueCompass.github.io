@@ -54,7 +54,9 @@
           </div>
           <div class="result-item Overview-container">
             <p class="title">Overview</p>
-            <p style="font-size: 1.2em">
+            <div>
+              <div class="left">
+              <p style="font-size: 1.2em">
               Your personality core is Expansion and Acquisition.
             </p>
             <ul>
@@ -75,7 +77,7 @@
                 </div>
               </li>
             </ul>
-            <Radar :value="valuesRecults?.value_score"></Radar>
+            
             <p class="summury-p">
               Your top combination Power-Achievement-Hedonism reflects an
               extreme Self-Enhancement tendency. You view the elevation of
@@ -84,6 +86,17 @@
               (Achievement). The direct reward of this success model is
               high-quality life enjoyment (Hedonism).
             </p>
+            </div>
+
+            <div class="right">
+              <div class="radar-container">
+                <div>
+                  <Radar :value="valuesRecults?.value_score"></Radar>
+                </div>
+              </div>
+              <p>Your Schwartz Theory Item Scores</p>
+            </div>
+            </div>
           </div>
           <div class="result-item Best-Fit-Model-container">
             <p class="title">Best Fit Model</p>
@@ -156,7 +169,9 @@
           </div>
           <div class="result-item Best-Fit-Culture-container">
             <p class="title">Best Fit Culture</p>
-            <div style="width: 45%; margin: 0 auto">
+           <div>
+              <div class="left">
+                 <div style="width: 45%; margin: 0 auto">
               <D3BubblePack
                 :value="valuesRecults?.closest_culture"
               ></D3BubblePack>
@@ -165,6 +180,13 @@
               Discover the Cultural Sphere That Best Reflects Your Beliefs and
               Perspectives
             </p>
+              </div>
+              <div class="right">
+                <p>Interestingly, your profile shows a strong resonance with Latin American culture. This cultural tradition is often characterized by warm interpersonal connection, expressive communication, and a strong orientation toward community and relational harmony.<br>
+In your responses, we observed open emotional expression, a tendency to value personal relationships over strict formal rules, and a consistent preference for trust, empathy, and shared experience — all of which mirror key dimensions of Latin American cultural norms.<br>
+Because of this alignment in values and interaction style, you and Latin American culture display a natural compatibility. If cultures could choose companions, this one would likely feel like a vibrant, welcoming friend who understands your way of engaging with the world.</p>
+              </div>
+           </div>
           </div>
 
           <!-- 滚动按钮 -->
@@ -1235,7 +1257,8 @@ const imgs = [
 
 .result-item {
   color: #000;
-  width: 1056px;
+  width: 80%;
+  max-width: 1600px;
   margin: 0 auto;
   margin-top: 2em;
   .title {
@@ -1266,8 +1289,35 @@ const imgs = [
   }
 
   &.Overview-container {
+  &>div{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    .left{
+      width: 50%;
+    }
+    .right{
+      width: 50%;
+      text-align: center;
+      p{
+        font-weight: 600;
+      }
+      .radar-container{
+        width: 100%;
+        padding-bottom: 70%;
+        position: relative;
+        &>div{
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
+  }
     ul {
-      margin-top: 1em;
+      margin: 1em 0;
       display: flex;
       flex-direction: column;
       gap: 1em;
@@ -1308,14 +1358,16 @@ const imgs = [
       justify-content: space-between;
       & > div {
         padding: 2em;
-        width: 49%;
+        
         box-sizing: border-box;
         background: #ccf0fc;
         border-radius: 12px;
         &.left {
+          width: 64%;
           & > div {
             position: relative;
-            width: 78%;
+            width:380px;
+            margin: 0 auto;
             .img-1 {
               width: 100%;
               position: relative;
@@ -1336,11 +1388,13 @@ const imgs = [
           }
         }
         &.right {
-          background: #f5f5f5;
+          flex: 1;
+          background: #fff;
           p {
             font-size: 1em;
             line-height: 1.5;
             color: #666666;
+            text-align: center;
           }
         }
       }
@@ -1353,6 +1407,21 @@ const imgs = [
       line-height: 1.5;
       text-align: center;
       color: #666666;
+    }
+    &>div{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+     
+      justify-content: space-around;
+      .left,.right{
+         width: 48.5%;
+      }
+      .right{
+        p{
+          line-height: 1.5;
+        }
+      }
     }
   }
 }

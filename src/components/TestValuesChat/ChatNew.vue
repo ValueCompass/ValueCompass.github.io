@@ -2,7 +2,11 @@
   <div class="chat-template">
     <div class="chat-container main-container">
       <div class="left-emotion-img">
-          <img src="@/assets/images/robi-character.png" alt="Robi" class="robi-avatar" />
+        <img
+          src="@/assets/images/robi-character.png"
+          alt="Robi"
+          class="robi-avatar"
+        />
       </div>
       <div class="left">
         <!-- <div class="exit-btn" @click="dialogVisible = true">
@@ -11,50 +15,62 @@
         </div> -->
 
         <div class="chat-content">
-          <div class="chat-list-container setHeight">
-            <el-scrollbar ref="scrollbarRef">
-              <div class="content">
-                <ul class="chat-ul">
-                  <li
-                    :class="item.type == 'user' ? 'me-chat' : 'model-chat'"
-                    v-for="(item, index) in chatList"
-                    :key="index"
-                  >
-                    <div>
-                      {{ item.text }}
-                    </div>
-
-                    <button
-                      v-if="item.type === 'model' && speechSupported"
-                      class="read-aloud-btn"
-                      type="button"
-                      :aria-label="getReadAloudLabel(index)"
-                      :class="{ playing: currentSpeakingIndex === index }"
-                      @click="toggleReadAloud(index, item.text)"
+          <div
+            class="chat-list-container setHeight"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            <div style="max-height: 100%">
+              <el-scrollbar ref="scrollbarRef">
+                <div class="content">
+                  <ul class="chat-ul">
+                    <li
+                      :class="item.type == 'user' ? 'me-chat' : 'model-chat'"
+                      v-for="(item, index) in chatList"
+                      :key="index"
                     >
-                      <img
-                        :src="
-                          currentSpeakingIndex === index
-                            ? readAloudIconStop
-                            : readAloudIcon
-                        "
-                        alt=""
-                        aria-hidden="true"
-                      />
-                      <span>{{ getReadAloudLabel(index) }}</span>
-                    </button>
-                  </li>
+                      <div>
+                        {{ item.text }}
 
-                  <li v-if="isSendLoading">
-                    <LoadingDots
-                      class="select-tip"
-                      text="Generating"
-                      :size="7"
-                    />
-                  </li>
-                </ul>
-              </div>
-            </el-scrollbar>
+                        <span v-if="item.end && item.type != 'user'" @click="ViewResults" style="cursor: pointer;;color:#0B70C3;text-decoration: underline;"><br>Click here to see your results</span>
+                      </div>
+
+                      <button
+                        v-if="item.type === 'model' && speechSupported"
+                        class="read-aloud-btn"
+                        type="button"
+                        :aria-label="getReadAloudLabel(index)"
+                        :class="{ playing: currentSpeakingIndex === index }"
+                        @click="toggleReadAloud(index, item.text)"
+                      >
+                        <img
+                          :src="
+                            currentSpeakingIndex === index
+                              ? readAloudIconStop
+                              : readAloudIcon
+                          "
+                          alt=""
+                          aria-hidden="true"
+                        />
+                        <span>{{ getReadAloudLabel(index) }}</span>
+                      </button>
+                    </li>
+
+                    <li v-if="isSendLoading">
+                      <LoadingDots
+                        class="select-tip"
+                        text="Generating"
+                        :size="7"
+                      />
+                    </li>
+                  </ul>
+                </div>
+              </el-scrollbar>
+            </div>
           </div>
 
           <div class="input-container">
@@ -75,43 +91,33 @@
         </div>
       </div>
       <div class="right">
-        <div class="content">
-          <div>
-            <div style="position: relative">
-              <!-- <GradientCircle
-                :percentage="chatPercentage * 100"
-               
-              /> -->
+        <ul class="process-box">
+              <li
+                v-for="(i, index) in 7"
+                :key="index"
+                class="star"
+                :class="[
+                  i == chatProgress ? 'on' : '',
+                  i <= chatProgress ? 'light' : '',
+                ]"
+              >
+                <div
+                  class="star-icon"
+                  :class="['star-icon-' + i, i == 7 ? 'star-icon-final' : '']"
+                >
+                  <svgIcon v-if="i < 7" name="Star-Process"></svgIcon>
+                  <svgIcon v-else name="final_star"></svgIcon>
 
-              <img
-                :style="{ opacity: !showChat ? '1' : '0' }"
-                class="compass-img"
-                src="@/assets/images/compass-icon.png"
-                alt=""
-              />
-            </div>
-            <p>
-              {{
-                choosedLanguage == "en-US"
-                  ? "Your conversation will begin to light up and fill the outer ring of this compass."
-                  : "随着对话的深入，罗盘的外环将被点亮。"
-              }}
-            </p>
-          </div>
-          <div>
-            <el-button
-              @click="ViewResults"
-              class="button view-btn"
-              color="#0B70C3"
-              >{{
-                choosedLanguage == "en-US"
-                  ? "End and View Results"
-                  : "结束并查看结果"
-              }}
-              <i class="icon"></i
-            ></el-button>
-          </div>
-        </div>
+                  <text>{{ chatProcessText[i - 1] }}</text>
+                </div>
+                <svgIcon
+                  v-if="i > 1"
+                  class="line-icon"
+                  :class="['line-icon-' + (i - 1)]"
+                  name="Line"
+                ></svgIcon>
+              </li>
+            </ul>
       </div>
     </div>
 
@@ -172,7 +178,6 @@ const props = defineProps({
   nickName: { type: String, default: "" }, //'en-US'
 });
 
-
 const chatId = ref(null);
 const dialogVisible = ref(false);
 
@@ -184,7 +189,17 @@ const isSendLoading = ref(false);
 const chatPercentage = ref(0);
 
 const choosedLanguage = ref("en-US"); // 默认英文，可以添加语言选择功能
-const chatProgress = ref(1); // 聊天进度 1-7
+const chatProgress = ref(2); // 聊天进度 1-7
+const chatProcessText = ref([
+  "Arrive",
+  "Warm-up",
+  "First Look",
+  "Deep Dive",
+  "Synthesis",
+  "Final Touch",
+  "Finished",
+]);
+
 const speechSupported =
   typeof window !== "undefined" && "speechSynthesis" in window;
 const currentSpeakingIndex = ref(null);
@@ -252,11 +267,19 @@ const sendMessage = (textareaValue) => {
       .then((res) => {
         let response = res.data;
         console.log(response);
-        chatList.value.push({ type: "model", text: response.question });
-        chatPercentage.value = response.progress_bar;
-        if (chatPercentage.value >= 1) {
-          chatPercentage.value = 1;
+        const obj = { type: "model", text: response.question }
+        if(response.process){
+          chatProgress.value = response.process
         }
+        
+        if(response.process == 7){
+          obj.end = true
+        }
+        chatList.value.push(obj);
+        chatPercentage.value = response.progress_bar;
+        // if (chatPercentage.value >= 1) {
+        //   chatPercentage.value = 1;
+        // }
         // if (chatPercentage.value < 1) {
         //   chatPercentage.value += 0.11;
         //   chatPercentage.value =
@@ -325,7 +348,8 @@ const playMessage = (index, text) => {
   }
 
   utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = getSpeechLang();
+  utterance.lang = "zh-CN";
+  console.log("utterance.lang", utterance.lang);
   utterance.onend = () => {
     if (currentSpeakingIndex.value === index) {
       currentSpeakingIndex.value = null;
@@ -401,24 +425,25 @@ defineExpose({
     display: flex;
     flex-direction: row;
     height: 100%;
-    .left-emotion-img{
+    .left-emotion-img {
       width: 20%;
       display: flex;
       align-items: center;
-      img{
+      img {
         width: 100%;
       }
     }
     .left {
       height: 100%;
       width: 60%;
-      padding: 3em 0 2em;
       box-sizing: border-box;
-      background: linear-gradient(
-        180deg,
-        rgba(204, 240, 252, 0.2) 0%,
-        rgba(155, 221, 249, 0.2) 100%
-      );
+      padding: 1.5em 2em 2em;
+      box-sizing: border-box;
+      // background: linear-gradient(
+      //   180deg,
+      //   rgba(204, 240, 252, 0.2) 0%,
+      //   rgba(155, 221, 249, 0.2) 100%
+      // );
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -458,16 +483,16 @@ defineExpose({
         &.setHeight {
           flex: 1;
           .content .chat-ul {
-            padding-bottom: 5em;
+            padding-bottom: 3em;
           }
         }
 
         .content {
           // display: none;
-          padding: 0 3em;
-          width: 80%;
+          padding: 0 2em;
+          // width: 80%;
           margin: 0 auto;
-          max-width: 784px;
+          // max-width: 784px;
           height: 100%;
           .chat-ul {
             display: flex;
@@ -547,11 +572,11 @@ defineExpose({
       }
 
       .input-container {
-        padding: 0 3em;
-        width: 80%;
+        padding: 0 2em;
+        padding-top: 1em;
         margin: 0 auto;
-        max-width: 784px;
-
+        width: 100%;
+        box-sizing: border-box;
         // height: 10em;
         // flex: 1;
         .tip-text {
@@ -563,67 +588,144 @@ defineExpose({
     }
     .right {
       height: 100%;
-      width: 16%;
+      width: 14.5%;
       display: flex;
       justify-content: center;
       align-items: center;
-      .content {
-        height: 100%;
-        width: 80%;
-        max-width: 784px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        & > div {
-          &:nth-child(1) {
-            padding-top: 6em;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            p {
-              margin-top: 2em;
-              color: rgba(102, 102, 102, 1);
-              font-style: italic;
+      .process-box {
+          width:100%;
+          padding-bottom: 303%;
+          // background: #ccc;
+          position: relative;
+          .light {
+            .star-icon .svg-icon {
+              color: #f9d672;
+            }
+            .line-icon {
+              color: #f9d672;
             }
           }
-          &:nth-child(2) {
-            padding: 4em;
-            .view-btn {
-              display: inline-block;
-              position: relative;
-              font-size: 1.25em;
-              height: 3em;
-              box-sizing: border-box;
-              display: flex;
-              align-items: center;
-              border: none;
+          .on {
+            .star-icon text {
+              display: block;
+            }
+          }
+          .star-icon {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 20%;
+            padding-bottom: 20%;
+            text {
+              position: absolute;
+              left: 50%;
+              top: 0;
+              transform: translate(-52%, -120%);
               background: #0b70c3;
-              &.is-disabled {
-                background: #c2c2c2;
+              color: #f5f5f5;
+              padding: 0 0.4em;
+              line-height: 1.6;
+              border-radius: 2px;
+              white-space: nowrap;
+              display: none;
+              z-index: 2;
+              &::after {
+                content: "";
+                position: absolute;
+                bottom: -22%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 0;
+                border-left: 0.5em solid transparent;
+                border-right: 0.5em solid transparent;
+                border-top: 0.5em solid #0b70c3;
               }
-              .icon {
-                margin-left: 0.5em;
-                width: 1em;
-                height: 1em;
-                background: url(@/assets/images/arrow-right.png) no-repeat left
-                  center;
-                background-size: 60% auto;
-                display: inline-block;
-                transform: translate(0, 0.1em);
-                transition: all 0.2s;
-              }
-              &:hover {
-                & > .icon {
-                  transform: translate(0.2em, 0.1em);
-                }
-              }
+            }
+            & > .svg-icon {
+              width: 80%;
+              height: 80%;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%,-50%);
+              position: absolute;
+              color: #e9e9e9;
+            }
+
+            &.star-icon-final {
+              width: 28.5%;
+              padding-bottom: 28.5%;
+            }
+            &.star-icon-1 {
+              left: 0%;
+              top: 7%;
+            }
+            &.star-icon-2 {
+              left: 58.2%;
+              top: 0%;
+            }
+            &.star-icon-3 {
+              right: 0%;
+              top: 19.9%;
+            }
+            &.star-icon-4 {
+              left: 27.7%;
+              top: 31.65%;
+            }
+            &.star-icon-5 {
+              left: 27.7%;
+              top: 52.58%;
+            }
+            &.star-icon-6 {
+              left: 32.03%;
+              top: 73.26%;
+            }
+            &.star-icon-7 {
+              right: 12.5%;
+              bottom: 0%;
+            }
+          }
+          .line-icon {
+            // background: #DCDCDC;
+            color: #e9e9e9;
+            position: absolute;
+            width: 6px;
+            height: 126px;
+            transform-origin: top center; /* 设置旋转中心为左上角 */
+            &.line-icon-1 {
+              left: 13%;
+              top: 8%;
+              transform: rotate(-103deg);
+            }
+            &.line-icon-2 {
+              left: 67%;
+              top: 6%;
+              transform: rotate(-20deg);
+            }
+            &.line-icon-3 {
+              right: 16%;
+              top: 24.2%;
+              transform: rotate(56deg);
+            }
+            &.line-icon-4 {
+              left: 36%;
+              top: 37%;
+              // transform: rotate(56deg);
+            }
+            &.line-icon-5 {
+              left: 36%;
+              top: 58%;
+              transform: rotate(-6deg);
+            }
+            &.line-icon-6 {
+              left: 41%;
+              top: 79%;
+              transform: rotate(-30deg);
             }
           }
         }
-      }
     }
   }
 
