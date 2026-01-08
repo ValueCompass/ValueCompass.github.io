@@ -17,7 +17,13 @@ export default defineConfig({
   // base: "/value-compass.github.io",
   base: "./",
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag === 'spline-viewer'
+        }
+      }
+    }),
     createSvgIconsPlugin({
       iconDirs: [pathResolve('./src/assets/images')],
       symbolId: 'icon-[dir]-[name]',

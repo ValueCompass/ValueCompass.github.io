@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
 import './scss/reset.css'
@@ -11,15 +12,15 @@ import 'virtual:svg-icons-register'
 import SvgIcon from './components/svgIcon.vue'
 
 import { createPinia } from 'pinia'
-import Vue3Spline from 'vue3-spline'
+import i18n from './i18n/index'
 
 
 const app = createApp(App);
 app.component('SvgIcon', SvgIcon)
 
-
+app.use(ElementPlus)
 app.use(router)
-app.use(Vue3Spline)
+app.use(i18n)
 
 app.use(createPinia())
 

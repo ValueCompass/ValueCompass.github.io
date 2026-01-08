@@ -173,10 +173,30 @@ const routes: Array<RouteRecordRaw> = [
       requiresFrontEndAuth: false
     },
   },
+  
   {
     path: '/CulturalValueAnnotation',
     name: 'CulturalValueAnnotation',
-    component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+    redirect: '/CulturalValueAnnotation/index',
+    // component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'CulturalValueAnnotationHome',
+        component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+      },
+      {
+        path: ':id',
+        name: 'CulturalValueAnnotationDetail',
+        component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+      },
+      {
+        path: 'TaskHistory',
+        name: 'TaskHistory',
+        component: () => import('../views/CulturalValueAnnotation/TaskHistory.vue'),
+
+      },
+    ]
   },
   
 ]

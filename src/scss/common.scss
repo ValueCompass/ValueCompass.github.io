@@ -345,9 +345,15 @@
     background: #FFFCE1;
     font-weight: 700;
     font-style: italic;
-    padding: 0 .2em;
+    padding: 0 .4em;
     &.current{
-      background: #FCF014;
+      background: #FFF8B1;
+    }
+    &.pass {
+      border: 1px solid #B07F22;
+    }
+    &.fail {
+      text-decoration: line-through;
     }
   }
 }
