@@ -177,11 +177,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/CulturalValueAnnotation',
     name: 'CulturalValueAnnotation',
-    redirect: '/CulturalValueAnnotation/index',
+    redirect: '/CulturalValueAnnotation/home',
     // component: () => import('../views/CulturalValueAnnotation/Index.vue'),
     children: [
       {
-        path: 'index',
+        path: 'home',
         name: 'CulturalValueAnnotationHome',
         component: () => import('../views/CulturalValueAnnotation/Index.vue'),
       },

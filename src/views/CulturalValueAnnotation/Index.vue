@@ -210,12 +210,15 @@
         </div>
 
         <AnnotationComponent
-          :annotationDataOrigin="annotationData"
+          :annotationDataOrigin="annotationDataOrigin"
+          ref="annotationComponentRef"
         ></AnnotationComponent>
         <div style="display: flex; justify-content: center; margin-top: 2em">
           <el-button
             color="#0B70C3"
             style="height: 3em"
+            :disabled="isLoadingSubmitHighlightAndConcepts"
+            :loading="isLoadingSubmitHighlightAndConcepts"
             @click="submitHighlightAndConcepts"
             >Submit</el-button
           >
@@ -223,30 +226,30 @@
       </div>
     </div>
 
-    <UserDetail></UserDetail>
+    <UserDetail @hideUsrerContainer="hideUsrerContainer"></UserDetail>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { reactive, ref, computed, onMounted } from "vue";
+<script setup>
+import { reactive, ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
 const route = useRoute();
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-import type { TabsPaneContext } from "element-plus";
 import UserDetail from "./UserDetail.vue";
 import AnnotationComponent from "./Components/AnnotationComponent.vue";
 import {
-  submitPrinciples,
-  submitQuestion,
+  getTopicTaskTaxonomy,
+  getCandidateQuestions,
+  getQuestionResponse,
   submitAnnotation,
 } from "@/service/CulturalValueAnnotationApi";
 import { Language } from "@amcharts/amcharts4/core";
 
-const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+let userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 
 const allFromData = reactive({
   username: "",
@@ -262,19 +265,19 @@ const allFromData = reactive({
 
 const topicValue1 = ref("");
 const topicValue2 = ref("");
-const principlesList = ref<string[]>(["", "", "", "", ""]);
+const principlesList = ref(["", "", "", "", ""]);
 
-const topicOptions1 = ref(["placeholder1", "placeholder2", "placeholder3"]);
-const topicOptions2 = ref(["placeholder4", "placeholder5", "placeholder6"]);
+const topicOptions1 = ref([]);
+const topicOptions2 = ref([]);
 
 const taskValue1 = ref("");
 const taskValue2 = ref("");
 const questionValue = ref("");
 
-const taskOptions1 = ref(["placeholder1", "placeholder2", "placeholder3"]);
-const taskOptions2 = ref(["placeholder4", "placeholder5", "placeholder6"]);
+const taskOptions1 = ref([]);
+const taskOptions2 = ref([]);
 
-const questionOptions = ref(["question1", "question2", "question3"]);
+const questionOptions = ref([]);
 
 const hasClickedSaveAndGetQuestionListBtn = ref(false);
 const hasClickedGetAnswerBtn = ref(false);
@@ -286,7 +289,7 @@ const isSaveAndGetQuestionListBtnDisabled = computed(() => {
     !topicValue2.value.trim() ||
     !taskValue1.value.trim() ||
     !taskValue2.value.trim() ||
-    principlesList.value.filter((item: String) => item.trim() !== "").length < 3
+    principlesList.value.filter((item) => item.trim() !== "").length < 3
   );
 });
 const handleSaveAndGetQuestionListBtnClick = () => {
@@ -305,9 +308,9 @@ const handleSaveAndGetQuestionListBtnClick = () => {
     language: userDetail.language.trim(),
     topic_1: topicValue1.value.trim(),
     topic_2: topicValue2.value.trim(),
-    principles: principlesList.value.filter(
-      (item: String) => item.trim() !== ""
-    ),
+    // principles: principlesList.value.filter(
+    //   (item: String) => item.trim() !== ""
+    // ),
     timestamp: new Date().toISOString(),
     task_1: taskValue1.value.trim(),
     task_2: taskValue2.value.trim(),
@@ -318,18 +321,19 @@ const handleSaveAndGetQuestionListBtnClick = () => {
 
   // 如果前端可以存储的话，这一步不经过后端也可以
   Object.assign(allFromData, inputObj);
-  submitPrinciples(inputObj)
-    .then((res: any) => {
+  getCandidateQuestions(inputObj)
+    .then((res) => {
       console.log(res);
-      if (res.data.ok) {
+      if (res.data && res.data["candidate_questions"]) {
         ElMessage.success("提交成功");
         localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
+        questionOptions.value = res.data["candidate_questions"];
       } else {
         ElMessage.error("提交失败");
       }
     })
-    .catch((err: any) => {
+    .catch((err) => {
       console.log(err);
       ElMessage.error("提交失败");
     })
@@ -341,11 +345,6 @@ const handleSaveAndGetQuestionListBtnClick = () => {
 // step3 用户选定问题之后，点击 Generate，要求后端返回初步生成的数据
 // Input 字段：task_1(str), task_2(str), question (str)
 // Response 是一个 dict，如下，匹配 highlight_cues 的文字对 response 中相应的部分进行 highlight
-const step3FormData = reactive({
-  task_1: "",
-  task_2: "",
-  question: "",
-});
 
 const isLoadingGetAnswer = ref(false);
 const isGetAnswerBtnDisabled = computed(() => {
@@ -356,13 +355,11 @@ const isGetAnswerBtnDisabled = computed(() => {
   );
 });
 
-let annotationData = reactive({
-  originalResponse:
-    "This is a placeholder response to the question: placeholder1,sss placeholder2,dsadasdasd placeholder3",
-  response:
-    "This is a placeholder response to the question: placeholder1,sss placeholder2,dsadasdasd placeholder3",
-  highlight_cues: ["placeholder1", "placeholder2", "placeholder3"],
-  key_concepts: ["concept1", "concept2", "concept3"],
+let annotationDataOrigin = reactive({
+  originalResponse: "",
+  response: "",
+  highlight_cues: [],
+  key_concepts: [],
 });
 const handleGetAnswerBtnClick = () => {
   if (isGetAnswerBtnDisabled.value) {
@@ -372,28 +369,31 @@ const handleGetAnswerBtnClick = () => {
     ElMessage.error("请先填写用户信息");
     return;
   }
-  step3FormData.task_1 = taskValue1.value;
-  step3FormData.task_2 = taskValue2.value;
-  step3FormData.question = questionValue.value;
+
+  const step3FormData = {
+    task_1: taskValue1.value.trim(),
+    task_2: taskValue2.value.trim(),
+    question: questionValue.value.trim(),
+  };
 
   console.log(step3FormData);
   isLoadingGetAnswer.value = true;
 
-  submitQuestion(step3FormData)
-    .then((res: any) => {
+  getQuestionResponse(step3FormData)
+    .then((res) => {
       console.log(res);
       if (res.data) {
         ElMessage.success("提交成功");
-        annotationData = res.data;
-        // annotationData.response = res.data.response;
-        // annotationData.highlight_cues = res.data.highlight_cues;
-        // annotationData.key_concepts = res.data.key_concepts;
+        annotationDataOrigin = res.data;
+        // annotationDataOrigin.response = res.data.response;
+        // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
+        // annotationDataOrigin.key_concepts = res.data.key_concepts;
         hasClickedGetAnswerBtn.value = true;
       } else {
         ElMessage.error("提交失败");
       }
     })
-    .catch((err: any) => {
+    .catch((err) => {
       console.log(err);
       ElMessage.error("提交失败");
     })
@@ -402,53 +402,174 @@ const handleGetAnswerBtnClick = () => {
     });
 };
 
+const annotationComponentRef = ref(null);
+
+const isLoadingSubmitHighlightAndConcepts = ref(false);
 const submitHighlightAndConcepts = () => {
-  // console.log("Submit highlight and concepts",annotationData);
-
-  // 过滤掉状态为'fail'的cue和concept
-  const filteredHighlightCues = [];
-  const filteredKeyConcepts = [];
-
-  for (let i = 0; i < annotationData.highlight_cues.length; i++) {
-    // 只保留状态为'pass'的项目，未标记的也保留
-    if (keywordStatus.value[i] !== "fail") {
-      filteredHighlightCues.push(annotationData.highlight_cues[i]);
-      filteredKeyConcepts.push(annotationData.key_concepts[i]);
-    }
+  if (!annotationComponentRef.value) {
+    ElMessage.error("请先完成注释");
+    return;
   }
+  ElMessageBox.confirm("请完成所有标注，确认提交吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(() => {
+    isLoadingSubmitHighlightAndConcepts.value = true;
+    const annotationData = annotationComponentRef.value.annotationData;
+    const keywordStatus = annotationComponentRef.value.keywordStatus;
 
-  const sendData = {
-    username: userDetail.username,
-    task_1: taskValue1.value,
-    task_2: taskValue2.value,
-    question: questionValue.value,
-    response: {
+    console.log(annotationData, keywordStatus);
+    // 过滤掉状态为'fail'的cue和concept
+    const filteredHighlightCues = [];
+    const filteredKeyConcepts = [];
+
+    for (let i = 0; i < annotationData.highlight_cues.length; i++) {
+      // 只保留状态为'pass'的项目，未标记的也保留
+      if (keywordStatus[i] !== "fail") {
+        filteredHighlightCues.push(annotationData.highlight_cues[i]);
+        filteredKeyConcepts.push(annotationData.key_concepts[i]);
+      }
+    }
+
+    const sendData = {
+      username: userDetail.username.trim(),
+      // country: userDetail.country.trim(),
+      // language: userDetail.language.trim(),
+      topic_1: topicValue1.value.trim(),
+      topic_2: topicValue2.value.trim(),
+      principles: principlesList.value.filter(
+        (item) => item.trim() !== ""
+      ),
+      task_1: taskValue1.value,
+      task_2: taskValue2.value,
+      question: questionValue.value,
+      // response: {
       response: annotationData.response,
       highlight_cues: filteredHighlightCues,
       key_concepts: filteredKeyConcepts,
-    },
-    timestamp: new Date().toISOString(),
-  };
-  console.log(sendData);
-  submitAnnotation(sendData)
+      // },
+      timestamp: new Date().toISOString(),
+    };
+    if (editCurrentQuestionDetail.value) {
+      sendData.index = editCurrentQuestionDetail.value.index;
+    }
+    console.log(sendData);
+    submitAnnotation(sendData)
+      .then((res) => {
+        if (res.data && res.data.ok) {
+          ElMessage.success("Annotation submitted successfully");
+          router.push("/CulturalValueAnnotation/TaskHistory");
+        } else {
+          ElMessage.error("Annotation submission failed");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        ElMessage.error("Annotation submission failed");
+      })
+      .finally(() => {
+        // 提交完成后，重置状态
+        isLoadingSubmitHighlightAndConcepts.value = false;
+      });
+  });
+};
+
+const topicTaxonomy = ref([]);
+const taskTaxonomy = ref([]);
+
+const handleGetTopicTaskTaxonomy = async () => {
+  const TopicTaskTaxonomy = sessionStorage.getItem("TopicTaskTaxonomy");
+  if (TopicTaskTaxonomy) {
+    topicTaxonomy.value = JSON.parse(TopicTaskTaxonomy).topic_taxonomy;
+    taskTaxonomy.value = JSON.parse(TopicTaskTaxonomy).task_taxonomy;
+    topicOptions1.value = Object.keys(topicTaxonomy.value);
+    taskOptions1.value = Object.keys(taskTaxonomy.value);
+    return;
+  }
+  getTopicTaskTaxonomy({
+    username: userDetail.username,
+    country: userDetail.country,
+    language: userDetail.language,
+  })
     .then((res) => {
       console.log(res);
-      ElMessage.success("Annotation submitted successfully");
+      if (res.data) {
+        console.log(res.data);
+
+        sessionStorage.setItem("TopicTaskTaxonomy", JSON.stringify(res.data));
+        topicTaxonomy.value = res.data.topic_taxonomy;
+        taskTaxonomy.value = res.data.task_taxonomy;
+
+        topicOptions1.value = Object.keys(topicTaxonomy.value);
+        taskOptions1.value = Object.keys(taskTaxonomy.value);
+      } else {
+        ElMessage.error("获取失败");
+      }
     })
     .catch((err) => {
       console.log(err);
-      ElMessage.error("Annotation submission failed");
+      ElMessage.error("获取失败");
     })
     .finally(() => {
       // 提交完成后，重置状态
     });
 };
 
-onMounted(() => {
-  console.log("onMounted");
-  console.log(route.params.id);
+watch(topicValue1, (newValue) => {
+  if (newValue) {
+    topicOptions2.value = topicTaxonomy.value[newValue];
+    topicValue2.value = "";
+  }
+});
+watch(taskValue1, (newValue) => {
+  if (newValue) {
+    taskOptions2.value = taskTaxonomy.value[newValue];
+    taskValue2.value = "";
+  }
 });
 
+const editCurrentQuestionDetail = ref(null);
+onMounted(async () => {
+  if (!userDetail.username || !userDetail.country || !userDetail.language) {
+    return;
+  }
+  console.log("onMounted");
+  console.log(route.params.id);
+
+  await handleGetTopicTaskTaxonomy();
+
+  const editCurrentQuestion = sessionStorage.getItem("editCurrentQuestion");
+  if (route.params.id && editCurrentQuestion) {
+    const question = JSON.parse(editCurrentQuestion);
+    editCurrentQuestionDetail.value = question;
+    hasClickedGetAnswerBtn.value = true;
+    hasClickedSaveAndGetQuestionListBtn.value = true;
+    console.log("要编辑的question信息", question);
+    // 填充表单数据
+    questionValue.value = question.question;
+    topicValue1.value = question.topic_1;
+    setTimeout(() => {
+      topicValue2.value = question.topic_2;
+    }, 100);
+    principlesList.value = question.principles;
+    taskValue1.value = question.task_1;
+    setTimeout(() => {
+      taskValue2.value = question.task_2;
+    }, 100);
+    annotationDataOrigin = {
+      originalResponse: question.response,
+      response: question.response,
+      highlight_cues: question.highlight_cues,
+      key_concepts: question.key_concepts,
+    };
+  }
+});
+
+const hideUsrerContainer = () => {
+  userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+  handleGetTopicTaskTaxonomy();
+};
 const handleTaskHistoryClick = () => {
   router.push({
     path: "/CulturalValueAnnotation/TaskHistory",
@@ -457,7 +578,7 @@ const handleTaskHistoryClick = () => {
 
 //
 const activeNameSelect1 = ref("Select Existing");
-const handleClick = (tab: TabsPaneContext, event: Event) => {
+const handleClick = (tab, event) => {
   console.log(tab, event);
 };
 </script>

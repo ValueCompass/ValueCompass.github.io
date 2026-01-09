@@ -1,12 +1,14 @@
 <template>
   <div class="main-container">
-    <h2>Task History</h2>
+    <h2 style="margin-top: 2em; font-size: 1.5em; color: #0b70c3">
+      Task History
+    </h2>
     <el-table :data="tableData" border style="width: 100%; margin-top: 2em">
       <el-table-column type="index" width="150" label="Number" />
-      <el-table-column prop="Question" label="Question">
+      <el-table-column prop="question" label="Question">
         <template #default="scope">
           <span class="question-link" @click="handleQuestionClick(scope.row)">
-            {{ scope.row.Question }}
+            {{ scope.row.question }}
           </span>
         </template>
       </el-table-column>
@@ -20,46 +22,73 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { reactive, ref, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
-import { login } from "@/service/CulturalValueAnnotationApi.ts";
+import { GetAllCompletedAnnotations } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
 
+const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+
 // 点击问题时的处理函数
-const handleQuestionClick = (question: any) => {
+const handleQuestionClick = (question) => {
   // 跳转到指定页面，这里可以根据需求修改路由
   console.log(question);
-  const Question = question.Question;
+  const index = question.index;
+  console.log("要传的question信息", question);
+  sessionStorage.setItem("editCurrentQuestion", JSON.stringify(question));
   router.push({
-    path: "/CulturalValueAnnotation/" + Question,
-    query: { question: question },
+    path: "/CulturalValueAnnotation/" + index,
+    // params: question,
+    // query: question
   });
 };
 
-const tableData = [
-  {
-    timestamp: "2016-05-03",
-    Question:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-  },
-  {
-    timestamp: "2016-05-03",
-    Question:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-  },
-  {
-    timestamp: "2016-05-03",
-    Question:
-      "Do you think kids should be punished when they oppose their parents both in words and actions?",
-  },
-];
+const tableData = ref([
+  // {
+  //   timestamp: "2016-05-03",
+  //   Question:
+  //     "Do you think kids should be punished when they oppose their parents both in words and actions?",
+  // },
+]);
 
 const handleCreateClick = () => {
   router.push({
-    path: "/CulturalValueAnnotation/index",
+    path: "/CulturalValueAnnotation",
   });
 };
+
+const taskHistory = ref([]);
+
+onMounted(() => {
+  GetAllCompletedAnnotations({
+    username: userDetail.username,
+  })
+    .then((res) => {
+      console.log(res.data);
+
+      // 将对象转换为数组
+      const dataArray = Object.entries(res.data.annotations).map(
+        ([key, value]) => ({
+          id: key,
+          ...value,
+          timestamp: new Date().toISOString().split("T")[0], // 添加时间戳
+        })
+      );
+
+      if (dataArray.length === 0) {
+        ElMessage.warning("No task history found.");
+        return;
+      } else {
+        tableData.value = dataArray;
+        console.log("tableData.value", tableData.value);
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err.message);
+    })
+    .finally(() => {});
+});
 </script>
 
 <style scoped lang="scss">

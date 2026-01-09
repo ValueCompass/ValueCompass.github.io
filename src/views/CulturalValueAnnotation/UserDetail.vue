@@ -7,31 +7,111 @@
     width="800"
   >
     <div class="user-detail">
+      <p>
+        The name can be your real name or alias, but you must use the samename
+        here and in the survey below.
+      </p>
       <div class="input-item">
         <span>Name:</span>
         <div>
           <el-input v-model="username" placeholder="Please input"></el-input>
-          <p>You must use the same name here and in the survey below.</p>
+        </div>
+      </div>
+      <p>
+        You must fill in the survey questionnaire before turning into the next
+        stage. You can choose the version in your native language.
+      </p>
+
+      <div>
+        <p class="survey-version-p">
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkZGTUdYQkZNTDBWVjI0WTBFUDZCMTMzOC4u"
+            target="_blank"
+            >English;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURUZRTDFJN1NLMTVXQUQ4M1A4MTRVM1NNOC4u"
+            target="_blank"
+            >Chinese;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkZGTUdYQkZNTDBWVjI0WTBFUDZCMTMzOC4u"
+            target="_blank"
+            >Japanese;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkZGTUdYQkZNTDBWVjI0WTBFUDZCMTMzOC4u"
+            target="_blank"
+            >Korean</a
+          >
+        </p>
+        <div class="input-item">
+          <span>Basic Infor-mation Survey:</span>
+          <div>
+            <el-checkbox v-model="checked1" label="Completed" size="large" />
+          </div>
         </div>
       </div>
 
-      <div class="input-item">
-        <span>Survey:</span>
-        <div>
-          <el-radio-group v-model="surveyVersionValue">
-            <el-radio
-              v-for="(item, index) in surveyVersionOptions"
-              :value="item.value"
-              size="large"
-              :key="index"
-              >{{ item.label }}</el-radio
-            >
-          </el-radio-group>
-          <p>
-            You must fill in the survey questionnaire before turning into the
-            next stage. You can choose the version in your native
-            language.(English; Chinese; Japanese; Korean)
-          </p>
+      <div>
+        <p class="survey-version-p">
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u"
+            target="_blank"
+            >English;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkNQVkRXTTRSMFo3NzU4NkZXM0QxRDZPOS4u"
+            target="_blank"
+            >Chinese;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u"
+            target="_blank"
+            >Japanese;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u"
+            target="_blank"
+            >Korean</a
+          >
+        </p>
+        <div class="input-item">
+          <span>Value Survey 1:</span>
+          <div>
+            <el-checkbox v-model="checked2" label="Completed" size="large" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="survey-version-p">
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u"
+            target="_blank"
+            >English;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUMEtSTkI3VEkwMEc3STRQTkhKRk41UTJPRS4u"
+            target="_blank"
+            >Chinese;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u"
+            target="_blank"
+            >Japanese;</a
+          >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u"
+            target="_blank"
+            >Korean</a
+          >
+        </p>
+        <div class="input-item">
+          <span>Value Survey 2:</span>
+          <div>
+            <el-checkbox v-model="checked3" label="Completed" size="large" />
+          </div>
         </div>
       </div>
 
@@ -87,7 +167,7 @@
   </el-dialog>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { reactive, ref, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { login } from "@/service/CulturalValueAnnotationApi.ts";
@@ -95,109 +175,49 @@ import { login } from "@/service/CulturalValueAnnotationApi.ts";
 const dialogVisible = ref(true);
 const isLoading = ref(false);
 
+const checked1 = ref(false);
+const checked2 = ref(false);
+const checked3 = ref(false);
 const username = ref("");
 
 const countryValue = ref("");
 const countryOptions = ref([
   {
-    value: "中国",
-    label: "中国",
+    value: "China",
+    label: "China",
   },
   {
-    value: "日本",
-    label: "日本",
+    value: "English",
+    label: "English",
   },
   {
-    value: "韩国",
-    label: "韩国",
+    value: "Janpan",
+    label: "Janpan",
   },
   {
-    value: "新加坡",
-    label: "新加坡",
+    value: "Korea",
+    label: "Korea",
   },
-  {
-    value: "印度尼西亚",
-    label: "印度尼西亚",
-  },
-  {
-    value: "马来西亚",
-    label: "马来西亚",
-  },
-  {
-    value: "泰国",
-    label: "泰国",
-  },
-  {
-    value: "越南",
-    label: "越南",
-  },
-  {
-    value: "菲律宾",
-    label: "菲律宾",
-  },
-  {
-    value: "印度",
-    label: "印度",
-  },
-  {
-    value: "英国",
-    label: "英国",
-  },
-  {
-    value: "美国",
-    label: "美国",
-  },
-  {
-    value: "加拿大",
-    label: "加拿大",
-  },
+ 
 ]);
 
 const languageValue = ref("");
 const languageOptions = ref([
   {
-    value: "普通话",
-    label: "普通话",
+    value: "Chinese",
+    label: "Chinese",
   },
   {
-    value: "粤语",
-    label: "粤语",
+    value: "English",
+    label: "English",
   },
   {
-    value: "日语",
-    label: "日语",
+    value: "Japanese",
+    label: "Japanese",
   },
   {
-    value: "韩语",
-    label: "韩语",
-  },
-  {
-    value: "英语",
-    label: "英语",
-  },
-  {
-    value: "马来语",
-    label: "马来语",
-  },
-  {
-    value: "台语",
-    label: "台语",
-  },
-  {
-    value: "菲律宾语",
-    label: "菲律宾语",
-  },
-  {
-    value: "印地语",
-    label: "印地语",
-  },
-  {
-    value: "印尼语",
-    label: "印尼语",
-  },
-  {
-    value: "阿拉伯语",
-    label: "阿拉伯语",
+    value: "Korean",
+    label: "Korean",
   },
 ]);
 
@@ -216,11 +236,15 @@ const surveyVersionOptions = ref([
 const isDisabled = computed(() => {
   return (
     !username.value.trim() ||
-    !surveyVersionValue.value ||
     !countryValue.value ||
-    !languageValue.value
+    !languageValue.value ||
+    !checked1.value ||
+    !checked2.value ||
+    !checked3.value
   );
 });
+
+const emit = defineEmits(["hideUsrerContainer"]);
 
 const nextStep = () => {
   if (isDisabled.value) {
@@ -229,7 +253,6 @@ const nextStep = () => {
   // 提交表单数据
   const formData = {
     username: username.value.trim(),
-    surveyVersion: surveyVersionValue.value,
     country: countryValue.value,
     language: languageValue.value,
   };
@@ -237,19 +260,20 @@ const nextStep = () => {
   isLoading.value = true;
 
   login(formData)
-    .then((res: any) => {
+    .then((res) => {
       console.log(res);
       if (res.data.ok) {
         // 登录成功，跳转到下一个页面
         // router.push({ name: "CulturalValueAnnotation" });
         localStorage.setItem("userDetail", JSON.stringify(formData));
         dialogVisible.value = false;
+        emit("hideUsrerContainer")
       } else {
         // 登录失败，提示用户
         ElMessage.error("登录失败，请检查用户名和密码");
       }
     })
-    .catch((err: any) => {
+    .catch((err) => {
       console.log(err);
     })
     .finally(() => {
@@ -284,7 +308,7 @@ onMounted(() => {
 
     & > span {
       margin-top: 0.5em;
-      width: 5em;
+      width: 7em;
       text-align: right;
     }
     & > div {
@@ -329,6 +353,18 @@ onMounted(() => {
         cursor: not-allowed;
       }
     }
+  }
+}
+
+.survey-version-p {
+  font-size: 0.875em;
+  line-height: 1.5;
+  padding-left: 9em;
+  margin-top: 1em;
+  a {
+    margin-right: 1em;
+    color: #0b70c3;
+    text-decoration: underline;
   }
 }
 </style>

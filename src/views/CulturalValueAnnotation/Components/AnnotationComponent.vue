@@ -72,24 +72,16 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script  setup>
 import { reactive, ref, computed, onMounted } from "vue";
-import { defineProps, watch } from "vue";
+import { defineProps, watch, defineExpose } from "vue";
 import { useRoute } from "vue-router";
-import router from "@/router";
-const route = useRoute();
+
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-import type { TabsPaneContext } from "element-plus";
-import UserDetail from "./UserDetail.vue";
-import {
-  submitPrinciples,
-  submitQuestion,
-  submitAnnotation,
-} from "@/service/CulturalValueAnnotationApi";
-import { Language } from "@amcharts/amcharts4/core";
+
 
 const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 
@@ -115,21 +107,19 @@ watch(
 );
 // 处理response 并标注
 const annotationData = reactive({
-  originalResponse:
-    "This is a placeholder response to the question: placeholder1,sss placeholder2,dsadasdasd placeholder3",
-  response:
-    "This is a placeholder response to the question: placeholder1,sss placeholder2,dsadasdasd placeholder3",
-  highlight_cues: ["placeholder1", "placeholder2", "placeholder3"],
-  key_concepts: ["concept1", "concept2", "concept3"],
+  originalResponse: "",
+  response: "",
+  highlight_cues: [],
+  key_concepts: [],
 });
 
 // 跟踪每个关键词的状态（通过/未通过）
-const keywordStatus = ref<Record<number, "pass" | "fail">>({});
+const keywordStatus = ref({});
 
 const currentCueIndex = ref(0); //
 
 // 存储当前选中关键词的位置信息
-const currentCuePosition = ref<{ start: number; end: number }>({
+const currentCuePosition = ref({
   start: 0,
   end: 0,
 });
@@ -226,8 +216,8 @@ const processedAnnotationDataResponse = computed(() => {
   return result;
 });
 
-const handleKeywordClick = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
+const handleKeywordClick = (event) => {
+  const target = event.target;
   if (target.classList.contains("highlight-keyword")) {
     const index = parseInt(target.getAttribute("data-index") || "0");
     // const concepts = annotationData.key_concepts[index] || "No concepts found";
@@ -424,6 +414,11 @@ const handleAddNew = () => {
   // 更新currentCueIndex为-1，表示正在添加新的cue
   currentCueIndex.value = -1;
 };
+
+defineExpose({
+  annotationData,
+  keywordStatus,
+});
 </script>
 <style scoped lang="scss">
 .answer-content {
@@ -518,5 +513,11 @@ const handleAddNew = () => {
       }
     }
   }
+}
+
+:deep(.el-textarea__inner) {
+  --el-textarea-inner-height: 300px;
+  font-size: 1rem;
+  color: #000 !important;
 }
 </style>
