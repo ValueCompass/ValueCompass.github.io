@@ -21,7 +21,11 @@
         </p>
         <div class="input-container" style="padding: 1.5em 1em 0">
           <span>{{ t("culturalValueAnnotation.step1.topic") }}</span>
-          <el-select v-model="topicValue1" placeholder="Select" style="">
+          <el-select
+            v-model="topicValue1"
+            placeholder="Select"
+            :disabled="hasClickedSaveAndGetQuestionListBtn"
+          >
             <el-option
               v-for="item in topicOptions1"
               :key="item"
@@ -36,6 +40,9 @@
             filterable
             allow-create
             style=""
+            ref="selectRef"
+            @blur="handleBlur"
+            :disabled="hasClickedSaveAndGetQuestionListBtn"
           >
             <el-option
               v-for="item in topicOptions2"
@@ -55,14 +62,21 @@
           {{ t("culturalValueAnnotation.step2.note") }}
         </p>
         <div class="input-container">
-          <div v-for="(principle, index) in principlesList" :key="index">
+          <div
+            v-for="(principle, index) in principlesList"
+            :key="index"
+            class="principle-item"
+          >
             <span>{{
               t("culturalValueAnnotation.step2.principle", { index: index + 1 })
             }}</span>
             <el-input
+              type="textarea"
+              autosize
               v-model="principlesList[index]"
               style=""
               placeholder="Please input"
+              :disabled="hasClickedSaveAndGetQuestionListBtn"
             />
           </div>
         </div>
@@ -78,7 +92,11 @@
 
         <div class="input-container">
           <span>{{ t("culturalValueAnnotation.step3.task") }}</span>
-          <el-select v-model="taskValue1" placeholder="Select" style="">
+          <el-select
+            v-model="taskValue1"
+            placeholder="Select"
+            :disabled="hasClickedSaveAndGetQuestionListBtn"
+          >
             <el-option
               v-for="item in taskOptions1"
               :key="item"
@@ -86,7 +104,11 @@
               :value="item"
             />
           </el-select>
-          <el-select v-model="taskValue2" placeholder="Select" style="">
+          <el-select
+            v-model="taskValue2"
+            placeholder="Select"
+            :disabled="hasClickedSaveAndGetQuestionListBtn"
+          >
             <el-option
               v-for="item in taskOptions2"
               :key="item"
@@ -128,10 +150,24 @@
             "
             name="Select Existing"
           >
-            <div class="input-container">
+            <div class="input-container question-input-container">
               <span>{{ t("culturalValueAnnotation.step3.question") }}</span>
 
-              <el-select v-model="questionValue" placeholder="Select" style="">
+              <el-select
+                v-model="questionValue"
+                placeholder="Select"
+                style=""
+                class="Question-select cultural-alignment-el-select"
+                popper-class="select-options-cultural Question-select-options"
+                :disabled="hasClickedGetAnswerBtn"
+              >
+                <template #label="{ label, value }">
+                  <div class="text-content">
+                    <div>
+                      <p>{{ value }}</p>
+                    </div>
+                  </div>
+                </template>
                 <el-option
                   v-for="item in questionOptions"
                   :key="item"
@@ -150,12 +186,15 @@
             "
             name="Refine"
           >
-            <div class="input-container">
+            <div class="input-container question-input-container">
               <span>{{ t("culturalValueAnnotation.step3.question") }}</span>
               <el-input
                 v-model="questionValue"
                 style=""
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
                 placeholder="Please input"
+                :disabled="hasClickedGetAnswerBtn"
               />
             </div>
           </el-tab-pane>
@@ -167,12 +206,15 @@
             "
             name="Create New"
           >
-            <div class="input-container">
+            <div class="input-container question-input-container">
               <span>{{ t("culturalValueAnnotation.step3.question") }}</span>
               <el-input
                 v-model="questionValue"
                 style=""
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
                 placeholder="Please input"
+                :disabled="hasClickedGetAnswerBtn"
               />
             </div>
           </el-tab-pane>
@@ -182,7 +224,11 @@
           <el-button
             v-if="!hasClickedGetAnswerBtn"
             @click="handleGetAnswerBtnClick"
-            :disabled="isGetAnswerBtnDisabled || isLoadingGetAnswer"
+            :disabled="
+              isGetAnswerBtnDisabled ||
+              isLoadingGetAnswer ||
+              isSaveAndGetQuestionListBtnDisabled
+            "
             :loading="isLoadingGetAnswer"
             color="#0B70C3"
             >Get Answer</el-button
@@ -195,7 +241,14 @@
             >You has clicked Get Answer</el-button
           >
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.2em">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 0.2em;
+            line-height: 1.5;
+          "
+        >
           <p>
             {{
               t("culturalValueAnnotation.step3.checkAndRefine", {
@@ -217,7 +270,11 @@
           <el-button
             color="#0B70C3"
             style="height: 3em"
-            :disabled="isLoadingSubmitHighlightAndConcepts"
+            :disabled="
+              isLoadingSubmitHighlightAndConcepts ||
+              !hasClickedSaveAndGetQuestionListBtn ||
+              !hasClickedGetAnswerBtn
+            "
             :loading="isLoadingSubmitHighlightAndConcepts"
             @click="submitHighlightAndConcepts"
             >Submit</el-button
@@ -325,12 +382,17 @@ const handleSaveAndGetQuestionListBtnClick = () => {
     .then((res) => {
       console.log(res);
       if (res.data && res.data["candidate_questions"]) {
-        ElMessage.success("提交成功");
+        // ElMessage.success("提交成功");
         localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
+        if (res.data["candidate_questions"].length > 0) {
+          questionValue.value = res.data["candidate_questions"][0];
+        } else {
+          ElMessage.warning("No Result");
+        }
         questionOptions.value = res.data["candidate_questions"];
       } else {
-        ElMessage.error("提交失败");
+        ElMessage.error("error");
       }
     })
     .catch((err) => {
@@ -383,19 +445,19 @@ const handleGetAnswerBtnClick = () => {
     .then((res) => {
       console.log(res);
       if (res.data) {
-        ElMessage.success("提交成功");
+        // ElMessage.success("提交成功");
         annotationDataOrigin = res.data;
         // annotationDataOrigin.response = res.data.response;
         // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
         // annotationDataOrigin.key_concepts = res.data.key_concepts;
         hasClickedGetAnswerBtn.value = true;
       } else {
-        ElMessage.error("提交失败");
+        ElMessage.error("error");
       }
     })
     .catch((err) => {
       console.log(err);
-      ElMessage.error("提交失败");
+      ElMessage.error("error");
     })
     .finally(() => {
       isLoadingGetAnswer.value = false;
@@ -438,9 +500,7 @@ const submitHighlightAndConcepts = () => {
       // language: userDetail.language.trim(),
       topic_1: topicValue1.value.trim(),
       topic_2: topicValue2.value.trim(),
-      principles: principlesList.value.filter(
-        (item) => item.trim() !== ""
-      ),
+      principles: principlesList.value.filter((item) => item.trim() !== ""),
       task_1: taskValue1.value,
       task_2: taskValue2.value,
       question: questionValue.value,
@@ -581,6 +641,17 @@ const activeNameSelect1 = ref("Select Existing");
 const handleClick = (tab, event) => {
   console.log(tab, event);
 };
+
+// el-select输入text后失去焦点即选中，且添加到list
+const selectRef = ref(null);
+function handleBlur() {
+  const inputEl = selectRef.value?.$el?.querySelector("input");
+  const inputValue = inputEl?.value?.trim();
+  if (inputValue && !topicOptions2.value.includes(inputValue)) {
+    topicOptions2.value.push(inputValue);
+    topicValue2.value = inputValue;
+  }
+}
 </script>
 <style scoped lang="scss">
 .step-container {
@@ -597,7 +668,7 @@ const handleClick = (tab, event) => {
       line-height: 1.5;
       margin-bottom: 1em;
     }
-    p {
+    & > p {
       line-height: 1.5;
       font-size: 1.125em;
     }
@@ -628,12 +699,36 @@ const handleClick = (tab, event) => {
         flex-direction: column;
         align-items: flex-start;
         gap: 1em;
-        span {
-          margin-right: 1em;
+        .principle-item {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          span {
+            margin-right: 1em;
+          }
+          & > .el-input,
+          & > .el-textarea {
+            width: calc(100% - 7em);
+          }
         }
       }
     }
     &.step3 {
+      .input-container.question-input-container {
+        & > .el-input,
+        & > .el-textarea {
+          width: 500px;
+          min-height: 3em !important;
+        }
+
+        & > :deep(.el-select) {
+          width: 500px;
+          .el-select__wrapper {
+            height: 3.8em;
+            font-size: 1rem;
+          }
+        }
+      }
     }
   }
 
@@ -641,11 +736,36 @@ const handleClick = (tab, event) => {
     .el-select__wrapper {
       height: 2.5em;
       font-size: 1rem;
+      &.is-disabled {
+        background: #fff !important;
+      }
+    }
+    &.Question-select {
+      .el-select__wrapper {
+        &.is-disabled {
+          background: rgb(204, 240, 252) !important;
+        }
+      }
     }
   }
+  --el-text-color-regular: #000;
+  --el-disabled-text-color: #666;
   :deep(.el-input__inner) {
     --el-input-inner-height: 2.5em;
     font-size: 1rem;
+    &.is-disabled {
+      background: #fff !important;
+    }
+  }
+  :deep(.el-textarea) {
+    --el-input-inner-height: 2.5em;
+    font-size: 1rem;
+    .el-textarea__inner {
+      // color: #000;
+    }
+    &.is-disabled .el-textarea__inner {
+      background: #fff !important;
+    }
   }
   :deep(.el-tabs__header) {
     --el-color-primary: var(--theme-color);

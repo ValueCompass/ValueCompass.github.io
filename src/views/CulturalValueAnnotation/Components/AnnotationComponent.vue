@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="button-container2" v-if="!isEditMode">
-        <el-button @click="handleAddNew">Add new </el-button>
+        <el-button @click="handleAddNew">Add New </el-button>
         <div>
           <el-button :disabled="currentCueIndex === 0" @click="previousCue"
             >Previous</el-button
@@ -81,7 +81,6 @@ import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-
 
 const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 
@@ -422,6 +421,8 @@ defineExpose({
 </script>
 <style scoped lang="scss">
 .answer-content {
+  --el-text-color-regular: #000;
+  --el-disabled-text-color: #666;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -518,6 +519,5 @@ defineExpose({
 :deep(.el-textarea__inner) {
   --el-textarea-inner-height: 300px;
   font-size: 1rem;
-  color: #000 !important;
 }
 </style>
