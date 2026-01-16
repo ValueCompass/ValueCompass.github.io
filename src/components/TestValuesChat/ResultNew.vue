@@ -29,26 +29,51 @@
             /> -->
             <img
               class="bg"
-              style="width: 100%; height: 100%"
+              style="width: 100%"
               fit="cover"
-              :src="getAssetsFile('SchwartzTheoryNew/Power.png')"
+              :src="
+                getAssetsFile('TestYourValues/result/bj/Self-direction.png')
+              "
               alt="test"
             />
 
-            <div class="box">
-              <div class="tag-list">
-                <span
-                  class="tag"
-                  v-for="(item, index) in sortedValueScore.slice(0, 3)"
-                  :key="index"
-                  :class="item.name + '_tag'"
-                  >{{ item.name }}{{ index < 2 ? "&nbsp;·&nbsp;" : "" }}</span
-                >
-              </div>
-              <h2>The Dominator</h2>
-              <p>{{ valuesRecults?.short_comment }}</p>
-              <div class="print">
-                <button class="print-btn" @click="print">Download</button>
+            <img
+              class="bottom-bg"
+              style="width: 100%"
+              fit="cover"
+              :src="getAssetsFile('TestYourValues/result/bottom.png')"
+              alt="test"
+            />
+
+            <div class="main-container">
+              <img
+                class="robi-img"
+                fit="cover"
+                :src="
+                  getAssetsFile('TestYourValues/result/robi/Self-direction.png')
+                "
+                alt="test"
+              />
+              <div class="box">
+                <div class="tag-list">
+                  <span
+                    class="tag"
+                    v-for="(item, index) in sortedValueScore.slice(0, 3)"
+                    :key="index"
+                    :class="item.name + '_tag'"
+                    >{{ item.name }}{{ index < 2 ? "&nbsp;·&nbsp;" : "" }}</span
+                  >
+                </div>
+                <h2>
+                  The
+                  <span style="text-transform: capitalize">{{
+                    robiNameObj[sortedValueScore[0].name]["juese"]
+                  }}</span>
+                </h2>
+                <p>{{ valuesRecults?.short_comment }}</p>
+                <div class="print">
+                  <button class="print-btn" @click="print">Download</button>
+                </div>
               </div>
             </div>
           </div>
@@ -56,53 +81,53 @@
             <p class="title">Overview</p>
             <div>
               <div class="left">
-              <p style="font-size: 1.2em">
-              Your personality core is Expansion and Acquisition.
-            </p>
-            <ul>
-              <li
-                v-for="(item, index) in sortedValueScore.slice(0, 3)"
-                :key="index"
-              >
-                <div>
-                  <img :src="imgs[index]" alt="" />
-                </div>
-                <div>
-                  <p>{{ item.name }}/{{ item.value }}</p>
-                  <p>
-                    Seeking pleasure or sensual gratification. This value drives
-                    the individual to immediately experience the enjoyment and
-                    thrills of life.
-                  </p>
-                </div>
-              </li>
-            </ul>
-            
-            <p class="summury-p">
-              Your top combination Power-Achievement-Hedonism reflects an
-              extreme Self-Enhancement tendency. You view the elevation of
-              social status (Power) as the ultimate expression of self-worth,
-              and strive to achieve it through personal effort and performance
-              (Achievement). The direct reward of this success model is
-              high-quality life enjoyment (Hedonism).
-            </p>
-            </div>
+                <p style="font-size: 1.2em">
+                  Your personality core is Expansion and Acquisition.
+                </p>
+                <ul>
+                  <li
+                    v-for="(item, index) in sortedValueScore.slice(0, 3)"
+                    :key="index"
+                  >
+                    <div>
+                      <img :src="imgs[index]" alt="" />
+                    </div>
+                    <div>
+                      <p>{{ item.name }}/{{ item.value }}</p>
+                      <p>
+                        Seeking pleasure or sensual gratification. This value
+                        drives the individual to immediately experience the
+                        enjoyment and thrills of life.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
 
-            <div class="right">
-              <div class="radar-container">
-                <div>
-                  <Radar :value="valuesRecults?.value_score"></Radar>
-                </div>
+                <p class="summury-p">
+                  Your top combination Power-Achievement-Hedonism reflects an
+                  extreme Self-Enhancement tendency. You view the elevation of
+                  social status (Power) as the ultimate expression of
+                  self-worth, and strive to achieve it through personal effort
+                  and performance (Achievement). The direct reward of this
+                  success model is high-quality life enjoyment (Hedonism).
+                </p>
               </div>
-              <p>Your Schwartz Theory Item Scores</p>
-            </div>
+
+              <div class="right">
+                <div class="radar-container">
+                  <div>
+                    <Radar :value="valuesRecults?.value_score"></Radar>
+                  </div>
+                </div>
+                <p>Your Schwartz Theory Item Scores</p>
+              </div>
             </div>
           </div>
           <div class="result-item Best-Fit-Model-container">
             <p class="title">Best Fit Model</p>
             <div>
               <div class="left">
-                <div>
+                <div style="width: 50%" class="model-container">
                   <img
                     class="img-1"
                     :src="getAssetsFile('images/BestFitModelIcon-1.png')"
@@ -116,16 +141,36 @@
                       : ""
                   }}</span>
                 </div>
+                <div style="width: 50%">
+                  <p style="margin-bottom: 1em">
+                    Interestingly,
+                    <span>{{
+                      valuesRecults &&
+                      valuesRecults.closest_model &&
+                      valuesRecults?.closest_model.length > 0
+                        ? valuesRecults?.closest_model[0][0]
+                        : ""
+                    }}</span>
+                    turns out to be the model that aligns most closely with your
+                    decision style. This model is often characterized as direct,
+                    safety-oriented, and highly structured in its reasoning.
+                  </p>
+                  <p>
+                    In your answers, we consistently observed clear rule-based
+                    reasoning, a preference for caution over risk, and a
+                    tendency to justify choices with explicit principles rather
+                    than intuition — all traits that closely mirror how Qwen-3
+                    32B processes dilemmas.
+                  </p>
+                </div>
                 <p class="summury-p">
-                  Interestingly,
+                  Because of this shared pattern of thinking, you and
                   <span class="model-name-span">{{
                     valuesRecults?.closest_model[0][0]
                   }}</span>
-                  aligns seamlessly with your value priorities,<br />
-                  <span
-                    >resonating with your mindset and core belief —— much
-                    like finding a close friend.</span
-                  >
+                  exhibit a surprisingly natural resonance. If models could make
+                  friends, this would be the one most likely to feel like a
+                  reliable, steady companion who “gets” how you think.
                 </p>
               </div>
               <div class="right">
@@ -169,24 +214,38 @@
           </div>
           <div class="result-item Best-Fit-Culture-container">
             <p class="title">Best Fit Culture</p>
-           <div>
+            <div>
               <div class="left">
-                 <div style="width: 45%; margin: 0 auto">
-              <D3BubblePack
-                :value="valuesRecults?.closest_culture"
-              ></D3BubblePack>
-            </div>
-            <p class="summury-p">
-              Discover the Cultural Sphere That Best Reflects Your Beliefs and
-              Perspectives
-            </p>
+                <div style="width: 45%; margin: 0 auto">
+                  <D3BubblePack
+                    :value="valuesRecults?.closest_culture"
+                  ></D3BubblePack>
+                </div>
+                <p class="summury-p">
+                  Discover the Cultural Sphere That Best Reflects Your Beliefs
+                  and Perspectives
+                </p>
               </div>
               <div class="right">
-                <p>Interestingly, your profile shows a strong resonance with Latin American culture. This cultural tradition is often characterized by warm interpersonal connection, expressive communication, and a strong orientation toward community and relational harmony.<br>
-In your responses, we observed open emotional expression, a tendency to value personal relationships over strict formal rules, and a consistent preference for trust, empathy, and shared experience — all of which mirror key dimensions of Latin American cultural norms.<br>
-Because of this alignment in values and interaction style, you and Latin American culture display a natural compatibility. If cultures could choose companions, this one would likely feel like a vibrant, welcoming friend who understands your way of engaging with the world.</p>
+                <p>
+                  Interestingly, your profile shows a strong resonance with
+                  Latin American culture. This cultural tradition is often
+                  characterized by warm interpersonal connection, expressive
+                  communication, and a strong orientation toward community and
+                  relational harmony.<br />
+                  In your responses, we observed open emotional expression, a
+                  tendency to value personal relationships over strict formal
+                  rules, and a consistent preference for trust, empathy, and
+                  shared experience — all of which mirror key dimensions of
+                  Latin American cultural norms.<br />
+                  Because of this alignment in values and interaction style, you
+                  and Latin American culture display a natural compatibility. If
+                  cultures could choose companions, this one would likely feel
+                  like a vibrant, welcoming friend who understands your way of
+                  engaging with the world.
+                </p>
               </div>
-           </div>
+            </div>
           </div>
 
           <!-- 滚动按钮 -->
@@ -208,84 +267,115 @@ Because of this alignment in values and interaction style, you and Latin America
     </div>
     <div class="print-modal-box" v-if="showModal">
       <div class="modal-main">
-        <div class="print-main" id="capture" ref="capture">
+        <div
+          class="print-main"
+          :style="{
+            'background-color': robiNameObj[sortedValueScore[0].name]['color1'],
+          }"
+          id="capture"
+          ref="capture"
+        >
           <div class="card-print">
-            <div class="result-top">
-              <!-- <img
-              class="bg"
-              style="width: 100%; height: 100%"
-              fit="cover"
-              :src="
-                getAssetsFile(
-                  'SchwartzTheory/' +
-                    chwartzTheoryData[sortedValueScore[0].name].img
-                )
-              "
-              alt="test"
-            /> -->
-
-              <img
+            <div
+              class="left"
+              :style="{
+                'border-color': robiNameObj[sortedValueScore[0].name]['color2'],
+              }"
+            >
+              <h2
                 class="bg"
-                style="width: 100%; height: 100%"
+                :style="{
+                  'background-color':
+                    robiNameObj[sortedValueScore[0].name]['color2'],
+                  'border-color':
+                    robiNameObj[sortedValueScore[0].name]['color2'],
+                }"
+              >
+                The
+                <span style="text-transform: capitalize">{{
+                  robiNameObj[sortedValueScore[0].name]["juese"]
+                }}</span>
+              </h2>
+              <h2
+                :style="{
+                  'border-color':
+                    robiNameObj[sortedValueScore[0].name]['color3'],
+                }"
+              >
+                The
+                <span style="text-transform: capitalize">{{
+                  robiNameObj[sortedValueScore[0].name]["juese"]
+                }}</span>
+              </h2>
+              <img
+                class="robi-img"
                 fit="cover"
-                :src="getAssetsFile('SchwartzTheoryNew/Power.png')"
+                :src="
+                  getAssetsFile('TestYourValues/result/robi/Self-direction.png')
+                "
                 alt="test"
               />
-
-              <div class="box">
-                <div class="tag-list">
-                  <span
-                    class="tag"
-                    v-for="(item, index) in sortedValueScore.slice(0, 3)"
-                    :key="index"
-                    :class="item.name + '_tag'"
-                    >{{ item.name }}{{ index < 2 ? "&nbsp;·&nbsp;" : "" }}</span
-                  >
-                </div>
-                <h2>The Dominator</h2>
-                <p>{{ valuesRecults?.short_comment }}</p>
-              </div>
-            </div>
-
-            <div class="result-item Best-Fit-Model-container">
-              <div>
-                <div class="left">
+              <ul>
+                <li
+                  v-for="(item, index) in sortedValueScore.slice(0, 3)"
+                  :key="index"
+                >
                   <div>
-                    <img
-                      class="img-1"
-                      :src="getAssetsFile('images/BestFitModelIcon-1.png')"
-                      alt=""
-                    />
-                    <span>{{
-                      valuesRecults &&
-                      valuesRecults.closest_model &&
-                      valuesRecults?.closest_model.length > 0
-                        ? valuesRecults?.closest_model[0][0]
-                        : ""
-                    }}</span>
+                    <img :src="imgs[index]" alt="" />
                   </div>
-                  <p class="summury-p">
-                    Interestingly,
-                    <span class="model-name-span">{{
-                      valuesRecults?.closest_model[0][0]
-                    }}</span>
-                    aligns seamlessly with your value priorities,<br />
-                    <span
-                      >resonating with your mindset and core belief —— much
-                      like finding a close friend.</span
-                    >
-                  </p>
+                  <div
+                    :style="{
+                      color:
+                        index == 0
+                          ? robiNameObj[sortedValueScore[0].name]['color2']
+                          : '#000',
+                    }"
+                  >
+                    <p>{{ item.name }}/{{ item.value }}</p>
+                    <p>
+                      Seeking pleasure or sensual gratification. This value
+                      drives the individual to immediately experience the
+                      enjoyment and thrills of life.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="right">
+              <div class="top">
+                <div>
+                  <img
+                    class="logo"
+                    src="@/assets/images/main-logo.png"
+                    alt="logo"
+                  />
+                </div>
+
+                <div>
+                  <img
+                    class="QRCodeImg"
+                    src="@/assets/images/QRCodeImg.png"
+                    alt=""
+                  />
                 </div>
               </div>
+              <div class="bottom">
+                <div class="model-container">
+                  <img src="@/assets/images/BestFitModelIcon.png" alt="" />
+                  <span class="model-name-span">{{
+                    valuesRecults?.closest_model[0][0]
+                  }}</span>
+                </div>
+                <p class="summury-p">
+                  Interestingly,
+                  <span class="model-name-span">{{
+                    valuesRecults?.closest_model[0][0]
+                  }}</span>
+                  turns out to be the model that aligns most closely with your
+                  decision style.
+                </p>
+              </div>
             </div>
-
-            <img class="logo" src="@/assets/images/main-logo.png" alt="logo" />
-
-            <img class="QRCodeImg" src="@/assets/images/QRCodeImg.png" alt="" />
-
-            <p class="label-p">
-              <span>The image powered by Microsoft Designer</span>
-            </p>
           </div>
         </div>
         <div class="print-btn">
@@ -331,6 +421,69 @@ const resultList = [
     index: 1,
   },
 ];
+
+const robiNameObj = {
+  Achievement: {
+    juese: "Achiever",
+    color1: "#FDE7D8",
+    color2: "#931A22",
+    color3: "#DB4B3D",
+  },
+  Benevolence: {
+    juese: "benevolent",
+    color1: "#FEFDE9",
+    color2: "#786C1C",
+    color3: "#FCF294",
+  },
+  Conformity: {
+    juese: "conformist",
+    color1: "#FAF7EC",
+    color2: "#644427",
+    color3: "#AE9A7C",
+  },
+  Hedonism: {
+    juese: "Hedonist",
+    color1: "#FCF0DD",
+    color2: "#722A18",
+    color3: "#C67B4E",
+  },
+  Power: {
+    juese: "Dominator",
+    color1: "#E7FCFE",
+    color2: "#2A588B",
+    color3: "#85CDF1",
+  },
+  Security: {
+    juese: "Protector",
+    color1: "#EFE5CA",
+    color2: "#876B2C",
+    color3: "#E9D38A",
+  },
+  "Self-direction": {
+    juese: "Visionary",
+    color1: "#F2E9E4",
+    color2: "#794E4A",
+    color3: "#A99893",
+  },
+  Stimulation: {
+    juese: "Adventurer",
+    color1: "#F5F5E1",
+    color2: "#5E5C29",
+    color3: "#A3A282",
+  },
+  Tradition: {
+    juese: "custodian",
+    color1: "#FCF7EF",
+    color2: "#793C31",
+    color3: "#D2AE9B",
+  },
+  Universalism: {
+    juese: "Universalist",
+    color1: "#FEDEE4",
+    color2: "#05408C",
+    color3: "#0B70C3",
+  },
+};
 
 const showTest = ref(1);
 const input = ref("");
@@ -1018,6 +1171,7 @@ const imgs = [
 
 <style scoped lang="scss">
 .chart-box {
+  color: #000;
   margin: 0 auto;
   display: flex;
   padding: 1em 0;
@@ -1136,6 +1290,7 @@ const imgs = [
 }
 
 .print-modal-box {
+  overflow: auto;
   z-index: 2005;
   position: fixed;
   width: 100%;
@@ -1149,55 +1304,157 @@ const imgs = [
   .modal-main {
     margin: 0 auto;
     .print-main {
-      font-size: 20px;
+      transform: translateY(-10%) scale(0.75);
+      font-size: 24px;
       width: 1600px;
       height: 864px;
+      padding: 2em;
+      box-sizing: border-box;
       position: relative;
-      background: #fff;
+      background: #add4ed;
       color: #000;
       .card-print {
-        padding: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .left {
+          margin-top: 2em;
+          padding: 1.5em;
+          background: #fff;
+          border-radius: 2em;
+          border: 3px solid #05408c;
+          width: 925px;
+          box-sizing: border-box;
+          position: relative;
+          .robi-img {
+            width: 44.8%;
+            margin: 0 auto 1em;
+            position: absolute;
+            top: -11%;
+            right: -8%;
+          }
+          h2 {
+            position: absolute;
+            background: #fff;
+            top: -52px;
+            left: -11px;
+            font-size: 2em;
+            font-weight: 900;
+            border: 6px solid #fcf294;
+            border-radius: 1em;
+            // height: 96px;
+            box-sizing: border-box;
+            line-height: 84px;
+            padding: 0 30px;
+            &.bg {
+              transform: translate(5px, 8px);
+              border-color: #786c1c;
+              background: #786c1c;
+            }
+          }
+          ul {
+            margin-top: 1.5em;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            li {
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+              gap: 0.3em;
 
-        .Best-Fit-Model-container {
-          position: absolute;
-          width: 31.5%;
+              & > div:nth-child(1) {
+                padding: 0.3em 0.5em;
+                img {
+                  width: 1.5em;
+                }
+              }
+              & > div:nth-child(2) {
+                p {
+                  font-size: 1em;
+                  line-height: 1.5;
+                }
+                p:nth-child(1) {
+                  font-weight: 700;
+                  font-size: 1.5em;
+                }
+                p:nth-child(2) {
+                  font-style: italic;
+                }
+              }
 
-          bottom: 2em;
-          left: 3em;
-          .left {
-            width: 100%;
-            height: 600px;
+              &:nth-child(1) {
+                width: 62%;
+                p:nth-child(1) {
+                  font-weight: 900 !important;
+                }
+                p:nth-child(2) {
+                  font-weight: 600;
+                }
+              }
+            }
           }
         }
-      }
-
-      .logo {
-        width: 205px;
-        position: absolute;
-        left: 4em;
-        top: 3em;
-      }
-      .QRCodeImg {
-        width: 100px;
-        position: absolute;
-        right: 4em;
-        bottom: 6em;
-      }
-      .label-p {
-        position: absolute;
-        right: 4em;
-        bottom: 3em;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 5px;
-        font-style: italic;
-        font-weight: 700;
-        span {
-          font-size: 0.85em;
+        .right {
+          width: 543px;
+          display: flex;
+          flex-direction: column;
+          gap: 1em;
+          img {
+            width: 200px;
+          }
+          .top,
+          .botttom {
+            width: 543px;
+          }
+          .top {
+            padding: 1em;
+            box-sizing: border-box;
+            background: #fff;
+            border-radius: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .logo {
+              width: 314px;
+              display: block;
+            }
+            .QRCodeImg {
+              width: 164px;
+              display: block;
+            }
+          }
+          .bottom {
+            min-height: 532px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 2em;
+            padding: 36px;
+            box-sizing: border-box;
+            .model-container {
+              margin: 0 auto;
+              width: 318px;
+              position: relative;
+              img {
+                width: 100%;
+              }
+              span {
+                font-size: 1em;
+                position: absolute;
+                top: 40%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-weight: 600;
+              }
+            }
+            p {
+              line-height: 1.4;
+            }
+          }
         }
       }
     }
     .print-btn {
-      margin-top: 2em;
+      margin-top: -180px;
       display: flex;
       justify-content: space-around;
       button {
@@ -1289,33 +1546,33 @@ const imgs = [
   }
 
   &.Overview-container {
-  &>div{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    .left{
-      width: 50%;
-    }
-    .right{
-      width: 50%;
-      text-align: center;
-      p{
-        font-weight: 600;
+    & > div {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      .left {
+        width: 50%;
       }
-      .radar-container{
-        width: 100%;
-        padding-bottom: 70%;
-        position: relative;
-        &>div{
-          position: absolute;
+      .right {
+        width: 50%;
+        text-align: center;
+        p {
+          font-weight: 600;
+        }
+        .radar-container {
           width: 100%;
-          height: 100%;
-          left: 0;
-          top: 0;
+          padding-bottom: 70%;
+          position: relative;
+          & > div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+          }
         }
       }
     }
-  }
     ul {
       margin: 1em 0;
       display: flex;
@@ -1358,28 +1615,33 @@ const imgs = [
       justify-content: space-between;
       & > div {
         padding: 2em;
-        
+        line-height: 1.5;
         box-sizing: border-box;
         background: #ccf0fc;
         border-radius: 12px;
         &.left {
           width: 64%;
-          & > div {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          div.model-container {
             position: relative;
-            width:380px;
             margin: 0 auto;
             .img-1 {
               width: 100%;
               position: relative;
-              z-index: 2;
+              // z-index: 2;
             }
             span {
               position: absolute;
-              left: 50%;
+              left: 40%;
               top: 38%;
               transform: translate(-50%, -50%);
               font-weight: 700;
               font-size: 1em;
+              text-align: center;
+              max-width: 80%;
+              line-height: 1.3;
             }
           }
           .summury-p {
@@ -1408,17 +1670,18 @@ const imgs = [
       text-align: center;
       color: #666666;
     }
-    &>div{
+    & > div {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-     
+
       justify-content: space-around;
-      .left,.right{
-         width: 48.5%;
+      .left,
+      .right {
+        width: 48.5%;
       }
-      .right{
-        p{
+      .right {
+        p {
           line-height: 1.5;
         }
       }
@@ -1428,15 +1691,46 @@ const imgs = [
 
 .result-top {
   position: relative;
-  & > div.box {
-    width: 664px;
-    max-width: 42%;
+
+  .bottom-bg {
     position: absolute;
-    left: 50%;
-    top: 4em;
-    line-height: 1.5;
-    font-size: 1em;
+    width: 100%;
+    left: 0;
+    bottom: 0;
   }
+  .main-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    .robi-img {
+      position: absolute;
+      width: 24.75em;
+      left: 50%;
+      bottom: 6%;
+      transform: translateX(40%);
+    }
+    .box {
+      /* 关键 */
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1em;
+      padding: 2em;
+      box-sizing: border-box;
+      width: 33.2em;
+      max-width: 42%;
+      position: absolute;
+      left: 50%;
+      top: 4em;
+      transform: translateX(-80%);
+      line-height: 1.5;
+      font-size: 1em;
+    }
+  }
+
   .tag-list {
     display: flex;
     flex-wrap: wrap;

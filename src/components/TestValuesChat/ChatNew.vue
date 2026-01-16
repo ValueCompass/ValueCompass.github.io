@@ -3,7 +3,11 @@
     <div class="chat-container main-container">
       <div class="left-emotion-img">
         <img
-          src="@/assets/images/robi-character.png"
+          :src="
+            getAssetsFile(
+              'TestYourValues/robi/' + emotionObj[currEmotionStatus]
+            )
+          "
           alt="Robi"
           class="robi-avatar"
         />
@@ -36,7 +40,16 @@
                       <div>
                         {{ item.text }}
 
-                        <span v-if="item.end && item.type != 'user'" @click="ViewResults" style="cursor: pointer;;color:#0B70C3;text-decoration: underline;"><br>Click here to see your results</span>
+                        <span
+                          v-if="item.end && item.type != 'user'"
+                          @click="ViewResults"
+                          style="
+                            cursor: pointer;
+                            color: #0b70c3;
+                            text-decoration: underline;
+                          "
+                          ><br />Click here to see your results</span
+                        >
                       </div>
 
                       <button
@@ -77,6 +90,7 @@
             <ChatInput
               ref="ChatInputRef"
               @sendMessage="sendMessage"
+              @setEmotionStatus="setEmotionStatus"
               :isSendLoading="isSendLoading"
               :lang="choosedLanguage"
             ></ChatInput>
@@ -92,32 +106,32 @@
       </div>
       <div class="right">
         <ul class="process-box">
-              <li
-                v-for="(i, index) in 7"
-                :key="index"
-                class="star"
-                :class="[
-                  i == chatProgress ? 'on' : '',
-                  i <= chatProgress ? 'light' : '',
-                ]"
-              >
-                <div
-                  class="star-icon"
-                  :class="['star-icon-' + i, i == 7 ? 'star-icon-final' : '']"
-                >
-                  <svgIcon v-if="i < 7" name="Star-Process"></svgIcon>
-                  <svgIcon v-else name="final_star"></svgIcon>
+          <li
+            v-for="(i, index) in 7"
+            :key="index"
+            class="star"
+            :class="[
+              i == chatProgress ? 'on' : '',
+              i <= chatProgress ? 'light' : '',
+            ]"
+          >
+            <div
+              class="star-icon"
+              :class="['star-icon-' + i, i == 7 ? 'star-icon-final' : '']"
+            >
+              <svgIcon v-if="i < 7" name="Star-Process"></svgIcon>
+              <svgIcon v-else name="final_star"></svgIcon>
 
-                  <text>{{ chatProcessText[i - 1] }}</text>
-                </div>
-                <svgIcon
-                  v-if="i > 1"
-                  class="line-icon"
-                  :class="['line-icon-' + (i - 1)]"
-                  name="Line"
-                ></svgIcon>
-              </li>
-            </ul>
+              <text>{{ chatProcessText[i - 1] }}</text>
+            </div>
+            <svgIcon
+              v-if="i > 1"
+              class="line-icon"
+              :class="['line-icon-' + (i - 1)]"
+              name="Line"
+            ></svgIcon>
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -170,6 +184,9 @@ import {
 import { ElMessage } from "element-plus";
 
 import { ElMessageBox } from "element-plus";
+const getAssetsFile = (url) => {
+  return new URL(`../../assets/${url}`, import.meta.url).href;
+};
 
 const props = defineProps({
   // choosedLanguage: { type: String, default: "zh-CN" }, //'en-US'
@@ -211,6 +228,12 @@ const chatList = ref([
     text: "Hi there! I’m Robi — here to explore your values with you.\nI don’t give scores or right answers — I just want to talk about the things that matter to you.\nWould you like to tell me what I can call you? A nickname is fine too, or you can skip it if you prefer.",
   },
 ]);
+
+const currEmotionStatus = ref("cursor");
+const emotionObj = {
+  cursor: "curious_matting.gif",
+  angry: "angry_matting.gif",
+};
 
 watch(
   chatList,
@@ -267,13 +290,15 @@ const sendMessage = (textareaValue) => {
       .then((res) => {
         let response = res.data;
         console.log(response);
-        const obj = { type: "model", text: response.question }
-        if(response.process){
-          chatProgress.value = response.process
+        const obj = { type: "model", text: response.question };
+        if (response.process) {
+          chatProgress.value = response.process;
         }
-        
-        if(response.process == 7){
-          obj.end = true
+
+        currEmotionStatus.value = "angry";
+
+        if (response.process == 7) {
+          obj.end = true;
         }
         chatList.value.push(obj);
         chatPercentage.value = response.progress_bar;
@@ -397,6 +422,10 @@ const getReadAloudLabel = (index) => {
   return isPlaying ? labels.stop : labels.play;
 };
 
+
+const setEmotionStatus = (status) => {
+  currEmotionStatus.value = status;
+}
 onDeactivated(() => {
   console.log("onDeactivated");
   window.speechSynthesis.cancel();
@@ -593,139 +622,139 @@ defineExpose({
       justify-content: center;
       align-items: center;
       .process-box {
-          width:100%;
-          padding-bottom: 303%;
-          // background: #ccc;
-          position: relative;
-          .light {
-            .star-icon .svg-icon {
-              color: #f9d672;
-            }
-            .line-icon {
-              color: #f9d672;
-            }
-          }
-          .on {
-            .star-icon text {
-              display: block;
-            }
-          }
-          .star-icon {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            width: 20%;
-            padding-bottom: 20%;
-            text {
-              position: absolute;
-              left: 50%;
-              top: 0;
-              transform: translate(-52%, -120%);
-              background: #0b70c3;
-              color: #f5f5f5;
-              padding: 0 0.4em;
-              line-height: 1.6;
-              border-radius: 2px;
-              white-space: nowrap;
-              display: none;
-              z-index: 2;
-              &::after {
-                content: "";
-                position: absolute;
-                bottom: -22%;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 0;
-                height: 0;
-                border-left: 0.5em solid transparent;
-                border-right: 0.5em solid transparent;
-                border-top: 0.5em solid #0b70c3;
-              }
-            }
-            & > .svg-icon {
-              width: 80%;
-              height: 80%;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%,-50%);
-              position: absolute;
-              color: #e9e9e9;
-            }
-
-            &.star-icon-final {
-              width: 28.5%;
-              padding-bottom: 28.5%;
-            }
-            &.star-icon-1 {
-              left: 0%;
-              top: 7%;
-            }
-            &.star-icon-2 {
-              left: 58.2%;
-              top: 0%;
-            }
-            &.star-icon-3 {
-              right: 0%;
-              top: 19.9%;
-            }
-            &.star-icon-4 {
-              left: 27.7%;
-              top: 31.65%;
-            }
-            &.star-icon-5 {
-              left: 27.7%;
-              top: 52.58%;
-            }
-            &.star-icon-6 {
-              left: 32.03%;
-              top: 73.26%;
-            }
-            &.star-icon-7 {
-              right: 12.5%;
-              bottom: 0%;
-            }
+        width: 100%;
+        padding-bottom: 303%;
+        // background: #ccc;
+        position: relative;
+        .light {
+          .star-icon .svg-icon {
+            color: #f9d672;
           }
           .line-icon {
-            // background: #DCDCDC;
-            color: #e9e9e9;
-            position: absolute;
-            width: 6px;
-            height: 126px;
-            transform-origin: top center; /* 设置旋转中心为左上角 */
-            &.line-icon-1 {
-              left: 13%;
-              top: 8%;
-              transform: rotate(-103deg);
-            }
-            &.line-icon-2 {
-              left: 67%;
-              top: 6%;
-              transform: rotate(-20deg);
-            }
-            &.line-icon-3 {
-              right: 16%;
-              top: 24.2%;
-              transform: rotate(56deg);
-            }
-            &.line-icon-4 {
-              left: 36%;
-              top: 37%;
-              // transform: rotate(56deg);
-            }
-            &.line-icon-5 {
-              left: 36%;
-              top: 58%;
-              transform: rotate(-6deg);
-            }
-            &.line-icon-6 {
-              left: 41%;
-              top: 79%;
-              transform: rotate(-30deg);
-            }
+            color: #f9d672;
           }
         }
+        .on {
+          .star-icon text {
+            display: block;
+          }
+        }
+        .star-icon {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          width: 20%;
+          padding-bottom: 20%;
+          text {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translate(-52%, -120%);
+            background: #0b70c3;
+            color: #f5f5f5;
+            padding: 0 0.4em;
+            line-height: 1.6;
+            border-radius: 2px;
+            white-space: nowrap;
+            display: none;
+            z-index: 2;
+            &::after {
+              content: "";
+              position: absolute;
+              bottom: -22%;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 0;
+              height: 0;
+              border-left: 0.5em solid transparent;
+              border-right: 0.5em solid transparent;
+              border-top: 0.5em solid #0b70c3;
+            }
+          }
+          & > .svg-icon {
+            width: 80%;
+            height: 80%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            color: #e9e9e9;
+          }
+
+          &.star-icon-final {
+            width: 28.5%;
+            padding-bottom: 28.5%;
+          }
+          &.star-icon-1 {
+            left: 0%;
+            top: 7%;
+          }
+          &.star-icon-2 {
+            left: 58.2%;
+            top: 0%;
+          }
+          &.star-icon-3 {
+            right: 0%;
+            top: 19.9%;
+          }
+          &.star-icon-4 {
+            left: 27.7%;
+            top: 31.65%;
+          }
+          &.star-icon-5 {
+            left: 27.7%;
+            top: 52.58%;
+          }
+          &.star-icon-6 {
+            left: 32.03%;
+            top: 73.26%;
+          }
+          &.star-icon-7 {
+            right: 12.5%;
+            bottom: 0%;
+          }
+        }
+        .line-icon {
+          // background: #DCDCDC;
+          color: #e9e9e9;
+          position: absolute;
+          width: 6px;
+          height: 17.9%;
+          transform-origin: top center; /* 设置旋转中心为左上角 */
+          &.line-icon-1 {
+            left: 13%;
+            top: 8%;
+            transform: rotate(-103deg);
+          }
+          &.line-icon-2 {
+            left: 67%;
+            top: 6%;
+            transform: rotate(-20deg);
+          }
+          &.line-icon-3 {
+            right: 16%;
+            top: 24.2%;
+            transform: rotate(56deg);
+          }
+          &.line-icon-4 {
+            left: 36%;
+            top: 37%;
+            // transform: rotate(56deg);
+          }
+          &.line-icon-5 {
+            left: 36%;
+            top: 58%;
+            transform: rotate(-6deg);
+          }
+          &.line-icon-6 {
+            left: 41%;
+            top: 79%;
+            transform: rotate(-30deg);
+          }
+        }
+      }
     }
   }
 

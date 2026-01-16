@@ -14,6 +14,7 @@
           resize="none"
           :autosize="{ minRows: 1, maxRows: 5 }"
           @keydown.enter.native="handleEnter"
+          @input="handleInput"
         />
         <div class="icon-box">
           <el-button :disabled="isListening">
@@ -86,6 +87,8 @@ onMounted(() => {
     finalText.value = "";
     interimText.value = "";
     fullText.value = "";
+
+    emit("setEmotionStatus", "cursor");
   };
 
   recognition.onresult = (event) => {
@@ -147,7 +150,11 @@ const handleEnter = (event) => {
   sendMessage();
 };
 
-const emit = defineEmits(["sendMessage"]);
+const handleInput = (event) => {
+  emit("setEmotionStatus", "cursor");
+};
+
+const emit = defineEmits(["sendMessage", "setEmotionStatus"]);
 const sendMessage = () => {
   if (!textareaText.value.trim() || props.isSendLoading) {
   } else {

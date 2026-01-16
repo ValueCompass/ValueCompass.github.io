@@ -56,7 +56,7 @@ export const getChatResult = (data: any): any => {
             "short_comment": "You’re driven by a desire to succeed and be recognized for your hard work. Feeling secure and maintaining harmony is essential for your peace of mind. Moreover, helping others and fostering a sense of community is deeply fulfilling for you. These primary values shape how you interact with the world, reflecting your unique approach to life.",
             "value_score": {
                 "Achievement": 8.5,
-                "Benevolence": 10,
+                "Benevolence": 8,
                 "Conformity": 6.8,
                 "Hedonism": 7.5,
                 "Power": 5.3,
@@ -64,10 +64,10 @@ export const getChatResult = (data: any): any => {
                 "Self-direction": 9.0,
                 "Stimulation": 6.2,
                 "Tradition": 7.1,
-                "Universalism": 10
+                "Universalism": 8
             },
             "closest_model": [
-                ["Model_1", 0.93],
+                ["Model_1111", 0.93],
                 ["Model_2", 0.89],
                 ["Model_3", 0.85],
                 ["Model_4", 0.89],
