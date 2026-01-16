@@ -265,10 +265,12 @@ const nextStep = () => {
       if (res.data.ok) {
         // 登录成功，跳转到下一个页面
         // router.push({ name: "CulturalValueAnnotation" });
-        localStorage.setItem("userDetail", JSON.stringify(formData));
-        localStorage.setItem("language", languageValue.value);
+        sessionStorage.setItem("userDetail", JSON.stringify(formData));
+        sessionStorage.setItem("language", languageValue.value);
         dialogVisible.value = false;
         emit("hideUsrerContainer")
+        // 页面刷新
+        window.location.reload();
       } else {
         // 登录失败，提示用户
         ElMessage.error("登录失败，请检查用户名和密码");
@@ -284,7 +286,7 @@ const nextStep = () => {
 };
 
 const isHasUserDetail = computed(() => {
-  return localStorage.getItem("userDetail") !== null;
+  return sessionStorage.getItem("userDetail") !== null;
 });
 
 onMounted(() => {

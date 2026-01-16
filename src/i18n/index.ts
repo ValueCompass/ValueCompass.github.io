@@ -12,7 +12,7 @@ const languageObj = {
 }
 
 // Get language from localStorage
-const storedLanguage = localStorage.getItem('language');
+const storedLanguage = sessionStorage.getItem('language');
 
 // Determine the locale: if storedLanguage is a language code (en/zh/ja/ko), use it directly;
 // otherwise, try to map it from languageObj

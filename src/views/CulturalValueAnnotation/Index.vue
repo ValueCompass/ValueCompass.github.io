@@ -389,7 +389,7 @@ import {
 } from "@/service/CulturalValueAnnotationApi";
 import { Language } from "@amcharts/amcharts4/core";
 
-let userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+let userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
 
 const allFromData = reactive({
   username: "",
@@ -767,7 +767,7 @@ onMounted(async () => {
 });
 
 const hideUsrerContainer = () => {
-  userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+  userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
   handleGetTopicTaskTaxonomy();
 };
 const handleTaskHistoryClick = () => {

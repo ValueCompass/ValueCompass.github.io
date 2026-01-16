@@ -11,18 +11,18 @@
     <div class="right">
       <div>
         <div>
-          <p>{{ t("culturalValueAnnotation.step3.textFragment") }}:</p>
+          <p>Text fragment:</p>
           <el-input
             v-model="editCueValue"
             :disabled="!isEditMode"
             style=""
             placeholder="Please input"
-            :autosize="{ minRows: 3, maxRows: 3 }"
+            :autosize="{ minRows: 7, maxRows: 7 }"
             type="textarea"
           />
         </div>
         <div>
-          <p>{{ t("culturalValueAnnotation.step3.valueConcepts") }}:</p>
+          <p>Value Concepts:</p>
           <el-input
             v-model="editConceptValue"
             :disabled="!isEditMode"
@@ -76,7 +76,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
-const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+const userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
 
 const props = defineProps({
   annotationDataOrigin: {
