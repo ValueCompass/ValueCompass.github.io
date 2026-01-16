@@ -346,13 +346,18 @@
     font-weight: 700;
     font-style: italic;
     padding: 0 .4em;
-    &.current{
+
+    &.current {
       background: #FFF8B1;
     }
-    &.pass {
+
+    &.keep,
+    &.add,
+    &.edit {
       border: 1px solid #B07F22;
     }
-    &.fail {
+
+    &.delete {
       text-decoration: line-through;
     }
   }

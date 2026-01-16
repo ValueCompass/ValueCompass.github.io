@@ -8,7 +8,7 @@
   >
     <div class="user-detail">
       <p>
-        The name can be your real name or alias, but you must use the samename
+        The name can be your real name or alias, but you must use the same name
         here and in the survey below.
       </p>
       <div class="input-item">
@@ -77,7 +77,7 @@
           >
         </p>
         <div class="input-item">
-          <span>Value Survey 1:</span>
+          <span>Schwartz Value Survey:</span>
           <div>
             <el-checkbox v-model="checked2" label="Completed" size="large" />
           </div>
@@ -108,7 +108,7 @@
           >
         </p>
         <div class="input-item">
-          <span>Value Survey 2:</span>
+          <span>Cultural Value Survey:</span>
           <div>
             <el-checkbox v-model="checked3" label="Completed" size="large" />
           </div>
@@ -266,6 +266,7 @@ const nextStep = () => {
         // 登录成功，跳转到下一个页面
         // router.push({ name: "CulturalValueAnnotation" });
         localStorage.setItem("userDetail", JSON.stringify(formData));
+        localStorage.setItem("language", languageValue.value);
         dialogVisible.value = false;
         emit("hideUsrerContainer")
       } else {

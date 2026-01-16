@@ -33,15 +33,9 @@
           />
         </div>
         <div class="button-container1" v-if="!isEditMode">
-          <el-button class="keep" @click="handleKeepClick">{{
-            t("culturalValueAnnotation.step3.completelyCorrectKeep")
-          }}</el-button>
-          <el-button class="delete" @click="handleDeleteClick">{{
-            t("culturalValueAnnotation.step3.irrelevantOrIncorrectDelete")
-          }}</el-button>
-          <el-button class="edit" @click="handleEditClick">{{
-            t("common.edit")
-          }}</el-button>
+          <el-button class="keep" @click="handleKeepClick">Keep</el-button>
+          <el-button class="delete" @click="handleDeleteClick">Delete</el-button>
+          <el-button class="edit" @click="handleEditClick">Edit</el-button>
         </div>
         <div v-else class="button-container1" style="justify-content: flex-end">
           <el-button class="cancel" @click="handleCancelEdit">{{
@@ -100,8 +94,11 @@ watch(
   (newVal) => {
     annotationData.originalResponse = newVal.response;
     annotationData.response = newVal.response;
-    annotationData.highlight_cues = newVal.highlight_cues;
-    annotationData.key_concepts = newVal.key_concepts;
+    // 创建副本而不是直接引用，确保两个组件实例的数据独立
+    annotationData.highlight_cues = [...newVal.highlight_cues];
+    annotationData.key_concepts = [...newVal.key_concepts];
+    // 确保 keywordStatus 数组的长度与 highlight_cues 一致
+    keywordStatus.value = Array(annotationData.highlight_cues.length).fill(null);
   }
 );
 // 处理response 并标注
@@ -112,8 +109,24 @@ const annotationData = reactive({
   key_concepts: [],
 });
 
-// 跟踪每个关键词的状态（通过/未通过）
-const keywordStatus = ref({});
+// 跟踪每个关键词的状态（keep/delete/edit/add）
+const keywordStatus = ref([]);
+
+onMounted(() => {
+  // 如果annotationData还没有数据，从props.annotationDataOrigin初始化
+  if (annotationData.highlight_cues.length === 0 && props.annotationDataOrigin) {
+    annotationData.originalResponse = props.annotationDataOrigin.response;
+    annotationData.response = props.annotationDataOrigin.response;
+    // 创建副本而不是直接引用，确保两个组件实例的数据独立
+    annotationData.highlight_cues = [...props.annotationDataOrigin.highlight_cues];
+    annotationData.key_concepts = [...props.annotationDataOrigin.key_concepts];
+  }
+  
+  // 组件挂载时初始化 keywordStatus 数组
+  if (annotationData.highlight_cues.length > 0) {
+    keywordStatus.value = Array(annotationData.highlight_cues.length).fill(null);
+  }
+});
 
 const currentCueIndex = ref(0); //
 
@@ -201,8 +214,10 @@ const processedAnnotationDataResponse = computed(() => {
     // 添加带高亮的cue
     let className = "highlight-keyword";
     if (currentCueIndex.value === index) className += " current";
-    if (keywordStatus.value[index] === "pass") className += " pass";
-    else if (keywordStatus.value[index] === "fail") className += " fail";
+    if (keywordStatus.value[index] === "edit") className += " edit";
+    else if (keywordStatus.value[index] === "add") className += " add";
+    else if (keywordStatus.value[index] === "keep") className += " keep";
+    else if (keywordStatus.value[index] === "delete") className += " delete";
 
     result += `<span class="${className}" data-cue="${cue}" data-index="${index}">${cue}</span>`;
 
@@ -299,30 +314,32 @@ const updateCurrentCuePosition = () => {
 
 const handleKeepClick = () => {
   console.log("Completely correct, keep");
-  keywordStatus.value[currentCueIndex.value] = "pass";
+  keywordStatus.value[currentCueIndex.value] = "keep";
 
   console.log(keywordStatus.value);
 };
 
 const handleDeleteClick = () => {
   console.log("Irrelevant or incorrect, delete");
-  keywordStatus.value[currentCueIndex.value] = "fail";
+  keywordStatus.value[currentCueIndex.value] = "delete";
 
   console.log(keywordStatus.value);
 };
 
 const handleEditClick = () => {
-  console.log("Edit");
+  console.log("Edit", "currentCueIndex:", currentCueIndex.value);
   // 进入编辑模式
   isEditMode.value = true;
   // 保存当前值到编辑临时变量
   editCue.value = currentCue.value;
   editConcept.value = currentConcept.value;
+  // 设置状态为edit
+  keywordStatus.value[currentCueIndex.value] = "edit";
+  console.log("Keyword status after edit click:", keywordStatus.value);
 };
 
 const handleSubmitEdit = () => {
   console.log("Submit edit");
-
   if (isAddingNew.value) {
     // 正在添加新的cue和concept
     if (editCue.value.trim() === "") {
@@ -346,6 +363,8 @@ const handleSubmitEdit = () => {
     // 添加到数组中
     annotationData.highlight_cues.push(editCue.value);
     annotationData.key_concepts.push(editConcept.value);
+    // 为新添加的cue设置状态为add
+    keywordStatus.value.push("add");
 
     // 更新currentCueIndex为新添加的索引
     currentCueIndex.value = annotationData.highlight_cues.length - 1;
@@ -367,16 +386,16 @@ const handleSubmitEdit = () => {
     const { start, end } = currentCuePosition.value;
 
     // 构建更新后的response文本
-    const updatedResponse =
-      annotationData.response.slice(0, start) +
-      editCue.value +
+    const updatedResponse = 
+      annotationData.response.slice(0, start) + 
+      editCue.value + 
       annotationData.response.slice(end);
 
     // 更新response文本
     annotationData.response = updatedResponse;
 
-    // 设置当前关键词为通过状态
-    keywordStatus.value[currentCueIndex.value] = "pass";
+    // 设置当前关键词为edit状态
+    keywordStatus.value[currentCueIndex.value] = "edit";
   }
 
   // 退出编辑模式
@@ -426,7 +445,6 @@ defineExpose({
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 2em;
   line-height: 1.5;
   & > div {
     width: 49%;
