@@ -220,6 +220,10 @@
   border: 2px solid rgba(5, 64, 140, 1) !important;
   border-radius: 1rem !important;
   font-size: 1rem;
+  &.annotation-select {
+    min-width: 300px !important;
+    max-width:3000px !important;
+  }
 
   .el-select-dropdown__wrap {
     max-height: 30rem;
@@ -342,23 +346,26 @@
 
 .response-text {
   .highlight-keyword {
-    background: #FFFCE1;
+    background: #FEFBA0;
     font-weight: 700;
     font-style: italic;
     padding: 0 .4em;
 
     &.current {
-      background: #FFF8B1;
+      background: #FCF014 !important;
     }
 
     &.keep,
     &.add,
     &.edit {
-      border: 1px solid #B07F22;
+      background: #F6FFED;
+      color: #268709;
     }
 
     &.delete {
       text-decoration: line-through;
+      color: #268709;
+      background: #F6FFED;
     }
   }
 }

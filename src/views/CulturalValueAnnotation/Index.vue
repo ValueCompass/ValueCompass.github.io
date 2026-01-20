@@ -59,6 +59,7 @@
             ref="selectRef"
             @blur="handleBlur"
             :disabled="hasClickedSaveAndGetQuestionListBtn"
+            @change="handleTopicValue2Change"
           >
             <el-option
               v-for="item in topicOptions2"
@@ -81,9 +82,20 @@
           <p>
             {{ t("culturalValueAnnotation.step2.noteExample") }}
           </p>
-          <p>
+          <div  style="
+            min-height: 6em;
+            border: 1px solid #d9d9d9;
+            border-radius: 24px;
+            padding: 1em;
+            line-height: 1.5;
+          ">
+            <p>
             {{ t("culturalValueAnnotation.step2.noteExampleText") }}
           </p>
+            <p v-for="(example, index) in principleExample" :key="index">
+             {{ index +1 }}: {{ example }}
+            </p>
+          </div>
         </div>
         <div class="input-container">
           <div
@@ -132,12 +144,13 @@
             v-model="taskValue2"
             placeholder="Select"
             :disabled="hasClickedSaveAndGetQuestionListBtn"
+            @change="handleTaskValue2Change"
           >
             <el-option
               v-for="item in taskOptions2"
               :key="item"
-              :label="item"
-              :value="item"
+              :label="item.category"
+              :value="item.category"
             />
           </el-select>
         </div>
@@ -147,8 +160,12 @@
             border: 1px solid #d9d9d9;
             border-radius: 24px;
             padding: 1em;
+            line-height: 1.5;
           "
-        ></div>
+        >
+        <p>Definition: {{ taskExample ? taskExample.definition : '' }}</p>
+        <p>Example: {{ taskExample ? taskExample.example : '' }}</p>
+      </div>
 
         <div style="display: flex">
           <el-button
@@ -166,7 +183,6 @@
           <el-button
             v-else
             style="height: 2.8em; font-size: 1em"
-            @click="handleGetAnswerBtnClick"
             :disabled="true"
             color="#0B70C3"
             >Your have clicked the button to get the question list.</el-button
@@ -215,21 +231,56 @@
           <el-tab-pane
             :label="
               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-              t('culturalValueAnnotation.step3.selectExisting') +
+              t('culturalValueAnnotation.step3.createNew') +
               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
             "
-            name="Select Existing"
+            name="Create New"
           >
             <div class="input-container question-input-container">
               <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-
-              <el-select
-                v-model="questionValue"
-                placeholder="Select"
-                style="width: 850px"
-                class="Question-select cultural-alignment-el-select"
-                popper-class="select-options-cultural Question-select-options"
+              <el-input
+                v-model="questionValue_Create"
+                style="width: calc(100% - 5em);"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 10 }"
+                placeholder="Please input"
                 :disabled="hasClickedGetAnswerBtn"
+              />
+            </div>
+          </el-tab-pane>
+
+          
+
+          <el-tab-pane
+            :label="
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+              t('culturalValueAnnotation.step3.selectExisting') +
+              ' & ' +
+              t('culturalValueAnnotation.step3.refine') +
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+            "
+            name="Select Existing or Refine"
+          >
+            <div class="input-container question-input-container">
+              <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
+              <div class="question-select-and-refine-container" style="position: relative;width: calc(100% - 5em);padding-right: 2em;box-sizing: border-box;">
+                
+                <el-input
+                v-model="questionValue_Select"
+                style="position: relative;z-index: 2;"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 10 }"
+                placeholder="Please input"
+                :disabled="hasClickedGetAnswerBtn"
+              />
+
+                
+              <el-select 
+                v-model="questionValue_Select_origin"
+                placeholder="Select"
+                :disabled="hasClickedGetAnswerBtn"
+                style="position: absolute;left: 0;bottom:0;width: 100%;"
+                @change="handleSelectChange"
               >
                 <template #label="{ label, value }">
                   <div class="text-content">
@@ -245,49 +296,11 @@
                   :value="item"
                 />
               </el-select>
+              
+              </div>
             </div>
           </el-tab-pane>
-
-          <el-tab-pane
-            :label="
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-              t('culturalValueAnnotation.step3.refine') +
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-            "
-            name="Refine"
-          >
-            <div class="input-container question-input-container">
-              <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-              <el-input
-                v-model="questionValue"
-                style="width: 850px"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                placeholder="Please input"
-                :disabled="hasClickedGetAnswerBtn"
-              />
-            </div>
-          </el-tab-pane>
-          <el-tab-pane
-            :label="
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-              t('culturalValueAnnotation.step3.createNew') +
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-            "
-            name="Create New"
-          >
-            <div class="input-container question-input-container">
-              <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-              <el-input
-                v-model="questionValue"
-                style="width: 850px"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                placeholder="Please input"
-                :disabled="hasClickedGetAnswerBtn"
-              />
-            </div>
-          </el-tab-pane>
+          
         </el-tabs>
 
         <div style="display: flex">
@@ -345,7 +358,7 @@
           <p v-html="t('culturalValueAnnotation.step6.note')"></p>
         </div>
         <AnnotationComponent
-          :annotationDataOrigin="annotationDataOrigin"
+          :annotationDataOrigin="annotationDataOrigin_person"
           ref="annotationComponentRef2"
         ></AnnotationComponent>
       </div>
@@ -403,6 +416,8 @@ const allFromData = reactive({
   task_2: "",
 });
 
+const answer_model = ref("")
+
 const topicValue1 = ref("");
 const topicValue2 = ref("");
 const principlesList = ref(["", "", "", "", ""]);
@@ -413,6 +428,11 @@ const topicOptions2 = ref([]);
 const taskValue1 = ref("");
 const taskValue2 = ref("");
 const questionValue = ref("");
+
+const questionValue_Select = ref("");
+const questionValue_Select_origin = ref("");
+const questionValue_Create = ref("");
+
 
 const taskOptions1 = ref([]);
 const taskOptions2 = ref([]);
@@ -469,7 +489,9 @@ const handleSaveAndGetQuestionListBtnClick = () => {
         localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
-          questionValue.value = res.data["candidate_questions"][0];
+          
+          questionValue_Select.value = res.data["candidate_questions"][0];
+          questionValue_Select_origin.value = res.data["candidate_questions"][0];
         } else {
           ElMessage.warning("No Result");
         }
@@ -496,7 +518,7 @@ const isGetAnswerBtnDisabled = computed(() => {
   return (
     !taskValue1.value.trim() ||
     !taskValue2.value.trim() ||
-    !questionValue.value.trim()
+    !(activeNameSelect1.value == "Create New" ? questionValue_Create.value.trim() : questionValue_Select.value.trim())
   );
 });
 
@@ -506,6 +528,18 @@ let annotationDataOrigin = reactive({
   highlight_cues: [],
   key_concepts: [],
 });
+
+let annotationDataOrigin_person = reactive({
+  originalResponse: "",
+  response: "",
+  highlight_cues: [],
+  key_concepts: [],
+});
+
+
+const handleSelectChange = () => {
+   questionValue_Select.value = questionValue_Select_origin.value;
+}
 const handleGetAnswerBtnClick = () => {
   if (isGetAnswerBtnDisabled.value) {
     return;
@@ -514,12 +548,32 @@ const handleGetAnswerBtnClick = () => {
     ElMessage.error("请先填写用户信息");
     return;
   }
-
+  
+  questionValue.value = activeNameSelect1.value == "Create New" ? questionValue_Create.value.trim() : questionValue_Select.value.trim();
   const step3FormData = {
+    username: userDetail.username.trim(),
+    country: userDetail.country.trim(),
+    language: userDetail.language.trim(),
     task_1: taskValue1.value.trim(),
     task_2: taskValue2.value.trim(),
     question: questionValue.value.trim(),
+    country: userDetail.country.trim(),
+    language: userDetail.language.trim(),
+    raw_question:"",
+    action:""
   };
+  if(activeNameSelect1.value == "Create New" ) {
+    step3FormData.raw_question=""
+    step3FormData.action = "create"
+  }else{
+    if(questionValue_Select.value.trim() == questionValue_Select_origin.value.trim()){
+      step3FormData.raw_question = questionValue_Select_origin.value.trim()
+      step3FormData.action = "select existing"
+    }else{
+      step3FormData.raw_question = questionValue_Select_origin.value.trim()
+      step3FormData.action = "refine"
+    }
+  }
 
   console.log(step3FormData);
   isLoadingGetAnswer.value = true;
@@ -530,10 +584,12 @@ const handleGetAnswerBtnClick = () => {
       if (res.data) {
         // ElMessage.success("提交成功");
         annotationDataOrigin = res.data;
+        annotationDataOrigin_person = res.data;
         // annotationDataOrigin.response = res.data.response;
         // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
         // annotationDataOrigin.key_concepts = res.data.key_concepts;
         hasClickedGetAnswerBtn.value = true;
+        answer_model.value = res.data.answer_model;
       } else {
         ElMessage.error("error");
       }
@@ -581,17 +637,35 @@ const submitHighlightAndConcepts = () => {
       const filteredKeyConcepts = [];
       const actions = [];
       
+      // 获取需要删除的高亮文本
+      const cuesToDelete = [];
       for (let i = 0; i < annotationData.highlight_cues.length; i++) {
-        // 只保留状态不为'delete'的项目
-        if (keywordStatus[i] !== "delete") {
+        if (keywordStatus[i] === "delete") {
+          cuesToDelete.push(annotationData.highlight_cues[i]);
+        } else {
           filteredHighlightCues.push(annotationData.highlight_cues[i]);
           filteredKeyConcepts.push(annotationData.key_concepts[i]);
           actions.push(keywordStatus[i]); // 添加对应的状态到actions数组
         }
       }
       
+      // 从响应文本中移除被标记为'delete'的高亮文本
+      let processedResponse = annotationData.response;
+      
+      // 按长度从长到短排序，避免短文本被先删除后影响长文本的匹配
+      cuesToDelete.sort((a, b) => b.length - a.length);
+      
+      // 移除所有需要删除的高亮文本
+      cuesToDelete.forEach(cue => {
+        // 使用正则表达式全局替换所有匹配的cue
+        processedResponse = processedResponse.replace(new RegExp(cue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '');
+      });
+      
+      // 清理多余的空格
+      processedResponse = processedResponse.replace(/\s+/g, ' ').trim();
+      
       return {
-        response: annotationData.response,
+        response: processedResponse,
         highlight_cues: filteredHighlightCues,
         key_concepts: filteredKeyConcepts,
         actions: actions
@@ -626,9 +700,10 @@ const submitHighlightAndConcepts = () => {
     console.log("Component 2 data:", component2Data);
 
     const sendData = {
+      answer_model: answer_model.value,
       username: userDetail.username.trim(),
-      // country: userDetail.country.trim(),
-      // language: userDetail.language.trim(),
+      country: userDetail.country.trim(),
+      language: userDetail.language.trim(),
       topic_1: topicValue1.value.trim(),
       topic_2: topicValue2.value.trim(),
       principles: principlesList.value.filter((item) => item.trim() !== ""),
@@ -652,7 +727,7 @@ const submitHighlightAndConcepts = () => {
     };
     console.log(sendData);
     if (editCurrentQuestionDetail.value) {
-      sendData.index = editCurrentQuestionDetail.value.index;
+      sendData.data_index = editCurrentQuestionDetail.value.index;
     }
     console.log(sendData);
     submitAnnotation(sendData)
@@ -703,6 +778,9 @@ const handleGetTopicTaskTaxonomy = async () => {
 
         topicOptions1.value = Object.keys(topicTaxonomy.value);
         taskOptions1.value = Object.keys(taskTaxonomy.value);
+
+        topic_principle_examples = res.data.topic_principle_examples;
+        task_taxonomy_examples = res.data.task_taxonomy;
       } else {
         ElMessage.error("获取失败");
       }
@@ -763,6 +841,12 @@ onMounted(async () => {
       highlight_cues: question.highlight_cues,
       key_concepts: question.key_concepts,
     };
+    annotationDataOrigin_person = {
+      originalResponse: question.response_person,
+      response: question.response_person,
+      highlight_cues: question.highlight_cues_person,
+      key_concepts: question.key_concepts_person,
+    };
   }
 });
 
@@ -777,8 +861,13 @@ const handleTaskHistoryClick = () => {
 };
 
 //
-const activeNameSelect1 = ref("Select Existing");
+const activeNameSelect1 = ref("Create New");
 const handleClick = (tab, event) => {
+  if (hasClickedGetAnswerBtn.value) {
+    // 当hasClickedGetAnswerBtn为true时，阻止标签页切换
+    event.preventDefault();
+    return false;
+  }
   console.log(tab, event);
 };
 
@@ -790,6 +879,35 @@ function handleBlur() {
   if (inputValue && !topicOptions2.value.includes(inputValue)) {
     topicOptions2.value.push(inputValue);
     topicValue2.value = inputValue;
+  }
+}
+
+const handleTaskValue2Change = (newValue) => {
+  console.log("Selected category:", newValue);
+  
+  // 保存当前的taskOptions2数组，因为我们即将要替换它
+  const currentTaskOptions2 = [...taskOptions2.value];
+  
+  // 查找完整的item对象
+  const selectedItem = currentTaskOptions2.find(item => item.category === newValue);
+  if (selectedItem) {
+    console.log("Selected item:", selectedItem);
+    taskExample.value = selectedItem
+    // 可以在这里使用完整的item对象
+    // 例如：selectedItem.xxx
+  }
+  
+ 
+}
+
+const principleExample = ref([]);
+const taskExample = ref([]);
+
+let topic_principle_examples = {}
+let task_taxonomy_examples = {}
+const handleTopicValue2Change = (newValue) => {
+  if (newValue) {
+    principleExample.value = topic_principle_examples[newValue];
   }
 }
 </script>

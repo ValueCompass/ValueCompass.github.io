@@ -28,7 +28,7 @@ import { ElMessage } from "element-plus";
 import { GetAllCompletedAnnotations } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
 
-const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+const userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
 
 // 点击问题时的处理函数
 const handleQuestionClick = (question) => {
@@ -63,6 +63,8 @@ const taskHistory = ref([]);
 onMounted(() => {
   GetAllCompletedAnnotations({
     username: userDetail.username,
+    country: userDetail.country,
+    language: userDetail.language,
   })
     .then((res) => {
       console.log(res.data);

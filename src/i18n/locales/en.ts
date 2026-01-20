@@ -34,7 +34,7 @@ export default {
       title: 'Step 2. List key value principles for this topic in your culture.',
       note: 'Please list 3-5 most important value principles / social norms / behavior principles related to this topic in your culture. Under this topic, what values are encouraged and will be prioritized when conflicts arise? What social norms govern behavior? Which actions are considered appropriate and aligned with values, while which are deemed inappropriate and should be avoided?',
       noteExample: 'Write the most important principles first, so that the order reflects the importance ranking. Avoid repeating the same item in different words.',
-      noteExampleText: 'Example principle 1: ; Example principle 2: ; Example principle 3: .',
+      noteExampleText: 'Example principle :',
       principle: 'Principle {index}:'
     },
     step3: {

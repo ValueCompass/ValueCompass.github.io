@@ -273,14 +273,16 @@ const nextStep = () => {
         window.location.reload();
       } else {
         // 登录失败，提示用户
-        ElMessage.error("登录失败，请检查用户名和密码");
+        ElMessage.error("error");
       }
     })
     .catch((err) => {
       console.log(err);
+      ElMessage.error("error");
     })
     .finally(() => {
       // 无论成功还是失败，都执行的操作
+      console.log("无论成功还是失败，都执行的操作");
       isLoading.value = false;
     });
 };
