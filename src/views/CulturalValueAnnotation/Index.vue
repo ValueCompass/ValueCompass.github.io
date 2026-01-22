@@ -171,7 +171,7 @@
           <el-popover
             placement="right-start"
             :width="300"
-            :disabled="taskOptions2.length === 0"
+            :disabled="taskOptions2 && taskOptions2.length === 0"
           >
             <template #reference>
               <div>
