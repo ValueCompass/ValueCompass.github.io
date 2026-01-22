@@ -76,11 +76,9 @@
           <h4>
             {{ t("culturalValueAnnotation.step2.title") }}
           </h4>
-          <p>
-            {{ t("culturalValueAnnotation.step2.note") }}
+          <p v-html="t('culturalValueAnnotation.step2.note')">
           </p>
-          <p>
-            {{ t("culturalValueAnnotation.step2.noteExample") }}
+          <p v-html="t('culturalValueAnnotation.step2.noteExample')">
           </p>
           <div  style="
             min-height: 6em;
@@ -193,8 +191,7 @@
       <div class="step step4">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step4.title") }}</h4>
-          <p>
-            {{ t("culturalValueAnnotation.step4.note") }}
+          <p v-html="t('culturalValueAnnotation.step4.note')">
           </p>
           <div>
             <p>{{ t("culturalValueAnnotation.step4.questionListIncludes") }}</p>
@@ -212,19 +209,23 @@
             </ul>
           </div>
           <div>
-            <p>{{ t("culturalValueAnnotation.step4.selectCriteria") }}</p>
+            <p v-html="t('culturalValueAnnotation.step4.selectCriteria')"></p>
             <ul>
-              <li>
-                {{ t("culturalValueAnnotation.step4.selectCriteria1") }}
+              <li v-html="
+                t('culturalValueAnnotation.step4.selectCriteria1')
+              ">
               </li>
-              <li>
-                {{ t("culturalValueAnnotation.step4.selectCriteria2") }}
+              <li v-html="
+                t('culturalValueAnnotation.step4.selectCriteria2')
+              ">
               </li>
-              <li>{{ t("culturalValueAnnotation.step4.selectCriteria3") }}</li>
+              <li v-html="
+                t('culturalValueAnnotation.step4.selectCriteria3')
+              ">
+              </li>
             </ul>
           </div>
-          <p>
-            {{ t("culturalValueAnnotation.step4.refineNote") }}
+          <p v-html="t('culturalValueAnnotation.step4.refineNote')">
           </p>
         </div>
         <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
@@ -329,8 +330,7 @@
       <div class="step step5">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step5.title") }}</h4>
-          <p>
-            {{ t("culturalValueAnnotation.step5.note") }}
+          <p v-html="t('culturalValueAnnotation.step5.note')">
           </p>
           <div>
             <p>
@@ -662,13 +662,13 @@ const submitHighlightAndConcepts = () => {
       });
       
       // 清理多余的空格
-      processedResponse = processedResponse.replace(/\s+/g, ' ').trim();
+      // processedResponse = processedResponse.replace(/\s+/g, ' ').trim();
       
       return {
         response: processedResponse,
-        highlight_cues: filteredHighlightCues,
-        key_concepts: filteredKeyConcepts,
-        actions: actions
+        highlight_cues: annotationData.highlight_cues,
+        key_concepts: annotationData.key_concepts,
+        actions: keywordStatus
       };
     };
     
@@ -826,6 +826,7 @@ onMounted(async () => {
     console.log("要编辑的question信息", question);
     // 填充表单数据
     questionValue.value = question.question;
+    questionValue_Create.value = question.question;
     topicValue1.value = question.topic_1;
     setTimeout(() => {
       topicValue2.value = question.topic_2;
@@ -835,6 +836,7 @@ onMounted(async () => {
     setTimeout(() => {
       taskValue2.value = question.task_2;
     }, 100);
+    answer_model.value = question.answer_model;
     annotationDataOrigin = {
       originalResponse: question.response,
       response: question.response,
