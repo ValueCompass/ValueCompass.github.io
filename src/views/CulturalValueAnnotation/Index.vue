@@ -76,22 +76,22 @@
           <h4>
             {{ t("culturalValueAnnotation.step2.title") }}
           </h4>
-          <p v-html="t('culturalValueAnnotation.step2.note')">
-          </p>
-          <p v-html="t('culturalValueAnnotation.step2.noteExample')">
-          </p>
-          <div  style="
-            min-height: 6em;
-            border: 1px solid #d9d9d9;
-            border-radius: 24px;
-            padding: 1em;
-            line-height: 1.5;
-          ">
+          <p v-html="t('culturalValueAnnotation.step2.note')"></p>
+          <p v-html="t('culturalValueAnnotation.step2.noteExample')"></p>
+          <div
+            style="
+              min-height: 6em;
+              border: 1px solid #d9d9d9;
+              border-radius: 24px;
+              padding: 1em;
+              line-height: 1.5;
+            "
+          >
             <p>
-            {{ t("culturalValueAnnotation.step2.noteExampleText") }}
-          </p>
+              {{ t("culturalValueAnnotation.step2.noteExampleText") }}
+            </p>
             <p v-for="(example, index) in principleExample" :key="index">
-             {{ index +1 }}: {{ example }}
+              {{ index + 1 }}: {{ example }}
             </p>
           </div>
         </div>
@@ -147,7 +147,9 @@
             <el-option
               v-for="item in taskOptions2"
               :key="item"
-              :label="item.category"
+              :label="`${item.category} (${
+                topic_task_count?.[topicValue2]?.[item.category] ?? 0
+              })`"
               :value="item.category"
             />
           </el-select>
@@ -161,38 +163,71 @@
             line-height: 1.5;
           "
         >
-        <p>Definition: {{ taskExample ? taskExample.definition : '' }}</p>
-        <p>Example: {{ taskExample ? taskExample.example : '' }}</p>
-      </div>
+          <p>Definition: {{ taskExample ? taskExample.definition : "" }}</p>
+          <p>Example: {{ taskExample ? taskExample.example : "" }}</p>
+        </div>
 
         <div style="display: flex">
-          <el-button
-            v-if="!hasClickedSaveAndGetQuestionListBtn"
-            style="height: 2.8em; font-size: 1em"
-            @click="handleSaveAndGetQuestionListBtnClick"
-            :disabled="
-              isSaveAndGetQuestionListBtnDisabled ||
-              isLoadingSaveAndGetQuestionList
-            "
-            :loading="isLoadingSaveAndGetQuestionList"
-            color="#0B70C3"
-            >Get Question List</el-button
+          <el-popover
+            placement="right-start"
+            :width="300"
+            :disabled="taskOptions2.length === 0"
           >
-          <el-button
-            v-else
-            style="height: 2.8em; font-size: 1em"
-            :disabled="true"
-            color="#0B70C3"
-            >Your have clicked the button to get the question list.</el-button
-          >
+            <template #reference>
+              <div>
+                <el-button
+                  v-if="!hasClickedSaveAndGetQuestionListBtn"
+                  style="height: 2.8em; font-size: 1em"
+                  @click="handleSaveAndGetQuestionListBtnClick"
+                  :disabled="
+                    isSaveAndGetQuestionListBtnDisabled ||
+                    isLoadingSaveAndGetQuestionList
+                  "
+                  :loading="isLoadingSaveAndGetQuestionList"
+                  color="#0B70C3"
+                  >Get Question List</el-button
+                >
+                <el-button
+                  v-else
+                  style="height: 2.8em; font-size: 1em"
+                  :disabled="true"
+                  color="#0B70C3"
+                  >Your have clicked the button to get the question
+                  list.</el-button
+                >
+              </div>
+            </template>
+
+            <template #default>
+              <div>
+                <ul style="display: flex; flex-direction: column; gap: 0.2em">
+                  <li
+                    v-for="item in taskOptions2"
+                    :key="item"
+                    :style="{
+                      color:
+                        item.category === taskValue2 ? '#409eff' : 'inherit',
+                      fontWeight:
+                        item.category === taskValue2 ? 'bold' : 'inherit',
+                    }"
+                  >
+                    {{
+                      `${item.category} (${
+                        topic_task_count?.[topicValue2]?.[item.category] ?? 0
+                      })`
+                    }}
+                  </li>
+                </ul>
+              </div>
+            </template>
+          </el-popover>
         </div>
       </div>
 
       <div class="step step4">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step4.title") }}</h4>
-          <p v-html="t('culturalValueAnnotation.step4.note')">
-          </p>
+          <p v-html="t('culturalValueAnnotation.step4.note')"></p>
           <div>
             <p>{{ t("culturalValueAnnotation.step4.questionListIncludes") }}</p>
             <ul>
@@ -211,22 +246,18 @@
           <div>
             <p v-html="t('culturalValueAnnotation.step4.selectCriteria')"></p>
             <ul>
-              <li v-html="
-                t('culturalValueAnnotation.step4.selectCriteria1')
-              ">
-              </li>
-              <li v-html="
-                t('culturalValueAnnotation.step4.selectCriteria2')
-              ">
-              </li>
-              <li v-html="
-                t('culturalValueAnnotation.step4.selectCriteria3')
-              ">
-              </li>
+              <li
+                v-html="t('culturalValueAnnotation.step4.selectCriteria1')"
+              ></li>
+              <li
+                v-html="t('culturalValueAnnotation.step4.selectCriteria2')"
+              ></li>
+              <li
+                v-html="t('culturalValueAnnotation.step4.selectCriteria3')"
+              ></li>
             </ul>
           </div>
-          <p v-html="t('culturalValueAnnotation.step4.refineNote')">
-          </p>
+          <p v-html="t('culturalValueAnnotation.step4.refineNote')"></p>
         </div>
         <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
           <el-tab-pane
@@ -241,7 +272,7 @@
               <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
               <el-input
                 v-model="questionValue_Create"
-                style="width: calc(100% - 5em);"
+                style="width: calc(100% - 5em)"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 10 }"
                 placeholder="Please input"
@@ -249,8 +280,6 @@
               />
             </div>
           </el-tab-pane>
-
-          
 
           <el-tab-pane
             :label="
@@ -264,44 +293,48 @@
           >
             <div class="input-container question-input-container">
               <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-              <div class="question-select-and-refine-container" style="position: relative;width: calc(100% - 5em);padding-right: 2em;box-sizing: border-box;">
-                
-                <el-input
-                v-model="questionValue_Select"
-                style="position: relative;z-index: 2;"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 10 }"
-                placeholder="Please input"
-                :disabled="hasClickedGetAnswerBtn"
-              />
-
-                
-              <el-select 
-                v-model="questionValue_Select_origin"
-                placeholder="Select"
-                :disabled="hasClickedGetAnswerBtn"
-                style="position: absolute;left: 0;bottom:0;width: 100%;"
-                @change="handleSelectChange"
+              <div
+                class="question-select-and-refine-container"
+                style="
+                  position: relative;
+                  width: calc(100% - 5em);
+                  padding-right: 2em;
+                  box-sizing: border-box;
+                "
               >
-                <template #label="{ label, value }">
-                  <div class="text-content">
-                    <div>
-                      <p>{{ value }}</p>
-                    </div>
-                  </div>
-                </template>
-                <el-option
-                  v-for="item in questionOptions"
-                  :key="item"
-                  :label="item"
-                  :value="item"
+                <el-input
+                  v-model="questionValue_Select"
+                  style="position: relative; z-index: 2"
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 10 }"
+                  placeholder="Please input"
+                  :disabled="hasClickedGetAnswerBtn"
                 />
-              </el-select>
-              
+
+                <el-select
+                  v-model="questionValue_Select_origin"
+                  placeholder="Select"
+                  :disabled="hasClickedGetAnswerBtn"
+                  style="position: absolute; left: 0; bottom: 0; width: 100%"
+                  @change="handleSelectChange"
+                >
+                  <template #label="{ label, value }">
+                    <div class="text-content">
+                      <div>
+                        <p>{{ value }}</p>
+                      </div>
+                    </div>
+                  </template>
+                  <el-option
+                    v-for="item in questionOptions"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
               </div>
             </div>
           </el-tab-pane>
-          
         </el-tabs>
 
         <div style="display: flex">
@@ -330,8 +363,7 @@
       <div class="step step5">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step5.title") }}</h4>
-          <p v-html="t('culturalValueAnnotation.step5.note')">
-          </p>
+          <p v-html="t('culturalValueAnnotation.step5.note')"></p>
           <div>
             <p>
               {{ t("culturalValueAnnotation.step5.reviewInstructions") }}
@@ -416,7 +448,7 @@ const allFromData = reactive({
   task_2: "",
 });
 
-const answer_model = ref("")
+const answer_model = ref("");
 
 const topicValue1 = ref("");
 const topicValue2 = ref("");
@@ -432,7 +464,6 @@ const questionValue = ref("");
 const questionValue_Select = ref("");
 const questionValue_Select_origin = ref("");
 const questionValue_Create = ref("");
-
 
 const taskOptions1 = ref([]);
 const taskOptions2 = ref([]);
@@ -489,9 +520,9 @@ const handleSaveAndGetQuestionListBtnClick = () => {
         localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
-          
           questionValue_Select.value = res.data["candidate_questions"][0];
-          questionValue_Select_origin.value = res.data["candidate_questions"][0];
+          questionValue_Select_origin.value =
+            res.data["candidate_questions"][0];
         } else {
           ElMessage.warning("No Result");
         }
@@ -518,7 +549,9 @@ const isGetAnswerBtnDisabled = computed(() => {
   return (
     !taskValue1.value.trim() ||
     !taskValue2.value.trim() ||
-    !(activeNameSelect1.value == "Create New" ? questionValue_Create.value.trim() : questionValue_Select.value.trim())
+    !(activeNameSelect1.value == "Create New"
+      ? questionValue_Create.value.trim()
+      : questionValue_Select.value.trim())
   );
 });
 
@@ -536,10 +569,9 @@ let annotationDataOrigin_person = reactive({
   key_concepts: [],
 });
 
-
 const handleSelectChange = () => {
-   questionValue_Select.value = questionValue_Select_origin.value;
-}
+  questionValue_Select.value = questionValue_Select_origin.value;
+};
 const handleGetAnswerBtnClick = () => {
   if (isGetAnswerBtnDisabled.value) {
     return;
@@ -548,8 +580,11 @@ const handleGetAnswerBtnClick = () => {
     ElMessage.error("请先填写用户信息");
     return;
   }
-  
-  questionValue.value = activeNameSelect1.value == "Create New" ? questionValue_Create.value.trim() : questionValue_Select.value.trim();
+
+  questionValue.value =
+    activeNameSelect1.value == "Create New"
+      ? questionValue_Create.value.trim()
+      : questionValue_Select.value.trim();
   const step3FormData = {
     username: userDetail.username.trim(),
     country: userDetail.country.trim(),
@@ -559,19 +594,22 @@ const handleGetAnswerBtnClick = () => {
     question: questionValue.value.trim(),
     country: userDetail.country.trim(),
     language: userDetail.language.trim(),
-    raw_question:"",
-    action:""
+    raw_question: "",
+    action: "",
   };
-  if(activeNameSelect1.value == "Create New" ) {
-    step3FormData.raw_question=""
-    step3FormData.action = "create"
-  }else{
-    if(questionValue_Select.value.trim() == questionValue_Select_origin.value.trim()){
-      step3FormData.raw_question = questionValue_Select_origin.value.trim()
-      step3FormData.action = "select existing"
-    }else{
-      step3FormData.raw_question = questionValue_Select_origin.value.trim()
-      step3FormData.action = "refine"
+  if (activeNameSelect1.value == "Create New") {
+    step3FormData.raw_question = "";
+    step3FormData.action = "create";
+  } else {
+    if (
+      questionValue_Select.value.trim() ==
+      questionValue_Select_origin.value.trim()
+    ) {
+      step3FormData.raw_question = questionValue_Select_origin.value.trim();
+      step3FormData.action = "select existing";
+    } else {
+      step3FormData.raw_question = questionValue_Select_origin.value.trim();
+      step3FormData.action = "refine";
     }
   }
 
@@ -618,25 +656,27 @@ const submitHighlightAndConcepts = () => {
     type: "warning",
   }).then(() => {
     isLoadingSubmitHighlightAndConcepts.value = true;
-    
+
     // 处理注释组件的通用函数
     const processAnnotationComponent = (componentRef) => {
       if (!componentRef) return null;
-      
+
       const annotationData = componentRef.annotationData;
       const keywordStatus = componentRef.keywordStatus;
-      
+
       // 检查是否所有项目都已标记
-      const unmarkedItems = keywordStatus.filter(status => status === null || status === undefined);
+      const unmarkedItems = keywordStatus.filter(
+        (status) => status === null || status === undefined
+      );
       if (unmarkedItems.length > 0) {
         return { unmarked: true };
       }
-      
+
       // 过滤掉状态为'delete'的cue和concept，并创建对应的actions数组
       const filteredHighlightCues = [];
       const filteredKeyConcepts = [];
       const actions = [];
-      
+
       // 获取需要删除的高亮文本
       const cuesToDelete = [];
       for (let i = 0; i < annotationData.highlight_cues.length; i++) {
@@ -648,32 +688,37 @@ const submitHighlightAndConcepts = () => {
           actions.push(keywordStatus[i]); // 添加对应的状态到actions数组
         }
       }
-      
+
       // 从响应文本中移除被标记为'delete'的高亮文本
       let processedResponse = annotationData.response;
-      
+
       // 按长度从长到短排序，避免短文本被先删除后影响长文本的匹配
       cuesToDelete.sort((a, b) => b.length - a.length);
-      
+
       // 移除所有需要删除的高亮文本
-      cuesToDelete.forEach(cue => {
+      cuesToDelete.forEach((cue) => {
         // 使用正则表达式全局替换所有匹配的cue
-        processedResponse = processedResponse.replace(new RegExp(cue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '');
+        processedResponse = processedResponse.replace(
+          new RegExp(cue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+          ""
+        );
       });
-      
+
       // 清理多余的空格
       // processedResponse = processedResponse.replace(/\s+/g, ' ').trim();
-      
+
       return {
         response: processedResponse,
         highlight_cues: annotationData.highlight_cues,
         key_concepts: annotationData.key_concepts,
-        actions: keywordStatus
+        actions: keywordStatus,
       };
     };
-    
+
     // 处理第一个注释组件
-    const component1Data = processAnnotationComponent(annotationComponentRef.value);
+    const component1Data = processAnnotationComponent(
+      annotationComponentRef.value
+    );
     if (!component1Data) {
       ElMessage.error("请完成注释");
       isLoadingSubmitHighlightAndConcepts.value = false;
@@ -684,18 +729,25 @@ const submitHighlightAndConcepts = () => {
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
     }
-    
+
     // 处理第二个注释组件
-    let component2Data = { response: "", highlight_cues: [], key_concepts: [], actions: [] };
+    let component2Data = {
+      response: "",
+      highlight_cues: [],
+      key_concepts: [],
+      actions: [],
+    };
     if (annotationComponentRef2.value) {
-      component2Data = processAnnotationComponent(annotationComponentRef2.value);
+      component2Data = processAnnotationComponent(
+        annotationComponentRef2.value
+      );
       if (component2Data.unmarked) {
         ElMessage.error("请标记完所有项目后再提交");
         isLoadingSubmitHighlightAndConcepts.value = false;
         return;
       }
     }
-    
+
     console.log("Component 1 data:", component1Data);
     console.log("Component 2 data:", component2Data);
 
@@ -715,13 +767,13 @@ const submitHighlightAndConcepts = () => {
       highlight_cues: component1Data.highlight_cues,
       key_concepts: component1Data.key_concepts,
       actions: component1Data.actions,
-      
+
       // 第二个注释组件的数据
       response2: component2Data.response,
       highlight_cues2: component2Data.highlight_cues,
       key_concepts2: component2Data.key_concepts,
       actions2: component2Data.actions,
-      
+
       // },
       timestamp: new Date().toISOString(),
     };
@@ -781,6 +833,8 @@ const handleGetTopicTaskTaxonomy = async () => {
 
         topic_principle_examples = res.data.topic_principle_examples;
         task_taxonomy_examples = res.data.task_taxonomy;
+
+        topic_task_count.value = res.data.topic_task_count;
       } else {
         ElMessage.error("获取失败");
       }
@@ -806,6 +860,8 @@ watch(taskValue1, (newValue) => {
     taskValue2.value = "";
   }
 });
+
+const topic_task_count = ref(null);
 
 const editCurrentQuestionDetail = ref(null);
 onMounted(async () => {
@@ -886,32 +942,32 @@ function handleBlur() {
 
 const handleTaskValue2Change = (newValue) => {
   console.log("Selected category:", newValue);
-  
+
   // 保存当前的taskOptions2数组，因为我们即将要替换它
   const currentTaskOptions2 = [...taskOptions2.value];
-  
+
   // 查找完整的item对象
-  const selectedItem = currentTaskOptions2.find(item => item.category === newValue);
+  const selectedItem = currentTaskOptions2.find(
+    (item) => item.category === newValue
+  );
   if (selectedItem) {
     console.log("Selected item:", selectedItem);
-    taskExample.value = selectedItem
+    taskExample.value = selectedItem;
     // 可以在这里使用完整的item对象
     // 例如：selectedItem.xxx
   }
-  
- 
-}
+};
 
 const principleExample = ref([]);
 const taskExample = ref([]);
 
-let topic_principle_examples = {}
-let task_taxonomy_examples = {}
+let topic_principle_examples = {};
+let task_taxonomy_examples = {};
 const handleTopicValue2Change = (newValue) => {
   if (newValue) {
     principleExample.value = topic_principle_examples[newValue];
   }
-}
+};
 </script>
 <style scoped lang="scss">
 .step-container {
