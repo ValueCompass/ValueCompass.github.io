@@ -135,6 +135,7 @@ const validateHighlightCues = () => {
 
   // 确保 keywordStatus 数组的长度与 highlight_cues 一致
   keywordStatus.value = Array(annotationData.highlight_cues.length).fill(null);
+  updateCurrentCuePosition();
 };
 
 onMounted(() => {
@@ -468,6 +469,7 @@ const handleSubmitEdit = () => {
 
     // 使用记录的位置直接替换当前选中的cue
     const { start, end } = currentCuePosition.value;
+    console.log("start:", start, "end:", end);
 
     // 构建更新后的response文本
     const updatedResponse =
