@@ -460,6 +460,8 @@ const topicOptions2 = ref([]);
 const taskValue1 = ref("");
 const taskValue2 = ref("");
 const questionValue = ref("");
+const rawQuestionValue = ref("");
+const questionAction = ref("");
 
 const questionValue_Select = ref("");
 const questionValue_Select_origin = ref("");
@@ -555,13 +557,19 @@ const isGetAnswerBtnDisabled = computed(() => {
   );
 });
 
+// 后端第一次传过来的
+let original_response = ref("");
+let original_highlight_cues= ref([]);
+let original_key_concepts = ref([]);
+
+// cultural 部分的标注
 let annotationDataOrigin = reactive({
   originalResponse: "",
   response: "",
   highlight_cues: [],
   key_concepts: [],
 });
-
+// personal 部分的标注
 let annotationDataOrigin_person = reactive({
   originalResponse: "",
   response: "",
@@ -595,21 +603,30 @@ const handleGetAnswerBtnClick = () => {
     country: userDetail.country.trim(),
     language: userDetail.language.trim(),
     raw_question: "",
-    action: "",
+    question_action: "",
   };
   if (activeNameSelect1.value == "Create New") {
     step3FormData.raw_question = "";
-    step3FormData.action = "create";
+    step3FormData.question_action = "create";
+
+    rawQuestionValue.value = "";
+    questionAction.value = "create";
   } else {
     if (
       questionValue_Select.value.trim() ==
       questionValue_Select_origin.value.trim()
     ) {
       step3FormData.raw_question = questionValue_Select_origin.value.trim();
-      step3FormData.action = "select existing";
+      step3FormData.question_action = "select existing";
+
+      rawQuestionValue.value = questionValue_Select_origin.value.trim();
+      questionAction.value = "select existing";
     } else {
       step3FormData.raw_question = questionValue_Select_origin.value.trim();
-      step3FormData.action = "refine";
+      step3FormData.question_action = "refine";
+
+      rawQuestionValue.value = questionValue_Select_origin.value.trim();
+      questionAction.value = "refine";
     }
   }
 
@@ -623,6 +640,10 @@ const handleGetAnswerBtnClick = () => {
         // ElMessage.success("提交成功");
         annotationDataOrigin = res.data;
         annotationDataOrigin_person = res.data;
+
+        original_response.value = res.data.response;
+        original_highlight_cues.value = res.data.highlight_cues;
+        original_key_concepts.value = res.data.key_concepts;
         // annotationDataOrigin.response = res.data.response;
         // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
         // annotationDataOrigin.key_concepts = res.data.key_concepts;
@@ -761,20 +782,28 @@ const submitHighlightAndConcepts = () => {
       principles: principlesList.value.filter((item) => item.trim() !== ""),
       task_1: taskValue1.value,
       task_2: taskValue2.value,
+
       question: questionValue.value,
-      // response: {
+      raw_question: rawQuestionValue.value || "",
+      question_action: questionAction.value || "",
+
+      // 原始响应
+      original_response: original_response.value || "",
+      original_highlight_cues: original_highlight_cues.value || [],
+      original_key_concepts: original_key_concepts.value || [],
+
+      // cultural 部分的标注
       response: component1Data.response,
       highlight_cues: component1Data.highlight_cues,
       key_concepts: component1Data.key_concepts,
       actions: component1Data.actions,
 
-      // 第二个注释组件的数据
-      response2: component2Data.response,
-      highlight_cues2: component2Data.highlight_cues,
-      key_concepts2: component2Data.key_concepts,
-      actions2: component2Data.actions,
+      // 第二个注释组件的数据 personal 部分的标注
+      response_person: component2Data.response,
+      highlight_cues_person: component2Data.highlight_cues,
+      key_concepts_person: component2Data.key_concepts,
+      actions_person: component2Data.actions,
 
-      // },
       timestamp: new Date().toISOString(),
     };
     console.log(sendData);
@@ -883,6 +912,17 @@ onMounted(async () => {
     // 填充表单数据
     questionValue.value = question.question;
     questionValue_Create.value = question.question;
+    rawQuestionValue.value = question.raw_question;
+    questionAction.value = question.question_action;
+    if (question.question_action == "create") {
+      activeNameSelect1.value = "Create New";
+      questionValue_Create.value = question.question;
+    } else {
+      activeNameSelect1.value = "Select Existing or Refine";
+      questionValue_Select.value = question.question;
+      questionValue_Select_origin.value = question.raw_question;
+    }
+
     topicValue1.value = question.topic_1;
     setTimeout(() => {
       topicValue2.value = question.topic_2;
@@ -905,6 +945,12 @@ onMounted(async () => {
       highlight_cues: question.highlight_cues_person,
       key_concepts: question.key_concepts_person,
     };
+
+    original_response.value = question.original_response;
+    original_highlight_cues.value = question.original_highlight_cues;
+    original_key_concepts.value = question.original_key_concepts;
+
+
   }
 });
 
