@@ -74,7 +74,10 @@ onMounted(() => {
         ([key, value]) => ({
           id: key,
           ...value,
-          timestamp: new Date().toISOString().split("T")[0], // 添加时间戳
+          // 格式化timestamp为年月日时分秒的中国时间（UTC+8）格式
+          timestamp: value.timestamp
+            ? formatTimestampToChinaTime(value.timestamp)
+            : "",
         })
       );
 
@@ -91,6 +94,21 @@ onMounted(() => {
     })
     .finally(() => {});
 });
+
+// 格式化timestamp为中国时间（UTC+8）的年月日时分秒格式
+function formatTimestampToChinaTime(timestamp) {
+  const date = new Date(timestamp);
+  // 转换为UTC+8时间
+  const utc8Date = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+  // 格式化年月日时分秒
+  const year = utc8Date.getUTCFullYear();
+  const month = String(utc8Date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(utc8Date.getUTCDate()).padStart(2, "0");
+  const hours = String(utc8Date.getUTCHours()).padStart(2, "0");
+  const minutes = String(utc8Date.getUTCMinutes()).padStart(2, "0");
+  const seconds = String(utc8Date.getUTCSeconds()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 </script>
 
 <style scoped lang="scss">
