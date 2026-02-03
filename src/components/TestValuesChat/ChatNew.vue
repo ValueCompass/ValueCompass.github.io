@@ -28,7 +28,7 @@
               align-items: center;
             "
           >
-            <div style="max-height: 100%">
+            <div style="max-height: 100%; width: 100%">
               <el-scrollbar ref="scrollbarRef">
                 <div class="content">
                   <ul class="chat-ul">
@@ -38,10 +38,14 @@
                       :key="index"
                     >
                       <div>
-                        {{ item.text }}
+                        {{
+                          item.type == "user" ? item.text : displayedText[index]
+                        }}
 
                         <span
-                          v-if="item.end && item.type != 'user'"
+                          v-if="
+                            item.end && item.type != 'user' && !isTyping[index]
+                          "
                           @click="ViewResults"
                           style="
                             cursor: pointer;
@@ -217,15 +221,10 @@ const chatProcessText = ref([
   "Finished",
 ]);
 
-const speechSupported =
-  typeof window !== "undefined" && "speechSynthesis" in window;
-const currentSpeakingIndex = ref(null);
-let utterance = null;
-
 const chatList = ref([
   {
     type: "model",
-    text: "Hi there! I’m Robi — here to explore your values with you.\nI don’t give scores or right answers — I just want to talk about the things that matter to you.\nWould you like to tell me what I can call you? A nickname is fine too, or you can skip it if you prefer.",
+    text: "Hi there! I’m Robi — here to explore your values with you. \nI don’t give scores or right answers — I just want to talk about the things that matter to you. \nWould you like to tell me what I can call you? A nickname is fine too, or you can skip it if you prefer.",
   },
 ]);
 
@@ -301,6 +300,13 @@ const sendMessage = (textareaValue) => {
           obj.end = true;
         }
         chatList.value.push(obj);
+        // 为新添加的model消息添加打字机效果
+        displayedText.value.push("");
+        isTyping.value.push(false);
+        setTimeout(() => {
+          const newIndex = chatList.value.length - 1;
+          typeWriterEffect(newIndex, response.question);
+        }, 0);
         chatPercentage.value = response.progress_bar;
         // if (chatPercentage.value >= 1) {
         //   chatPercentage.value = 1;
@@ -343,12 +349,56 @@ function generateId() {
   return "msg-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
 }
 
-const getSpeechLang = () => {
-  if (choosedLanguage.value === "zh-CN") {
-    return "zh-CN";
-  }
-  return "en-US";
+const setEmotionStatus = (status) => {
+  currEmotionStatus.value = status;
 };
+
+// 存储每个消息的显示文本（用于打字机效果）
+const displayedText = ref([]);
+// 存储每个消息是否正在打字
+const isTyping = ref([]);
+
+// 初始化displayedText和isTyping数组
+const initDisplayedText = () => {
+  displayedText.value = chatList.value.map((item) =>
+    item.type === "user" ? item.text : ""
+  );
+  isTyping.value = chatList.value.map(() => false);
+};
+
+// 打字机效果函数
+const typeWriterEffect = (index, text, speed = 30) => {
+  if (index >= chatList.value.length) return;
+
+  isTyping.value[index] = true;
+  displayedText.value[index] = "";
+
+  let i = 0;
+  const typing = setInterval(() => {
+    if (i < text.length) {
+      displayedText.value[index] += text.charAt(i);
+      i++;
+    } else {
+      clearInterval(typing);
+      isTyping.value[index] = false;
+    }
+  }, speed);
+};
+
+// 初始化
+initDisplayedText();
+// 为初始消息添加打字机效果
+setTimeout(() => {
+  if (chatList.value.length > 0 && chatList.value[0].type === "model") {
+    typeWriterEffect(0, chatList.value[0].text);
+  }
+}, 500);
+
+// chatList 点击read audio
+const speechSupported =
+  typeof window !== "undefined" && "speechSynthesis" in window;
+const currentSpeakingIndex = ref(null);
+let utterance = null;
 
 const stopSpeaking = () => {
   if (!speechSupported) return;
@@ -421,11 +471,6 @@ const getReadAloudLabel = (index) => {
   };
   return isPlaying ? labels.stop : labels.play;
 };
-
-
-const setEmotionStatus = (status) => {
-  currEmotionStatus.value = status;
-}
 onDeactivated(() => {
   console.log("onDeactivated");
   window.speechSynthesis.cancel();
@@ -617,7 +662,7 @@ defineExpose({
     }
     .right {
       height: 100%;
-      width: 14.5%;
+      width: 16%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -680,7 +725,7 @@ defineExpose({
             top: 50%;
             transform: translate(-50%, -50%);
             position: absolute;
-            color: #e9e9e9;
+            color: #afbec9;
           }
 
           &.star-icon-final {
@@ -718,10 +763,10 @@ defineExpose({
         }
         .line-icon {
           // background: #DCDCDC;
-          color: #e9e9e9;
+          color: #afbec9;
           position: absolute;
           width: 6px;
-          height: 17.9%;
+          height: 16%;
           transform-origin: top center; /* 设置旋转中心为左上角 */
           &.line-icon-1 {
             left: 13%;
