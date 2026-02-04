@@ -679,8 +679,52 @@ defineExpose({
           }
         }
         .on {
-          .star-icon text {
-            display: block;
+          .star-icon {
+            .svg-icon {
+              color: #f9d672;
+              animation: starColorAnimation 1.7s ease-in-out infinite;
+            }
+
+            text {
+              display: block;
+            }
+          }
+          .star-icon-final {
+            .svg-icon {
+              animation: finnalStarColorAnimation 0.9s ease-in-out !important;
+            }
+          }
+        }
+
+        // 星星颜色动画
+        @keyframes starColorAnimation {
+          0% {
+            color: #fce38e;
+          }
+          35% {
+            color: #feefb4;
+          }
+          82% {
+            color: #fce38e;
+          }
+          90% {
+            color: #fce38e;
+          }
+        }
+
+        // 最终星星颜色动画
+        @keyframes finnalStarColorAnimation {
+          0% {
+            color: #afbec9; // 初始灰色
+            transform: translate(-50%, -50%) scale(1);
+          }
+          30% {
+            color: #afbec9; // 保持灰色（600ms quick阶段）
+            transform: translate(-50%, -50%) scale(0.5);
+          }
+          100% {
+            color: #fce38e; // 最终黄色（300ms ease in阶段）
+            transform: translate(-50%, -50%) scale(1.1);
           }
         }
         .star-icon {
@@ -730,6 +774,10 @@ defineExpose({
           &.star-icon-final {
             width: 28.5%;
             padding-bottom: 28.5%;
+            .svg-icon {
+              width: 90%;
+              height: 90%;
+            }
           }
           &.star-icon-1 {
             left: 0%;
