@@ -67,7 +67,7 @@ export const getChatResult = (data: any): any => {
                 "Universalism": 8
             },
             "closest_model": [
-                ["Model_1111", 0.93],
+                ["Qwen-3 32B", 0.93],
                 ["Model_2", 0.89],
                 ["Model_3", 0.85],
                 ["Model_4", 0.89],

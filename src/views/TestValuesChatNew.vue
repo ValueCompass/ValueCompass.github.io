@@ -7,7 +7,7 @@
     ></Home>
     <Chat
     ref="ChatRef"
-    v-show="processIndex == 3"
+    v-if="processIndex == 3"
     :choosedLanguage="choosedLanguage"
     :choosedTopics="choosedTopics.value"
     :nickName="nickName"
@@ -53,11 +53,11 @@
   
 </template>
 <script setup>
-import Home from "../components/TestValuesChat/Home.vue";
-import Chat from "../components/TestValuesChat/ChatNew.vue";
-import LoadingMain from "../components/TestValuesChat/LoadingMain.vue";
+import Home from "../components/TestValuesChatNew/Home.vue";
+import Chat from "../components/TestValuesChatNew/Chat.vue";
+import LoadingMain from "../components/TestValuesChatNew/LoadingMain.vue";
 
-import Result from "../components/TestValuesChat/ResultNew.vue";
+import Result from "../components/TestValuesChatNew/Result.vue";
 
 import { getChatResult } from "@/service/api";
 
