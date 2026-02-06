@@ -17,10 +17,10 @@
           @input="handleInput"
         />
         <div class="icon-box">
-          <el-button :disabled="isListening">
+          <el-button aria-label="Start recording" :disabled="isListening">
             <svg-icon name="recrod_btn" @click="startRecognition"></svg-icon>
           </el-button>
-          <el-button :disabled="!textareaText.trim() || isSendLoading">
+          <el-button aria-label="Send message" :disabled="!textareaText.trim() || isSendLoading">
             <svg-icon
               class="send_btn"
               name="send_btn"
@@ -36,10 +36,10 @@
           {{ fullText }} ...
         </div>
         <div class="icon-box">
-          <el-button :disabled="!isListening">
+          <el-button aria-label="Cancel recording" :disabled="!isListening">
             <svg-icon name="cancel_btn" @click="cancelRecognition"></svg-icon>
           </el-button>
-          <el-button :disabled="!isListening">
+          <el-button aria-label="Confirm message" :disabled="!isListening">
             <svg-icon name="confirm_btn" @click="confirmRecognition"></svg-icon>
           </el-button>
         </div>

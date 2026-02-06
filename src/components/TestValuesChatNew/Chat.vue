@@ -49,7 +49,7 @@
                           @click="ViewResults"
                           style="
                             cursor: pointer;
-                            color: #0b70c3;
+                            color: #0a6ab9;
                             text-decoration: underline;
                           "
                           ><br />Click here to see your results</span
@@ -654,7 +654,7 @@ defineExpose({
         // flex: 1;
         .tip-text {
           text-align: center;
-          color: rgba(0, 0, 0, 0.5);
+          color: #666d72;
           margin-top: 1.25em;
         }
       }
