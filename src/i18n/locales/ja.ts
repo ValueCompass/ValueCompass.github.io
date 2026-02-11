@@ -55,7 +55,13 @@ export default {
       question: '質問:',
       selectExisting: '既存のものを選択',
       refine: '改良',
-      createNew: '新規作成'
+      createNew: '新規作成',
+      annotatedQuestions: '注釈付き質問：',
+      newQuestions: '新しい質問',
+      existingQuestions: '既存の質問',
+      refinedQuestions: '改良された質問',
+      importanceScore: '重要性スコア',
+      frequencyScore: 'スコア'
     },
     step5: {
       title: 'ステップ 5. 文化的価値観に一致するように回答に注釈を付けてください。',

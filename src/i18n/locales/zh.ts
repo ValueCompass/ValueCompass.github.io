@@ -56,7 +56,13 @@ export default {
       selectCriteria2: '2.	同时部分概率选择 <b>重要性高或频率高</b> 的问题（约 30%）；',
       selectCriteria3: '3.	尽量避免选择 <b>重要性和频率都较低</b> 的问题。',
       refineNote: '如果没有合适的问题，请使用 <b>“修改”</b> 修改候选问题，或使用 <b>“创建新问题”</b> 自行创建问题。',
-      question: '问题：'
+      question: '问题：',
+      annotatedQuestions: '已标注问题：',
+      newQuestions: '新问题',
+      existingQuestions: '现有问题',
+      refinedQuestions: '修改问题',
+      importanceScore: '重要性评分',
+      frequencyScore: '频率评分'
     },
     step5: {
       title: '第五步、从文化视角标注回答，使其与文化价值观对齐',

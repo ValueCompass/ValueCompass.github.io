@@ -56,7 +56,13 @@ export default {
       selectCriteria2: '(2) Also select some questions that are high in importance OR high in frequency (~30%);',
       selectCriteria3: '(3) Avoid questions that are low in both.',
       refineNote: 'If there is no appropriate query, please use "Refine" to modify the candidate question, or "Create New" to write your own question.',
-      question: 'Question:'
+      question: 'Question:',
+      annotatedQuestions: 'Annotated Questions:',
+      newQuestions: 'New Questions',
+      existingQuestions: 'Existing Questions',
+      refinedQuestions: 'Refined Questions',
+      importanceScore: 'Importance Score',
+      frequencyScore: 'Frequency Score'
     },
     step5: {
       title: '5. Annotate the answer to align with the cultural values.',

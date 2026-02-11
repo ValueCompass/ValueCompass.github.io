@@ -259,6 +259,23 @@
           </div>
           <p v-html="t('culturalValueAnnotation.step4.refineNote')"></p>
         </div>
+        <div>
+          <span>{{
+            t("culturalValueAnnotation.step4.annotatedQuestions")
+          }}</span>
+          <span
+            >{{ t("culturalValueAnnotation.step4.newQuestions") }}:
+            <b>{{ actionCounts.create }}</b></span
+          >;&nbsp;&nbsp;
+          <span
+            >{{ t("culturalValueAnnotation.step4.existingQuestions") }}:
+            <b>{{ actionCounts["select existing"] }}</b></span
+          >;&nbsp;&nbsp;
+          <span
+            >{{ t("culturalValueAnnotation.step4.refinedQuestions") }}:
+            <b>{{ actionCounts.refine }}</b></span
+          >
+        </div>
         <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
           <el-tab-pane
             :label="
@@ -336,6 +353,21 @@
             </div>
           </el-tab-pane>
         </el-tabs>
+
+        <div class="score-container">
+          <div>
+            <span
+              >{{ t("culturalValueAnnotation.step4.importanceScore") }}:</span
+            >
+            <el-input-number v-model="importanceScore" :min="0" :max="5" />
+          </div>
+          <div>
+            <span
+              >{{ t("culturalValueAnnotation.step4.frequencyScore") }}:</span
+            >
+            <el-input-number v-model="frequencyScore" :min="0" :max="5" />
+          </div>
+        </div>
 
         <div style="display: flex">
           <el-button
@@ -431,6 +463,7 @@ import {
   getCandidateQuestions,
   getQuestionResponse,
   submitAnnotation,
+  GetAllCompletedAnnotations,
 } from "@/service/CulturalValueAnnotationApi";
 import { Language } from "@amcharts/amcharts4/core";
 
@@ -448,6 +481,12 @@ const allFromData = reactive({
   task_2: "",
 });
 
+const actionCounts = reactive({
+  create: 0,
+  refine: 0,
+  "select existing": 0,
+});
+
 const answer_model = ref("");
 
 const topicValue1 = ref("");
@@ -460,6 +499,8 @@ const topicOptions2 = ref([]);
 const taskValue1 = ref("");
 const taskValue2 = ref("");
 const questionValue = ref("");
+const importanceScore = ref();
+const frequencyScore = ref();
 const rawQuestionValue = ref("");
 const questionAction = ref("");
 
@@ -559,7 +600,7 @@ const isGetAnswerBtnDisabled = computed(() => {
 
 // 后端第一次传过来的
 let original_response = ref("");
-let original_highlight_cues= ref([]);
+let original_highlight_cues = ref([]);
 let original_key_concepts = ref([]);
 
 // cultural 部分的标注
@@ -899,6 +940,7 @@ onMounted(async () => {
   }
   console.log("onMounted");
   console.log(route.params.id);
+  getQuestionNum();
 
   await handleGetTopicTaskTaxonomy();
 
@@ -949,8 +991,6 @@ onMounted(async () => {
     original_response.value = question.original_response;
     original_highlight_cues.value = question.original_highlight_cues;
     original_key_concepts.value = question.original_key_concepts;
-
-
   }
 });
 
@@ -1013,6 +1053,42 @@ const handleTopicValue2Change = (newValue) => {
   if (newValue) {
     principleExample.value = topic_principle_examples[newValue];
   }
+};
+
+const getQuestionNum = () => {
+  GetAllCompletedAnnotations({
+    username: userDetail.username,
+    country: userDetail.country,
+    language: userDetail.language,
+  })
+    .then((res) => {
+      console.log(res.data);
+
+      if (res.data.annotations) {
+        actionCounts.create = 0;
+        actionCounts.refine = 0;
+        actionCounts["select existing"] = 0;
+
+        Object.values(res.data.annotations).forEach((annotation) => {
+          if (annotation.question_action) {
+            const action = annotation.question_action.toLowerCase();
+            if (action === "create") {
+              actionCounts.create++;
+            } else if (action === "refine") {
+              actionCounts.refine++;
+            } else if (action === "select existing") {
+              actionCounts["select existing"]++;
+            }
+          }
+        });
+
+        console.log("Action counts:", actionCounts);
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err.message);
+    })
+    .finally(() => {});
 };
 </script>
 <style scoped lang="scss">
@@ -1106,6 +1182,19 @@ const handleTopicValue2Change = (newValue) => {
           .el-select__wrapper {
             height: 3.8em;
             font-size: 1rem;
+          }
+        }
+      }
+    }
+    &.step4 {
+      .score-container {
+        display: flex;
+        flex-direction: row;
+        gap: 0 1rem;
+        margin-top: -1rem;
+        & > div {
+          span {
+            margin-right: 1em;
           }
         }
       }

@@ -55,7 +55,13 @@ export default {
       question: '질문:',
       selectExisting: '기존 선택',
       refine: '개선',
-      createNew: '새로 생성'
+      createNew: '새로 생성',
+      annotatedQuestions: '주석이 달린 질문:',
+      newQuestions: '새로운 질문',
+      existingQuestions: '기존 질문',
+      refinedQuestions: '개선된 질문',
+      importanceScore: '중요성 점수',
+      frequencyScore: '점수'
     },
     step5: {
       title: '단계 5. 문화적 가치에 부합하도록 답변에 주석을 달아주세요.',
