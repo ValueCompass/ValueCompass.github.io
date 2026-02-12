@@ -174,6 +174,7 @@ const props = defineProps({
 });
 
 const chatId = ref(null);
+chatId.value =generateId()
 const dialogVisible = ref(false);
 
 const ChatInputRef = ref();
@@ -199,6 +200,12 @@ const currEmotionStatus = ref("cursor");
 const emotionObj = {
   cursor: "curious_matting.gif",
   angry: "angry_matting.gif",
+  calm: "calm_matting.gif",
+  sad: "sad_matting.gif",
+  joy: "joy_matting.gif",
+  surprise: "surprise_matting.gif",
+  angry: "angry_matting.gif",
+
 };
 
 watch(
@@ -245,9 +252,9 @@ const sendMessage = (textareaValue) => {
 
   try {
     const obj = {
-      language: choosedLanguage.value,
-      topic_list: toRaw(props.choosedTopics),
-      user_name: props.nickName,
+      // language: choosedLanguage.value,
+      // topic_list: toRaw(props.choosedTopics),
+      // user_name: props.nickName,
       user_response: textareaValue,
       user_id: chatId.value,
     };
@@ -257,15 +264,16 @@ const sendMessage = (textareaValue) => {
         let response = res.data;
         console.log(response);
         const obj = { type: "model", text: response.question };
-        if (response.process) {
-          // chatProgress.value = response.process;
+        if (response.progress) {
+          currChatNum.value = response.progress[0];
+          chatCount.value = response.progress[1];
+          if (currChatNum.value == chatCount.value) {
+            obj.end = true;
+          }
         }
-        currChatNum.value++;
-        currEmotionStatus.value = "angry";
 
-        if (currChatNum.value == chatCount.value) {
-          obj.end = true;
-        }
+        currEmotionStatus.value = response.emotion;
+
         chatList.value.push(obj);
         // 为新添加的model消息添加打字机效果
         displayedText.value.push("");
