@@ -7,49 +7,93 @@
         v-html="processedAnnotationDataResponse"
         @click="handleKeywordClick"
       ></div>
-
     </div>
-    <div class="right">
+    <div class="right" style="height: 40em">
       <div>
         <div>
           <p>Text fragment:</p>
           <el-input
             v-model="editCueValue"
-            :disabled="!isEditMode"
+            :disabled="!isCueEditMode"
             style=""
             placeholder="Please input"
             :autosize="{ minRows: 7, maxRows: 7 }"
             type="textarea"
           />
+
+          <div v-if="!isAddingNew">
+            status: {{ highlightCuesStatus[currentCueIndex] }}
+            <div class="button-container1" v-if="!isCueEditMode || isAddingNew">
+              <el-button class="keep" @click="handleKeepClick('cue')"
+                >{{ t("common.keep") }}</el-button
+              >
+              <el-button class="delete" @click="handleDeleteClick('cue')"
+                >{{ t("common.delete") }}</el-button
+              >
+              <el-button class="edit" @click="handleEditClick('cue')"
+                >{{ t("common.edit") }}</el-button
+              >
+            </div>
+            <div
+              v-else
+              class="button-container1"
+              style="justify-content: flex-end"
+            >
+              <el-button class="cancel" @click="handleCancelEdit('cue')">{{
+                t("common.cancel")
+              }}</el-button>
+              <el-button class="submit" @click="handleSubmitEdit('cue')">{{
+                t("common.submit")
+              }}</el-button>
+            </div>
+          </div>
         </div>
         <div>
           <p>Value Concepts:</p>
           <el-input
             v-model="editConceptValue"
-            :disabled="!isEditMode"
+            :disabled="!isConceptEditMode"
             style=""
             placeholder="Please input"
             :autosize="{ minRows: 3, maxRows: 3 }"
             type="textarea"
           />
-        </div>
-        <div class="button-container1" v-if="!isEditMode">
-          <el-button class="keep" @click="handleKeepClick">Keep</el-button>
-          <el-button class="delete" @click="handleDeleteClick"
-            >Delete</el-button
-          >
-          <el-button class="edit" @click="handleEditClick">Edit</el-button>
-        </div>
-        <div v-else class="button-container1" style="justify-content: flex-end">
-          <el-button class="cancel" @click="handleCancelEdit">{{
-            t("common.cancel")
-          }}</el-button>
-          <el-button class="submit" @click="handleSubmitEdit">{{
-            t("common.submit")
-          }}</el-button>
+
+          <div v-if="!isAddingNew">
+            status: {{ keyConceptsStatus[currentCueIndex] }}
+            <div
+              class="button-container1"
+              v-if="!isConceptEditMode || isAddingNew"
+            >
+              <el-button class="keep" @click="handleKeepClick('concept')"
+                >{{ t("common.keep") }}</el-button
+              >
+              <el-button class="delete" @click="handleDeleteClick('concept')"
+                >{{ t("common.delete") }}</el-button
+              >
+              <el-button class="edit" @click="handleEditClick('concept')"
+                >{{ t("common.edit") }}</el-button
+              >
+            </div>
+            <div
+              v-else
+              class="button-container1"
+              style="justify-content: flex-end"
+            >
+              <el-button class="cancel" @click="handleCancelEdit('concept')">{{
+                t("common.cancel")
+              }}</el-button>
+              <el-button class="submit" @click="handleSubmitEdit('concept')">{{
+                t("common.submit")
+              }}</el-button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="button-container2" v-if="!isEditMode">
+      <div
+        class="button-container2"
+        v-if="!isCueEditMode && !isConceptEditMode && !isAddingNew"
+      >
         <el-button @click="handleAddNew">Add New </el-button>
         <div>
           <el-button :disabled="currentCueIndex === 0" @click="previousCue"
@@ -64,7 +108,18 @@
           >
         </div>
       </div>
-      <div class="button-container2" v-else></div>
+      <div
+        class="button-container1"
+        v-else-if="isAddingNew"
+        style="justify-content: flex-end; margin-top: 2em"
+      >
+        <el-button class="cancel" @click="handleCancelAddNew">{{
+          t("common.cancel")
+        }}</el-button>
+        <el-button class="submit" @click="handleSubmitAddNew">{{
+          t("common.submit")
+        }}</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -113,7 +168,8 @@ const annotationData = reactive({
 });
 
 // 跟踪每个关键词的状态（keep/delete/edit/add）
-const keywordStatus = ref([]);
+const highlightCuesStatus = ref([]);
+const keyConceptsStatus = ref([]);
 
 // 检查并移除不存在于response中的highlight_cues
 const validateHighlightCues = () => {
@@ -133,8 +189,13 @@ const validateHighlightCues = () => {
   annotationData.highlight_cues = validCues;
   annotationData.key_concepts = validConcepts;
 
-  // 确保 keywordStatus 数组的长度与 highlight_cues 一致
-  keywordStatus.value = Array(annotationData.highlight_cues.length).fill(null);
+  // 确保 highlightCuesStatus 和 keyConceptsStatus 数组的长度与 highlight_cues 一致
+  highlightCuesStatus.value = Array(annotationData.highlight_cues.length).fill(
+    null
+  );
+  keyConceptsStatus.value = Array(annotationData.key_concepts.length).fill(
+    null
+  );
   updateCurrentCuePosition();
 };
 
@@ -165,7 +226,8 @@ const currentCuePosition = ref({
   end: 0,
 });
 
-const isEditMode = ref(false);
+const isCueEditMode = ref(false);
+const isConceptEditMode = ref(false);
 
 // 标识是否正在添加新的cue和concept
 const isAddingNew = ref(false);
@@ -243,10 +305,19 @@ const processedAnnotationDataResponse = computed(() => {
     // 添加带高亮的cue
     let className = "highlight-keyword";
     if (currentCueIndex.value === index) className += " current";
-    if (keywordStatus.value[index] === "edit") className += " edit";
-    else if (keywordStatus.value[index] === "add") className += " add";
-    else if (keywordStatus.value[index] === "keep") className += " keep";
-    else if (keywordStatus.value[index] === "delete") className += " delete";
+    if (highlightCuesStatus.value[index] === "edit") className += " edit";
+    else if (highlightCuesStatus.value[index] === "add") className += " add";
+    else if (highlightCuesStatus.value[index] === "keep") className += " keep";
+    else if (highlightCuesStatus.value[index] === "delete")
+      className += " delete";
+
+    // 如果cue和concept的status都有值，添加processed类名
+    if (
+      highlightCuesStatus.value[index] !== null &&
+      keyConceptsStatus.value[index] !== null
+    ) {
+      className += " processed";
+    }
 
     result += `<span class="${className}" data-cue="${cue}" data-index="${index}">${cue}</span>`;
 
@@ -289,10 +360,10 @@ const currentConcept = computed(() => {
 // 编辑模式下的cue值
 const editCueValue = computed({
   get: () => {
-    return isEditMode.value ? editCue.value : currentCue.value;
+    return isCueEditMode.value ? editCue.value : currentCue.value;
   },
   set: (value) => {
-    if (isEditMode.value) {
+    if (isCueEditMode.value) {
       editCue.value = value;
     }
   },
@@ -301,10 +372,10 @@ const editCueValue = computed({
 // 编辑模式下的concept值
 const editConceptValue = computed({
   get: () => {
-    return isEditMode.value ? editConcept.value : currentConcept.value;
+    return isConceptEditMode.value ? editConcept.value : currentConcept.value;
   },
   set: (value) => {
-    if (isEditMode.value) {
+    if (isConceptEditMode.value) {
       editConcept.value = value;
     }
   },
@@ -341,23 +412,48 @@ const updateCurrentCuePosition = () => {
   }
 };
 
-const handleKeepClick = () => {
-  console.log("Completely correct, keep");
+const handleKeepClick = (type) => {
+  console.log(`${type}: Completely correct, keep`);
 
-  // 如果当前关键词的状态是add，则保持为add，否则设置为keep
-  if (keywordStatus.value[currentCueIndex.value] !== "add") {
-    keywordStatus.value[currentCueIndex.value] = "keep";
+  // 根据type判断操作cue还是concept
+  if (type === "cue") {
+    // 如果当前cue的状态是add，则保持为add，否则设置为keep
+    if (highlightCuesStatus.value[currentCueIndex.value] !== "add") {
+      highlightCuesStatus.value[currentCueIndex.value] = "keep";
+    }
+
+    // 如果之前concept的状态是delete，现在cue改成keep，则将concept重置为空状态
+    if (keyConceptsStatus.value[currentCueIndex.value] === "delete") {
+      keyConceptsStatus.value[currentCueIndex.value] = null;
+    }
+
+    console.log("highlightCuesStatus:", highlightCuesStatus.value);
+  } else if (type === "concept") {
+    // 如果当前concept的状态是add，则保持为add，否则设置为keep
+    if (keyConceptsStatus.value[currentCueIndex.value] !== "add") {
+      keyConceptsStatus.value[currentCueIndex.value] = "keep";
+    }
+
+    // 如果之前cue的状态是delete，现在concept改成keep，则将cue重置为空状态
+    if (highlightCuesStatus.value[currentCueIndex.value] === "delete") {
+      highlightCuesStatus.value[currentCueIndex.value] = null;
+    }
+
+    console.log("keyConceptsStatus:", keyConceptsStatus.value);
   }
-
-  console.log(keywordStatus.value);
 };
 
-const handleDeleteClick = () => {
-  console.log("Irrelevant or incorrect, delete");
+const handleDeleteClick = (type) => {
+  console.log(`${type}: Irrelevant or incorrect, delete`);
 
-  // 检查当前cue是否是新加的（状态为add）
-  if (keywordStatus.value[currentCueIndex.value] === "add") {
-    // 对于新加的cue，直接物理删除
+  // 检查当前项是否是新加的（状态为add）
+  const isNewAdded =
+    type === "cue"
+      ? highlightCuesStatus.value[currentCueIndex.value] === "add"
+      : keyConceptsStatus.value[currentCueIndex.value] === "add";
+
+  if (isNewAdded) {
+    // 对于新加的项，直接物理删除
 
     // 1. 从highlight_cues数组中删除
     const deletedCue = annotationData.highlight_cues[currentCueIndex.value];
@@ -366,8 +462,9 @@ const handleDeleteClick = () => {
     // 2. 从key_concepts数组中删除
     annotationData.key_concepts.splice(currentCueIndex.value, 1);
 
-    // 3. 从keywordStatus数组中删除
-    keywordStatus.value.splice(currentCueIndex.value, 1);
+    // 3. 从highlightCuesStatus和keyConceptsStatus数组中删除
+    highlightCuesStatus.value.splice(currentCueIndex.value, 1);
+    keyConceptsStatus.value.splice(currentCueIndex.value, 1);
 
     // 4. 从response文本中删除对应的cue
     if (deletedCue) {
@@ -395,77 +492,79 @@ const handleDeleteClick = () => {
       currentCuePosition.value = { start: 0, end: 0 };
     }
 
-    console.log("Deleted newly added cue completely");
+    console.log("Deleted newly added item completely");
   } else {
-    // 对于不是新加的cue，保持原来的逻辑，只设置状态为delete
-    keywordStatus.value[currentCueIndex.value] = "delete";
-    console.log(keywordStatus.value);
+    // 对于不是新加的项，同时设置两个状态为delete
+    highlightCuesStatus.value[currentCueIndex.value] = "delete";
+    keyConceptsStatus.value[currentCueIndex.value] = "delete";
+    console.log("highlightCuesStatus:", highlightCuesStatus.value);
+    console.log("keyConceptsStatus:", keyConceptsStatus.value);
   }
 };
 
-const handleEditClick = () => {
-  console.log("Edit", "currentCueIndex:", currentCueIndex.value);
+const handleEditClick = (type) => {
+  console.log(`${type}: Edit`, "currentCueIndex:", currentCueIndex.value);
   // 进入编辑模式
-  isEditMode.value = true;
-  // 保存当前值到编辑临时变量
-  editCue.value = currentCue.value;
-  editConcept.value = currentConcept.value;
-  // 不立即设置状态为edit，等待submit时再确定
-  console.log("Keyword status after edit click:", keywordStatus.value);
+  if (type === "cue") {
+    isCueEditMode.value = true;
+    // 保存当前值到编辑临时变量
+    editCue.value = currentCue.value;
+
+    // 如果之前concept的状态是delete，现在cue改成edit，则将concept重置为空状态
+    if (keyConceptsStatus.value[currentCueIndex.value] === "delete") {
+      keyConceptsStatus.value[currentCueIndex.value] = null;
+    }
+
+    console.log(
+      "highlightCuesStatus after edit click:",
+      highlightCuesStatus.value
+    );
+  } else if (type === "concept") {
+    isConceptEditMode.value = true;
+    // 保存当前值到编辑临时变量
+    editConcept.value = currentConcept.value;
+
+    // 如果之前cue的状态是delete，现在concept改成edit，则将cue重置为空状态
+    if (highlightCuesStatus.value[currentCueIndex.value] === "delete") {
+      highlightCuesStatus.value[currentCueIndex.value] = null;
+    }
+
+    console.log("keyConceptsStatus after edit click:", keyConceptsStatus.value);
+  }
 };
 
-const handleSubmitEdit = () => {
-  console.log("Submit edit");
-  if (isAddingNew.value) {
-    // 正在添加新的cue和concept
-    if (editCue.value.trim() === "") {
-      console.warn("Cue text cannot be empty");
-      ElMessage.warning("Text fragment cannot be empty");
+const handleCancelEdit = (type) => {
+  console.log(`Cancel ${type} edit`);
+  // 退出编辑模式，不保存修改
+  if (type === "cue") {
+    isCueEditMode.value = false;
+  } else if (type === "concept") {
+    isConceptEditMode.value = false;
+  }
+  // 恢复currentCueIndex为有效索引
+  if (
+    currentCueIndex.value === -1 &&
+    annotationData.highlight_cues.length > 0
+  ) {
+    currentCueIndex.value = 0;
+    updateCurrentCuePosition();
+  }
+};
+
+const handleSubmitEdit = (type) => {
+  console.log(`Submit ${type} edit`);
+
+  // 根据type判断更新cue还是concept
+  if (type === "cue") {
+    // 判断编辑后的值是否与原值相同
+    if (editCue.value === currentCue.value) {
+      console.log("Cue value unchanged, treating as cancel");
+      handleCancelEdit("cue");
       return;
     }
-    if (editConcept.value.trim() === "") {
-      console.warn("Concept text cannot be empty");
-      ElMessage.warning("Value Concepts cannot be empty");
-      return;
-    }
 
-    // 检查新添加的cue是否与response中的现有文本重叠
-    if (annotationData.response.includes(editCue.value)) {
-      console.warn("Cue text overlaps with existing response text");
-      ElMessage.warning(
-        "Text fragment overlaps with existing content, please modify it"
-      );
-      return;
-    }
-
-    // 将新的cue文本拼接在response后面
-    const newStartIndex = annotationData.response.length;
-    const newEndIndex = newStartIndex + editCue.value.length;
-
-    // 更新response文本
-    annotationData.response += "\n" + editCue.value;
-
-    // 添加到数组中
-    annotationData.highlight_cues.push(editCue.value);
-    annotationData.key_concepts.push(editConcept.value);
-    // 为新添加的cue设置状态为add
-    keywordStatus.value.push("add");
-
-    // 更新currentCueIndex为新添加的索引
-    currentCueIndex.value = annotationData.highlight_cues.length - 1;
-
-    // 更新currentCuePosition
-    currentCuePosition.value = {
-      start: newStartIndex + 1,
-      end: newEndIndex + 1,
-    };
-
-    // 重置添加新的状态
-    isAddingNew.value = false;
-  } else {
-    // 更新现有的cue和concept
+    // 更新现有的cue
     annotationData.highlight_cues[currentCueIndex.value] = editCue.value;
-    annotationData.key_concepts[currentCueIndex.value] = editConcept.value;
 
     // 使用记录的位置直接替换当前选中的cue
     const { start, end } = currentCuePosition.value;
@@ -480,29 +579,42 @@ const handleSubmitEdit = () => {
     // 更新response文本
     annotationData.response = updatedResponse;
 
-    // 如果当前关键词的状态是add，则保持为add，否则设置为edit
-    if (keywordStatus.value[currentCueIndex.value] !== "add") {
-      keywordStatus.value[currentCueIndex.value] = "edit";
+    // 如果当前cue的状态是add，则保持为add，否则设置为edit
+    if (highlightCuesStatus.value[currentCueIndex.value] !== "add") {
+      highlightCuesStatus.value[currentCueIndex.value] = "edit";
+    }
+
+    // 如果之前concept的状态是delete，现在cue改成edit，则将concept重置为空状态
+    if (keyConceptsStatus.value[currentCueIndex.value] === "delete") {
+      keyConceptsStatus.value[currentCueIndex.value] = null;
+    }
+  } else if (type === "concept") {
+    // 判断编辑后的值是否与原值相同
+    if (editConcept.value === currentConcept.value) {
+      console.log("Concept value unchanged, treating as cancel");
+      handleCancelEdit("concept");
+      return;
+    }
+
+    // 更新现有的concept
+    annotationData.key_concepts[currentCueIndex.value] = editConcept.value;
+
+    // 如果当前concept的状态是add，则保持为add，否则设置为edit
+    if (keyConceptsStatus.value[currentCueIndex.value] !== "add") {
+      keyConceptsStatus.value[currentCueIndex.value] = "edit";
+    }
+
+    // 如果之前cue的状态是delete，现在concept改成edit，则将cue重置为空状态
+    if (highlightCuesStatus.value[currentCueIndex.value] === "delete") {
+      highlightCuesStatus.value[currentCueIndex.value] = null;
     }
   }
 
   // 退出编辑模式
-  isEditMode.value = false;
-};
-
-const handleCancelEdit = () => {
-  console.log("Cancel edit");
-  // 退出编辑模式，不保存修改
-  isEditMode.value = false;
-  // 重置添加新的状态
-  isAddingNew.value = false;
-  // 恢复currentCueIndex为有效索引
-  if (
-    currentCueIndex.value === -1 &&
-    annotationData.highlight_cues.length > 0
-  ) {
-    currentCueIndex.value = 0;
-    updateCurrentCuePosition();
+  if (type === "cue") {
+    isCueEditMode.value = false;
+  } else if (type === "concept") {
+    isConceptEditMode.value = false;
   }
 };
 
@@ -513,7 +625,8 @@ const handleAddNew = () => {
   isAddingNew.value = true;
 
   // 进入编辑模式，方便用户输入新的内容
-  isEditMode.value = true;
+  isCueEditMode.value = true;
+  isConceptEditMode.value = true;
   editCue.value = "";
   editConcept.value = "";
 
@@ -521,9 +634,133 @@ const handleAddNew = () => {
   currentCueIndex.value = -1;
 };
 
+const handleCancelAddNew = () => {
+  console.log("Cancel add new cue and concept");
+
+  // 重置添加新的状态
+  isAddingNew.value = false;
+  isCueEditMode.value = false;
+  isConceptEditMode.value = false;
+  editCue.value = "";
+  editConcept.value = "";
+
+  // 恢复currentCueIndex为有效索引
+  if (annotationData.highlight_cues.length > 0) {
+    currentCueIndex.value = 0;
+    updateCurrentCuePosition();
+  }
+};
+
+const handleSubmitAddNew = () => {
+  console.log("Submit add new cue and concept");
+
+  // 验证输入
+  if (editCue.value.trim() === "") {
+    console.warn("Cue text cannot be empty");
+    ElMessage.warning("Text fragment cannot be empty");
+    return;
+  }
+  if (editConcept.value.trim() === "") {
+    console.warn("Concept text cannot be empty");
+    ElMessage.warning("Value Concepts cannot be empty");
+    return;
+  }
+
+  // 检查新添加的cue是否与response中的现有文本重叠
+  if (annotationData.response.includes(editCue.value)) {
+    console.warn("Cue text overlaps with existing response text");
+    ElMessage.warning(
+      "Text fragment overlaps with existing content, please modify it"
+    );
+    return;
+  }
+
+  // 将新的cue文本拼接在response后面
+  const newStartIndex = annotationData.response.length;
+  const newEndIndex = newStartIndex + editCue.value.length;
+
+  // 更新response文本
+  annotationData.response += "\n" + editCue.value;
+
+  // 添加到数组中
+  annotationData.highlight_cues.push(editCue.value);
+  annotationData.key_concepts.push(editConcept.value);
+  // 为新添加的cue和concept设置状态为add
+  highlightCuesStatus.value.push("add");
+  keyConceptsStatus.value.push("add");
+
+  // 更新currentCueIndex为新添加的索引
+  currentCueIndex.value = annotationData.highlight_cues.length - 1;
+
+  // 更新currentCuePosition
+  currentCuePosition.value = {
+    start: newStartIndex + 1,
+    end: newEndIndex + 1,
+  };
+
+  // 重置添加新的状态
+  isAddingNew.value = false;
+  isCueEditMode.value = false;
+  isConceptEditMode.value = false;
+  editCue.value = "";
+  editConcept.value = "";
+};
+
+const processAnnotationData = () => {
+  // 检查是否所有项目都已标记
+  const unmarkedItems = highlightCuesStatus.value.filter(
+    (status) => status === null || status === undefined
+  );
+  if (unmarkedItems.length > 0) {
+    return { unmarked: true };
+  }
+
+  // 过滤掉状态为'delete'的cue和concept，并创建对应的actions数组
+  const filteredHighlightCues = [];
+  const filteredKeyConcepts = [];
+  const actions = [];
+
+  // 获取需要删除的高亮文本
+  const cuesToDelete = [];
+  for (let i = 0; i < annotationData.highlight_cues.length; i++) {
+    if (highlightCuesStatus.value[i] === "delete") {
+      cuesToDelete.push(annotationData.highlight_cues[i]);
+    } else {
+      filteredHighlightCues.push(annotationData.highlight_cues[i]);
+      filteredKeyConcepts.push(annotationData.key_concepts[i]);
+      actions.push(highlightCuesStatus.value[i]); // 添加对应的状态到actions数组
+    }
+  }
+
+  // 从响应文本中移除被标记为'delete'的高亮文本
+  let processedResponse = annotationData.response;
+
+  // 按长度从长到短排序，避免短文本被先删除后影响长文本的匹配
+  cuesToDelete.sort((a, b) => b.length - a.length);
+
+  // 移除所有需要删除的高亮文本
+  cuesToDelete.forEach((cue) => {
+    // 使用正则表达式全局替换所有匹配的cue
+    processedResponse = processedResponse.replace(
+      new RegExp(cue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      ""
+    );
+  });
+
+  return {
+    response: processedResponse,
+    highlight_cues: annotationData.highlight_cues,
+    key_concepts: annotationData.key_concepts,
+    cues_actions: highlightCuesStatus.value,
+    concepts_actions: keyConceptsStatus.value,
+  };
+};
+
 defineExpose({
   annotationData,
-  keywordStatus,
+  highlightCuesStatus,
+  keyConceptsStatus,
+  processAnnotationData,
 });
 </script>
 <style scoped lang="scss">

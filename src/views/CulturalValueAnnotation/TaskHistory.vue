@@ -1,8 +1,16 @@
 <template>
-  <div class="main-container">
-    <h2 style="margin-top: 2em; font-size: 1.5em; color: #0b70c3">
-      Task History
-    </h2>
+  <div class="main-container" style="position: relative">
+    <div>
+      <h2 style="margin-top: 2em; font-size: 1.5em; color: #0b70c3">
+        Task History
+      </h2>
+      <el-button
+        style="position: absolute; right: 0em; top: 2em"
+        color="#0B70C3"
+        @click="downloadTaskHistory"
+        >Download</el-button
+      >
+    </div>
     <el-table :data="tableData" border style="width: 100%; margin-top: 2em">
       <el-table-column type="index" width="150" label="Number" />
       <el-table-column prop="question" label="Question">
@@ -14,7 +22,7 @@
       </el-table-column>
       <el-table-column prop="timestamp" label="Timestamp" width="200" />
     </el-table>
-    <div class="bth-container">
+    <div class="bth-container" style="margin-bottom: 4em">
       <el-button type="primary" color="#0B70C3" @click="handleCreateClick"
         >Create a new one</el-button
       >
@@ -60,6 +68,7 @@ const handleCreateClick = () => {
 
 const taskHistory = ref([]);
 
+const downLoadData = ref(null);
 onMounted(() => {
   GetAllCompletedAnnotations({
     username: userDetail.username,
@@ -68,6 +77,7 @@ onMounted(() => {
   })
     .then((res) => {
       console.log(res.data);
+      downLoadData.value = res.data.annotations;
 
       // 将对象转换为数组
       const dataArray = Object.entries(res.data.annotations).map(
@@ -109,6 +119,39 @@ function formatTimestampToChinaTime(timestamp) {
   const seconds = String(utc8Date.getUTCSeconds()).padStart(2, "0");
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+const downloadTaskHistory = () => {
+  if (!downLoadData.value) {
+    ElMessage.warning("No data to download");
+    return;
+  }
+
+  // 将数据转换为JSON字符串
+  const jsonData = JSON.stringify(downLoadData.value, null, 2);
+
+  // 创建Blob对象
+  const blob = new Blob([jsonData], { type: "application/json" });
+
+  // 创建下载链接
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+
+  // 生成文件名（包含时间戳）
+  const now = new Date();
+  const timestamp = now.toISOString().replace(/[:.]/g, "-").slice(0, -5);
+  link.download = `task-history-${timestamp}.json`;
+
+  // 触发下载
+  document.body.appendChild(link);
+  link.click();
+
+  // 清理
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  ElMessage.success("Download successful");
+};
 </script>
 
 <style scoped lang="scss">

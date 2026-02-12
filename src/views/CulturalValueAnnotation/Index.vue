@@ -29,6 +29,9 @@
               <li>
                 {{ t("culturalValueAnnotation.step1.selectionCriteria3") }}
               </li>
+              <li>
+                {{ t("culturalValueAnnotation.step1.selectionCriteria4") }}
+              </li>
             </ul>
           </div>
           <p>
@@ -77,7 +80,32 @@
             {{ t("culturalValueAnnotation.step2.title") }}
           </h4>
           <p v-html="t('culturalValueAnnotation.step2.note')"></p>
-          <p v-html="t('culturalValueAnnotation.step2.noteExample')"></p>
+          <ul>
+            <li>
+              <p>
+                {{ t("culturalValueAnnotation.step2.templateReference") }}
+              </p>
+              <ul>
+                <li>{{ t("culturalValueAnnotation.step2.template1") }}</li>
+                <li>{{ t("culturalValueAnnotation.step2.template2") }}</li>
+                <li>{{ t("culturalValueAnnotation.step2.template3") }}</li>
+                <li>
+                  {{ t("culturalValueAnnotation.step2.template4") }}
+                </li>
+                <li>{{ t("culturalValueAnnotation.step2.template5") }}</li>
+              </ul>
+            </li>
+            <li>
+              <p>
+                <span
+                  v-html="t('culturalValueAnnotation.step2.instruction2')"
+                ></span>
+              </p>
+            </li>
+            <li>
+              <p>{{ t("culturalValueAnnotation.step2.instruction3") }}</p>
+            </li>
+          </ul>
           <div
             style="
               min-height: 6em;
@@ -122,6 +150,7 @@
             {{ t("culturalValueAnnotation.step3.title") }}
           </h4>
           <p v-html="t('culturalValueAnnotation.step3.note')"></p>
+          <p v-html="t('culturalValueAnnotation.step3.taskNote')"></p>
         </div>
 
         <div class="input-container">
@@ -258,6 +287,9 @@
             </ul>
           </div>
           <p v-html="t('culturalValueAnnotation.step4.refineNote')"></p>
+          <p
+            v-html="t('culturalValueAnnotation.step4.questionRequirement')"
+          ></p>
         </div>
         <div>
           <span>{{
@@ -344,9 +376,9 @@
                   </template>
                   <el-option
                     v-for="item in questionOptions"
-                    :key="item"
-                    :label="item"
-                    :value="item"
+                    :key="item.question"
+                    :label="item.question"
+                    :value="item.question"
                   />
                 </el-select>
               </div>
@@ -359,13 +391,13 @@
             <span
               >{{ t("culturalValueAnnotation.step4.importanceScore") }}:</span
             >
-            <el-input-number v-model="importanceScore" :min="0" :max="5" />
+            <el-input-number v-model="importanceValue" :min="0" :max="5" />
           </div>
           <div>
             <span
               >{{ t("culturalValueAnnotation.step4.frequencyScore") }}:</span
             >
-            <el-input-number v-model="frequencyScore" :min="0" :max="5" />
+            <el-input-number v-model="frequencyValue" :min="0" :max="5" />
           </div>
         </div>
 
@@ -396,10 +428,13 @@
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step5.title") }}</h4>
           <p v-html="t('culturalValueAnnotation.step5.note')"></p>
+          <p
+            v-html="t('culturalValueAnnotation.step5.highlightExplanation')"
+          ></p>
           <div>
-            <p>
-              {{ t("culturalValueAnnotation.step5.reviewInstructions") }}
-            </p>
+            <p
+              v-html="t('culturalValueAnnotation.step5.reviewInstructions')"
+            ></p>
             <ul>
               <li v-html="t('culturalValueAnnotation.step5.action1')"></li>
               <li v-html="t('culturalValueAnnotation.step5.action2')"></li>
@@ -407,7 +442,12 @@
               <li v-html="t('culturalValueAnnotation.step5.action4')"></li>
             </ul>
           </div>
+
+          <p v-html="t('culturalValueAnnotation.step5.checkAllFragments')"></p>
+          <p v-html="t('culturalValueAnnotation.step5.checkInstructions')"></p>
+          <p v-html="t('culturalValueAnnotation.step5.attentionNote')"></p>
         </div>
+
         <AnnotationComponent
           :annotationDataOrigin="annotationDataOrigin"
           ref="annotationComponentRef"
@@ -499,9 +539,12 @@ const topicOptions2 = ref([]);
 const taskValue1 = ref("");
 const taskValue2 = ref("");
 const questionValue = ref("");
-const importanceScore = ref();
-const frequencyScore = ref();
+const importanceValue = ref(null);
+const frequencyValue = ref(null);
 const rawQuestionValue = ref("");
+const rawImportanceValue = ref(null);
+const rawFrequencyValue = ref(null);
+
 const questionAction = ref("");
 
 const questionValue_Select = ref("");
@@ -532,7 +575,7 @@ const handleSaveAndGetQuestionListBtnClick = () => {
   }
 
   if (!userDetail.username) {
-    ElMessage.error("请先填写用户信息");
+    ElMessage.error(t("common.pleaseFillUserInfo"));
     return;
   }
 
@@ -563,9 +606,13 @@ const handleSaveAndGetQuestionListBtnClick = () => {
         localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
-          questionValue_Select.value = res.data["candidate_questions"][0];
+          questionValue_Select.value =
+            res.data["candidate_questions"][0].question;
           questionValue_Select_origin.value =
-            res.data["candidate_questions"][0];
+            res.data["candidate_questions"][0].question;
+          setTimeout(() => {
+            handleUpdateScores(questionValue_Select_origin.value);
+          }, 200);
         } else {
           ElMessage.warning("No Result");
         }
@@ -576,7 +623,7 @@ const handleSaveAndGetQuestionListBtnClick = () => {
     })
     .catch((err) => {
       console.log(err);
-      ElMessage.error("提交失败");
+      ElMessage.error(t("common.submissionFailed"));
     })
     .finally(() => {
       isLoadingSaveAndGetQuestionList.value = false;
@@ -592,16 +639,22 @@ const isGetAnswerBtnDisabled = computed(() => {
   return (
     !taskValue1.value.trim() ||
     !taskValue2.value.trim() ||
+    !importanceValue.value ||
+    !frequencyValue.value ||
     !(activeNameSelect1.value == "Create New"
       ? questionValue_Create.value.trim()
       : questionValue_Select.value.trim())
   );
 });
 
-// 后端第一次传过来的
+// 后端第一次传过来的 或者上次提交的
 let original_response = ref("");
 let original_highlight_cues = ref([]);
 let original_key_concepts = ref([]);
+
+let original_response_person = ref("");
+let original_highlight_cues_person = ref([]);
+let original_key_concepts_person = ref([]);
 
 // cultural 部分的标注
 let annotationDataOrigin = reactive({
@@ -618,15 +671,28 @@ let annotationDataOrigin_person = reactive({
   key_concepts: [],
 });
 
+const updateQuestionScores = (questionText) => {
+  const selectedQuestion = questionOptions.value.find(
+    (item) => item.question === questionText
+  );
+  if (selectedQuestion) {
+    rawImportanceValue.value = selectedQuestion.importance;
+    rawFrequencyValue.value = selectedQuestion.frequency;
+    importanceValue.value = selectedQuestion.importance;
+    frequencyValue.value = selectedQuestion.frequency;
+  }
+};
+
 const handleSelectChange = () => {
   questionValue_Select.value = questionValue_Select_origin.value;
+  updateQuestionScores(questionValue_Select.value);
 };
 const handleGetAnswerBtnClick = () => {
   if (isGetAnswerBtnDisabled.value) {
     return;
   }
   if (!userDetail.username) {
-    ElMessage.error("请先填写用户信息");
+    ElMessage.error(t("common.pleaseFillUserInfo"));
     return;
   }
 
@@ -645,14 +711,22 @@ const handleGetAnswerBtnClick = () => {
     language: userDetail.language.trim(),
     raw_question: "",
     question_action: "",
+    importance: importanceValue.value,
+    frequency: frequencyValue.value,
+    raw_importance: null,
+    raw_frequency: null,
   };
   if (activeNameSelect1.value == "Create New") {
     step3FormData.raw_question = "";
     step3FormData.question_action = "create";
+    step3FormData.raw_importance = null;
+    step3FormData.raw_frequency = null;
 
     rawQuestionValue.value = "";
     questionAction.value = "create";
   } else {
+    step3FormData.raw_importance = rawImportanceValue.value;
+    step3FormData.raw_frequency = rawFrequencyValue.value;
     if (
       questionValue_Select.value.trim() ==
       questionValue_Select_origin.value.trim()
@@ -685,6 +759,11 @@ const handleGetAnswerBtnClick = () => {
         original_response.value = res.data.response;
         original_highlight_cues.value = res.data.highlight_cues;
         original_key_concepts.value = res.data.key_concepts;
+
+        original_response_person.value = res.data.response;
+        original_highlight_cues_person.value = res.data.highlight_cues;
+        original_key_concepts_person.value = res.data.key_concepts;
+
         // annotationDataOrigin.response = res.data.response;
         // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
         // annotationDataOrigin.key_concepts = res.data.key_concepts;
@@ -709,85 +788,27 @@ const annotationComponentRef2 = ref(null);
 const isLoadingSubmitHighlightAndConcepts = ref(false);
 const submitHighlightAndConcepts = () => {
   if (!annotationComponentRef.value) {
-    ElMessage.error("请先完成注释");
+    ElMessage.error(t("common.pleaseCompleteAnnotation"));
     return;
   }
-  ElMessageBox.confirm("请完成所有标注，确认提交吗？", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
+  ElMessageBox.confirm(t("common.confirmSubmit"), t("common.confirm"), {
+    confirmButtonText: t("common.confirm"),
+    cancelButtonText: t("common.cancel"),
     type: "warning",
   }).then(() => {
     isLoadingSubmitHighlightAndConcepts.value = true;
 
-    // 处理注释组件的通用函数
-    const processAnnotationComponent = (componentRef) => {
-      if (!componentRef) return null;
-
-      const annotationData = componentRef.annotationData;
-      const keywordStatus = componentRef.keywordStatus;
-
-      // 检查是否所有项目都已标记
-      const unmarkedItems = keywordStatus.filter(
-        (status) => status === null || status === undefined
-      );
-      if (unmarkedItems.length > 0) {
-        return { unmarked: true };
-      }
-
-      // 过滤掉状态为'delete'的cue和concept，并创建对应的actions数组
-      const filteredHighlightCues = [];
-      const filteredKeyConcepts = [];
-      const actions = [];
-
-      // 获取需要删除的高亮文本
-      const cuesToDelete = [];
-      for (let i = 0; i < annotationData.highlight_cues.length; i++) {
-        if (keywordStatus[i] === "delete") {
-          cuesToDelete.push(annotationData.highlight_cues[i]);
-        } else {
-          filteredHighlightCues.push(annotationData.highlight_cues[i]);
-          filteredKeyConcepts.push(annotationData.key_concepts[i]);
-          actions.push(keywordStatus[i]); // 添加对应的状态到actions数组
-        }
-      }
-
-      // 从响应文本中移除被标记为'delete'的高亮文本
-      let processedResponse = annotationData.response;
-
-      // 按长度从长到短排序，避免短文本被先删除后影响长文本的匹配
-      cuesToDelete.sort((a, b) => b.length - a.length);
-
-      // 移除所有需要删除的高亮文本
-      cuesToDelete.forEach((cue) => {
-        // 使用正则表达式全局替换所有匹配的cue
-        processedResponse = processedResponse.replace(
-          new RegExp(cue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-          ""
-        );
-      });
-
-      // 清理多余的空格
-      // processedResponse = processedResponse.replace(/\s+/g, ' ').trim();
-
-      return {
-        response: processedResponse,
-        highlight_cues: annotationData.highlight_cues,
-        key_concepts: annotationData.key_concepts,
-        actions: keywordStatus,
-      };
-    };
-
     // 处理第一个注释组件
-    const component1Data = processAnnotationComponent(
-      annotationComponentRef.value
-    );
+    const component1Data = annotationComponentRef.value
+      ? annotationComponentRef.value.processAnnotationData()
+      : null;
     if (!component1Data) {
-      ElMessage.error("请完成注释");
+      ElMessage.error(t("common.pleaseCompleteAnnotation"));
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
     }
     if (component1Data.unmarked) {
-      ElMessage.error("请标记完所有项目后再提交");
+      ElMessage.error(t("common.pleaseMarkAllItems"));
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
     }
@@ -800,11 +821,9 @@ const submitHighlightAndConcepts = () => {
       actions: [],
     };
     if (annotationComponentRef2.value) {
-      component2Data = processAnnotationComponent(
-        annotationComponentRef2.value
-      );
+      component2Data = annotationComponentRef2.value.processAnnotationData();
       if (component2Data.unmarked) {
-        ElMessage.error("请标记完所有项目后再提交");
+        ElMessage.error(t("common.pleaseMarkAllItems"));
         isLoadingSubmitHighlightAndConcepts.value = false;
         return;
       }
@@ -827,23 +846,35 @@ const submitHighlightAndConcepts = () => {
       question: questionValue.value,
       raw_question: rawQuestionValue.value || "",
       question_action: questionAction.value || "",
+      importance: importanceValue.value || null,
+      frequency: frequencyValue.value || null,
+      raw_importance:
+        questionAction.value != "create" ? rawImportanceValue.value || null : null,
+      raw_frequency:
+        questionAction.value != "create" ? rawFrequencyValue.value || null : null,
 
       // 原始响应
       original_response: original_response.value || "",
       original_highlight_cues: original_highlight_cues.value || [],
       original_key_concepts: original_key_concepts.value || [],
+      original_response_person: original_response_person.value || "",
+      original_highlight_cues_person:
+        original_highlight_cues_person.value || [],
+      original_key_concepts_person: original_key_concepts_person.value || [],
 
       // cultural 部分的标注
       response: component1Data.response,
       highlight_cues: component1Data.highlight_cues,
       key_concepts: component1Data.key_concepts,
-      actions: component1Data.actions,
+      cues_actions: component1Data.cues_actions,
+      concepts_actions: component1Data.concepts_actions,
 
       // 第二个注释组件的数据 personal 部分的标注
       response_person: component2Data.response,
       highlight_cues_person: component2Data.highlight_cues,
       key_concepts_person: component2Data.key_concepts,
-      actions_person: component2Data.actions,
+      cues_actions_person: component2Data.cues_actions,
+      concepts_actions_person: component2Data.concepts_actions,
 
       timestamp: new Date().toISOString(),
     };
@@ -906,12 +937,12 @@ const handleGetTopicTaskTaxonomy = async () => {
 
         topic_task_count.value = res.data.topic_task_count;
       } else {
-        ElMessage.error("获取失败");
+        ElMessage.error(t("common.fetchFailed"));
       }
     })
     .catch((err) => {
       console.log(err);
-      ElMessage.error("获取失败");
+      ElMessage.error(t("common.fetchFailed"));
     })
     .finally(() => {
       // 提交完成后，重置状态
@@ -956,6 +987,12 @@ onMounted(async () => {
     questionValue_Create.value = question.question;
     rawQuestionValue.value = question.raw_question;
     questionAction.value = question.question_action;
+
+    importanceValue.value = question.importance;
+    frequencyValue.value = question.frequency;
+    rawImportanceValue.value = question.raw_importance;
+    rawFrequencyValue.value = question.raw_frequency;
+
     if (question.question_action == "create") {
       activeNameSelect1.value = "Create New";
       questionValue_Create.value = question.question;
@@ -988,9 +1025,13 @@ onMounted(async () => {
       key_concepts: question.key_concepts_person,
     };
 
-    original_response.value = question.original_response;
-    original_highlight_cues.value = question.original_highlight_cues;
-    original_key_concepts.value = question.original_key_concepts;
+    original_response.value = question.response;
+    original_highlight_cues.value = question.highlight_cues;
+    original_key_concepts.value = question.key_concepts;
+
+    original_response_person.value = question.response_person;
+    original_highlight_cues_person.value = question.highlight_cues_person;
+    original_key_concepts_person.value = question.key_concepts_person;
   }
 });
 
@@ -1013,6 +1054,19 @@ const handleClick = (tab, event) => {
     return false;
   }
   console.log(tab, event);
+
+  handleUpdateScores(questionValue_Select_origin.value);
+};
+
+const handleUpdateScores = (question) => {
+  setTimeout(() => {
+    if (activeNameSelect1.value === "Create New") {
+      importanceValue.value = "";
+      frequencyValue.value = "";
+    } else {
+      updateQuestionScores(question);
+    }
+  }, 100);
 };
 
 // el-select输入text后失去焦点即选中，且添加到list
@@ -1115,7 +1169,7 @@ const getQuestionNum = () => {
       }
       p {
         line-height: 1.5;
-        font-size: 1.125em;
+        font-size: 1em;
       }
       ul {
         margin-top: 0.5em;
@@ -1124,8 +1178,8 @@ const getQuestionNum = () => {
         gap: 0.5em 0;
         padding-left: 2em;
         li {
-          font-size: 1.125em;
-          line-height: 1.2;
+          font-size: 1rem;
+          line-height: 1.5;
         }
       }
     }
@@ -1269,6 +1323,11 @@ const getQuestionNum = () => {
 .highlight-keyword.fail {
   background-color: gray;
   color: white;
+}
+
+.highlight-keyword.processed {
+  background-color: #e6f7ff;
+  color: #1890ff;
 }
 
 .el-button {

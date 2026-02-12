@@ -1,14 +1,14 @@
 import { createI18n } from 'vue-i18n'
 import en from './locales/en'
 import zh from './locales/zh'
-import ja from './locales/ja'
-import ko from './locales/ko'
+// import ja from './locales/ja'
+// import ko from './locales/ko'
 
 const languageObj = {
   "English": 'en',
   "Chinese": 'zh',
-  "Japanese": 'ja',
-  "Korean": 'ko'
+  // "Japanese": 'ja',
+  // "Korean": 'ko'
 }
 
 // Get language from localStorage
@@ -35,8 +35,8 @@ const i18n = createI18n({
   messages: {
     en,
     zh,
-    ja,
-    ko
+    // ja,
+    // ko
   }
 })
 

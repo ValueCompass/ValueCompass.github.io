@@ -355,17 +355,19 @@
       background: #FCF014 !important;
     }
 
-    &.keep,
-    &.add,
-    &.edit {
+    // &.keep,
+    // &.add,
+    // &.edit {
+    //   background: #F6FFED;
+    //   color: #268709;
+    // }
+    &.processed {
       background: #F6FFED;
       color: #268709;
     }
 
     &.delete {
       text-decoration: line-through;
-      color: #268709;
-      background: #F6FFED;
     }
   }
 }
