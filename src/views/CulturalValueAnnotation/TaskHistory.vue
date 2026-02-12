@@ -4,12 +4,14 @@
       <h2 style="margin-top: 2em; font-size: 1.5em; color: #0b70c3">
         Task History
       </h2>
-      <el-button
-        style="position: absolute; right: 0em; top: 2em"
-        color="#0B70C3"
-        @click="downloadTaskHistory"
-        >Download</el-button
-      >
+      <div style="position: absolute; right: 0em; top: 2em; display: flex; gap: 10px;">
+        <el-button color="#0B70C3" @click="downloadTaskHistory"
+          >Download JSON</el-button
+        >
+        <el-button color="#0B70C3" @click="downloadExcel"
+          >Download Excel</el-button
+        >
+      </div>
     </div>
     <el-table :data="tableData" border style="width: 100%; margin-top: 2em">
       <el-table-column type="index" width="150" label="Number" />
@@ -137,10 +139,12 @@ const downloadTaskHistory = () => {
   const link = document.createElement("a");
   link.href = url;
 
-  // 生成文件名（包含时间戳）
+  // 生成文件名（包含时间戳、username和language）
   const now = new Date();
   const timestamp = now.toISOString().replace(/[:.]/g, "-").slice(0, -5);
-  link.download = `task-history-${timestamp}.json`;
+  const username = userDetail.username || 'anonymous';
+  const language = userDetail.language || 'unknown';
+  link.download = `task-history-${username}-${language}-${timestamp}.json`;
 
   // 触发下载
   document.body.appendChild(link);
@@ -150,6 +154,120 @@ const downloadTaskHistory = () => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 
+  ElMessage.success("Download successful");
+};
+
+const downloadExcel = () => {
+  if (!downLoadData.value) {
+    ElMessage.warning("No data to download");
+    return;
+  }
+
+  // 将对象转换为数组
+  const dataArray = Object.entries(downLoadData.value).map(([key, value]) => ({
+    index: key,
+    ...value,
+    timestamp: value.timestamp
+      ? formatTimestampToChinaTime(value.timestamp)
+      : "",
+  }));
+
+  if (dataArray.length === 0) {
+    ElMessage.warning("No data to download");
+    return;
+  }
+
+  // 按照指定顺序的字段
+  const fields = [
+    'index',
+    'topic_1',
+    'topic_2',
+    'principles',
+    'task_1',
+    'task_2',
+    'question_action',
+    'question',
+    'importance',
+    'frequency',
+    'raw_question',
+    'raw_importance',
+    'raw_frequency',
+    'original_response',
+    'original_highlight_cues',
+    'original_key_concepts',
+    'original_response_person',
+    'original_highlight_cues_person',
+    'original_key_concepts_person',
+    'response',
+    'highlight_cues',
+    'key_concepts',
+    'cues_actions',
+    'concepts_actions',
+    'response_person',
+    'highlight_cues_person',
+    'key_concepts_person',
+    'cues_actions_person',
+    'concepts_actions_person',
+    'timestamp'
+  ];
+
+  // 生成CSV内容
+  let csvContent = fields.join(',') + '\n';
+
+  dataArray.forEach(row => {
+    const values = fields.map(field => {
+      let value = row[field];
+      
+      // 处理null/undefined
+      if (value === null || value === undefined) {
+        return '';
+      }
+      
+      // 处理数组和对象
+      if (Array.isArray(value)) {
+        value = JSON.stringify(value);
+      } else if (typeof value === 'object' && value !== null) {
+        value = JSON.stringify(value);
+      }
+      
+      // 转换为字符串
+      value = String(value);
+      
+      // 如果包含逗号、引号或换行符，需要用引号包裹并转义
+      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+        value = '"' + value.replace(/"/g, '""') + '"';
+      }
+      
+      return value;
+    });
+    
+    csvContent += values.join(',') + '\n';
+  });
+
+  // 添加BOM以支持Excel正确显示中文
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+
+  // 创建下载链接
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  
+  // 生成文件名（包含时间戳、username和language）
+  const now = new Date();
+  const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  const username = userDetail.username || 'anonymous';
+  const language = userDetail.language || 'unknown';
+  link.download = `task-history-${username}-${language}-${timestamp}.csv`;
+
+  // 触发下载
+  document.body.appendChild(link);
+  link.click();
+  
+  // 清理
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
   ElMessage.success("Download successful");
 };
 </script>
