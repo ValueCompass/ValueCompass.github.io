@@ -207,22 +207,22 @@ const router = createRouter({
 })
 
 // 前端添加密码，防止release流程未走完，外部人员访问
-// router.beforeEach((to, from, next) => {
-//   console.log(from)
-//   if (!!to.meta && to.meta.requiresFrontEndAuth === false) {
-//     //这里判断用户是否登录，验证本地存储是否有token
-//     next();
-//     return;
-//   }
-//   if (!sessionStorage.getItem("token")) { // 判断当前的token是否存在
-//     next({
-//       name: 'Login',
-//       query: { redirect: to.fullPath }
-//     })
-//   } else {
-//     next();
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  console.log(from)
+  if (!!to.meta && to.meta.requiresFrontEndAuth === false) {
+    //这里判断用户是否登录，验证本地存储是否有token
+    next();
+    return;
+  }
+  if (!sessionStorage.getItem("token") && to.name == 'Test Your Values') { // 判断当前的token是否存在
+    next({
+      name: 'Login',
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next();
+  }
+})
 
 // router.beforeEach((to, from, next) => {
 //   const isAuthenticated = sessionStorage.getItem('token');

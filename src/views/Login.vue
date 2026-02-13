@@ -39,7 +39,7 @@ export default {
     },
   },
   mounted() {
-    this.defaultpwd = crypto.get("XHBi9N9bRiDMZKYY1CjIIA==");
+    this.defaultpwd = crypto.get("4y7L+TYen4NcTGPKZl1Y7A==");
   },
 };
 </script>
