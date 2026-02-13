@@ -204,7 +204,7 @@ const emotionObj = {
   sad: "sad_matting.gif",
   joy: "joy_matting.gif",
   surprise: "surprise_matting.gif",
-  angry: "angry_matting.gif",
+  curious: "curious_matting.gif",
 
 };
 

@@ -32,8 +32,8 @@ export const getChatItemInfo = (data: any): any => {
     const result = {
         data: {
             "question": "what is the most important thing in your life" + "\n" + new Date(),
-            "progress_bar": 0.4,
-            "process":7
+            "progress": [15,15],
+            "emotion":"angry"
         }
     }
 
@@ -47,7 +47,7 @@ export const getChatItemInfo = (data: any): any => {
 
 export const getChatResult = (data: any): any => {
     console.log("!!!", data)
-    // return request.post("http://localhost:8000/api/v1/result", data)
+    return request.post("http://localhost:8000/api/v1/result", data)
 
     const result = {
         data: {

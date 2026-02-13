@@ -117,7 +117,7 @@ const getLineProgressStyle = (lineIndex) => {
   if (currentSegment === groups.length) {
     return {
       height: "100%",
-      transition: "height 0.5s ease-in-out",
+      // transition: "height 0.5s ease-in-out",
     };
   }
 
