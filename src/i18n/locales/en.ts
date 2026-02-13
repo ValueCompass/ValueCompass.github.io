@@ -79,7 +79,8 @@ export default {
       refinedQuestions: 'Refined Questions',
       importanceScore: 'Importance Score',
       frequencyScore: 'Frequency Score',
-      questionRequirement: 'For refined and newly created questions, users need to ensure that the questions meet <b>high importance and high frequency. Please give importance and frequency scores based on your judgment. Please ensure that the question is indeed one that you or most people in your culture may encounter, need to think about and discuss in real life</b>'
+      questionRequirement: 'Requirements: 1. Annotators need to cover three types of questions, namely "Create New Questions", "Existing Questions", "Refine Existing Questions", and maintain a relatively even distribution.',
+      questionRequirement2: 'For refined and newly created questions, users need to ensure that the questions meet <b>high importance and high frequency. Please give importance and frequency scores based on your judgment. Please ensure that the question is indeed one that you or most people in your culture may encounter, need to think about and discuss in real life</b>'
     },
     step5: {
       title: 'Step 5: Annotate the Answer from a Cultural Perspective to Align It with Cultural Values',
@@ -87,7 +88,7 @@ export default {
       highlightExplanation: 'We have <b>highlighted text fragments involving value expression</b> in the answer and marked the corresponding <b>values</b> for each fragment. (<b>Values</b>: refer to the internal basis used to support behavior and judgment in that question scenario, usually expressed in short, abstract phrases, such as "respecting elders", "maintaining social order", "personal responsibility first", etc. For details, please refer to the first part of the annotator document)',
       reviewInstructions: '<b>Please annotators check each highlighted fragment one by one and annotate according to the following steps:</b>',
       action1: '1. Judge whether the values conform to the value orientation pursued by your culture in this scenario: (1) Completely conform, keep; (2) Completely do not conform, delete; (3) Some values do not conform or are missing, modify.',
-      action2: 'If you choose "completely do not conform, delete" in this step, the corresponding text fragment will also be deleted together.',
+      action2: 'If you choose "completely do not conform, delete" in this step, the corresponding text fragment will also be deleted together; if you choose other two options, you cannot delete the corresponding text fragment below, but also need to choose other two options.',
       action3: '2. After determining (or modifying) the values in the first step, please judge whether the text fragment accurately reflects these values based on the current values, and conforms to the universal behaviors and expressions in your culture: (1) Completely conform, keep; (2) Completely do not conform, delete; (3) Some content does not conform or is missing, modify.',
       action4: 'Note: If the values were modified in the first step, the text fragment here also needs to be adjusted accordingly; if you chose "completely conform, keep" in the first step, you still need to judge whether the text fragment reflects these values and conforms to the universal behaviors and expressions in your culture.',
       checkAllFragments: '<b>After checking all fragments, please think overall:</b>',

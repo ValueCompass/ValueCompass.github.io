@@ -290,6 +290,9 @@
           <p
             v-html="t('culturalValueAnnotation.step4.questionRequirement')"
           ></p>
+          <p
+            v-html="t('culturalValueAnnotation.step4.questionRequirement2')"
+          ></p>
         </div>
         <div>
           <span>{{
@@ -448,6 +451,12 @@
           <p v-html="t('culturalValueAnnotation.step5.attentionNote')"></p>
         </div>
 
+        <div class="show_question_container" v-if="questionValue">
+          <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
+          <div class="question_box">
+            {{ questionValue }}
+          </div>
+        </div>
         <AnnotationComponent
           :annotationDataOrigin="annotationDataOrigin"
           ref="annotationComponentRef"
@@ -460,6 +469,13 @@
             {{ t("culturalValueAnnotation.step6.title") }}
           </h4>
           <p v-html="t('culturalValueAnnotation.step6.note')"></p>
+        </div>
+
+        <div class="show_question_container" v-if="questionValue">
+          <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
+          <div class="question_box">
+            {{ questionValue }}
+          </div>
         </div>
         <AnnotationComponent
           :annotationDataOrigin="annotationDataOrigin_person"
@@ -617,6 +633,13 @@ const handleSaveAndGetQuestionListBtnClick = () => {
           ElMessage.warning("No Result");
         }
         questionOptions.value = res.data["candidate_questions"];
+
+        if (res.data["question_type_count"]) {
+          actionCounts.create = res.data["question_type_count"]["create"];
+          actionCounts.refine = res.data["question_type_count"]["refine"];
+          actionCounts["select existing"] =
+            res.data["question_type_count"]["select existing"];
+        }
       } else {
         ElMessage.error("error");
       }
@@ -849,9 +872,13 @@ const submitHighlightAndConcepts = () => {
       importance: importanceValue.value || null,
       frequency: frequencyValue.value || null,
       raw_importance:
-        questionAction.value != "create" ? rawImportanceValue.value || null : null,
+        questionAction.value != "create"
+          ? rawImportanceValue.value || null
+          : null,
       raw_frequency:
-        questionAction.value != "create" ? rawFrequencyValue.value || null : null,
+        questionAction.value != "create"
+          ? rawFrequencyValue.value || null
+          : null,
 
       // 原始响应
       original_response: original_response.value || "",
@@ -971,7 +998,7 @@ onMounted(async () => {
   }
   console.log("onMounted");
   console.log(route.params.id);
-  getQuestionNum();
+  // getQuestionNum();
 
   await handleGetTopicTaskTaxonomy();
 
@@ -1251,6 +1278,22 @@ const getQuestionNum = () => {
             margin-right: 1em;
           }
         }
+      }
+    }
+
+    .show_question_container {
+      display: flex;
+      flex-direction: row;
+      gap: 1em;
+      & > span {
+        margin-top: 1em;
+      }
+      & > .question_box {
+        flex: 1;
+        min-height: 2em;
+        border: 1px solid rgb(217, 217, 217);
+        border-radius: 12px;
+        padding: 1em;
       }
     }
   }
