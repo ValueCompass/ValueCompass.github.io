@@ -88,7 +88,7 @@ onMounted(() => {
     interimText.value = "";
     fullText.value = "";
 
-    emit("setEmotionStatus", "cursor");
+    emit("setEmotionStatus", "listening");
   };
 
   recognition.onresult = (event) => {
@@ -151,7 +151,8 @@ const handleEnter = (event) => {
 };
 
 const handleInput = (event) => {
-  emit("setEmotionStatus", "cursor");
+  // 输入中持续上报 listening，驱动头像进入倾听态。
+  emit("setEmotionStatus", "listening");
 };
 
 const emit = defineEmits(["sendMessage", "setEmotionStatus"]);

@@ -2,12 +2,22 @@
   <div class="chat-template">
     <div class="chat-container main-container">
       <div class="left-emotion-img">
+        <video
+          v-if="isWebmMode"
+          :key="avatarKey"
+          ref="avatarVideoRef"
+          :src="getRobiWebmFile(currAvatarName)"
+          class="robi-avatar"
+          autoplay
+          muted
+          playsinline
+          :loop="isAvatarLoop"
+          @ended="handleAvatarEnded"
+          @error="handleAvatarVideoError"
+        ></video>
         <img
-          :src="
-            getAssetsFile(
-              'TestYourValues/robi/' + emotionObj[currEmotionStatus]
-            )
-          "
+          v-else
+          :src="getRobiGifFile(currAvatarName)"
           alt="Robi"
           class="robi-avatar"
         />
@@ -151,7 +161,9 @@ import readAloudIconStop from "@/assets/images/ReadAloud_btnE2_stop.png";
 import {
   ref,
   onMounted,
+  onBeforeUnmount,
   defineEmits,
+  computed,
   nextTick,
   watch,
   toRaw,
@@ -164,6 +176,14 @@ import { ElMessageBox } from "element-plus";
 import ProcessBar from "./ProcessBar.vue";
 const getAssetsFile = (url) => {
   return new URL(`../../assets/${url}`, import.meta.url).href;
+};
+
+const getRobiGifFile = (name) => {
+  return getAssetsFile(`TestYourValues/robi/${name}.gif`);
+};
+
+const getRobiWebmFile = (name) => {
+  return getAssetsFile(`TestYourValues/robi/${name}.webm`);
 };
 
 const props = defineProps({
@@ -196,16 +216,108 @@ const chatList = ref([
   },
 ]);
 
-const currEmotionStatus = ref("cursor");
-const emotionObj = {
-  cursor: "curious_matting.gif",
-  angry: "angry_matting.gif",
-  calm: "calm_matting.gif",
-  sad: "sad_matting.gif",
-  joy: "joy_matting.gif",
-  surprise: "surprise_matting.gif",
-  curious: "curious_matting.gif",
+const currAvatarName = ref("idle_soft");
+const isAvatarLoop = ref(true);
+const isWebmMode = ref(true);
+const isPlayingEmotionOnce = ref(false);
+const avatarVideoRef = ref(null);
+const EMOTION_PLAY_DURATION = 6000;
 
+// 用户行为状态
+const xingweiObj = {
+  listening: "listening",
+  generating: "generating",
+};
+
+// 情绪状态  每次chat之后先播放一遍情绪gif，然后从idle中挑选一个gif循环播放
+const emotionObj = {
+  curious: "curious",
+  amuse: "amuse",
+  empathy: "empathy",
+  concern: "concern",
+  understanding: "understanding",
+};
+
+// idle状态
+const idleObj = {
+  idle_soft: "idle1",
+  idle_breath: "idle4",
+  idle_focus: "idle2",
+  idle_sway: "idle3",
+  idle_sway: "idle5",
+};
+
+const avatarKey = computed(
+  () => `${currAvatarName.value}-${isAvatarLoop.value ? "loop" : "once"}`
+);
+
+const getRandomIdleGif = () => {
+  // 从 idle 池里随机一个，形成自然的待机切换。
+  const idleList = Object.values(idleObj);
+  if (!idleList.length) {
+    return "curious_matting";
+  }
+  return idleList[Math.floor(Math.random() * idleList.length)];
+};
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const applyAvatarState = async (name, { loop = true, onceToIdle = false } = {}) => {
+  currAvatarName.value = name;
+  isAvatarLoop.value = loop;
+  isPlayingEmotionOnce.value = onceToIdle;
+
+  if (isWebmMode.value) {
+    await nextTick();
+    const el = avatarVideoRef.value;
+    if (el) {
+      el.currentTime = 0;
+      const playPromise = el.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {});
+      }
+    }
+    return;
+  }
+
+  // GIF 没有播放完成事件，降级为固定时长后进入 idle。
+  if (onceToIdle) {
+    await delay(EMOTION_PLAY_DURATION);
+    if (isPlayingEmotionOnce.value) {
+      setIdleState();
+    }
+  }
+};
+
+const setIdleState = () => {
+  // 统一 idle 入口，后续若要改成顺序轮播只改这里。
+  applyAvatarState(getRandomIdleGif(), { loop: true, onceToIdle: false });
+};
+
+const setBehaviorState = (status) => {
+  // 用户行为态（listening/generating）直接覆盖当前头像。
+  const behaviorGif = xingweiObj[status];
+  if (behaviorGif) {
+    applyAvatarState(behaviorGif, { loop: true, onceToIdle: false });
+  }
+};
+
+const playEmotionThenIdle = async (emotionKey) => {
+  // 情绪态只播放一遍，结束后切回 idle 随机循环。
+  const emotionGif = emotionObj[emotionKey] || emotionObj.curious;
+  await applyAvatarState(emotionGif, { loop: false, onceToIdle: true });
+};
+
+const handleAvatarEnded = () => {
+  if (!isPlayingEmotionOnce.value) {
+    return;
+  }
+  setIdleState();
+};
+
+const handleAvatarVideoError = () => {
+  // 如果 webm 不存在，自动回退到 gif。
+  isWebmMode.value = false;
 };
 
 watch(
@@ -238,6 +350,7 @@ const sendMessage = (textareaValue) => {
     return;
   }
   isSendLoading.value = true;
+  setBehaviorState("generating");
 
   if (textareaValue) {
     chatList.value.push({
@@ -272,7 +385,7 @@ const sendMessage = (textareaValue) => {
           }
         }
 
-        currEmotionStatus.value = response.emotion;
+        playEmotionThenIdle(response.emotion);
 
         chatList.value.push(obj);
         // 为新添加的model消息添加打字机效果
@@ -295,6 +408,7 @@ const sendMessage = (textareaValue) => {
       .catch((err) => {
         console.log("err");
         ElMessage.error("发送失败，请重新发送");
+        setIdleState();
 
         if (chatList.value.length == 0) {
         }
@@ -325,7 +439,17 @@ function generateId() {
 }
 
 const setEmotionStatus = (status) => {
-  currEmotionStatus.value = status;
+  if (xingweiObj[status]) {
+    setBehaviorState(status);
+    return;
+  }
+
+  if (emotionObj[status]) {
+    playEmotionThenIdle(status);
+    return;
+  }
+
+  setIdleState();
 };
 
 // 存储每个消息的显示文本（用于打字机效果）
@@ -450,9 +574,15 @@ onDeactivated(() => {
   console.log("onDeactivated");
   window.speechSynthesis.cancel();
 });
+
+onBeforeUnmount(() => {
+  window.speechSynthesis.cancel();
+});
 window.addEventListener("beforeunload", () => {
   window.speechSynthesis.cancel();
 });
+
+setIdleState();
 
 defineExpose({
   sendFirstChat,
@@ -558,9 +688,6 @@ defineExpose({
               line-height: 1.5;
               box-sizing: border-box;
               background: #ccf0fc;
-              &:nth-child(1) {
-                // font-weight: 600;
-              }
               & > div {
                 font-size: 1.25em;
                 white-space: pre-line;

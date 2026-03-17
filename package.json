@@ -19,6 +19,7 @@
         "echarts": "^5.5.1",
         "element-plus": "^2.7.8",
         "flag-icons": "^7.5.0",
+        "gifuct-js": "^2.1.2",
         "html2canvas": "^1.4.1",
         "jspdf": "^3.0.0",
         "pinia": "^3.0.3",
