@@ -349,6 +349,10 @@ const sendMessage = (textareaValue) => {
   if (isSendLoading.value) {
     return;
   }
+
+  // 发送新消息时立即停止当前音频播放（URL 音频或浏览器朗读）。
+  stopSpeaking();
+
   isSendLoading.value = true;
   setBehaviorState("generating");
 
@@ -391,8 +395,12 @@ const sendMessage = (textareaValue) => {
         // 为新添加的model消息添加打字机效果
         displayedText.value.push("");
         isTyping.value.push(false);
+        const newIndex = chatList.value.length - 1;
+
+        // 接口返回 audio 时优先播放该音频，否则回退浏览器语音朗读。
+        autoPlayResponseAudio(response.audio, response.question, newIndex);
+
         setTimeout(() => {
-          const newIndex = chatList.value.length - 1;
           typeWriterEffect(newIndex, response.question);
         }, 0);
         chatPercentage.value = response.progress_bar;
@@ -489,19 +497,33 @@ initDisplayedText();
 // 为初始消息添加打字机效果
 setTimeout(() => {
   if (chatList.value.length > 0 && chatList.value[0].type === "model") {
-    typeWriterEffect(0, chatList.value[0].text);
+    autoPlayResponseAudio(null, chatList.value[0].text, 0);
+    typeWriterEffect(0, chatList.value[0].text, 16);
   }
-}, 500);
+}, 80);
 
 // chatList 点击read audio
 const speechSupported =
   typeof window !== "undefined" && "speechSynthesis" in window;
 const currentSpeakingIndex = ref(null);
 let utterance = null;
+let responseAudioPlayer = null;
+
+const stopResponseAudio = () => {
+  if (!responseAudioPlayer) return;
+  responseAudioPlayer.pause();
+  responseAudioPlayer.currentTime = 0;
+  responseAudioPlayer.onended = null;
+  responseAudioPlayer.onerror = null;
+  responseAudioPlayer = null;
+  currentSpeakingIndex.value = null;
+};
 
 const stopSpeaking = () => {
-  if (!speechSupported) return;
-  window.speechSynthesis.cancel();
+  if (speechSupported) {
+    window.speechSynthesis.cancel();
+  }
+  stopResponseAudio();
   currentSpeakingIndex.value = null;
   utterance = null;
 };
@@ -520,6 +542,8 @@ const playMessage = (index, text) => {
   if (currentSpeakingIndex.value !== null) {
     stopSpeaking();
   }
+
+  stopResponseAudio();
 
   utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "zh-CN";
@@ -540,6 +564,45 @@ const playMessage = (index, text) => {
   // 设置当前播放索引
   currentSpeakingIndex.value = index;
   window.speechSynthesis.speak(utterance);
+};
+
+const autoPlayResponseAudio = (audioUrl, fallbackText, index) => {
+  stopSpeaking();
+
+  if (!audioUrl) {
+    playMessage(index, fallbackText);
+    return;
+  }
+
+  const audio = new Audio(audioUrl);
+  responseAudioPlayer = audio;
+  currentSpeakingIndex.value = index;
+
+  audio.onended = () => {
+    if (responseAudioPlayer === audio) {
+      responseAudioPlayer = null;
+      currentSpeakingIndex.value = null;
+    }
+  };
+
+  audio.onerror = () => {
+    if (responseAudioPlayer === audio) {
+      responseAudioPlayer = null;
+      currentSpeakingIndex.value = null;
+    }
+    playMessage(index, fallbackText);
+  };
+
+  const playPromise = audio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      if (responseAudioPlayer === audio) {
+        responseAudioPlayer = null;
+        currentSpeakingIndex.value = null;
+      }
+      playMessage(index, fallbackText);
+    });
+  }
 };
 
 const toggleReadAloud = (index, text) => {
@@ -572,14 +635,14 @@ const getReadAloudLabel = (index) => {
 };
 onDeactivated(() => {
   console.log("onDeactivated");
-  window.speechSynthesis.cancel();
+  stopSpeaking();
 });
 
 onBeforeUnmount(() => {
-  window.speechSynthesis.cancel();
+  stopSpeaking();
 });
 window.addEventListener("beforeunload", () => {
-  window.speechSynthesis.cancel();
+  stopSpeaking();
 });
 
 setIdleState();
