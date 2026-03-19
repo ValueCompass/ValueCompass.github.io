@@ -3,7 +3,6 @@
     <div class="chat-container main-container">
       <div class="left-emotion-img">
         <video
-          v-if="isWebmMode"
           :key="avatarKey"
           ref="avatarVideoRef"
           :src="getRobiWebmFile(currAvatarName)"
@@ -15,12 +14,7 @@
           @ended="handleAvatarEnded"
           @error="handleAvatarVideoError"
         ></video>
-        <img
-          v-else
-          :src="getRobiGifFile(currAvatarName)"
-          alt="Robi"
-          class="robi-avatar"
-        />
+       
       </div>
       <div class="left">
         <!-- <div class="exit-btn" @click="dialogVisible = true">
@@ -183,7 +177,7 @@ const getRobiGifFile = (name) => {
 };
 
 const getRobiWebmFile = (name) => {
-  return getAssetsFile(`TestYourValues/robi/${name}.webm`);
+  return getAssetsFile(`TestYourValues/robi_webm/${name}.webm`);
 };
 
 const props = defineProps({
@@ -263,6 +257,15 @@ const getRandomIdleGif = () => {
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const applyAvatarState = async (name, { loop = true, onceToIdle = false } = {}) => {
+  // 输入过程中会高频触发 listening，这里做同态去重避免重复重置动画。
+  if (
+    currAvatarName.value === name &&
+    isAvatarLoop.value === loop &&
+    isPlayingEmotionOnce.value === onceToIdle
+  ) {
+    return;
+  }
+
   currAvatarName.value = name;
   isAvatarLoop.value = loop;
   isPlayingEmotionOnce.value = onceToIdle;
@@ -671,7 +674,7 @@ defineExpose({
       width: 20%;
       display: flex;
       align-items: center;
-      img {
+      img,video {
         width: 100%;
       }
     }

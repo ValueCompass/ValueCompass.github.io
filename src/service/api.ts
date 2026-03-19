@@ -33,7 +33,8 @@ export const getChatItemInfo = (data: any): any => {
         data: {
             "question": "what is the most important thing in your life" + "\n" + new Date(),
             "progress": [15,15],
-            "emotion":"angry"
+            "emotion":"understanding",  //sad angry happy joy curious五者之一
+            // "audio": 'https://www.text-to-speech.cn/mp3/294731361_1773763752_0.mp3'
         }
     }
 
@@ -41,7 +42,7 @@ export const getChatItemInfo = (data: any): any => {
     return new Promise(function (resolve) {
         setTimeout(function () {
             resolve(result);
-        }, 1000);
+        }, 5000);
     });
 }
 
