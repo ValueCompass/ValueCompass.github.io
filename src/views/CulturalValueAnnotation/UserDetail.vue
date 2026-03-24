@@ -30,23 +30,23 @@
             >English;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURUZRTDFJN1NLMTVXQUQ4M1A4MTRVM1NNOC4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNDZDVE04MFNXTVE2SUdHN09WSzRBRTVXSS4u"
             target="_blank"
             >Chinese;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkZGTUdYQkZNTDBWVjI0WTBFUDZCMTMzOC4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUQ0o5NFE3RjFRTTFKOVpYTUNPT0pMMkhRWi4u"
             target="_blank"
             >Japanese;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkZGTUdYQkZNTDBWVjI0WTBFUDZCMTMzOC4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURjRENlJCUDJLVUFMSVVNSU9NTUdES1E4Vi4u"
             target="_blank"
             >Korean</a
           >
         </p>
         <div class="input-item">
-          <span>Basic Infor-mation Survey:</span>
+          <span>Basic Information Survey:</span>
           <div>
             <el-checkbox v-model="checked1" label="Completed" size="large" />
           </div>
@@ -61,17 +61,17 @@
             >English;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkNQVkRXTTRSMFo3NzU4NkZXM0QxRDZPOS4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURVFPVVJHTFMzTzZKWlFURUxWMjBNSUJLSy4u"
             target="_blank"
             >Chinese;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUQUZBUjRVMlZGT0EyVTBTVDdOVVc3RTc3Ti4u"
             target="_blank"
             >Japanese;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURjQwWlNZVFlKSjZXTjAwTzlESFFWR1oxVy4u"
             target="_blank"
             >Korean</a
           >
@@ -87,7 +87,7 @@
       <div>
         <p class="survey-version-p">
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNFEyTzhORDM2RktBRTRUNjFWSTZWSzdDMC4u"
             target="_blank"
             >English;</a
           >
@@ -97,7 +97,7 @@
             >Chinese;</a
           >
           <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u"
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURUZWNEQ5TDZFVVFHODRZVFU2WVpDWjQ4WC4u"
             target="_blank"
             >Japanese;</a
           >
@@ -187,16 +187,28 @@ const countryOptions = ref([
     label: "China",
   },
   {
-    value: "English",
-    label: "English",
+    value: "Japan",
+    label: "Japan",
   },
   {
-    value: "Janpan",
-    label: "Janpan",
+    value: "South Korea",
+    label: "South Korea",
   },
   {
-    value: "Korea",
-    label: "Korea",
+    value: "Singapore",
+    label: "Singapore",
+  },
+  {
+    value: "Malaysia",
+    label: "Malaysia",
+  },
+  {
+    value: "Indonesia",
+    label: "Indonesia",
+  },
+  {
+    value: "India",
+    label: "India",
   },
  
 ]);

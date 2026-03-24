@@ -295,44 +295,25 @@
           ></p>
         </div>
         <div>
-          <span>{{
-            t("culturalValueAnnotation.step4.annotatedQuestions")
-          }}</span>
-          <span
-            >{{ t("culturalValueAnnotation.step4.newQuestions") }}:
-            <b>{{ actionCounts.create }}</b></span
-          >;&nbsp;&nbsp;
-          <span
-            >{{ t("culturalValueAnnotation.step4.existingQuestions") }}:
-            <b>{{ actionCounts["select existing"] }}</b></span
-          >;&nbsp;&nbsp;
-          <span
-            >{{ t("culturalValueAnnotation.step4.refinedQuestions") }}:
-            <b>{{ actionCounts.refine }}</b></span
-          >
+          <div style="background: #FFFF00;font-weight: bold;padding: 10px;display: inline-block;">
+            <span>{{
+              t("culturalValueAnnotation.step4.annotatedQuestions")
+            }}</span>
+            <span
+              >{{ t("culturalValueAnnotation.step4.newQuestions") }}:
+              <b>{{ actionCounts.create }}</b></span
+            >;&nbsp;&nbsp;
+            <span
+              >{{ t("culturalValueAnnotation.step4.existingQuestions") }}:
+              <b>{{ actionCounts["select existing"] }}</b></span
+            >;&nbsp;&nbsp;
+            <span
+              >{{ t("culturalValueAnnotation.step4.refinedQuestions") }}:
+              <b>{{ actionCounts.refine }}</b></span
+            >
+          </div>
         </div>
         <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
-          <el-tab-pane
-            :label="
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-              t('culturalValueAnnotation.step3.createNew') +
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-            "
-            name="Create New"
-          >
-            <div class="input-container question-input-container">
-              <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-              <el-input
-                v-model="questionValue_Create"
-                style="width: calc(100% - 5em)"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 10 }"
-                placeholder="Please input"
-                :disabled="hasClickedGetAnswerBtn"
-              />
-            </div>
-          </el-tab-pane>
-
           <el-tab-pane
             :label="
               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
@@ -360,13 +341,11 @@
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 10 }"
                   placeholder="Please input"
-                  :disabled="hasClickedGetAnswerBtn"
                 />
 
                 <el-select
                   v-model="questionValue_Select_origin"
                   placeholder="Select"
-                  :disabled="hasClickedGetAnswerBtn"
                   style="position: absolute; left: 0; bottom: 0; width: 100%"
                   @change="handleSelectChange"
                 >
@@ -387,6 +366,27 @@
               </div>
             </div>
           </el-tab-pane>
+          <el-tab-pane
+            :label="
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+              t('culturalValueAnnotation.step3.createNew') +
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+            "
+            name="Create New"
+          >
+            <div class="input-container question-input-container">
+              <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
+              <el-input
+                v-model="questionValue_Create"
+                style="width: calc(100% - 5em)"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 10 }"
+                placeholder="Please input"
+              />
+            </div>
+          </el-tab-pane>
+
+          
         </el-tabs>
 
         <div class="score-container">
@@ -406,7 +406,6 @@
 
         <div style="display: flex">
           <el-button
-            v-if="!hasClickedGetAnswerBtn"
             @click="handleGetAnswerBtnClick"
             :disabled="
               isGetAnswerBtnDisabled ||
@@ -416,13 +415,6 @@
             :loading="isLoadingGetAnswer"
             color="#0B70C3"
             >Get Answer</el-button
-          >
-          <el-button
-            v-else
-            style="height: 2.8em; font-size: 1em"
-            :disabled="true"
-            color="#0B70C3"
-            >Your have clicked the button to get the answer.</el-button
           >
         </div>
       </div>
@@ -694,6 +686,37 @@ let annotationDataOrigin_person = reactive({
   key_concepts: [],
 });
 
+const resetGetAnswerState = () => {
+  hasClickedGetAnswerBtn.value = false;
+  answer_model.value = "";
+  questionValue.value = "";
+  rawQuestionValue.value = "";
+  questionAction.value = "";
+
+  original_response.value = "";
+  original_highlight_cues.value = [];
+  original_key_concepts.value = [];
+
+  original_response_person.value = "";
+  original_highlight_cues_person.value = [];
+  original_key_concepts_person.value = [];
+
+  annotationDataOrigin = {
+    originalResponse: "",
+    response: "",
+    highlight_cues: [],
+    key_concepts: [],
+  };
+  
+
+  annotationDataOrigin_person = {
+    originalResponse: "",
+    response: "",
+    highlight_cues: [],
+    key_concepts: [],
+  };
+};
+
 const updateQuestionScores = (questionText) => {
   const selectedQuestion = questionOptions.value.find(
     (item) => item.question === questionText
@@ -718,6 +741,9 @@ const handleGetAnswerBtnClick = () => {
     ElMessage.error(t("common.pleaseFillUserInfo"));
     return;
   }
+
+  // Allow repeated Get Answer: clear previous API-populated result state first.
+  resetGetAnswerState();
 
   questionValue.value =
     activeNameSelect1.value == "Create New"
@@ -1073,7 +1099,7 @@ const handleTaskHistoryClick = () => {
 };
 
 //
-const activeNameSelect1 = ref("Create New");
+const activeNameSelect1 = ref("Select Existing or Refine");
 const handleClick = (tab, event) => {
   if (hasClickedGetAnswerBtn.value) {
     // 当hasClickedGetAnswerBtn为true时，阻止标签页切换

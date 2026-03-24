@@ -27,7 +27,7 @@ export const getQuestionInfo = (): any => {
 
 export const getChatItemInfo = (data: any): any => {
     console.log("!!!", data)
-    // return request.post("http://localhost:8000/api/v1/chat", data)
+    return request.post("http://localhost:8000/api/v1/chat", data)
 
     const result = {
         data: {
