@@ -535,6 +535,11 @@ const actionCounts = reactive({
   "select existing": 0,
 });
 
+const submit_type = ref("create new"); // "create new" or "revise"
+const duration_time = ref(0);
+const candidateQuestionsReceivedAt = ref(null);
+const pageEnteredAt = ref(null);
+
 const answer_model = ref("");
 
 const topicValue1 = ref("");
@@ -610,6 +615,7 @@ const handleSaveAndGetQuestionListBtnClick = () => {
     .then((res) => {
       console.log(res);
       if (res.data && res.data["candidate_questions"]) {
+        candidateQuestionsReceivedAt.value = Date.now();
         // ElMessage.success("提交成功");
         localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
@@ -881,6 +887,14 @@ const submitHighlightAndConcepts = () => {
     console.log("Component 1 data:", component1Data);
     console.log("Component 2 data:", component2Data);
 
+    if (submit_type.value === "revise" && pageEnteredAt.value) {
+      duration_time.value = Date.now() - pageEnteredAt.value;
+    } else if (candidateQuestionsReceivedAt.value) {
+      duration_time.value = Date.now() - candidateQuestionsReceivedAt.value;
+    } else {
+      duration_time.value = 0;
+    }
+
     const sendData = {
       answer_model: answer_model.value,
       username: userDetail.username.trim(),
@@ -929,6 +943,8 @@ const submitHighlightAndConcepts = () => {
       cues_actions_person: component2Data.cues_actions,
       concepts_actions_person: component2Data.concepts_actions,
 
+      duration_time: Math.floor(duration_time.value / 1000),
+      submit_type: submit_type.value,
       timestamp: new Date().toISOString(),
     };
     console.log(sendData);
@@ -1022,6 +1038,10 @@ onMounted(async () => {
   if (!userDetail.username || !userDetail.country || !userDetail.language) {
     return;
   }
+
+  pageEnteredAt.value = Date.now();
+
+  submit_type.value = "create new";
   console.log("onMounted");
   console.log(route.params.id);
   // getQuestionNum();
@@ -1030,6 +1050,8 @@ onMounted(async () => {
 
   const editCurrentQuestion = sessionStorage.getItem("editCurrentQuestion");
   if (route.params.id && editCurrentQuestion) {
+    submit_type.value = "revise";
+    
     const question = JSON.parse(editCurrentQuestion);
     editCurrentQuestionDetail.value = question;
     hasClickedGetAnswerBtn.value = true;
