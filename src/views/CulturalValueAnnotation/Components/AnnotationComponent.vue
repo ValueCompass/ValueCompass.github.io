@@ -234,18 +234,16 @@ const isAddingNew = ref(false);
 const editCue = ref("");
 const editConcept = ref("");
 
-const processedAnnotationDataResponse = computed(() => {
+// 统一计算可用的cue位置，保证渲染和编辑替换使用同一套坐标
+const getFilteredCuePositions = () => {
   const originalText = annotationData.response;
-
-  // 创建一个包含所有cue及其索引的数组
   const cuesWithIndex = annotationData.highlight_cues.map((cue, index) => ({
     cue,
     index,
   }));
 
-  // 找到每个cue在原始文本中对应的位置
   const positions = [];
-  const lastPositions = new Map(); // 记录每个cue上次找到的位置
+  const lastPositions = new Map();
 
   cuesWithIndex.forEach(({ cue, index }) => {
     let start = lastPositions.get(cue) || 0;
@@ -259,26 +257,20 @@ const processedAnnotationDataResponse = computed(() => {
         index,
       });
 
-      // 更新该cue的上次找到位置
       lastPositions.set(cue, foundIndex + 1);
     }
   });
 
-  // 去重：如果多个cue重叠，只保留最长的匹配
   positions.sort((a, b) => {
-    // 按长度从长到短排序
     if (b.cue.length !== a.cue.length) {
       return b.cue.length - a.cue.length;
     }
-    // 长度相同时，按开始位置从小到大排序
     return a.start - b.start;
   });
 
-  // 过滤掉重叠的位置
   const filteredPositions = [];
   const usedRanges = [];
   positions.forEach((pos) => {
-    // 检查当前位置是否与已使用的范围重叠
     const isOverlapping = usedRanges.some((range) => {
       return pos.start < range.end && pos.end > range.start;
     });
@@ -289,8 +281,13 @@ const processedAnnotationDataResponse = computed(() => {
     }
   });
 
-  // 按开始位置从小到大排序，以便从前往后处理
   filteredPositions.sort((a, b) => a.start - b.start);
+  return filteredPositions;
+};
+
+const processedAnnotationDataResponse = computed(() => {
+  const originalText = annotationData.response;
+  const filteredPositions = getFilteredCuePositions();
 
   // 构建最终的HTML文本
   let result = "";
@@ -399,15 +396,22 @@ const updateCurrentCuePosition = () => {
     currentCueIndex.value >= 0 &&
     currentCueIndex.value < annotationData.highlight_cues.length
   ) {
-    const cue = annotationData.highlight_cues[currentCueIndex.value];
-    const start = annotationData.response.indexOf(cue);
-    if (start !== -1) {
+    const currentPosition = getFilteredCuePositions().find(
+      (position) => position.index === currentCueIndex.value
+    );
+    if (currentPosition) {
       currentCuePosition.value = {
-        start,
-        end: start + cue.length,
+        start: currentPosition.start,
+        end: currentPosition.end,
       };
+      return;
     }
   }
+
+  currentCuePosition.value = {
+    start: 0,
+    end: 0,
+  };
 };
 
 const handleKeepClick = (type) => {
@@ -504,6 +508,8 @@ const handleEditClick = (type) => {
   console.log(`${type}: Edit`, "currentCueIndex:", currentCueIndex.value);
   // 进入编辑模式
   if (type === "cue") {
+    // 每次进入编辑前先刷新位置，避免复用上次编辑后的旧坐标
+    updateCurrentCuePosition();
     isCueEditMode.value = true;
     // 保存当前值到编辑临时变量
     editCue.value = currentCue.value;
@@ -561,12 +567,19 @@ const handleSubmitEdit = (type) => {
       return;
     }
 
-    // 更新现有的cue
-    annotationData.highlight_cues[currentCueIndex.value] = editCue.value;
-
     // 使用记录的位置直接替换当前选中的cue
+    // 提交前再次定位，确保二次编辑时替换的是当前最新文本片段
+    updateCurrentCuePosition();
     const { start, end } = currentCuePosition.value;
     console.log("start:", start, "end:", end);
+
+    if (start === end) {
+      ElMessage.warning("Failed to locate current text fragment, please retry");
+      return;
+    }
+
+    // 更新现有的cue
+    annotationData.highlight_cues[currentCueIndex.value] = editCue.value;
 
     // 构建更新后的response文本
     const updatedResponse =
@@ -576,6 +589,7 @@ const handleSubmitEdit = (type) => {
 
     // 更新response文本
     annotationData.response = updatedResponse;
+    updateCurrentCuePosition();
 
     // 如果当前cue的状态是add，则保持为add，否则设置为edit
     if (highlightCuesStatus.value[currentCueIndex.value] !== "add") {
@@ -791,10 +805,6 @@ defineExpose({
           p {
             font-size: 1em;
             margin-bottom: 0.5em;
-          }
-          :deep(.el-input__inner) {
-            // --el-input-inner-height:5em;
-            // font-size: 1rem;
           }
         }
       }
