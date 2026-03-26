@@ -1,5 +1,6 @@
 <template>
   <div class="main-container" style="position: relative">
+    <UserHeader />
     <div>
       <h2 style="margin-top: 2em; font-size: 1.5em; color: #0b70c3">
         Task History
@@ -37,8 +38,9 @@ import { reactive, ref, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { GetAllCompletedAnnotations } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
+import UserHeader from "./Components/UserHeader.vue";
 
-const userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
+const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 
 // 点击问题时的处理函数
 const handleQuestionClick = (question) => {
@@ -72,6 +74,12 @@ const taskHistory = ref([]);
 
 const downLoadData = ref(null);
 onMounted(() => {
+  const userDetailStorage = localStorage.getItem("userDetail");
+  if (!userDetailStorage) {
+    router.push({ path: "/CulturalValueAnnotation" });
+    return;
+  }
+
   GetAllCompletedAnnotations({
     username: userDetail.username,
     country: userDetail.country,

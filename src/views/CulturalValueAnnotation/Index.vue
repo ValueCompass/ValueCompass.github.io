@@ -1,14 +1,17 @@
 <template>
   <div class="main-container">
-    <div style="display: flex; justify-content: flex-end">
-      <el-button
-        style="height: 2.8em; font-size: 1em"
-        type="primary"
-        color="#0B70C3"
-        plain
-        @click="handleTaskHistoryClick"
-        >{{ t("common.taskHistory") }}</el-button
-      >
+    <div style="display: flex; flex-direction: column; gap: 0.6em">
+      <UserHeader :userInfo="userInfo" />
+      <div style="display: flex; justify-content: flex-end">
+        <el-button
+          style="height: 2.8em; font-size: 1em"
+          type="primary"
+          color="#0B70C3"
+          plain
+          @click="handleTaskHistoryClick"
+          >{{ t("common.taskHistory") }}</el-button
+        >
+      </div>
     </div>
     <div class="step-container">
       <div class="step step1">
@@ -505,6 +508,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 import UserDetail from "./UserDetail.vue";
+import UserHeader from "./Components/UserHeader.vue";
 import AnnotationComponent from "./Components/AnnotationComponent.vue";
 import {
   getTopicTaskTaxonomy,
@@ -515,7 +519,12 @@ import {
 } from "@/service/CulturalValueAnnotationApi";
 import { Language } from "@amcharts/amcharts4/core";
 
-let userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
+let userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+const userInfo = ref({
+  username: userDetail.username || "",
+  country: userDetail.country || "",
+  language: userDetail.language || "",
+});
 
 const allFromData = reactive({
   username: "",
@@ -617,7 +626,6 @@ const handleSaveAndGetQuestionListBtnClick = () => {
       if (res.data && res.data["candidate_questions"]) {
         candidateQuestionsReceivedAt.value = Date.now();
         // ElMessage.success("提交成功");
-        localStorage.setItem("inputObj", JSON.stringify(inputObj));
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
           questionValue_Select.value =
@@ -1049,6 +1057,11 @@ onMounted(async () => {
   await handleGetTopicTaskTaxonomy();
 
   const editCurrentQuestion = sessionStorage.getItem("editCurrentQuestion");
+  if (route.params.id && !editCurrentQuestion) {
+    router.push({ path: "/CulturalValueAnnotation" });
+    return;
+  }
+
   if (route.params.id && editCurrentQuestion) {
     submit_type.value = "revise";
     
@@ -1111,9 +1124,15 @@ onMounted(async () => {
 });
 
 const hideUsrerContainer = () => {
-  userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
+  userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+  userInfo.value = {
+    username: userDetail.username || "",
+    country: userDetail.country || "",
+    language: userDetail.language || "",
+  };
   handleGetTopicTaskTaxonomy();
 };
+
 const handleTaskHistoryClick = () => {
   router.push({
     path: "/CulturalValueAnnotation/TaskHistory",

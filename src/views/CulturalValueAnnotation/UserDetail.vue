@@ -277,8 +277,7 @@ const nextStep = () => {
       if (res.data.ok) {
         // 登录成功，跳转到下一个页面
         // router.push({ name: "CulturalValueAnnotation" });
-        sessionStorage.setItem("userDetail", JSON.stringify(formData));
-        sessionStorage.setItem("language", languageValue.value);
+        localStorage.setItem("userDetail", JSON.stringify(formData));
         dialogVisible.value = false;
         emit("hideUsrerContainer")
         // 页面刷新
@@ -300,7 +299,7 @@ const nextStep = () => {
 };
 
 const isHasUserDetail = computed(() => {
-  return sessionStorage.getItem("userDetail") !== null;
+  return localStorage.getItem("userDetail") !== null;
 });
 
 onMounted(() => {

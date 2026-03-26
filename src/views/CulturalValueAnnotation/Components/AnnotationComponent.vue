@@ -134,8 +134,6 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
-const userDetail = JSON.parse(sessionStorage.getItem("userDetail") || "{}");
-
 const props = defineProps({
   annotationDataOrigin: {
     type: Object,
