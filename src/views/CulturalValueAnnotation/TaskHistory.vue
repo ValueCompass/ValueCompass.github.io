@@ -105,7 +105,8 @@ onMounted(() => {
         ElMessage.warning("No task history found.");
         return;
       } else {
-        tableData.value = dataArray;
+        // 页面按倒序展示，确保最新记录在最上方
+        tableData.value = [...dataArray].reverse();
         console.log("tableData.value", tableData.value);
       }
     })

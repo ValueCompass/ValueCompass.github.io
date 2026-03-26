@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container">
+  <div class="main-container" style="margin-bottom: 4em;">
     <div style="display: flex; flex-direction: column; gap: 0.6em">
       <UserHeader :userInfo="userInfo" />
       <div style="display: flex; justify-content: flex-end">
@@ -344,6 +344,7 @@
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 10 }"
                   placeholder="Please input"
+                  :disabled="hasClickedGetAnswerBtn"
                 />
 
                 <el-select
@@ -351,6 +352,7 @@
                   placeholder="Select"
                   style="position: absolute; left: 0; bottom: 0; width: 100%"
                   @change="handleSelectChange"
+                  :disabled="hasClickedGetAnswerBtn"
                 >
                   <template #label="{ label, value }">
                     <div class="text-content">
@@ -385,6 +387,7 @@
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 10 }"
                 placeholder="Please input"
+                :disabled="hasClickedGetAnswerBtn"
               />
             </div>
           </el-tab-pane>
@@ -397,13 +400,23 @@
             <span
               >{{ t("culturalValueAnnotation.step4.importanceScore") }}:</span
             >
-            <el-input-number v-model="importanceValue" :min="0" :max="5" />
+            <el-input-number
+              v-model="importanceValue"
+              :min="0"
+              :max="5"
+              :disabled="hasClickedGetAnswerBtn"
+            />
           </div>
           <div>
             <span
               >{{ t("culturalValueAnnotation.step4.frequencyScore") }}:</span
             >
-            <el-input-number v-model="frequencyValue" :min="0" :max="5" />
+            <el-input-number
+              v-model="frequencyValue"
+              :min="0"
+              :max="5"
+              :disabled="hasClickedGetAnswerBtn"
+            />
           </div>
         </div>
 
@@ -411,13 +424,14 @@
           <el-button
             @click="handleGetAnswerBtnClick"
             :disabled="
+              hasClickedGetAnswerBtn ||
               isGetAnswerBtnDisabled ||
               isLoadingGetAnswer ||
               isSaveAndGetQuestionListBtnDisabled
             "
             :loading="isLoadingGetAnswer"
             color="#0B70C3"
-            >Get Answer</el-button
+            >{{ hasClickedGetAnswerBtn? "Your have clicked Get Answer button." :"Get Answer"}}</el-button
           >
         </div>
       </div>
@@ -451,6 +465,14 @@
           <div class="question_box">
             {{ questionValue }}
           </div>
+        </div>
+        <div
+          style="margin-top: 1em"
+          v-if="hasClickedGetAnswerBtn && submit_type !== 'revise'"
+        >
+          <el-button plain color="#0B70C3" @click="handleReselectQuestionClick"
+            >Reselect Question</el-button
+          >
         </div>
         <AnnotationComponent
           :annotationDataOrigin="annotationDataOrigin"
@@ -748,6 +770,11 @@ const handleSelectChange = () => {
   updateQuestionScores(questionValue_Select.value);
 };
 const handleGetAnswerBtnClick = () => {
+  if (hasClickedGetAnswerBtn.value) {
+    ElMessage.warning("Get Answer button has already been clicked");
+    return;
+  }
+
   if (isGetAnswerBtnDisabled.value) {
     return;
   }
@@ -831,6 +858,7 @@ const handleGetAnswerBtnClick = () => {
         // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
         // annotationDataOrigin.key_concepts = res.data.key_concepts;
         hasClickedGetAnswerBtn.value = true;
+        ElMessage.success("Get Answer has been clicked and inputs are now locked");
         answer_model.value = res.data.answer_model;
       } else {
         ElMessage.error("error");
@@ -843,6 +871,11 @@ const handleGetAnswerBtnClick = () => {
     .finally(() => {
       isLoadingGetAnswer.value = false;
     });
+};
+
+const handleReselectQuestionClick = () => {
+  resetGetAnswerState();
+  ElMessage.success("You can reselect the question and click Get Answer again");
 };
 
 const annotationComponentRef = ref(null);
@@ -1393,9 +1426,6 @@ const getQuestionNum = () => {
   :deep(.el-textarea) {
     --el-input-inner-height: 2.5em;
     font-size: 1rem;
-    .el-textarea__inner {
-      // color: #000;
-    }
     &.is-disabled .el-textarea__inner {
       background: #fff !important;
     }
