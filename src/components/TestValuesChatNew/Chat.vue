@@ -207,6 +207,7 @@ const chatList = ref([
   {
     type: "model",
     text: "Hi there! I’m Robi — here to explore your values with you. \nI don’t give scores or right answers — I just want to talk about the things that matter to you. \nWould you like to tell me what I can call you? A nickname is fine too, or you can skip it if you prefer.",
+    audio_url: "https://robi.westus.cloudapp.azure.com/api/v1/intro-audio/robi_intro.mp3",
   },
 ]);
 
@@ -400,8 +401,8 @@ const sendMessage = (textareaValue) => {
         isTyping.value.push(false);
         const newIndex = chatList.value.length - 1;
 
-        // 接口返回 audio 时优先播放该音频，否则回退浏览器语音朗读。
-        autoPlayResponseAudio(response.audio, response.question, newIndex);
+        // 接口返回 audio_url 时优先播放该音频，否则回退浏览器语音朗读。
+        autoPlayResponseAudio(response.audio_url, response.question, newIndex);
 
         setTimeout(() => {
           typeWriterEffect(newIndex, response.question);
@@ -418,7 +419,16 @@ const sendMessage = (textareaValue) => {
       })
       .catch((err) => {
         console.log("err");
-        ElMessage.error("发送失败，请重新发送");
+        const statusCode = err?.response?.status;
+        const is443Error =
+          statusCode === 403 || String(err?.message || "").includes("403");
+        if (is443Error) {
+          ElMessage.error(
+            "This chat API is not accessible from mainland China IP addresses."
+          );
+        } else {
+          ElMessage.error("发送失败，请重新发送");
+        }
         setIdleState();
 
         if (chatList.value.length == 0) {

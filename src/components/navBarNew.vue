@@ -68,7 +68,7 @@
           <router-link to="/CulturalAlignment">Cultural Alignment</router-link>
         </li>
 
-        <li>
+        <li v-if="showTestYourValues">
           <router-link to="/TestValues">Test Your Values</router-link>
         </li>
         
@@ -97,7 +97,22 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
+import { getGeoStatus } from "../service/api";
+
+const showTestYourValues = ref(false);
+
+onMounted(async () => {
+  try {
+    const res = await getGeoStatus();
+    console.log("geo status", res);
+    showTestYourValues.value = res?.data?.blocked === false;
+  } catch (err: any) {
+    showTestYourValues.value = false;
+  }
+  console.log("showTestYourValues", showTestYourValues.value);
+});
 
 const mouseenter = (e: any) => {
   console.log("mouseenter");
