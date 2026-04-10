@@ -15,15 +15,19 @@
       </div>
     </div>
     <el-table :data="tableData" border style="width: 100%; margin-top: 2em">
-      <el-table-column type="index" width="150" label="Number" />
-      <el-table-column prop="question" label="Question">
+      <el-table-column type="index" width="90" label="Number" />
+      <el-table-column prop="question" label="Question" min-width="360">
         <template #default="scope">
           <span class="question-link" @click="handleQuestionClick(scope.row)">
             {{ scope.row.question }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="timestamp" label="Timestamp" width="200" />
+      <el-table-column prop="topic_1" label="Topic 1" width="140" />
+      <el-table-column prop="topic_2" label="Topic 2" width="140" />
+      <el-table-column prop="task_1" label="Task 1" width="140" />
+      <el-table-column prop="task_2" label="Task 2" width="140" />
+      <el-table-column prop="timestamp" label="Timestamp" width="140" />
     </el-table>
     <div class="bth-container" style="margin-bottom: 4em">
       <el-button type="primary" color="#0B70C3" @click="handleCreateClick"
