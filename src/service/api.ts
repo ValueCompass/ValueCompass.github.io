@@ -26,12 +26,12 @@ export const getQuestionInfo = (): any => {
 }
 
 export const getGeoStatus = (): any => {
-    return axios.get("http://robi.westus.cloudapp.azure.com:8000/api/v1/geo-status/");
+    return axios.get("https://robi.westus.cloudapp.azure.com/api/v1/geo-status/");
 }
 
 export const getChatItemInfo = (data: any): any => {
     console.log("!!!", data)
-    return axios.post("http://robi.westus.cloudapp.azure.com:8000/api/v1/chat", data)
+    return axios.post("https://robi.westus.cloudapp.azure.com/api/v1/chat", data)
 
     const result = {
         data: {
@@ -52,7 +52,7 @@ export const getChatItemInfo = (data: any): any => {
 
 export const getChatResult = (data: any): any => {
     console.log("!!!", data)
-    return axios.post("http://robi.westus.cloudapp.azure.com:8000/api/v1/result", data)
+    return axios.post("https://robi.westus.cloudapp.azure.com/api/v1/result", data)
 
     const result = {
         data: {

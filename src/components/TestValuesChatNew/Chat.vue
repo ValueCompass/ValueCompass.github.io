@@ -61,12 +61,12 @@
                       </div>
 
                       <button
-                        v-if="item.type === 'model' && speechSupported"
+                        v-if="item.type === 'model' && item.audio_url"
                         class="read-aloud-btn"
                         type="button"
                         :aria-label="getReadAloudLabel(index)"
                         :class="{ playing: currentSpeakingIndex === index }"
-                        @click="toggleReadAloud(index, item.text)"
+                        @click="toggleReadAloud(index, item.audio_url)"
                       >
                         <img
                           :src="
@@ -207,7 +207,7 @@ const chatList = ref([
   {
     type: "model",
     text: "Hi there! I’m Robi — here to explore your values with you. \nI don’t give scores or right answers — I just want to talk about the things that matter to you. \nWould you like to tell me what I can call you? A nickname is fine too, or you can skip it if you prefer.",
-    audio_url: "https://robi.westus.cloudapp.azure.com/api/v1/intro-audio/robi_intro.mp3",
+    audio_url: getAssetsFile("audio/robi_intro.mp3"),
   },
 ]);
 
@@ -384,7 +384,11 @@ const sendMessage = (textareaValue) => {
       .then((res) => {
         let response = res.data;
         console.log(response);
-        const obj = { type: "model", text: response.question };
+        const obj = {
+          type: "model",
+          text: response.question,
+          audio_url: response.audio_url,
+        };
         if (response.progress) {
           currChatNum.value = response.progress[0];
           chatCount.value = response.progress[1];
@@ -401,8 +405,8 @@ const sendMessage = (textareaValue) => {
         isTyping.value.push(false);
         const newIndex = chatList.value.length - 1;
 
-        // 接口返回 audio_url 时优先播放该音频，否则回退浏览器语音朗读。
-        autoPlayResponseAudio(response.audio_url, response.question, newIndex);
+        // 仅播放接口返回的 audio_url。
+        autoPlayResponseAudio(response.audio_url, newIndex);
 
         setTimeout(() => {
           typeWriterEffect(newIndex, response.question);
@@ -510,16 +514,13 @@ initDisplayedText();
 // 为初始消息添加打字机效果
 setTimeout(() => {
   if (chatList.value.length > 0 && chatList.value[0].type === "model") {
-    autoPlayResponseAudio(null, chatList.value[0].text, 0);
+    autoPlayResponseAudio(chatList.value[0].audio_url, 0);
     typeWriterEffect(0, chatList.value[0].text, 16);
   }
 }, 80);
 
 // chatList 点击read audio
-const speechSupported =
-  typeof window !== "undefined" && "speechSynthesis" in window;
 const currentSpeakingIndex = ref(null);
-let utterance = null;
 let responseAudioPlayer = null;
 
 const stopResponseAudio = () => {
@@ -533,57 +534,14 @@ const stopResponseAudio = () => {
 };
 
 const stopSpeaking = () => {
-  if (speechSupported) {
-    window.speechSynthesis.cancel();
-  }
   stopResponseAudio();
   currentSpeakingIndex.value = null;
-  utterance = null;
 };
 
-const playMessage = (index, text) => {
-  if (!speechSupported) {
-    ElMessage.warning(
-      choosedLanguage.value === "zh-CN"
-        ? "当前浏览器不支持语音朗读"
-        : "Speech synthesis is not supported in this browser."
-    );
-    return;
-  }
-
-  // 如果有正在播放的消息，先停止
-  if (currentSpeakingIndex.value !== null) {
-    stopSpeaking();
-  }
-
-  stopResponseAudio();
-
-  utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  console.log("utterance.lang", utterance.lang);
-  utterance.onend = () => {
-    if (currentSpeakingIndex.value === index) {
-      currentSpeakingIndex.value = null;
-    }
-    utterance = null;
-  };
-  utterance.onerror = () => {
-    if (currentSpeakingIndex.value === index) {
-      currentSpeakingIndex.value = null;
-    }
-    utterance = null;
-  };
-
-  // 设置当前播放索引
-  currentSpeakingIndex.value = index;
-  window.speechSynthesis.speak(utterance);
-};
-
-const autoPlayResponseAudio = (audioUrl, fallbackText, index) => {
+const autoPlayResponseAudio = (audioUrl, index) => {
   stopSpeaking();
 
   if (!audioUrl) {
-    playMessage(index, fallbackText);
     return;
   }
 
@@ -603,7 +561,6 @@ const autoPlayResponseAudio = (audioUrl, fallbackText, index) => {
       responseAudioPlayer = null;
       currentSpeakingIndex.value = null;
     }
-    playMessage(index, fallbackText);
   };
 
   const playPromise = audio.play();
@@ -613,25 +570,20 @@ const autoPlayResponseAudio = (audioUrl, fallbackText, index) => {
         responseAudioPlayer = null;
         currentSpeakingIndex.value = null;
       }
-      playMessage(index, fallbackText);
     });
   }
 };
 
-const toggleReadAloud = (index, text) => {
-  if (!speechSupported) {
-    ElMessage.warning(
-      choosedLanguage.value === "zh-CN"
-        ? "当前浏览器不支持语音朗读"
-        : "Speech synthesis is not supported in this browser."
-    );
+const toggleReadAloud = (index, audioUrl) => {
+  if (!audioUrl) {
+    ElMessage.warning("No audio available for this message");
     return;
   }
 
   if (currentSpeakingIndex.value === index) {
     stopSpeaking();
   } else {
-    playMessage(index, text);
+    autoPlayResponseAudio(audioUrl, index);
   }
 };
 
