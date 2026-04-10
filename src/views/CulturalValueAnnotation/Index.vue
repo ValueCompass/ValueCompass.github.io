@@ -141,7 +141,6 @@
               v-model="principlesList[index]"
               style=""
               placeholder="Please input"
-              :disabled="hasClickedSaveAndGetQuestionListBtn"
             />
           </div>
         </div>
@@ -1025,7 +1024,7 @@ const handleGetTopicTaskTaxonomy = async () => {
   //   taskOptions1.value = Object.keys(taskTaxonomy.value);
   //   return;
   // }
-  getTopicTaskTaxonomy({
+  return getTopicTaskTaxonomy({
     username: userDetail.username,
     country: userDetail.country,
     language: userDetail.language,
@@ -1042,7 +1041,7 @@ const handleGetTopicTaskTaxonomy = async () => {
         topicOptions1.value = Object.keys(topicTaxonomy.value);
         taskOptions1.value = Object.keys(taskTaxonomy.value);
 
-        topic_principle_examples = res.data.topic_principle_examples;
+        topic_principle_examples.value = res.data.topic_principle_examples;
         task_taxonomy_examples = res.data.task_taxonomy;
 
         topic_task_count.value = res.data.topic_task_count;
@@ -1126,11 +1125,19 @@ onMounted(async () => {
     topicValue1.value = question.topic_1;
     setTimeout(() => {
       topicValue2.value = question.topic_2;
+      handleTopicValue2Change(question.topic_2);
     }, 100);
-    principlesList.value = question.principles;
+    // Keep all existing principles, and pad with empty strings until there are 5 items.
+    const principles = Array.isArray(question.principles)
+      ? question.principles
+      : [];
+    principlesList.value = principles.concat(
+      Array(Math.max(5 - principles.length, 0)).fill("")
+    );
     taskValue1.value = question.task_1;
     setTimeout(() => {
       taskValue2.value = question.task_2;
+      handleTaskValue2Change(question.task_2);
     }, 100);
     answer_model.value = question.answer_model;
     annotationDataOrigin = {
@@ -1228,11 +1235,11 @@ const handleTaskValue2Change = (newValue) => {
 const principleExample = ref([]);
 const taskExample = ref([]);
 
-let topic_principle_examples = {};
+const topic_principle_examples = ref({});
 let task_taxonomy_examples = {};
 const handleTopicValue2Change = (newValue) => {
   if (newValue) {
-    principleExample.value = topic_principle_examples[newValue];
+    principleExample.value = topic_principle_examples.value[newValue];
   }
 };
 
