@@ -317,6 +317,7 @@
         </div>
         <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
           <el-tab-pane
+            :disabled="isSelectExistingTabDisabled"
             :label="
               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
               t('culturalValueAnnotation.step3.selectExisting') +
@@ -371,6 +372,7 @@
             </div>
           </el-tab-pane>
           <el-tab-pane
+            :disabled="isCreateNewTabDisabled"
             :label="
               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
               t('culturalValueAnnotation.step3.createNew') +
@@ -1180,9 +1182,46 @@ const handleTaskHistoryClick = () => {
 };
 
 //
-const activeNameSelect1 = ref("Select Existing or Refine");
+const activeNameSelect1 = ref("Select Existing or Refine"); //Create New
+// create new 模式下，如果没有候选问题，则强制切到 Create New。
+const shouldForceCreateNewTab = computed(() => {
+  return (
+    submit_type.value === "create new" &&
+    hasClickedSaveAndGetQuestionListBtn.value &&
+    questionOptions.value.length === 0
+  );
+});
+
+// Select Existing or Refine 何时禁用：
+// 1. create new 模式且无候选问题时；
+// 2. revise 模式下当前选中的不是该 tab 时。
+const isSelectExistingTabDisabled = computed(() => {
+  return (
+    shouldForceCreateNewTab.value ||
+    (submit_type.value === "revise" &&
+      activeNameSelect1.value !== "Select Existing or Refine")
+  );
+});
+
+// revise 模式下，如果当前不是 Create New，则禁止切到 Create New。
+const isCreateNewTabDisabled = computed(() => {
+  return (
+    submit_type.value === "revise" && activeNameSelect1.value !== "Create New"
+  );
+});
+
+watch(
+  [submit_type, hasClickedSaveAndGetQuestionListBtn, () => questionOptions.value.length],
+  () => {
+    // 当候选问题为空时，自动保持在 Create New，避免用户切回不可用的 tab。
+    if (shouldForceCreateNewTab.value) {
+      activeNameSelect1.value = "Create New";
+    }
+  }
+);
+
 const handleClick = (tab, event) => {
-  if (hasClickedGetAnswerBtn.value) {
+  if (hasClickedGetAnswerBtn.value || shouldForceCreateNewTab.value) {
     // 当hasClickedGetAnswerBtn为true时，阻止标签页切换
     event.preventDefault();
     return false;
