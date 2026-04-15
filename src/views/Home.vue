@@ -3,77 +3,126 @@
     <introComponent></introComponent>
 
     <div class="box">
-      <div class="leaderboard flex main-container">
-        <div class="left">
-          <div>
-            <router-link to="/benchmarks/benchmarks" aria-label="benchmarks" style="display: block;">
-              <img src="@/assets/images/leaderboard-image.png" alt="" />
-              <div class="cover"></div>
-            </router-link>
+      <div class="global-ai-values-challenge">
+        <div class="main-container">
+          <div class="left">
+            <img src="@/assets/images/Challenge_gif.gif" alt="" />
           </div>
-        </div>
-        <div class="right card">
-          <div class="title">
-            <img src="@/assets/images/home-icon-leaderboard.png" alt="" />
-            <h4>Benchmarks</h4>
-          </div>
-          <div>
-            <ul>
-              <li>
-                <p>4</p>
-                <p>basic value systems</p>
-              </li>
-              <li>
-                <p>33</p>
-                <p>Advanced LLMs</p>
-              </li>
-              <li>
-                <p>
-                  <SvgIcon
-                    class="svg-icon"
-                    name="icon-AlignmentLeaderboard"
-                  ></SvgIcon>
-                </p>
-                <p>Results Visualization</p>
-              </li>
-              <li>
-                <p>
-                  <SvgIcon
-                    class="svg-icon"
-                    name="icon-ValueComparison"
-                  ></SvgIcon>
-                </p>
-                <p>Model Comparison</p>
-              </li>
-              <li>
-                <p>
-                  <SvgIcon class="svg-icon" name="icon-valuesSpace"></SvgIcon>
-                </p>
-                <p>value space</p>
-              </li>
-            </ul>
-            <p class="p">
-              A comprehensive, self-evolving, and pluralistic evaluation
-              platform for LLM values, grounded in basic values and generative,
-              evolving assessments.
+          <div class="right">
+            <p><span>Join the New Event —— Launching Late April</span></p>
+            <img
+              class="global-ai-values-challenge-img"
+              src="@/assets/images/global-ai-values-challenge.png"
+              alt="global-ai-values-challenge"
+            />
+            <p class="intro">
+              Submit a real-world value dilemma + your reasoned answer. Join the
+              Global AI Values Challenge to explore human values and shape
+              responsible AI.
             </p>
-            <div>
-              <router-link to="/benchmarks/benchmarks" style="display: block;">
-                <span class="view-more-btn">
-                  <span>View more</span>
-                  <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
-                </span>
-              </router-link>
-            </div>
+            <a href="http://www.valuechallenge.ai/" target="_blank">
+              <span class="join-now-btn">
+                <span>Join now</span>
+                <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+              </span>
+            </a>
           </div>
         </div>
       </div>
       <div style="background: #f9f9f9">
+        <div
+          class="leaderboard flex main-container"
+          style="flex-direction: row-reverse"
+        >
+          <div class="left">
+            <div>
+              <router-link
+                to="/benchmarks/benchmarks"
+                aria-label="benchmarks"
+                style="display: block"
+              >
+                <img src="@/assets/images/leaderboard-image.png" alt="" />
+                <div class="cover"></div>
+              </router-link>
+            </div>
+          </div>
+          <div class="right card">
+            <div class="title">
+              <img src="@/assets/images/home-icon-leaderboard.png" alt="" />
+              <h4>Benchmarks</h4>
+            </div>
+            <p style="text-align: center; margin: .8em 0 1.2em">
+              <a href="" target="_blank">
+                <span class="view-more-btn">
+                  <span>Read paper</span>
+                  <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+                </span>
+              </a>
+            </p>
+            <div>
+              <ul>
+                <li>
+                  <p>4</p>
+                  <p>basic value systems</p>
+                </li>
+                <li>
+                  <p>33</p>
+                  <p>Advanced LLMs</p>
+                </li>
+                <li>
+                  <p>
+                    <SvgIcon
+                      class="svg-icon"
+                      name="icon-AlignmentLeaderboard"
+                    ></SvgIcon>
+                  </p>
+                  <p>Results Visualization</p>
+                </li>
+                <li>
+                  <p>
+                    <SvgIcon
+                      class="svg-icon"
+                      name="icon-ValueComparison"
+                    ></SvgIcon>
+                  </p>
+                  <p>Model Comparison</p>
+                </li>
+                <li>
+                  <p>
+                    <SvgIcon class="svg-icon" name="icon-valuesSpace"></SvgIcon>
+                  </p>
+                  <p>value space</p>
+                </li>
+              </ul>
+              <p class="p">
+                A comprehensive, self-evolving, and pluralistic evaluation
+                platform for LLM values, grounded in basic values and
+                generative, evolving assessments.
+              </p>
+              <div>
+                <router-link to="/benchmarks/benchmarks" style="display: block">
+                  <span class="view-more-btn">
+                    <span>View more</span>
+                    <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+                  </span>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div class="flex main-container" style="padding: 2.8em 0">
           <div class="left" style="width: 100%">
             <div
               class="card"
-              style="border: 0; display: flex; gap: 6em; align-items: center"
+              style="
+                border: 0;
+                display: flex;
+                gap: 6em;
+                align-items: center;
+                flex-direction: row-reverse;
+              "
             >
               <div class="title">
                 <img
@@ -90,7 +139,10 @@
                   alignment techniques.
                 </p>
                 <div>
-                  <a href="https://valuecompass.github.io/Research/papers/" style="display: block;">
+                  <a
+                    href="https://valuecompass.github.io/Research/papers/"
+                    style="display: block"
+                  >
                     <span class="view-more-btn">
                       <span>View more</span>
                       <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
@@ -124,12 +176,13 @@
           </div> -->
         </div>
       </div>
-      <div class="latest-news main-container" style="padding: 4.5em 0">
-        <div class="title">
-          <img src="@/assets/images/home-icon-news.png" alt="" />
-          <h4>Latest News</h4>
-        </div>
-        <!-- <ul>
+      <div style="background: #f9f9f9">
+        <div class="latest-news main-container" style="padding: 4.5em 0">
+          <div class="title">
+            <img src="@/assets/images/home-icon-news.png" alt="" />
+            <h4>Latest News</h4>
+          </div>
+          <!-- <ul>
           <li>
             <img src="" alt="">
             <div class="bottom">
@@ -139,7 +192,8 @@
             </div>
           </li>
         </ul> -->
-        <postsComponent style="margin-top: 3em"></postsComponent>
+          <postsComponent style="margin-top: 3em"></postsComponent>
+        </div>
       </div>
     </div>
   </div>
@@ -179,11 +233,17 @@ import postsComponent from "../components/Home/posts.vue";
         transition: all 0.5s;
       }
       .cover {
+        // background: linear-gradient(
+        //   270deg,
+        //   #fff 52%,
+        //   rgba(255, 255, 255, 0) 100%
+        // );
         background: linear-gradient(
           270deg,
-          #fff 52%,
-          rgba(255, 255, 255, 0) 100%
+          #f9f9f9 52%,
+          rgba(249, 249, 249, 0) 100%
         );
+
         height: calc(100% + 20px);
         width: 97.57%;
         position: absolute;
@@ -192,7 +252,8 @@ import postsComponent from "../components/Home/posts.vue";
       }
     }
     .right {
-      background: #fff;
+      // background: #fff;
+      background: #f9f9f9;
       position: relative;
       z-index: 2;
       padding: 2.25em 1.75em;
@@ -265,6 +326,7 @@ import postsComponent from "../components/Home/posts.vue";
     align-content: center;
     font-size: 1.25em;
     cursor: pointer;
+    font-weight: 600;
     svg {
       width: 1.2em;
       height: 1.2em;
@@ -286,6 +348,79 @@ import postsComponent from "../components/Home/posts.vue";
       svg {
         color: var(--theme-color);
         transition: all 0.2s;
+      }
+    }
+  }
+
+  .global-ai-values-challenge {
+    padding: 4.625em 0;
+    background: linear-gradient(
+      281.23deg,
+      #def1ff -3.61%,
+      #ffffff 15.48%,
+      #ffffff 84.58%,
+      rgba(220, 253, 238, 0.8) 104.53%
+    );
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      gap: 2em;
+      align-items: center;
+      .left {
+        width: 40%;
+        box-sizing: border-box;
+        // padding: 0 9em;
+        img {
+          width: 54%;
+          margin: 0 auto;
+          display: block;
+        }
+      }
+      .right {
+        flex: 1;
+        padding: 2.25em 1.75em;
+        & > p:nth-child(1) {
+          font-size: 1.25em;
+          font-weight: 500;
+          span {
+            border-radius: 6px;
+            line-height: 1.85;
+            display: inline-block;
+            padding: 0 1.15em;
+            color: rgba(5, 64, 140, 1);
+            background: linear-gradient(90deg, #dcfdee 0%, #c7d3ff 100%);
+          }
+        }
+        & > .global-ai-values-challenge-img {
+          width: 50em;
+        }
+        p.intro {
+          font-size: 1.25em;
+          line-height: 1.8;
+        }
+        .join-now-btn {
+          color: #fff;
+          margin-top: 1.5em;
+          background: rgba(11, 112, 195, 1);
+          padding: 0.8em 1.2em;
+          border-radius: 6px;
+          display: inline-flex;
+          flex-direction: row;
+          align-content: center;
+          font-size: 1.25em;
+          cursor: pointer;
+          font-weight: 600;
+          svg {
+            width: 1.2em;
+            height: 1.2em;
+            margin-left: 0.4em;
+            transform: translate(0, -6%) rotate(-45deg);
+          }
+          &:hover {
+            opacity: 0.8;
+            transition: all 0.2s;
+          }
+        }
       }
     }
   }

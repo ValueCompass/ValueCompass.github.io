@@ -6,7 +6,11 @@
         <h2>Aligning AI with Basic Human Values</h2>
         <div>
           <p>
-            To advance AI towards a human-machine symbiotic future, we introduce the <b>Value Compass Project</b>—an interdisciplinary initiative that integrates social science, ethics, and human values to redefine LLM alignment. Grounded in universal, pluralistic and adaptive human values, our research focuses on three core areas:
+            To advance AI towards a human-machine symbiotic future, we introduce
+            the <b>Value Compass Project</b>—an interdisciplinary initiative
+            that integrates social science, ethics, and human values to redefine
+            LLM alignment. Grounded in universal, pluralistic and adaptive human
+            values, our research focuses on three core areas:
           </p>
           <b
             ><p>
@@ -30,13 +34,23 @@
                 >valuecompass@microsoft.com</span
               ></span
             > -->
-            <a href="mailto:valuecompass@microsoft.com" class="btn">Contact Us</a>
+            <a href="mailto:valuecompass@microsoft.com" 
+              >
+              <span class="btn">
+                <span>Contact Us</span>
+                <SvgIcon class="svg-icon" name="arrow_right__icon"></SvgIcon>
+              </span>
+              </a
+            >
             <a
               href="https://github.com/microsoft/ValueCompass.git"
               target="_blank"
-              class="btn github-btn"
-              >Github</a
             >
+              <span class="github-btn btn">
+                <span>GitHub</span>
+                <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+              </span>
+            </a>
           </div>
         </div>
       </div>
@@ -94,7 +108,7 @@ onMounted(async () => {
 });
 </script>
 <style scoped lang="scss">
-.home-template{
+.home-template {
   background: #f9f9f9;
 }
 .test-container {
@@ -116,11 +130,12 @@ onMounted(async () => {
     &.animate-on-load {
       opacity: 1;
       transform: translateY(0%);
-      h2{
-        margin: .33em 0;
+      h2 {
+        margin: 0.33em 0;
         transition: all 1s ease-out 0.1s;
       }
-      p,.btn-container{
+      p,
+      .btn-container {
         margin: 0.6em 0;
         transition: all 1s ease-out 0.1s;
       }
@@ -133,7 +148,7 @@ onMounted(async () => {
       font-style: italic;
     }
     h2 {
-      margin: .66em 0;
+      margin: 0.66em 0;
       color: #004f8f;
       font-size: 2.25em;
       font-style: italic;
@@ -198,28 +213,30 @@ onMounted(async () => {
   }
   .btn-container {
     margin-top: 4em;
+    display: flex;
+    gap: 1em;
     .btn {
-      cursor: pointer;
-
-      display: inline-block;
-
-      margin-right: 1em;
-
-      border-radius: 6px;
-
-      font-size: 1.25em;
-
-      width: 7.45em;
       height: 2.9em;
-      line-height: 2.9em;
-      text-align: center;
       box-sizing: border-box;
-
+      color: var(--theme-color);
       border: 2px solid var(--theme-color);
 
       background: #fff;
 
-      color: var(--theme-color);
+      padding: 0.8em 1.2em;
+      border-radius: 6px;
+      display: inline-flex;
+      flex-direction: row;
+      align-content: center;
+      font-size: 1.25em;
+      cursor: pointer;
+      font-weight: 600;
+      svg {
+        width: 1.2em;
+        height: 1.2em;
+        margin-left: 0.4em;
+        
+      }
       &:hover {
         opacity: 0.8;
         transition: all 0.2s;
@@ -231,6 +248,9 @@ onMounted(async () => {
         color: #fff;
 
         background: var(--theme-color);
+        svg{
+          transform: translate(0, -6%) rotate(-45deg);
+        }
       }
     }
   }
