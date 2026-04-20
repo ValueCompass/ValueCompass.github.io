@@ -34,6 +34,14 @@
             </li>
           </ul>
         </li>
+        <li>
+          <a href="http://www.valuechallenge.ai/" target="_blank">
+              <span class="join-now-btn">
+                <span>Global Value Challenge</span>
+                <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
+              </span>
+            </a>
+        </li>
         <li
           @mouseenter="mouseenter"
           @mouseleave="mouseleave"
@@ -260,6 +268,16 @@ const copyText = (text: string) => {
             a:hover {
               color: var(--theme-color);
             }
+          }
+        }
+
+        .join-now-btn{
+          display: flex;
+          gap: 0.1em;
+          svg{
+            width: 1.2em;
+            height: 1.2em;
+            transform: translateY(6%) rotate(-45deg);
           }
         }
       }
