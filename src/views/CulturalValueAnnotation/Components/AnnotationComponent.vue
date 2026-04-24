@@ -22,7 +22,7 @@
           />
 
           <div v-if="!isAddingNew">
-            status: {{ highlightCuesStatus[currentCueIndex] }}
+            status: {{ getStatusDisplayText(highlightCuesStatus[currentCueIndex]) }}
             <div class="button-container1" v-if="!isCueEditMode || isAddingNew">
               <el-button class="keep" @click="handleKeepClick('cue')"
                 >{{ t("common.keep") }}</el-button
@@ -60,7 +60,7 @@
           />
 
           <div v-if="!isAddingNew">
-            status: {{ keyConceptsStatus[currentCueIndex] }}
+            status: {{ getStatusDisplayText(keyConceptsStatus[currentCueIndex]) }}
             <div
               class="button-container1"
               v-if="!isConceptEditMode || isAddingNew"
@@ -168,6 +168,8 @@ const annotationData = reactive({
 // 跟踪每个关键词的状态（keep/delete/edit/add）
 const highlightCuesStatus = ref([]);
 const keyConceptsStatus = ref([]);
+const originalHighlightCues = ref([]);
+const originalKeyConcepts = ref([]);
 
 // 检查并移除不存在于response中的highlight_cues
 const validateHighlightCues = () => {
@@ -186,6 +188,8 @@ const validateHighlightCues = () => {
   // 更新数组
   annotationData.highlight_cues = validCues;
   annotationData.key_concepts = validConcepts;
+  originalHighlightCues.value = [...validCues];
+  originalKeyConcepts.value = [...validConcepts];
 
   // 确保 highlightCuesStatus 和 keyConceptsStatus 数组的长度与 highlight_cues 一致
   highlightCuesStatus.value = Array(annotationData.highlight_cues.length).fill(
@@ -229,6 +233,32 @@ const isConceptEditMode = ref(false);
 
 // 标识是否正在添加新的cue和concept
 const isAddingNew = ref(false);
+
+const getStatusDisplayText = (status) => {
+  if (status === "edit") {
+    return "revise";
+  }
+
+  return status;
+};
+
+const getKeepResultStatus = (type) => {
+  if (currentCueIndex.value < 0) {
+    return null;
+  }
+
+  if (type === "cue") {
+    return annotationData.highlight_cues[currentCueIndex.value] ===
+      originalHighlightCues.value[currentCueIndex.value]
+      ? "keep"
+      : "edit";
+  }
+
+  return annotationData.key_concepts[currentCueIndex.value] ===
+    originalKeyConcepts.value[currentCueIndex.value]
+    ? "keep"
+    : "edit";
+};
 
 // 临时存储编辑中的值
 const editCue = ref("");
@@ -421,7 +451,8 @@ const handleKeepClick = (type) => {
   if (type === "cue") {
     // 如果当前cue的状态是add，则保持为add，否则设置为keep
     if (highlightCuesStatus.value[currentCueIndex.value] !== "add") {
-      highlightCuesStatus.value[currentCueIndex.value] = "keep";
+      highlightCuesStatus.value[currentCueIndex.value] =
+        getKeepResultStatus("cue");
     }
 
     // 如果之前concept的状态是delete，现在cue改成keep，则将concept重置为空状态
@@ -433,7 +464,8 @@ const handleKeepClick = (type) => {
   } else if (type === "concept") {
     // 如果当前concept的状态是add，则保持为add，否则设置为keep
     if (keyConceptsStatus.value[currentCueIndex.value] !== "add") {
-      keyConceptsStatus.value[currentCueIndex.value] = "keep";
+      keyConceptsStatus.value[currentCueIndex.value] =
+        getKeepResultStatus("concept");
     }
 
     // 如果之前cue的状态是delete，现在concept改成keep，则将cue重置为空状态

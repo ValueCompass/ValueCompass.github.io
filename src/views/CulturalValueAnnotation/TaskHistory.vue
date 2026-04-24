@@ -1,11 +1,10 @@
 <template>
   <div class="main-container" style="position: relative">
-    <UserHeader />
     <div>
-      <h2 style="margin-top: 2em; font-size: 1.5em; color: #0b70c3">
+      <h2 style="margin-top: 2rem; font-size: 1.5em; color: #0b70c3">
         Task History
       </h2>
-      <div style="position: absolute; right: 0em; top: 2em; display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px;justify-content: flex-end;margin-top: 2em;">
         <el-button color="#0B70C3" @click="downloadTaskHistory"
           >Download JSON</el-button
         >
@@ -14,11 +13,19 @@
         >
       </div>
     </div>
-    <el-table :data="tableData" border style="width: 100%; margin-top: 2em">
+    <el-table
+      :data="tableData"
+      border
+      class="task-history-table"
+      v-loading="tableLoading"
+      max-height="calc(100vh - 300px)"
+      min-height="200"
+      style="width: 100%; margin-top: 1em"
+    >
       <el-table-column type="index" width="90" label="Number" />
       <el-table-column prop="question" label="Question" min-width="360">
         <template #default="scope">
-          <span class="question-link" @click="handleQuestionClick(scope.row)">
+          <span>
             {{ scope.row.question }}
           </span>
         </template>
@@ -28,8 +35,28 @@
       <el-table-column prop="task_1" label="Task 1" width="140" />
       <el-table-column prop="task_2" label="Task 2" width="140" />
       <el-table-column prop="timestamp" label="Timestamp" width="140" />
+      <el-table-column label="Actions" width="160" fixed="right">
+        <template #default="scope">
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="action-link"
+              @click="handleEditClick(scope.row)"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="action-link"
+              @click="handleDeleteRow(scope.row)"
+            >
+              Delete
+            </button>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
-    <div class="bth-container" style="margin-bottom: 4em">
+    <div class="bth-container">
       <el-button type="primary" color="#0B70C3" @click="handleCreateClick"
         >Create a new one</el-button
       >
@@ -39,10 +66,9 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { GetAllCompletedAnnotations } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
-import UserHeader from "./Components/UserHeader.vue";
 
 const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 
@@ -50,14 +76,43 @@ const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 const handleQuestionClick = (question) => {
   // 跳转到指定页面，这里可以根据需求修改路由
   console.log(question);
-  const index = question.index;
+  const index = question.index || question.id;
   console.log("要传的question信息", question);
   sessionStorage.setItem("editCurrentQuestion", JSON.stringify(question));
   router.push({
-    path: "/CulturalValueAnnotation/" + index,
+    path: "/CulturalValueAnnotation/edit/" + index,
     // params: question,
     // query: question
   });
+};
+
+const handleEditClick = (row) => {
+  handleQuestionClick(row);
+};
+
+const handleDeleteRow = async (row) => {
+  try {
+    await ElMessageBox.confirm(
+      "Are you sure you want to delete this task history record?",
+      "Confirm Delete",
+      {
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning",
+      }
+    );
+
+    tableData.value = tableData.value.filter((item) => item.id !== row.id);
+
+    if (downLoadData.value && row.id in downLoadData.value) {
+      delete downLoadData.value[row.id];
+      downLoadData.value = { ...downLoadData.value };
+    }
+
+    ElMessage.success("Record removed from current list");
+  } catch {
+    return;
+  }
 };
 
 const tableData = ref([
@@ -70,19 +125,23 @@ const tableData = ref([
 
 const handleCreateClick = () => {
   router.push({
-    path: "/CulturalValueAnnotation",
+    path: "/CulturalValueAnnotation/home",
   });
 };
 
 const taskHistory = ref([]);
 
 const downLoadData = ref(null);
+const tableLoading = ref(false);
+
 onMounted(() => {
   const userDetailStorage = localStorage.getItem("userDetail");
   if (!userDetailStorage) {
-    router.push({ path: "/CulturalValueAnnotation" });
+    router.push({ path: "/CulturalValueAnnotation/Login" });
     return;
   }
+
+  tableLoading.value = true;
 
   GetAllCompletedAnnotations({
     username: userDetail.username,
@@ -97,6 +156,7 @@ onMounted(() => {
       const dataArray = Object.entries(res.data.annotations).map(
         ([key, value]) => ({
           id: key,
+          index: key,
           ...value,
           // 格式化timestamp为年月日时分秒的中国时间（UTC+8）格式
           timestamp: value.timestamp
@@ -117,7 +177,9 @@ onMounted(() => {
     .catch((err) => {
       ElMessage.error(err.message);
     })
-    .finally(() => {});
+    .finally(() => {
+      tableLoading.value = false;
+    });
 });
 
 // 格式化timestamp为中国时间（UTC+8）的年月日时分秒格式
@@ -286,10 +348,41 @@ const downloadExcel = () => {
 </script>
 
 <style scoped lang="scss">
+:deep(.task-history-table .el-table__header th.el-table__cell) {
+  background: #f8ecd8;
+  color: #001e44;
+  font-weight: 600;
+}
+
+:deep(.task-history-table .el-table__header th.el-table__cell .cell) {
+  color: inherit;
+}
+
 .question-link {
   color: #0b70c3;
   cursor: pointer;
   text-decoration: underline;
+  &:hover {
+    color: #095aa7;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.action-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #0b70c3;
+  font-size: 16px;
+  line-height: 1.5;
+  text-decoration: underline;
+  cursor: pointer;
+
   &:hover {
     color: #095aa7;
   }
@@ -300,7 +393,7 @@ const downloadExcel = () => {
 }
 
 .bth-container {
-  margin-top: 5em;
+  margin: 2em 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
