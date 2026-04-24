@@ -161,8 +161,9 @@ const copyText = (text: string) => {
 .header-component {
   background: #f9f9f9;
   padding: 1em 0;
-  padding-right: 3.75em;
   font-size: 1em;
+  height: 6.375em;
+  box-sizing: border-box;
   & > .nav {
     a {
       color: #2f2f2f;

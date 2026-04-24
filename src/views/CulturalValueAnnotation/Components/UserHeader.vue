@@ -1,5 +1,5 @@
 <template>
-  <div class="user-header">
+  <div class="user-header main-container">
     <el-button
       style="height: 2.8em; font-size: 1em"
       @click="handleLogoutClick"
@@ -41,7 +41,7 @@ const handleLogoutClick = () => {
 <style scoped lang="scss">
 .user-header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   gap: 1em;
   flex-wrap: wrap;

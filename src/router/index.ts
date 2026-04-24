@@ -177,25 +177,50 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/CulturalValueAnnotation',
     name: 'CulturalValueAnnotation',
-    redirect: '/CulturalValueAnnotation/home',
     // component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+    meta: {
+      requiresCulturalValueAnnotationAuth: false
+    },
     children: [
       {
-        path: 'home',
-        name: 'CulturalValueAnnotationHome',
+        path: '',
         component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+         redirect: '/CulturalValueAnnotation/home',
+        meta: {
+          requiresCulturalValueAnnotationAuth: true
+        },
+        children: [
+          {
+            path: 'home',
+            name: 'CulturalValueAnnotationHome',
+            component: () => import('../views/CulturalValueAnnotation/Home.vue'),
+          },
+          {
+            path: 'TaskHistory',
+            name: 'TaskHistory',
+            component: () => import('../views/CulturalValueAnnotation/TaskHistory.vue'),
+          },
+          {
+            path: 'edit/:id',
+            name: 'CulturalValueAnnotationDetail',
+            component: () => import('../views/CulturalValueAnnotation/Home.vue'),
+          },
+          {
+            path: 'onboarding',
+            name: 'CulturalValueAnnotationOnboarding',
+            component: () => import('../views/CulturalValueAnnotation/Onboarding.vue'),
+          },
+        ]
       },
       {
-        path: ':id',
-        name: 'CulturalValueAnnotationDetail',
-        component: () => import('../views/CulturalValueAnnotation/Index.vue'),
+        path: 'Login',
+        name: 'CulturalValueAnnotationLogin',
+        component: () => import('../views/CulturalValueAnnotation/Login.vue'),
+        meta: {
+          requiresCulturalValueAnnotationAuth: false
+        }
       },
-      {
-        path: 'TaskHistory',
-        name: 'TaskHistory',
-        component: () => import('../views/CulturalValueAnnotation/TaskHistory.vue'),
-
-      },
+      
     ]
   },
   
@@ -205,6 +230,23 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
+
+
+
+const hasCulturalValueAnnotationLogin = () => {
+  const userDetail = localStorage.getItem('userDetail')
+
+  if (!userDetail) {
+    return false
+  }
+
+  try {
+    const parsedUserDetail = JSON.parse(userDetail)
+    return !!parsedUserDetail?.username
+  } catch {
+    return false
+  }
+}
 
 // 前端添加密码，防止release流程未走完，外部人员访问
 router.beforeEach((to, from, next) => {
@@ -219,9 +261,27 @@ router.beforeEach((to, from, next) => {
       name: 'Login',
       query: { redirect: to.fullPath }
     })
-  } else {
-    next();
   }
+
+  const isCulturalValueAnnotationRoute = to.path.startsWith('/CulturalValueAnnotation')
+
+  if (isCulturalValueAnnotationRoute && to.name === 'CulturalValueAnnotationLogin' && hasCulturalValueAnnotationLogin()) {
+    next({
+      path: '/CulturalValueAnnotation/home'
+    })
+    return
+  }
+
+  if (isCulturalValueAnnotationRoute && to.matched.some((record) => record.meta.requiresCulturalValueAnnotationAuth)) {
+    if (!hasCulturalValueAnnotationLogin()) {
+      next({
+        path: '/CulturalValueAnnotation/Login'
+      })
+      return
+    }
+  }
+
+  next();
 })
 
 // router.beforeEach((to, from, next) => {
