@@ -213,7 +213,7 @@ const copyText = (text: string) => {
           }
         }
 
-        margin-left: 2.68em;
+        margin-left: 2em;
 
         font-weight: 700;
         line-height: 1.68em;

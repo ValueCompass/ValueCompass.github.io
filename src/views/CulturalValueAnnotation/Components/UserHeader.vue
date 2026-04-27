@@ -45,6 +45,7 @@ const handleLogoutClick = () => {
   align-items: center;
   gap: 1em;
   flex-wrap: wrap;
+  z-index: 2;
 
   .user-summary {
     display: flex;

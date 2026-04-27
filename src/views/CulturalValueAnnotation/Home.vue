@@ -3,7 +3,7 @@
 		<div style="display: flex; flex-direction: column; gap: 0.6em">
 			<div style="display: flex;">
 				<el-button
-					style="height: 2.8em; font-size: 1em"
+					style="height: 2.8em; font-size: 1em; position: relative; z-index: 4;"
 					type="primary"
 					color="#0B70C3"
 					plain

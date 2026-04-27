@@ -12,7 +12,7 @@
       <div class="box">
         <div class="user-detail">
           <div>
-            <h2>Welcome to the Data Annotation System</h2>
+            <h2>Welcome to Cultural Data Annotation System</h2>
             <p>Log in or create an account to continue</p>
           </div>
 
@@ -99,7 +99,11 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
-import { login } from "@/service/CulturalValueAnnotationApi.ts";
+import {
+  login,
+  UserRegisterLogin,
+} from "@/service/CulturalValueAnnotationApi.ts";
+import router from "../../router";
 
 const dialogVisible = ref(true);
 const isLoading = ref(false);
@@ -162,6 +166,61 @@ const nextStep = () => {
   };
   console.log(formData);
   isLoading.value = true;
+  let sendData = {};
+  if (isFirstLogin.value) {
+    sendData = {
+      register_login: "register",
+      username: username.value.trim(),
+      country: countryValue.value,
+    };
+  } else {
+    sendData = {
+      register_login: "login",
+      username: username.value.trim(),
+    };
+  }
+  UserRegisterLogin(sendData)
+    .then((res) => {
+      console.log(res);
+      if (res.data.ok) {
+        if (res.data.message && !res.data.username) {
+          ElMessage.warning(res.data.message);
+          return;
+        } else {
+          localStorage.setItem(
+            "userDetail",
+            JSON.stringify({
+              username: res.data.username,
+              country: res.data.country,
+              language: res.data.language,
+            }),
+          );
+          if (res.data.studied_annotation_guidance === false) {
+            router.push({
+              name: "CulturalValueAnnotationOnboarding",
+            });
+          } else {
+            router.push({
+              name: "CulturalValueAnnotationHome",
+            });
+          }
+        }
+        // 登录成功，跳转到下一个页面
+        // router.push({ name: "CulturalValueAnnotation" });
+      } else {
+        ElMessage.error("error");
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      ElMessage.error("error");
+    })
+    .finally(() => {
+      // 无论成功还是失败，都执行的操作
+      console.log("无论成功还是失败，都执行的操作");
+      isLoading.value = false;
+    });
+  return;
 
   login(formData)
     .then((res) => {
@@ -227,7 +286,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 2.5em;
   font-size: 1rem;
-  width: 720px;
+  width: 779px;
 
   background-color: #fff;
   box-shadow: 0px 32px 64px -12px rgba(25, 28, 30, 0.06);
@@ -260,7 +319,6 @@ onMounted(() => {
       gap: 8px;
       & > p:nth-child(1) {
         color: rgba(64, 71, 81, 0.8);
-        font-size: 12px;
       }
       .login-options {
         display: flex;

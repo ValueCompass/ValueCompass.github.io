@@ -215,11 +215,13 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
+import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
 
 const currentStep = ref(1);
 const showSurveyModule = ref(false);
 const registeredUserName = ref("hua");
 const registeredUserCountry = ref("");
+const registeredUserLanguage = ref("");
 const surveyLinksExpanded = ref(false);
 const router = useRouter();
 
@@ -361,7 +363,11 @@ const normalizeLanguageLabel = (label) => {
 };
 
 const preferredSurveyLanguage = computed(() => {
-  return countryLanguageMap[registeredUserCountry.value] || "English";
+  return (
+    registeredUserLanguage.value ||
+    countryLanguageMap[registeredUserCountry.value] ||
+    "English"
+  );
 });
 
 const getVisibleSurveyLinks = (links) => {
@@ -494,7 +500,11 @@ const handleSurveyNext = () => {
   if (!allSurveysCompleted.value) {
     return;
   }
-
+  StudiedAnnotationGuidance(
+    {username: registeredUserName.value, country: registeredUserCountry.value, language: registeredUserLanguage.value}
+  ).then((res) => {
+  }).catch((err) => {
+  });
   router.push("/CulturalValueAnnotation/home");
 };
 
@@ -558,12 +568,11 @@ onMounted(() => {
     const storedUserDetail = JSON.parse(
       localStorage.getItem("userDetail") || "{}",
     );
-    // 从已保存的登录信息中读取用户名和国家，用于问卷区展示与语言排序。
+    // 从已保存的登录信息中读取用户名、国家和语言，用于问卷区展示与语言排序。
     registeredUserName.value = storedUserDetail.username?.trim() || "hua";
     registeredUserCountry.value = storedUserDetail.country?.trim() || "";
+    registeredUserLanguage.value = storedUserDetail.language?.trim() || "";
   } catch {
-    registeredUserName.value = "hua";
-    registeredUserCountry.value = "";
   }
 
   if (!videoElement.value) {

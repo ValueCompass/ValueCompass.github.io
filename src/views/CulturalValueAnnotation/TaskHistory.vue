@@ -34,21 +34,31 @@
       <el-table-column prop="topic_2" label="Topic 2" width="140" />
       <el-table-column prop="task_1" label="Task 1" width="140" />
       <el-table-column prop="task_2" label="Task 2" width="140" />
-      <el-table-column prop="timestamp" label="Timestamp" width="140" />
+      <el-table-column prop="timestamp" label="Timestamp" width="180">
+        <template #default="scope">
+          <span>
+            {{
+              scope.row.timestamp
+                ? formatTimestampToChinaTime(scope.row.timestamp)
+                : ""
+            }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="Actions" width="160" fixed="right">
         <template #default="scope">
           <div class="action-buttons">
             <button
               type="button"
               class="action-link"
-              @click="handleEditClick(scope.row)"
+              @click="handleEditClick(scope.row, scope.$index)"
             >
               Edit
             </button>
             <button
               type="button"
               class="action-link"
-              @click="handleDeleteRow(scope.row)"
+              @click="handleDeleteRow(scope.row, scope.$index)"
             >
               Delete
             </button>
@@ -67,16 +77,23 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { GetAllCompletedAnnotations } from "@/service/CulturalValueAnnotationApi";
+import { GetAllCompletedAnnotations, DeleteAnnotationItem } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
 
 const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+const tableRowKeys = ref([]);
 
 // 点击问题时的处理函数
-const handleQuestionClick = (question) => {
+const handleQuestionClick = (question, rowIndex) => {
   // 跳转到指定页面，这里可以根据需求修改路由
   console.log(question);
-  const index = question.index || question.id;
+  const index = tableRowKeys.value[rowIndex];
+
+  if (!index) {
+    ElMessage.error("Failed to locate record id");
+    return;
+  }
+
   console.log("要传的question信息", question);
   sessionStorage.setItem("editCurrentQuestion", JSON.stringify(question));
   router.push({
@@ -86,11 +103,11 @@ const handleQuestionClick = (question) => {
   });
 };
 
-const handleEditClick = (row) => {
-  handleQuestionClick(row);
+const handleEditClick = (row, rowIndex) => {
+  handleQuestionClick(row, rowIndex);
 };
 
-const handleDeleteRow = async (row) => {
+const handleDeleteRow = async (row, rowIndex) => {
   try {
     await ElMessageBox.confirm(
       "Are you sure you want to delete this task history record?",
@@ -102,15 +119,37 @@ const handleDeleteRow = async (row) => {
       }
     );
 
-    tableData.value = tableData.value.filter((item) => item.id !== row.id);
+    const payload = {
+      username: userDetail.username,
+      country: userDetail.country,
+      language: userDetail.language,
+      annotation: row,
+    };
 
-    if (downLoadData.value && row.id in downLoadData.value) {
-      delete downLoadData.value[row.id];
+    const res = await DeleteAnnotationItem(payload);
+
+    if (!res?.data?.ok) {
+      ElMessage.error("Delete failed");
+      return;
+    }
+
+    const rowKey = tableRowKeys.value[rowIndex];
+
+    tableData.value.splice(rowIndex, 1);
+    tableRowKeys.value.splice(rowIndex, 1);
+
+    if (downLoadData.value && rowKey in downLoadData.value) {
+      delete downLoadData.value[rowKey];
       downLoadData.value = { ...downLoadData.value };
     }
 
-    ElMessage.success("Record removed from current list");
-  } catch {
+    ElMessage.success("Delete successful");
+  } catch (error) {
+    if (error === "cancel") {
+      return;
+    }
+
+    ElMessage.error("Delete failed");
     return;
   }
 };
@@ -153,24 +192,23 @@ onMounted(() => {
       downLoadData.value = res.data.annotations;
 
       // 将对象转换为数组
-      const dataArray = Object.entries(res.data.annotations).map(
+      const annotationEntries = Object.entries(res.data.annotations).map(
         ([key, value]) => ({
-          id: key,
-          index: key,
-          ...value,
-          // 格式化timestamp为年月日时分秒的中国时间（UTC+8）格式
-          timestamp: value.timestamp
-            ? formatTimestampToChinaTime(value.timestamp)
-            : "",
+          key,
+          row: {
+            ...value,
+          },
         })
       );
 
-      if (dataArray.length === 0) {
+      if (annotationEntries.length === 0) {
         ElMessage.warning("No task history found.");
         return;
       } else {
         // 页面按倒序展示，确保最新记录在最上方
-        tableData.value = [...dataArray].reverse();
+        const reversedEntries = [...annotationEntries].reverse();
+        tableData.value = reversedEntries.map((entry) => entry.row);
+        tableRowKeys.value = reversedEntries.map((entry) => entry.key);
         console.log("tableData.value", tableData.value);
       }
     })

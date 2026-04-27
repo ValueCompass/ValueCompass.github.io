@@ -23,6 +23,43 @@ export const login = (data: any): any => {
     });
 }
 
+export const UserRegisterLogin = (data: any): any => {
+    // return request.post("/annotations/user_register_login/", data)
+
+    const result = {
+        data: {
+            "ok": true,
+            username: "tiantian",
+            country: "China",
+            
+            language: "Chinese",
+            studied_annotation_guidance: false,
+        }
+    }
+
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 1000);
+    });
+}
+
+export const StudiedAnnotationGuidance = (data: any): any => {
+    // return request.post("/annotations/studied_annotation_guidance/", data)
+
+    const result = {
+        data: {
+            "ok": true,
+        }
+    }
+
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 1000);
+    });
+}
+
 export const getTopicTaskTaxonomy = (data: any): any => {
     return request.post("/annotations/get_topic_task_taxonomy/", data) 
 
@@ -137,6 +174,23 @@ export const GetAllCompletedAnnotations = (data: any): any => {
         }, 1000);
     });
 }
+
+
+export const DeleteAnnotationItem = (data: any): any => {
+    return request.post("annotations/delete", data) 
+
+    const result = {
+        data: {
+            "ok": true,
+        }
+    }
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 1000);
+    });
+}
+
 
 
 
