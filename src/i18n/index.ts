@@ -11,13 +11,26 @@ const languageObj = {
   "Korean": 'ko'
 }
 
+const countryLanguageMap = {
+  China: "Chinese",
+  Japan: "Japanese",
+  "South Korea": "Korean",
+  Korea: "Korean",
+  "Republic of Korea": "Korean",
+}
+
 const storedUserDetail = JSON.parse(localStorage.getItem('userDetail') || '{}');
 const storedLanguage = storedUserDetail.language;
+const storedCountry = storedUserDetail.country;
 
 // Determine the locale: if storedLanguage is a language code (en/zh/ja/ko), use it directly;
-// otherwise, try to map it from languageObj
+// otherwise, try to map it from languageObj;
+// if language is missing, fall back to country -> language -> locale
 const getLocale = () => {
-  if (!storedLanguage) return 'en';
+  if (!storedLanguage) {
+    const fallbackLanguage = countryLanguageMap[storedCountry as keyof typeof countryLanguageMap];
+    return languageObj[fallbackLanguage as keyof typeof languageObj] || 'en';
+  }
   
   // Check if storedLanguage is already a language code
   if (['en', 'zh', 'ja', 'ko'].includes(storedLanguage)) {
