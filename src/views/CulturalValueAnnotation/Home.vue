@@ -291,23 +291,38 @@
 						v-html="t('culturalValueAnnotation.step4.questionRequirement2')"
 					></p>
 				</div>
-				<div>
-					<div style="background: #FFFF00;font-weight: bold;padding: 10px;display: inline-block;">
-						<span>{{
-							t("culturalValueAnnotation.step4.annotatedQuestions")
-						}}</span>
-						<span
-							>{{ t("culturalValueAnnotation.step4.newQuestions") }}:
-							<b>{{ actionCounts.create }}</b></span
-						>;&nbsp;&nbsp;
-						<span
-							>{{ t("culturalValueAnnotation.step4.existingQuestions") }}:
-							<b>{{ actionCounts["select existing"] }}</b></span
-						>;&nbsp;&nbsp;
-						<span
-							>{{ t("culturalValueAnnotation.step4.refinedQuestions") }}:
-							<b>{{ actionCounts.refine }}</b></span
-						>
+				<div class="annotated-summary">
+					<div class="annotated-summary__label">
+						{{ t("culturalValueAnnotation.step4.annotatedQuestions") }}
+					</div>
+					<div class="annotated-summary__content">
+						<table class="annotated-summary__stats">
+							<tbody>
+								<tr>
+									<td class="annotated-summary__stat-title">
+										{{ t("culturalValueAnnotation.step4.newQuestions") }}
+									</td>
+									<td class="annotated-summary__stat-title">
+										{{ t("culturalValueAnnotation.step4.existingQuestions") }}
+									</td>
+									<td class="annotated-summary__stat-title">
+										{{ t("culturalValueAnnotation.step4.refinedQuestions") }}
+									</td>
+								</tr>
+								<tr>
+									<td class="annotated-summary__stat-value">{{ actionCounts.create }}</td>
+									<td class="annotated-summary__stat-value">{{ actionCounts["select existing"] }}</td>
+									<td class="annotated-summary__stat-value">{{ actionCounts.refine }}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="annotated-summary__note">
+							<span class="annotated-summary__note-label">Note:</span>
+							<span>
+								You must cover and balance three types of questions: Select,
+								Refine, Create. Avoid using only one type.
+							</span>
+						</div>
 					</div>
 				</div>
 				<el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
@@ -316,11 +331,9 @@
 						:label="
 							'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
 							t('culturalValueAnnotation.step3.selectExisting') +
-							' & ' +
-							t('culturalValueAnnotation.step3.refine') +
-							'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 						"
-						name="Select Existing or Refine"
+						name="Select Existing Question"
 					>
 						<div class="input-container question-input-container">
 							<span>{{ t("culturalValueAnnotation.step4.question") }}</span>
@@ -328,26 +341,28 @@
 								class="question-select-and-refine-container"
 								style="
 									position: relative;
-									width: calc(100% - 5em);
-									padding-right: 2em;
+									width: calc(100% - 16em);
 									box-sizing: border-box;
 								"
 							>
-								<el-input
+								<!-- <el-input
 									v-model="questionValue_Select"
 									style="position: relative; z-index: 2"
 									type="textarea"
 									:autosize="{ minRows: 2, maxRows: 10 }"
 									placeholder="Please input"
 									:disabled="hasClickedGetAnswerBtn"
-								/>
+								/> -->
+                
 
 								<el-select
+                  class="Question-select cultural-alignment-el-select"
+                  popper-class=""
 									v-model="questionValue_Select_origin"
 									placeholder="Select"
-									style="position: absolute; left: 0; bottom: 0; width: 100%"
 									@change="handleSelectChange"
 									:disabled="hasClickedGetAnswerBtn"
+                  style="width: 100%"
 								>
 									<template #label="{ label, value }">
 										<div class="text-content">
@@ -363,7 +378,45 @@
 										:value="item.question"
 									/>
 								</el-select>
+
+                
 							</div>
+              <button style="width: 4.5rem;height: 4.5rem;font-size: .85em;padding: 0; background: #fff;color: rgba(11, 112, 195, 1);" @click="activeNameSelect1 = 'Refine Question'">Edit<br>the<br>Question</button>
+						</div>
+					</el-tab-pane>
+          <el-tab-pane
+						:disabled="isRefineTabDisabled"
+						:label="
+							'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+							t('culturalValueAnnotation.step3.refine') +
+							'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+						"
+						name="Refine Question"
+					>
+						<div class="input-container question-input-container">
+							<span>{{ t("culturalValueAnnotation.step4.question") }}</span>
+							<div
+								class="question-select-and-refine-container"
+								style="
+									position: relative;
+									width: calc(100% - 16em);
+									box-sizing: border-box;
+								"
+							>
+								<el-input
+									v-model="questionValue_Select"
+									style="position: relative; z-index: 2"
+									type="textarea"
+									:autosize="{ minRows: 2, maxRows: 10 }"
+									placeholder="Please input"
+									:disabled="hasClickedGetAnswerBtn"
+								/>
+
+								
+							</div>
+
+                            <button style="width: 4.5rem;height: 4.5rem;font-size: .85em;padding: 0; background: #fff;color: rgba(11, 112, 195, 1);" @click="activeNameSelect1 = 'Select Existing Question'">Change<br>the<br>Question</button>
+
 						</div>
 					</el-tab-pane>
 					<el-tab-pane
@@ -379,7 +432,7 @@
 							<span>{{ t("culturalValueAnnotation.step4.question") }}</span>
 							<el-input
 								v-model="questionValue_Create"
-								style="width: calc(100% - 5em)"
+								style="width: calc(100% - 16em)"
 								type="textarea"
 								:autosize="{ minRows: 2, maxRows: 10 }"
 								placeholder="Please input"
@@ -815,10 +868,7 @@ const handleGetAnswerBtnClick = () => {
 	} else {
 		step3FormData.raw_importance = rawImportanceValue.value;
 		step3FormData.raw_frequency = rawFrequencyValue.value;
-		if (
-			questionValue_Select.value.trim() ==
-			questionValue_Select_origin.value.trim()
-		) {
+		if (activeNameSelect1.value === "Select Existing Question") {
 			step3FormData.raw_question = questionValue_Select_origin.value.trim();
 			step3FormData.question_action = "select existing";
 
@@ -1115,8 +1165,12 @@ onMounted(async () => {
 		if (question.question_action == "create") {
 			activeNameSelect1.value = "Create New";
 			questionValue_Create.value = question.question;
+		} else if (question.question_action == "select existing") {
+			activeNameSelect1.value = "Select Existing Question";
+			questionValue_Select.value = question.question;
+			questionValue_Select_origin.value = question.raw_question;
 		} else {
-			activeNameSelect1.value = "Select Existing or Refine";
+			activeNameSelect1.value = "Refine Question";
 			questionValue_Select.value = question.question;
 			questionValue_Select_origin.value = question.raw_question;
 		}
@@ -1179,7 +1233,7 @@ const handleTaskHistoryClick = () => {
 };
 
 //
-const activeNameSelect1 = ref("Select Existing or Refine"); //Create New
+const activeNameSelect1 = ref("Select Existing Question"); //Create New
 // create new 模式下，如果没有候选问题，则强制切到 Create New。
 const shouldForceCreateNewTab = computed(() => {
 	return (
@@ -1189,14 +1243,22 @@ const shouldForceCreateNewTab = computed(() => {
 	);
 });
 
-// Select Existing or Refine 何时禁用：
+// Select Existing Question 何时禁用：
 // 1. create new 模式且无候选问题时；
 // 2. revise 模式下当前选中的不是该 tab 时。
 const isSelectExistingTabDisabled = computed(() => {
 	return (
 		shouldForceCreateNewTab.value ||
 		(submit_type.value === "revise" &&
-			activeNameSelect1.value !== "Select Existing or Refine")
+			activeNameSelect1.value !== "Select Existing Question")
+	);
+});
+
+const isRefineTabDisabled = computed(() => {
+	return (
+		shouldForceCreateNewTab.value ||
+		(submit_type.value === "revise" &&
+			activeNameSelect1.value !== "Refine Question")
 	);
 });
 
@@ -1358,7 +1420,7 @@ const getQuestionNum = () => {
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
-			gap: 0.5em 0.5em;
+			gap: 0.5em 0.85em;
 			align-items: center;
 			.el-button {
 				align-self: flex-end;
@@ -1411,6 +1473,107 @@ const getQuestionNum = () => {
 			}
 		}
 		&.step4 {
+			.annotated-summary {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				margin-bottom: 1.5rem;
+				max-width: 72rem;
+
+				&__label {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					width: 9em;
+					flex-shrink: 0;
+					font-weight: bold;
+					line-height: 1.65;
+					text-align: right;
+					color: #172033;
+				}
+
+				&__content {
+					display: flex;
+					flex-direction: column;
+					min-width: 0;
+					flex: 0 1 auto;
+					width: auto;
+					max-width: calc(100% - 10rem);
+				}
+
+				&__stats {
+					display: inline-table;
+					align-self: flex-start;
+					width: auto;
+					max-width: none;
+					border-collapse: collapse;
+					table-layout: auto;
+					background: #fff;
+					border: 1px solid #cfd3d8;
+
+					tr:first-child {
+						td {
+							padding-top: 0.95rem;
+							padding-bottom: 0.9rem;
+						}
+					}
+
+					tr:last-child {
+						td {
+							padding-top: 0.75rem;
+							padding-bottom: 0.95rem;
+						}
+					}
+
+					tr:first-child td {
+						border-bottom: 1px solid #cfd3d8;
+					}
+
+					td {
+						// width: 33.333%;
+						padding-left: 2.4rem;
+						padding-right: 2.4rem;
+						text-align: center;
+						vertical-align: middle;
+						border-right: 1px solid #c9d4df;
+
+						&:last-child {
+							border-right: none;
+						}
+					}
+				}
+
+				&__stat-title {
+					display: table-cell;
+					font-size: 0.875rem;
+					font-weight: 500;
+					line-height: 1.35;
+					color: #3f3f46;
+				}
+
+				&__stat-value {
+					display: table-cell;
+					font-size: 1.5rem;
+					line-height: 1;
+					font-weight: 700;
+					color: #2f3136;
+				}
+
+				&__note {
+					align-self: flex-start;
+					padding-top: 0.35rem;
+					font-size: 1rem;
+					line-height: 1.45;
+					color: #5b5b5b;
+				}
+
+				&__note-label {
+					font-weight: 700;
+					color: #4b5563;
+					margin-right: 0.25rem;
+				}
+			}
+
 			.score-container {
 				display: flex;
 				flex-direction: row;
@@ -1418,10 +1581,23 @@ const getQuestionNum = () => {
 				margin-top: -1rem;
 				& > div {
 					span {
-						margin-right: 1em;
+						margin-right: .85em;
+            width: 9em;
+            display: inline-block;
+            text-align: right;
+            font-weight: bold;
 					}
 				}
 			}
+      .input-container.question-input-container {
+        & > span:nth-child(1) {
+          width: 9em;
+          display: inline-block;
+          text-align: right;
+          font-weight: bold;
+        }
+      }
+
 		}
 
 		.show_question_container {
@@ -1443,7 +1619,6 @@ const getQuestionNum = () => {
 
 	:deep(.el-select) {
 		.el-select__wrapper {
-			height: 2.5em;
 			font-size: 1rem;
 			&.is-disabled {
 				background: #fff !important;
@@ -1520,4 +1695,60 @@ const getQuestionNum = () => {
 
 
 
+</style>
+
+<style lang="scss">
+.step-container .cultural-alignment-el-select {
+
+  .el-select__wrapper {
+    box-shadow: none !important;
+    border: 1px solid rgba(217, 217, 217, 1);
+    border-radius: 6px;
+    padding: .2em 0.75em;
+    font-size: 1rem;
+    height: 5em;
+
+    .el-select__selected-item {
+      line-height: 1.3;
+    }
+  }
+
+  &.Question-select {
+    .el-select__wrapper {
+      border: none;
+      background-color: #fff;
+      min-height: 3.8rem;
+      border:1px solid rgb(217, 217, 217);
+
+      
+
+      .text-content {
+        height: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+
+        &>div {
+          width: 100%;
+          display: flex;
+          overflow: auto;
+
+          p {
+            padding: 0;
+            width: 100%;
+            line-height: 1.3;
+          }
+
+        }
+      }
+    }
+  }
+}
+
+.step-container {
+  .el-textarea__inner{
+    padding: 1em 1em !important;
+  }
+}
 </style>
