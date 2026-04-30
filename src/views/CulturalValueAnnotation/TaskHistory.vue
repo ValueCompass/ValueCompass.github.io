@@ -119,11 +119,18 @@ const handleDeleteRow = async (row, rowIndex) => {
       }
     );
 
+    // const payload = {
+    //   username: userDetail.username,
+    //   country: userDetail.country,
+    //   language: userDetail.language,
+    //   annotation: row,
+    // };
     const payload = {
       username: userDetail.username,
       country: userDetail.country,
       language: userDetail.language,
-      annotation: row,
+      ...row,
+      data_index: row.index
     };
 
     const res = await DeleteAnnotationItem(payload);
@@ -206,7 +213,8 @@ onMounted(() => {
         return;
       } else {
         // 页面按倒序展示，确保最新记录在最上方
-        const reversedEntries = [...annotationEntries].reverse();
+        // const reversedEntries = [...annotationEntries].reverse();
+        const reversedEntries = [...annotationEntries];
         tableData.value = reversedEntries.map((entry) => entry.row);
         tableRowKeys.value = reversedEntries.map((entry) => entry.key);
         console.log("tableData.value", tableData.value);

@@ -500,23 +500,28 @@ const handleSurveyNext = () => {
   if (!allSurveysCompleted.value) {
     return;
   }
-  StudiedAnnotationGuidance(
-    {username: registeredUserName.value, country: registeredUserCountry.value, language: registeredUserLanguage.value}
-  ).then((res) => {
-    try {
-      const storedUserDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
-      localStorage.setItem(
-        "userDetail",
-        JSON.stringify({
-          ...storedUserDetail,
-          studied_annotation_guidance: true,
-        }),
-      );
-    } catch {
-    }
-  }).catch((err) => {
-  });
-  router.push("/CulturalValueAnnotation/home");
+  StudiedAnnotationGuidance({
+    username: registeredUserName.value,
+    country: registeredUserCountry.value,
+    language: registeredUserLanguage.value,
+  })
+    .then((res) => {
+      try {
+        const storedUserDetail = JSON.parse(
+          localStorage.getItem("userDetail") || "{}",
+        );
+        localStorage.setItem(
+          "userDetail",
+          JSON.stringify({
+            ...storedUserDetail,
+            studied_annotation_guidance: true,
+          }),
+        );
+        router.push("/CulturalValueAnnotation/home");
+        window.location.reload();
+      } catch {}
+    })
+    .catch((err) => {});
 };
 
 const handleCopyRegisteredName = async () => {
@@ -583,8 +588,7 @@ onMounted(() => {
     registeredUserName.value = storedUserDetail.username?.trim() || "hua";
     registeredUserCountry.value = storedUserDetail.country?.trim() || "";
     registeredUserLanguage.value = storedUserDetail.language?.trim() || "";
-  } catch {
-  }
+  } catch {}
 
   if (!videoElement.value) {
     return;
@@ -767,7 +771,7 @@ onBeforeUnmount(() => {
             background: rgba(0, 0, 0, 0.28);
             pointer-events: none;
           }
-          img{
+          img {
             display: none;
           }
         }

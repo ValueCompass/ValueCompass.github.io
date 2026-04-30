@@ -230,22 +230,28 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
-
-
-
-const hasCulturalValueAnnotationLogin = () => {
+const getCulturalValueAnnotationUserDetail = () => {
   const userDetail = localStorage.getItem('userDetail')
 
   if (!userDetail) {
-    return false
+    return null
   }
 
   try {
-    const parsedUserDetail = JSON.parse(userDetail)
-    return !!parsedUserDetail?.username
+    return JSON.parse(userDetail)
   } catch {
-    return false
+    return null
   }
+}
+
+const hasCulturalValueAnnotationLogin = () => {
+  const parsedUserDetail = getCulturalValueAnnotationUserDetail()
+  return !!parsedUserDetail?.username
+}
+
+const hasStudiedCulturalValueAnnotationGuidance = () => {
+  const parsedUserDetail = getCulturalValueAnnotationUserDetail()
+  return parsedUserDetail?.studied_annotation_guidance === true
 }
 
 // 前端添加密码，防止release流程未走完，外部人员访问
@@ -267,7 +273,9 @@ router.beforeEach((to, from, next) => {
 
   if (isCulturalValueAnnotationRoute && to.name === 'CulturalValueAnnotationLogin' && hasCulturalValueAnnotationLogin()) {
     next({
-      path: '/CulturalValueAnnotation/home'
+      path: hasStudiedCulturalValueAnnotationGuidance()
+        ? '/CulturalValueAnnotation/home'
+        : '/CulturalValueAnnotation/onboarding'
     })
     return
   }
@@ -276,6 +284,13 @@ router.beforeEach((to, from, next) => {
     if (!hasCulturalValueAnnotationLogin()) {
       next({
         path: '/CulturalValueAnnotation/Login'
+      })
+      return
+    }
+
+    if (to.name !== 'CulturalValueAnnotationOnboarding' && !hasStudiedCulturalValueAnnotationGuidance()) {
+      next({
+        path: '/CulturalValueAnnotation/onboarding'
       })
       return
     }

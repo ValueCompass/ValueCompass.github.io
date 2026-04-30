@@ -580,7 +580,7 @@
         <div class="highlight-container">
           <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
-            <div class="question_box">
+            <div class="question_box" style="flex: 1;">
               {{ questionValue }}
             </div>
           </div>

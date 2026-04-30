@@ -177,7 +177,7 @@ export const GetAllCompletedAnnotations = (data: any): any => {
 
 
 export const DeleteAnnotationItem = (data: any): any => {
-    return request.post("annotations_test/delete", data) 
+    return request.post("annotations_test/delete_annotation/", data) 
 
     const result = {
         data: {

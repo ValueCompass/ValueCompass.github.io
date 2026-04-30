@@ -55,7 +55,7 @@
               </p>
             </div>
             <div
-              v-if="isFirstLogin !== null && isFirstLogin === true"
+              v-if="isFirstLogin !== null"
               class="login-section"
             >
               <p>Country</p>
@@ -172,7 +172,7 @@ const nextStep = () => {
     sendData = {
       register_login: "login",
       username: username.value.trim(),
-      country: "China",
+      country: countryValue.value,
     };
   }
   UserRegisterLogin(sendData)
