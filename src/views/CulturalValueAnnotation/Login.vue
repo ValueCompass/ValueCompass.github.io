@@ -145,11 +145,7 @@ const countryOptions = ref([
 ]);
 
 const isDisabled = computed(() => {
-  return isFirstLogin.value === true
-    ? !username.value.trim() || !countryValue.value
-    : isFirstLogin.value === false
-      ? !username.value.trim()
-      : true;
+  return !username.value.trim() || !countryValue.value
 });
 
 const emit = defineEmits(["hideUsrerContainer"]);

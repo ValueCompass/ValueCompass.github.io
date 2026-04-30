@@ -104,6 +104,7 @@ import "swiper/css";
 import "video.js/dist/video-js.css";
 import {
   computed,
+  defineProps,
   nextTick,
   onBeforeUnmount,
   onMounted,
@@ -111,6 +112,13 @@ import {
   watch,
 } from "vue";
 import { useRouter } from "vue-router";
+
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const swiperModules = [A11y];
 
@@ -320,6 +328,12 @@ const swiperRef = ref(null);
 const videoElements = ref([]);
 const videoPlayers = [];
 
+const pauseAllPlayers = () => {
+  videoPlayers.forEach((player) => {
+    player?.pause?.();
+  });
+};
+
 const setVideoElementRef = (index) => {
   return (element) => {
     if (element) {
@@ -486,6 +500,15 @@ watch(currentStep, (stepId) => {
 
   pauseInactivePlayers(targetIndex);
 });
+
+watch(
+  () => props.visible,
+  (visible) => {
+    if (!visible) {
+      pauseAllPlayers();
+    }
+  },
+);
 
 onBeforeUnmount(() => {
   videoPlayers.forEach((player) => {

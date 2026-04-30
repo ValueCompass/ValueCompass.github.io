@@ -16,29 +16,36 @@
       <div class="step step1">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step1.title") }}</h4>
-          <p>
-            {{ t("culturalValueAnnotation.step1.note") }}
-          </p>
-          <div>
-            <p>{{ t("culturalValueAnnotation.step1.selectionCriteria") }}</p>
-            <ul>
-              <li>
-                {{ t("culturalValueAnnotation.step1.selectionCriteria1") }}
-              </li>
-              <li>
-                {{ t("culturalValueAnnotation.step1.selectionCriteria2") }}
-              </li>
-              <li>
-                {{ t("culturalValueAnnotation.step1.selectionCriteria3") }}
-              </li>
-              <li>
-                {{ t("culturalValueAnnotation.step1.selectionCriteria4") }}
-              </li>
-            </ul>
+          <div class="core-action-box">
+            <h5>
+              {{ t("culturalValueAnnotation.step1.coreAction") }}
+            </h5>
           </div>
-          <p>
-            {{ t("culturalValueAnnotation.step1.customNote") }}
-          </p>
+
+          <div class="seconed-container">
+            <p>{{ t("culturalValueAnnotation.step1.prioritizeTopics") }}</p>
+            <div style="padding-left: 1.5em" class="flex-column">
+              <p>
+                {{ t("culturalValueAnnotation.step1.prioritize1") }}
+              </p>
+              <p>
+                {{ t("culturalValueAnnotation.step1.prioritize2") }}
+              </p>
+              <p>
+                {{ t("culturalValueAnnotation.step1.prioritize3") }}
+              </p>
+              <p>
+                {{ t("culturalValueAnnotation.step1.prioritize4") }}
+              </p>
+            </div>
+            <p>
+              {{ t("culturalValueAnnotation.step1.customNote") }}
+            </p>
+            <p>
+              <b>{{ t("culturalValueAnnotation.step1.noteLabel") }}</b>
+              {{ t("culturalValueAnnotation.step1.repeatNote") }}
+            </p>
+          </div>
         </div>
         <div class="highlight-container">
           <div class="input-container">
@@ -49,6 +56,7 @@
               v-model="topicValue1"
               placeholder="Select Level-1"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
+              style="flex: 1"
             >
               <el-option
                 v-for="item in topicOptions1"
@@ -63,7 +71,7 @@
               placeholder="Select or Input Level-2"
               filterable
               allow-create
-              style=""
+              style="flex: 1"
               ref="selectRef"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
               @change="handleTopicValue2Change"
@@ -84,10 +92,14 @@
           <h4>
             {{ t("culturalValueAnnotation.step2.title") }}
           </h4>
-          <p v-html="t('culturalValueAnnotation.step2.note')"></p>
-          <div style="display: flex; justify-content: space-between">
-            <ul style="width: calc(100% - 2em)">
-              <li>
+          <div class="core-action-box">
+            <h5>
+              {{ t("culturalValueAnnotation.step2.coreAction") }}
+            </h5>
+          </div>
+          <div class="seconed-container">
+            <div style="display: flex; justify-content: space-between">
+              <div style="width: calc(50% - 2em)" class="flex-column">
                 <p>
                   {{ t("culturalValueAnnotation.step2.templateReference") }}
                 </p>
@@ -100,34 +112,39 @@
                   </li>
                   <li>{{ t("culturalValueAnnotation.step2.template5") }}</li>
                 </ul>
-              </li>
-              <li>
-                <p>
-                  <span
-                    v-html="t('culturalValueAnnotation.step2.instruction2')"
-                  ></span>
+
+                <div>
+                  <p>
+                    <b>{{
+                      t("culturalValueAnnotation.step2.rankByImportance")
+                    }}</b>
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <b>{{ t("culturalValueAnnotation.step2.noDuplicates") }}</b>
+                  </p>
+                </div>
+              </div>
+              <div
+                style="
+                  min-height: 6em;
+                  border: 1px solid #d9d9d9;
+                  border-radius: 24px;
+                  padding: 1em;
+                  line-height: 1.5;
+                  width: calc(50% - 2em);
+                "
+              >
+                <p class="example-title">
+                  <img src="@/assets/images/example-icon.png" />{{
+                    t("culturalValueAnnotation.step2.noteExampleText")
+                  }}
                 </p>
-              </li>
-              <li>
-                <p>{{ t("culturalValueAnnotation.step2.instruction3") }}</p>
-              </li>
-            </ul>
-            <div
-              style="
-                min-height: 6em;
-                border: 1px solid #d9d9d9;
-                border-radius: 24px;
-                padding: 1em;
-                line-height: 1.5;
-                width: calc(100% - 2em);
-              "
-            >
-              <p>
-                {{ t("culturalValueAnnotation.step2.noteExampleText") }}
-              </p>
-              <p v-for="(example, index) in principleExample" :key="index">
-                {{ index + 1 }}: {{ example }}
-              </p>
+                <p v-for="(example, index) in principleExample" :key="index">
+                  {{ index + 1 }}: {{ example }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -160,23 +177,36 @@
 
       <div class="step step3">
         <div class="intro-container">
-          <h4>
-            {{ t("culturalValueAnnotation.step3.title") }}
-          </h4>
-          <p v-html="t('culturalValueAnnotation.step3.note')"></p>
-          <p v-html="t('culturalValueAnnotation.step3.taskNote')"></p>
+          <h4>{{ t("culturalValueAnnotation.step3.title") }}</h4>
+          <div class="core-action-box">
+            <h5>{{ t("culturalValueAnnotation.step3.coreAction") }}</h5>
+          </div>
+          <div class="seconed-container">
+            <div>
+              <ul>
+                <li>{{ t("culturalValueAnnotation.step3.criteria1") }}</li>
+                <li>{{ t("culturalValueAnnotation.step3.criteria2") }}</li>
+              </ul>
+            </div>
+            <p>
+              <b>{{ t("culturalValueAnnotation.step3.note") }}</b>
+            </p>
+          </div>
         </div>
 
         <div class="highlight-container">
-          <span
+          <!-- <span
             ><b>{{ t("culturalValueAnnotation.step3.task") }}</b></span
-          >
-          <div class="input-container">
-            <!-- <span><b>{{ t("culturalValueAnnotation.step3.task") }}</b></span> -->
+          > -->
+          <div class="input-container" style="margin: 0">
+            <span style="width: 100%"
+              ><b>{{ t("culturalValueAnnotation.step3.task") }}</b></span
+            >
             <el-select
               v-model="taskValue1"
               placeholder="Select Level-1"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
+              style="width: calc(50% - 1em)"
             >
               <el-option
                 v-for="item in taskOptions1"
@@ -192,6 +222,7 @@
               allow-create
               :disabled="hasClickedSaveAndGetQuestionListBtn"
               @change="handleTaskValue2Change"
+              style="width: calc(50% - 1em)"
             >
               <el-option
                 v-for="item in taskOptions2"
@@ -201,22 +232,26 @@
               />
             </el-select>
           </div>
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 1em;
-              margin: 1.5em 0 2em;
-            "
-          >
-            <div class="">
-              <p style="margin-bottom: 0.7em"><b>Definition:</b></p>
-              <p>Definition: {{ taskExample ? taskExample.definition : "" }}</p>
-            </div>
-            <div class="">
-              <p style="margin-bottom: 0.7em"><b>Example:</b></p>
-              <p>Example: {{ taskExample ? taskExample.example : "" }}</p>
-            </div>
+
+          <div class="">
+            <p style="margin-bottom: 0.7em"><b>Definition:</b></p>
+            <p>
+              {{
+                taskExample && taskExample.definition
+                  ? taskExample.definition
+                  : t("culturalValueAnnotation.step3.definitionFallback")
+              }}
+            </p>
+          </div>
+          <div class="">
+            <p style="margin-bottom: 0.7em"><b>Example:</b></p>
+            <p>
+              {{
+                taskExample && taskExample.example
+                  ? taskExample.example
+                  : t("culturalValueAnnotation.step3.exampleFallback")
+              }}
+            </p>
           </div>
 
           <div style="display: flex">
@@ -278,43 +313,49 @@
       <div class="step step4">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step4.title") }}</h4>
-          <p v-html="t('culturalValueAnnotation.step4.note')"></p>
-          <div>
-            <p>{{ t("culturalValueAnnotation.step4.questionListIncludes") }}</p>
+          <div class="core-action-box flex-column">
+            <h5>
+              {{ t("culturalValueAnnotation.step4.coreAction") }}
+            </h5>
             <ul>
-              <li
-                v-html="
-                  t('culturalValueAnnotation.step4.questionListIncludes1')
-                "
-              ></li>
-              <li
-                v-html="
-                  t('culturalValueAnnotation.step4.questionListIncludes2')
-                "
-              ></li>
+              <li>{{ t("culturalValueAnnotation.step4.action1") }}</li>
+              <li>{{ t("culturalValueAnnotation.step4.action2") }}</li>
+              <li>{{ t("culturalValueAnnotation.step4.action3") }}</li>
             </ul>
           </div>
-          <div>
-            <p v-html="t('culturalValueAnnotation.step4.selectCriteria')"></p>
+          <div class="seconed-container flex-column">
+            <p>{{ t("culturalValueAnnotation.step4.scoreIntro") }}</p>
             <ul>
-              <li
-                v-html="t('culturalValueAnnotation.step4.selectCriteria1')"
-              ></li>
-              <li
-                v-html="t('culturalValueAnnotation.step4.selectCriteria2')"
-              ></li>
-              <li
-                v-html="t('culturalValueAnnotation.step4.selectCriteria3')"
-              ></li>
+              <li>
+                <b>{{
+                  t("culturalValueAnnotation.step4.importanceHintTitle")
+                }}</b>
+                {{ t("culturalValueAnnotation.step4.importanceHintText") }}
+              </li>
+              <li>
+                <b>{{
+                  t("culturalValueAnnotation.step4.frequencyHintTitle")
+                }}</b>
+                {{ t("culturalValueAnnotation.step4.frequencyHintText") }}
+              </li>
+            </ul>
+
+            <p>
+              {{ t("culturalValueAnnotation.step4.aiScoreNote") }}
+            </p>
+
+            <p>{{ t("culturalValueAnnotation.step4.prioritizeTitle") }}</p>
+            <ul>
+              <li>{{ t("culturalValueAnnotation.step4.prioritize1") }}</li>
+              <li>{{ t("culturalValueAnnotation.step4.prioritize2") }}</li>
+              <li>
+                <b>{{ t("culturalValueAnnotation.step4.prioritize3") }}</b>
+              </li>
+              <li>
+                {{ t("culturalValueAnnotation.step4.prioritize4") }}
+              </li>
             </ul>
           </div>
-          <p v-html="t('culturalValueAnnotation.step4.refineNote')"></p>
-          <p
-            v-html="t('culturalValueAnnotation.step4.questionRequirement')"
-          ></p>
-          <p
-            v-html="t('culturalValueAnnotation.step4.questionRequirement2')"
-          ></p>
         </div>
         <div
           class="highlight-container"
@@ -352,10 +393,11 @@
                 </tbody>
               </table>
               <div class="annotated-summary__note">
-                <span class="annotated-summary__note-label">Note:</span>
+                <span class="annotated-summary__note-label">{{
+                  t("culturalValueAnnotation.step4.noteLabel")
+                }}</span>
                 <span>
-                  You must cover and balance three types of questions: Select,
-                  Refine, Create. Avoid using only one type.
+                  {{ t("culturalValueAnnotation.step4.summaryNote") }}
                 </span>
               </div>
             </div>
@@ -556,58 +598,119 @@
       <div class="step step5">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step5.title") }}</h4>
-          <p v-html="t('culturalValueAnnotation.step5.note')"></p>
-          <p
-            v-html="t('culturalValueAnnotation.step5.highlightExplanation')"
-          ></p>
-          <div>
-            <p
-              v-html="t('culturalValueAnnotation.step5.reviewInstructions')"
-            ></p>
-            <ul>
-              <li v-html="t('culturalValueAnnotation.step5.action1')"></li>
-              <li v-html="t('culturalValueAnnotation.step5.action2')"></li>
-              <li v-html="t('culturalValueAnnotation.step5.action3')"></li>
-              <li v-html="t('culturalValueAnnotation.step5.action4')"></li>
+          <p>
+            {{ t("culturalValueAnnotation.step5.intro") }}
+          </p>
+          <p>
+            {{ t("culturalValueAnnotation.step5.highlightIntro") }}
+          </p>
+          <div class="core-action-box flex-column">
+            <h5>
+              {{ t("culturalValueAnnotation.step5.coreAction") }}
+            </h5>
+            <ul class="ul-decimal">
+              <li>
+                <p>
+                  {{ t("culturalValueAnnotation.step5.reviewValuesIntro") }}
+                </p>
+                <ul class="ul-lower-alpha">
+                  <li>
+                    {{ t("culturalValueAnnotation.step5.reviewValues1") }}
+                  </li>
+                  <li>
+                    {{ t("culturalValueAnnotation.step5.reviewValues2") }}
+                  </li>
+                  <li>
+                    {{ t("culturalValueAnnotation.step5.reviewValues3") }}
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p>
+                  {{ t("culturalValueAnnotation.step5.reviewTextIntro") }}
+                </p>
+                <ul class="ul-lower-alpha">
+                  <li>{{ t("culturalValueAnnotation.step5.reviewText1") }}</li>
+                  <li>{{ t("culturalValueAnnotation.step5.reviewText2") }}</li>
+                  <li>{{ t("culturalValueAnnotation.step5.reviewText3") }}</li>
+                </ul>
+              </li>
+            </ul>
+            <p>
+              <b>{{ t("culturalValueAnnotation.step5.wholeAnswerIntro") }}</b>
+            </p>
+            <ul class="ul-lower-alpha">
+              <li>{{ t("culturalValueAnnotation.step5.wholeAnswer1") }}</li>
+              <li>{{ t("culturalValueAnnotation.step5.wholeAnswer2") }}</li>
+            </ul>
+            <p>
+              {{ t("culturalValueAnnotation.step5.addNewHint") }}
+            </p>
+          </div>
+          <div class="seconed-container">
+            <p class="note-title">
+              <img src="@/assets/images/note-icon.png" alt="" />
+              <span>{{
+                t("culturalValueAnnotation.step5.importantRulesTitle")
+              }}</span>
+            </p>
+            <ul class="ul-decimal">
+              <li>
+                <p>{{ t("culturalValueAnnotation.step5.rule1Intro") }}</p>
+                <ul class="ul-lower-alpha">
+                  <li>{{ t("culturalValueAnnotation.step5.rule1a") }}</li>
+                  <li>{{ t("culturalValueAnnotation.step5.rule1b") }}</li>
+                  <li>{{ t("culturalValueAnnotation.step5.rule1c") }}</li>
+                </ul>
+              </li>
+              <li>
+                <p>{{ t("culturalValueAnnotation.step5.rule2") }}</p>
+              </li>
             </ul>
           </div>
 
-          <p v-html="t('culturalValueAnnotation.step5.checkAllFragments')"></p>
-          <p v-html="t('culturalValueAnnotation.step5.checkInstructions')"></p>
-          <p v-html="t('culturalValueAnnotation.step5.attentionNote')"></p>
-        </div>
-
-        <div class="highlight-container">
-          <div class="show_question_container" v-if="questionValue">
-            <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
-            <div class="question_box" style="flex: 1;">
-              {{ questionValue }}
+          <div class="highlight-container">
+            <div class="show_question_container" v-if="questionValue">
+              <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
+              <div class="question_box" style="flex: 1">
+                {{ questionValue }}
+              </div>
             </div>
-          </div>
-          <div
-            style="margin-top: 1em"
-            v-if="hasClickedGetAnswerBtn && submit_type !== 'revise'"
-          >
-            <el-button
-              plain
-              color="#0B70C3"
-              @click="handleReselectQuestionClick"
-              >Reselect Question</el-button
+            <div
+              style="margin-top: 1em"
+              v-if="hasClickedGetAnswerBtn && submit_type !== 'revise'"
             >
+              <el-button
+                plain
+                color="#0B70C3"
+                @click="handleReselectQuestionClick"
+                >Reselect Question</el-button
+              >
+            </div>
+            <AnnotationComponent
+              :annotationDataOrigin="annotationDataOrigin"
+              ref="annotationComponentRef"
+            ></AnnotationComponent>
           </div>
-          <AnnotationComponent
-            :annotationDataOrigin="annotationDataOrigin"
-            ref="annotationComponentRef"
-          ></AnnotationComponent>
         </div>
       </div>
 
       <div class="step step6">
         <div class="intro-container">
-          <h4>
-            {{ t("culturalValueAnnotation.step6.title") }}
-          </h4>
-          <p v-html="t('culturalValueAnnotation.step6.note')"></p>
+          <h4>{{ t("culturalValueAnnotation.step6.title") }}</h4>
+          <div class="core-action-box">
+            <h5>{{ t("culturalValueAnnotation.step6.coreAction") }}</h5>
+          </div>
+          <div class="seconed-container">
+            <p class="note-title">
+              <img src="@/assets/images/note-icon.png" alt="" />
+              <span>{{ t("culturalValueAnnotation.step6.noteTitle") }}</span>
+            </p>
+            <ul class="ul-lower-alpha">
+              <li>{{ t("culturalValueAnnotation.step6.note1") }}</li>
+              <li>{{ t("culturalValueAnnotation.step6.note2") }}</li>
+            </ul>
+          </div>
         </div>
 
         <div class="highlight-container">
@@ -689,21 +792,21 @@ const actionCounts = reactive({
   "select existing": 0,
 });
 
-const importanceScoreOptions = [
-  { value: 1, label: "1 - Not important at all" },
-  { value: 2, label: "2 - Slightly important" },
-  { value: 3, label: "3 - Moderately important" },
-  { value: 4, label: "4 - Important" },
-  { value: 5, label: "5 - Very important" },
-];
+const importanceScoreOptions = computed(() => [
+  { value: 1, label: t("culturalValueAnnotation.step4.importanceOption1") },
+  { value: 2, label: t("culturalValueAnnotation.step4.importanceOption2") },
+  { value: 3, label: t("culturalValueAnnotation.step4.importanceOption3") },
+  { value: 4, label: t("culturalValueAnnotation.step4.importanceOption4") },
+  { value: 5, label: t("culturalValueAnnotation.step4.importanceOption5") },
+]);
 
-const frequencyScoreOptions = [
-  { value: 1, label: "1 - Very rarely appears" },
-  { value: 2, label: "2 - Less frequently appears" },
-  { value: 3, label: "3 - Occasionally appears" },
-  { value: 4, label: "4 - Frequently appears" },
-  { value: 5, label: "5 - Very frequent, very common" },
-];
+const frequencyScoreOptions = computed(() => [
+  { value: 1, label: t("culturalValueAnnotation.step4.frequencyOption1") },
+  { value: 2, label: t("culturalValueAnnotation.step4.frequencyOption2") },
+  { value: 3, label: t("culturalValueAnnotation.step4.frequencyOption3") },
+  { value: 4, label: t("culturalValueAnnotation.step4.frequencyOption4") },
+  { value: 5, label: t("culturalValueAnnotation.step4.frequencyOption5") },
+]);
 
 const submit_type = ref("create new"); // "create new" or "revise"
 const duration_time = ref(0);
@@ -1476,6 +1579,7 @@ const getQuestionNum = () => {
   display: flex;
   flex-direction: column;
   gap: 3.75em 0;
+  line-height: 1.2;
   .step {
     display: flex;
     flex-direction: column;
@@ -1485,26 +1589,66 @@ const getQuestionNum = () => {
       flex-direction: column;
       gap: 0.8em 0;
       h4 {
-        font-size: 1.2em;
+        font-size: 1.5em;
         color: #05408c;
         font-weight: 600;
         font-style: italic;
         line-height: 1.5;
         // margin-bottom: 1em;
       }
+      .core-action-box {
+        font-size: 1.125em;
+        color: rgba(34, 34, 34, 1);
+        padding-left: 1.875rem;
+        background: url("@/assets/images/core-action-icon.png") no-repeat left
+          top;
+        background-size: 1.3em auto;
+      }
+      .seconed-container {
+        color: rgba(51, 51, 51, 1);
+        padding-left: 1.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75em 0;
+      }
+      .note-title,
+      .example-title {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        img {
+          width: 1.25rem;
+        }
+      }
+      .flex-column {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75em 0;
+      }
       p {
-        line-height: 1.5;
         font-size: 1em;
       }
       ul {
-        margin-top: 0.5em;
         display: flex;
         flex-direction: column;
         gap: 0.5em 0;
         padding-left: 2em;
         li {
-          font-size: 1rem;
-          line-height: 1.5;
+          line-height: 1.2;
+          list-style: disc;
+          & > p + ul {
+            margin-top: 0.5em;
+          }
+        }
+        &.ul-decimal {
+          li {
+            list-style: decimal;
+          }
+        }
+        &.ul-lower-alpha {
+          li {
+            list-style: lower-alpha;
+          }
         }
       }
     }
@@ -1705,15 +1849,9 @@ const getQuestionNum = () => {
       font-size: 1.25em;
       font-weight: bold;
       font-style: italic;
-      // & > span {
-      //   margin-top: 1em;
-      // }
-      & > .question_box {
-        // flex: 1;
-        // min-height: 2em;
-        // border: 1px solid rgb(217, 217, 217);
-        // border-radius: 12px;
-        // padding: 1em;
+      line-height: 1.2;
+      .question_box {
+        flex: 1;
       }
     }
 
@@ -1724,6 +1862,7 @@ const getQuestionNum = () => {
       display: flex;
       flex-direction: column;
       gap: 1.2em;
+      color: rgba(51, 51, 51, 1);
     }
   }
 

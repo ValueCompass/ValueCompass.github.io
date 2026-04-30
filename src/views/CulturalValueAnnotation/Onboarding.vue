@@ -432,7 +432,7 @@ let isRestoringTime = false;
 
 const resetPlaybackGuards = () => {
   maxPlayedTime = 0;
-  allowSeek = false;
+  allowSeek = !!currentStepData.value?.completed;
   isRestoringTime = false;
 };
 
@@ -484,6 +484,7 @@ const handlePreviousStep = () => {
 const handleNextStep = () => {
   if (isLastStep.value) {
     if (currentStepData.value?.completed) {
+      player?.pause();
       showSurveyModule.value = true;
     }
     return;
@@ -518,7 +519,9 @@ const handleSurveyNext = () => {
           }),
         );
         router.push("/CulturalValueAnnotation/home");
-        window.location.reload();
+        setTimeout(() => {
+            window.location.reload();
+        }, 200);
       } catch {}
     })
     .catch((err) => {});

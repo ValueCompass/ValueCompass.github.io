@@ -4,13 +4,13 @@
     <router-view />
     
     <el-dialog v-model="dialogTableVisible" title="" width="1376" class="onboarding-dialog" align-center>
-			<OnboardingDialog></OnboardingDialog>
-		</el-dialog>
+      <OnboardingDialog :visible="dialogTableVisible"></OnboardingDialog>
+    </el-dialog>
 
     <div v-if="!isOnboardingPage" class="View-tutorial-btn" @click="dialogTableVisible = true"><svgIcon
               
                 name="play-icon"
-              ></svgIcon><span>View tutorial</span></div>
+              ></svgIcon><span>{{isOnboardingPage}}View tutorial</span></div>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const dialogTableVisible = ref(false)
-const isOnboardingPage = computed(() => route.path === "/CulturalValueAnnotation/Onboarding");
+const isOnboardingPage = computed(() => route.path === "/CulturalValueAnnotation/onboarding");
 
 </script>
 
