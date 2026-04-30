@@ -64,7 +64,7 @@ padding: 60px 120px;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
   height: 3em;
-  width: 13em;
+  width: 16em;
   box-sizing: border-box;
   display: flex;
   align-items: center;

@@ -242,7 +242,7 @@ const steps = ref([
     heading: "Get to Know the Task",
     description:
       "Understand the workflow and purpose of the annotation system.",
-    completed: true,
+    completed: false,
     videoSrc: onboardingVideoStep1,
     videoType: "video/mp4",
   },
@@ -253,7 +253,7 @@ const steps = ref([
     heading: "Learn the Annotation Rules",
     description:
       "Learn rules and criteria to ensure consistent, reliable annotations.",
-    completed: true,
+    completed: false,
     videoSrc: onboardingVideoStep2,
     videoType: "video/mp4",
   },
@@ -264,7 +264,7 @@ const steps = ref([
     heading: "Examples & Practical",
     description:
       "See real examples to reinforce understanding and apply in practice.",
-    completed: true,
+    completed: false,
     videoSrc: onboardingVideoStep3,
     videoType: "video/mp4",
   },
