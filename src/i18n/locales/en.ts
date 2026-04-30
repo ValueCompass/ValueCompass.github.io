@@ -57,7 +57,7 @@ export default {
       note: 'To assist in generating questions that can <b>stimulate value thinking and expression</b>, we provide a <b>two-level task type system</b>.<br/>Under the second-level topic you selected, choose a task type that <b>occurs daily and best promotes value expression</b> (the definition and question examples of task types are given in the box below).<br/>In the next step, please construct questions according to the selected task type.',
       task: 'Task:',
       selectExisting: 'Select Existing Question',
-      refine: 'Refine',
+      refine: 'Refine Existing Question',
       createNew: 'Create New Question',
       taskNote: 'Note: The number marked after each second-level task type represents the existing value questions under that task type, used to support "Select Existing Question" annotation.'
     },

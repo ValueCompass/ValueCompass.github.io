@@ -159,12 +159,7 @@ const nextStep = () => {
     return;
   }
   // 提交表单数据
-  const formData = {
-    username: username.value.trim(),
-    country: countryValue.value,
-    language: "Chinese",
-  };
-  console.log(formData);
+
   isLoading.value = true;
   let sendData = {};
   if (isFirstLogin.value) {
@@ -177,39 +172,38 @@ const nextStep = () => {
     sendData = {
       register_login: "login",
       username: username.value.trim(),
+      country: "China",
     };
   }
   UserRegisterLogin(sendData)
     .then((res) => {
       console.log(res);
-      if (res.data.ok) {
-        if (res.data.message && !res.data.username) {
-          ElMessage.warning(res.data.message);
-          return;
-        } else {
-          localStorage.setItem(
-            "userDetail",
-            JSON.stringify({
-              username: res.data.username,
-              country: res.data.country,
-              language: res.data.language,
-            }),
-          );
-          if (res.data.studied_annotation_guidance === false) {
-            router.push({
-              name: "CulturalValueAnnotationOnboarding",
-            });
-          } else {
-            router.push({
-              name: "CulturalValueAnnotationHome",
-            });
-          }
-        }
-        // 登录成功，跳转到下一个页面
-        // router.push({ name: "CulturalValueAnnotation" });
+      if (!res.data.ok) {
+        ElMessage.warning(res.data.message);
+        return;
       } else {
-        ElMessage.error("error");
+        localStorage.setItem(
+          "userDetail",
+          JSON.stringify({
+            username: res.data.username,
+            country: res.data.country,
+            language: res.data.language,
+            studied_annotation_guidance: res.data.studied_annotation_guidance === true,
+          }),
+        );
+        if (res.data.studied_annotation_guidance === false) {
+          router.push({
+            name: "CulturalValueAnnotationOnboarding",
+          });
+        } else {
+          router.push({
+            name: "CulturalValueAnnotationHome",
+          });
+          window.location.reload();
+        }
       }
+      // 登录成功，跳转到下一个页面
+      // router.push({ name: "CulturalValueAnnotation" });
     })
     .catch((err) => {
       console.log(err);

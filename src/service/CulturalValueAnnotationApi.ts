@@ -8,7 +8,7 @@ const request = createAxios({
 });
 
 export const login = (data: any): any => {
-    return request.post("/annotations/user_login/", data)
+    return request.post("/annotations_test/user_login/", data)
 
     const result = {
         data: {
@@ -24,12 +24,12 @@ export const login = (data: any): any => {
 }
 
 export const UserRegisterLogin = (data: any): any => {
-    // return request.post("/annotations/user_register_login/", data)
+    return request.post("/annotations_test/user_register_login/", data)
 
     const result = {
         data: {
             "ok": true,
-            username: "tiantian",
+            username: "test1",
             country: "China",
             
             language: "Chinese",
@@ -45,7 +45,7 @@ export const UserRegisterLogin = (data: any): any => {
 }
 
 export const StudiedAnnotationGuidance = (data: any): any => {
-    // return request.post("/annotations/studied_annotation_guidance/", data)
+    return request.post("/annotations_test/studied_annotation_guidance/", data)
 
     const result = {
         data: {
@@ -61,7 +61,7 @@ export const StudiedAnnotationGuidance = (data: any): any => {
 }
 
 export const getTopicTaskTaxonomy = (data: any): any => {
-    return request.post("/annotations/get_topic_task_taxonomy/", data) 
+    return request.post("/annotations_test/get_topic_task_taxonomy/", data) 
 
     const result = {
         data: {
@@ -78,7 +78,7 @@ export const getTopicTaskTaxonomy = (data: any): any => {
 }
 
 export const getCandidateQuestions = (data: any): any => {
-    return request.post("/annotations/get_candidate_questions/", data) 
+    return request.post("/annotations_test/get_candidate_questions/", data) 
 
     const result = {
         data: {
@@ -94,7 +94,7 @@ export const getCandidateQuestions = (data: any): any => {
 }
 
 export const getQuestionResponse = (data: any): any => {
-    return request.post("/annotations/get_question_response/", data) 
+    return request.post("/annotations_test/get_question_response/", data) 
 
     const result = {
         data: {
@@ -114,7 +114,7 @@ export const getQuestionResponse = (data: any): any => {
 }
 
 export const submitAnnotation = (data: any): any => {
-    return request.post("/annotations/submit_annotation/", data) 
+    return request.post("/annotations_test/submit_annotation/", data) 
 
     const result = {
         data: {
@@ -134,7 +134,7 @@ export const submitAnnotation = (data: any): any => {
 
 
 export const GetAllCompletedAnnotations = (data: any): any => {
-    return request.post("/annotations/all_completed_annotations/", data) 
+    return request.post("/annotations_test/all_completed_annotations/", data) 
 
     const result = {
         data: {
@@ -177,7 +177,7 @@ export const GetAllCompletedAnnotations = (data: any): any => {
 
 
 export const DeleteAnnotationItem = (data: any): any => {
-    return request.post("annotations/delete", data) 
+    return request.post("annotations_test/delete", data) 
 
     const result = {
         data: {

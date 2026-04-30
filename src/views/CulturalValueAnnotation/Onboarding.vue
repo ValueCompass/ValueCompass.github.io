@@ -157,7 +157,7 @@
                       <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
                     </a>
                   </p>
-                  <button
+                  <!-- <button
                     v-if="surveyItem.canExpand"
                     type="button"
                     class="toggle-links-button"
@@ -168,7 +168,7 @@
                       <DArrowLeft v-if="surveyLinksExpanded" />
                       <DArrowRight v-else />
                     </el-icon>
-                  </button>
+                  </button> -->
                 </div>
                 <div>
                   <el-checkbox
@@ -222,7 +222,7 @@ const showSurveyModule = ref(false);
 const registeredUserName = ref("hua");
 const registeredUserCountry = ref("");
 const registeredUserLanguage = ref("");
-const surveyLinksExpanded = ref(false);
+const surveyLinksExpanded = ref(true);
 const router = useRouter();
 
 // 根据用户国家，决定问卷里优先展示的语言版本。
@@ -503,6 +503,17 @@ const handleSurveyNext = () => {
   StudiedAnnotationGuidance(
     {username: registeredUserName.value, country: registeredUserCountry.value, language: registeredUserLanguage.value}
   ).then((res) => {
+    try {
+      const storedUserDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+      localStorage.setItem(
+        "userDetail",
+        JSON.stringify({
+          ...storedUserDetail,
+          studied_annotation_guidance: true,
+        }),
+      );
+    } catch {
+    }
   }).catch((err) => {
   });
   router.push("/CulturalValueAnnotation/home");
