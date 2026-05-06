@@ -104,6 +104,8 @@ import {
   UserRegisterLogin,
 } from "@/service/CulturalValueAnnotationApi.ts";
 import router from "../../router";
+import { syncLocaleFromUserDetail } from "@/i18n";
+
 
 const dialogVisible = ref(true);
 const isLoading = ref(false);
@@ -192,10 +194,14 @@ const nextStep = () => {
             name: "CulturalValueAnnotationOnboarding",
           });
         } else {
+          const storedUserDetail = JSON.parse(
+            localStorage.getItem("userDetail") || "{}",
+          );
+          syncLocaleFromUserDetail(storedUserDetail);
           router.push({
             name: "CulturalValueAnnotationHome",
           });
-          window.location.reload();
+          // window.location.reload();
         }
       }
       // 登录成功，跳转到下一个页面

@@ -216,6 +216,7 @@ import "video.js/dist/video-js.css";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
+import { syncLocaleFromUserDetail } from "@/i18n";
 
 const currentStep = ref(1);
 const showSurveyModule = ref(false);
@@ -518,10 +519,11 @@ const handleSurveyNext = () => {
             studied_annotation_guidance: true,
           }),
         );
+        syncLocaleFromUserDetail(storedUserDetail);
         router.push("/CulturalValueAnnotation/home");
-        setTimeout(() => {
-            window.location.reload();
-        }, 200);
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 200);
       } catch {}
     })
     .catch((err) => {});

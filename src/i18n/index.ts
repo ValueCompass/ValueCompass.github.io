@@ -4,6 +4,8 @@ import zh from './locales/zh'
 import ja from './locales/ja'
 import ko from './locales/ko'
 
+const supportedLocales = ['en', 'zh', 'ja', 'ko']
+
 const languageObj = {
   "English": 'en',
   "Chinese": 'zh',
@@ -19,31 +21,26 @@ const countryLanguageMap = {
   "Republic of Korea": "Korean",
 }
 
-const storedUserDetail = JSON.parse(localStorage.getItem('userDetail') || '{}');
-const storedLanguage = storedUserDetail.language;
-const storedCountry = storedUserDetail.country;
+export const resolveLocale = (userDetail?: Record<string, any>) => {
+  const currentUserDetail = userDetail || JSON.parse(localStorage.getItem('userDetail') || '{}')
+  const storedLanguage = currentUserDetail.language
+  const storedCountry = currentUserDetail.country
 
-// Determine the locale: if storedLanguage is a language code (en/zh/ja/ko), use it directly;
-// otherwise, try to map it from languageObj;
-// if language is missing, fall back to country -> language -> locale
-const getLocale = () => {
   if (!storedLanguage) {
-    const fallbackLanguage = countryLanguageMap[storedCountry as keyof typeof countryLanguageMap];
-    return languageObj[fallbackLanguage as keyof typeof languageObj] || 'en';
+    const fallbackLanguage = countryLanguageMap[storedCountry as keyof typeof countryLanguageMap]
+    return languageObj[fallbackLanguage as keyof typeof languageObj] || 'en'
   }
-  
-  // Check if storedLanguage is already a language code
-  if (['en', 'zh', 'ja', 'ko'].includes(storedLanguage)) {
-    return storedLanguage;
+
+  if (supportedLocales.includes(storedLanguage)) {
+    return storedLanguage
   }
-  
-  // Otherwise, try to map it from languageObj
-  return languageObj[storedLanguage as keyof typeof languageObj] || 'en';
-};
+
+  return languageObj[storedLanguage as keyof typeof languageObj] || 'en'
+}
 
 const i18n = createI18n({
   legacy: false,
-  locale: getLocale(),
+  locale: resolveLocale(),
   fallbackLocale: 'en',
   messages: {
     en,
@@ -52,5 +49,11 @@ const i18n = createI18n({
     ko
   }
 })
+
+export const syncLocaleFromUserDetail = (userDetail?: Record<string, any>) => {
+  const locale = resolveLocale(userDetail)
+  i18n.global.locale.value = locale
+  return locale
+}
 
 export default i18n

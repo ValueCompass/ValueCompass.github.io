@@ -433,7 +433,8 @@
 
                   <el-select
                     class="Question-select cultural-alignment-el-select"
-                    popper-class=""
+                    popper-class="cultural-alignment-select-popper"
+                    :fit-input-width="true"
                     v-model="questionValue_Select_origin"
                     placeholder="Select"
                     @change="handleSelectChange"
@@ -1877,7 +1878,7 @@ const getQuestionNum = () => {
     &.Question-select {
       .el-select__wrapper {
         &.is-disabled {
-          background: rgb(204, 240, 252) !important;
+          // background: rgb(204, 240, 252) !important;
         }
       }
     }
@@ -1951,12 +1952,15 @@ const getQuestionNum = () => {
       box-shadow: none !important;
       border: 1px solid rgba(217, 217, 217, 1);
       border-radius: 6px;
-      padding: 0.2em 0.75em;
+      padding: 0.3em 0.75em;
       font-size: 1.25rem;
-      height: 4em;
+      min-height: 4em;
+      height: auto;
+      align-items: stretch;
 
       .el-select__selected-item {
         line-height: 1.3;
+        white-space: normal;
       }
     }
 
@@ -1967,21 +1971,24 @@ const getQuestionNum = () => {
         border: 1px solid rgb(217, 217, 217);
 
         .text-content {
-          height: 3rem;
+          min-height: 3rem;
+          height: auto;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          overflow: hidden;
+          overflow: visible;
 
           & > div {
             width: 100%;
             display: flex;
-            overflow: auto;
+            overflow: visible;
 
             p {
               padding: 0;
               width: 100%;
               line-height: 1.3;
+              white-space: normal;
+              word-break: break-word;
             }
           }
         }
@@ -1993,6 +2000,20 @@ const getQuestionNum = () => {
     font-size: 1.25rem;
     min-height: 4em !important;
     box-sizing: border-box;
+  }
+}
+
+.cultural-alignment-select-popper {
+  .el-select-dropdown__item {
+    height: auto;
+    min-height: 2.4em;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    padding-top: 0.45em;
+    padding-bottom: 0.45em;
+    display: flex;
+    align-items: center;
   }
 }
 </style>
