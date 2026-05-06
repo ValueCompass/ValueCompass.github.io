@@ -89,6 +89,13 @@
             </div>
           </div>
         </div>
+
+        <ShowHighlight
+          :is-adding-new="isAddingNew"
+          :cue-text="currentCue"
+          :concept-text="currentConcept"
+          :cue-concept-correspondence="currentCueCorrespondence"
+        />
       </div>
       <div
         class="button-container2"
@@ -127,7 +134,7 @@
 <script  setup>
 import { reactive, ref, computed, onMounted } from "vue";
 import { defineProps, watch, defineExpose } from "vue";
-import { useRoute } from "vue-router";
+import ShowHighlight from "./ShowHighlight.vue";
 
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
@@ -141,9 +148,22 @@ const props = defineProps({
       response: "",
       highlight_cues: [],
       key_concepts: [],
+      cues_concepts_correspondence: [],
     }),
   },
 });
+
+const cloneCueConceptsCorrespondence = (correspondence = []) => {
+  return correspondence.map((item) => {
+    if (!Array.isArray(item)) {
+      return [];
+    }
+
+    return item.map((fragments) => {
+      return Array.isArray(fragments) ? [...fragments] : [];
+    });
+  });
+};
 
 watch(
   () => props.annotationDataOrigin,
@@ -153,6 +173,8 @@ watch(
     // 创建副本而不是直接引用，确保两个组件实例的数据独立
     annotationData.highlight_cues = [...newVal.highlight_cues];
     annotationData.key_concepts = [...newVal.key_concepts];
+    annotationData.cues_concepts_correspondence =
+      cloneCueConceptsCorrespondence(newVal.cues_concepts_correspondence);
     // 验证highlight_cues是否都存在于response中
     validateHighlightCues();
   }
@@ -163,6 +185,7 @@ const annotationData = reactive({
   response: "",
   highlight_cues: [],
   key_concepts: [],
+  cues_concepts_correspondence: [],
 });
 
 // 跟踪每个关键词的状态（keep/delete/edit/add）
@@ -175,11 +198,17 @@ const originalKeyConcepts = ref([]);
 const validateHighlightCues = () => {
   const validCues = [];
   const validConcepts = [];
+  const validCorrespondence = [];
 
   annotationData.highlight_cues.forEach((cue, index) => {
     if (annotationData.response.includes(cue)) {
       validCues.push(cue);
       validConcepts.push(annotationData.key_concepts[index]);
+      validCorrespondence.push(
+        cloneCueConceptsCorrespondence([
+          annotationData.cues_concepts_correspondence[index] || [],
+        ])[0] || []
+      );
     } else {
       console.log(`Removing cue that doesn't exist in response: "${cue}"`);
     }
@@ -188,6 +217,7 @@ const validateHighlightCues = () => {
   // 更新数组
   annotationData.highlight_cues = validCues;
   annotationData.key_concepts = validConcepts;
+  annotationData.cues_concepts_correspondence = validCorrespondence;
   originalHighlightCues.value = [...validCues];
   originalKeyConcepts.value = [...validConcepts];
 
@@ -214,6 +244,10 @@ onMounted(() => {
       ...props.annotationDataOrigin.highlight_cues,
     ];
     annotationData.key_concepts = [...props.annotationDataOrigin.key_concepts];
+    annotationData.cues_concepts_correspondence =
+      cloneCueConceptsCorrespondence(
+        props.annotationDataOrigin.cues_concepts_correspondence
+      );
   }
 
   // 验证highlight_cues是否都存在于response中
@@ -382,6 +416,14 @@ const currentConcept = computed(() => {
   }
 });
 
+const currentCueCorrespondence = computed(() => {
+  if (currentCueIndex.value < 0) {
+    return [];
+  }
+
+  return annotationData.cues_concepts_correspondence[currentCueIndex.value] || [];
+});
+
 // 编辑模式下的cue值
 const editCueValue = computed({
   get: () => {
@@ -496,11 +538,17 @@ const handleDeleteClick = (type) => {
     // 2. 从key_concepts数组中删除
     annotationData.key_concepts.splice(currentCueIndex.value, 1);
 
-    // 3. 从highlightCuesStatus和keyConceptsStatus数组中删除
+    // 3. 从cues_concepts_correspondence数组中删除
+    annotationData.cues_concepts_correspondence.splice(
+      currentCueIndex.value,
+      1
+    );
+
+    // 4. 从highlightCuesStatus和keyConceptsStatus数组中删除
     highlightCuesStatus.value.splice(currentCueIndex.value, 1);
     keyConceptsStatus.value.splice(currentCueIndex.value, 1);
 
-    // 4. 从response文本中删除对应的cue
+    // 5. 从response文本中删除对应的cue
     if (deletedCue) {
       // 使用正则表达式移除对应的cue文本
       annotationData.response = annotationData.response.replace(
@@ -511,7 +559,7 @@ const handleDeleteClick = (type) => {
       // annotationData.response = annotationData.response.replace(/\s+/g, ' ').trim();
     }
 
-    // 5. 更新currentCueIndex，确保它指向一个有效的索引
+    // 6. 更新currentCueIndex，确保它指向一个有效的索引
     if (currentCueIndex.value >= annotationData.highlight_cues.length) {
       currentCueIndex.value = Math.max(
         0,
@@ -519,7 +567,7 @@ const handleDeleteClick = (type) => {
       );
     }
 
-    // 6. 如果还有cue，更新currentCuePosition
+    // 7. 如果还有cue，更新currentCuePosition
     if (annotationData.highlight_cues.length > 0) {
       updateCurrentCuePosition();
     } else {
@@ -729,6 +777,7 @@ const handleSubmitAddNew = () => {
   // 添加到数组中
   annotationData.highlight_cues.push(editCue.value);
   annotationData.key_concepts.push(editConcept.value);
+  annotationData.cues_concepts_correspondence.push([]);
   // 为新添加的cue和concept设置状态为add
   highlightCuesStatus.value.push("add");
   keyConceptsStatus.value.push("add");
@@ -895,6 +944,7 @@ defineExpose({
           }
         }
       }
+
     }
   }
 }
