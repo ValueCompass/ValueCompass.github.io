@@ -12,14 +12,30 @@
       <div>
         <div>
           <p>Text fragment:</p>
-          <el-input
-            v-model="editCueValue"
-            :disabled="!isCueEditMode"
-            style=""
-            placeholder="Please input"
-            :autosize="{ minRows: 7, maxRows: 7 }"
-            type="textarea"
-          />
+          <div class="highlight-input-overlay">
+            <el-input
+              v-model="editCueValue"
+              :disabled="!isCueEditMode"
+              class="annotation-overlay-input"
+              :class="{
+                'is-highlight-overlay':
+                  !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay,
+              }"
+              style=""
+              placeholder="Please input"
+              :autosize="{ minRows: 7, maxRows: 7 }"
+              type="textarea"
+            />
+            <ShowHighlight
+              v-if="!isCueEditMode && !isAddingNew && shouldShowHighlightOverlay"
+              overlay-mode="cue"
+              :is-adding-new="isAddingNew"
+              :cue-text="currentCue"
+              :concept-text="currentConcept"
+              :cue-concept-correspondence="currentCueCorrespondence"
+              @hover-change="handleHighlightHoverChange"
+            />
+          </div>
 
           <div v-if="!isAddingNew">
             status: {{ getStatusDisplayText(highlightCuesStatus[currentCueIndex]) }}
@@ -50,14 +66,30 @@
         </div>
         <div>
           <p>Value Concepts:</p>
-          <el-input
-            v-model="editConceptValue"
-            :disabled="!isConceptEditMode"
-            style=""
-            placeholder="Please input"
-            :autosize="{ minRows: 3, maxRows: 3 }"
-            type="textarea"
-          />
+          <div class="highlight-input-overlay">
+            <el-input
+              v-model="editConceptValue"
+              :disabled="!isConceptEditMode"
+              class="annotation-overlay-input"
+              :class="{
+                'is-highlight-overlay':
+                  !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay,
+              }"
+              style=""
+              placeholder="Please input"
+              :autosize="{ minRows: 3, maxRows: 3 }"
+              type="textarea"
+            />
+            <ShowHighlight
+              v-if="!isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay"
+              overlay-mode="concepts"
+              :is-adding-new="isAddingNew"
+              :cue-text="currentCue"
+              :concept-text="currentConcept"
+              :cue-concept-correspondence="currentCueCorrespondence"
+              :external-active-track-indexes="sharedHoveredTrackIndexes"
+            />
+          </div>
 
           <div v-if="!isAddingNew">
             status: {{ getStatusDisplayText(keyConceptsStatus[currentCueIndex]) }}
@@ -89,13 +121,6 @@
             </div>
           </div>
         </div>
-
-        <ShowHighlight
-          :is-adding-new="isAddingNew"
-          :cue-text="currentCue"
-          :concept-text="currentConcept"
-          :cue-concept-correspondence="currentCueCorrespondence"
-        />
       </div>
       <div
         class="button-container2"
@@ -264,6 +289,7 @@ const currentCuePosition = ref({
 
 const isCueEditMode = ref(false);
 const isConceptEditMode = ref(false);
+const sharedHoveredTrackIndexes = ref([]);
 
 // 标识是否正在添加新的cue和concept
 const isAddingNew = ref(false);
@@ -423,6 +449,63 @@ const currentCueCorrespondence = computed(() => {
 
   return annotationData.cues_concepts_correspondence[currentCueIndex.value] || [];
 });
+
+const hasCueConceptCorrespondenceField = computed(() => {
+  return Array.isArray(props.annotationDataOrigin?.cues_concepts_correspondence);
+});
+
+const currentItemMatchesOriginal = computed(() => {
+  if (currentCueIndex.value < 0) {
+    return true;
+  }
+
+  return (
+    annotationData.highlight_cues[currentCueIndex.value] ===
+      originalHighlightCues.value[currentCueIndex.value] &&
+    annotationData.key_concepts[currentCueIndex.value] ===
+      originalKeyConcepts.value[currentCueIndex.value]
+  );
+});
+
+const currentItemHighlightStatus = computed(() => {
+  if (currentCueIndex.value < 0) {
+    return {
+      cue: null,
+      concept: null,
+    };
+  }
+
+  return {
+    cue: highlightCuesStatus.value[currentCueIndex.value] || null,
+    concept: keyConceptsStatus.value[currentCueIndex.value] || null,
+  };
+});
+
+const currentItemAllowsHighlightOverlay = computed(() => {
+  return !["edit", "add"].includes(currentItemHighlightStatus.value.cue) &&
+    !["edit", "add"].includes(currentItemHighlightStatus.value.concept);
+});
+
+const shouldShowHighlightOverlay = computed(() => {
+  if (!hasCueConceptCorrespondenceField.value) {
+    return false;
+  }
+
+  if (currentCueIndex.value < 0) {
+    return false;
+  }
+
+  return (
+    currentItemMatchesOriginal.value &&
+    currentItemAllowsHighlightOverlay.value
+  );
+});
+
+const handleHighlightHoverChange = (payload) => {
+  sharedHoveredTrackIndexes.value = Array.isArray(payload?.trackIndexes)
+    ? payload.trackIndexes
+    : [];
+};
 
 // 编辑模式下的cue值
 const editCueValue = computed({
@@ -887,6 +970,10 @@ defineExpose({
             font-size: 1em;
             margin-bottom: 0.5em;
           }
+
+          .highlight-input-overlay {
+            position: relative;
+          }
         }
       }
       .button-container1 {
@@ -947,6 +1034,14 @@ defineExpose({
 
     }
   }
+}
+
+:deep(.annotation-overlay-input.is-highlight-overlay .el-textarea__inner) {
+  color: transparent;
+}
+
+:deep(.annotation-overlay-input.is-highlight-overlay .el-textarea__inner::placeholder) {
+  color: transparent;
 }
 
 :deep(.el-textarea__inner) {

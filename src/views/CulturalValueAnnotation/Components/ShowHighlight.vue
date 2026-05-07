@@ -1,6 +1,9 @@
 <template>
-  <div class="show-highlight" @mouseleave="clearHoveredPart">
-    <div v-if="!isAddingNew && currentCueDisplayParts.length" class="show-highlight__cue">
+  <div class="show-highlight" @mouseleave="handleRootMouseLeave">
+    <div
+      v-if="!isAddingNew && isCueMode && currentCueDisplayParts.length"
+      class="show-highlight__cue"
+    >
       <span
         v-for="(part, index) in currentCueDisplayParts"
         :key="`${part.start}-${index}`"
@@ -22,28 +25,37 @@
     </div>
 
     <div
-      v-if="!isAddingNew && currentConceptHighlights.length"
+      v-if="!isAddingNew && isConceptMode && currentConceptHighlights.length"
       class="show-highlight__concepts"
     >
-      <span
-        v-for="(concept, index) in currentConceptHighlights"
-        :key="`${concept.text}-${index}`"
-        class="show-highlight__concept-item"
-        :class="{ 'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex) }"
-        :style="getUnderlineStyle(
-          [{ color: concept.color, trackIndex: 0 }],
-          1,
-          [],
-          hoveredTrackIndexes.includes(concept.trackIndex) ? [0] : []
-        )"
-      >{{ concept.text }}</span>
+      <template v-for="(concept, index) in currentConceptHighlights" :key="`${concept.text}-${index}`">
+        <span
+          class="show-highlight__concept-item"
+          :class="{ 'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex) }"
+          :style="getUnderlineStyle(
+            [{ color: concept.color, hoverColor: concept.hoverColor, trackIndex: 0 }],
+            1,
+            [],
+            hoveredTrackIndexes.includes(concept.trackIndex) ? [0] : []
+          )"
+          @mouseenter="handleConceptEnter(concept.trackIndex)"
+          @mouseleave="handleConceptLeave"
+        >{{ concept.text }}</span><span
+          v-if="concept.separator"
+          class="show-highlight__concept-separator"
+          :class="{ 'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex) }"
+          @mouseenter="handleConceptEnter(concept.trackIndex)"
+          @mouseleave="handleConceptLeave"
+        >{{ concept.separator }}&nbsp;</span>
+      </template>
     </div>
 
     <div
-      v-if="hoverTooltip.visible && hoveredTooltipGroups.length"
+      v-if="isCueMode && hoverTooltip.visible && hoveredTooltipGroups.length"
       ref="tooltipRef"
       class="show-highlight__tooltip"
       :style="tooltipStyle"
+      @mouseenter="cancelScheduledClear"
       @mouseleave="handleTooltipLeave"
     >
       <div
@@ -52,7 +64,7 @@
         class="show-highlight__tooltip-group"
       >
         <p class="show-highlight__tooltip-fragments-title">
-          Triggered Fragment
+          Text fragment：
         </p>
         <p class="show-highlight__tooltip-fragment-text">
           {{ group.text }}
@@ -79,6 +91,10 @@
 import { computed, ref } from "vue";
 
 const props = defineProps({
+  overlayMode: {
+    type: String,
+    default: "all",
+  },
   isAddingNew: {
     type: Boolean,
     default: false,
@@ -95,6 +111,24 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  externalActiveTrackIndexes: {
+    type: Array,
+    default: () => [],
+  },
+  externalActiveFragmentIds: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const emit = defineEmits(["hover-change"]);
+
+const isCueMode = computed(() => {
+  return props.overlayMode === "all" || props.overlayMode === "cue";
+});
+
+const isConceptMode = computed(() => {
+  return props.overlayMode === "all" || props.overlayMode === "concepts";
 });
 
 const highlightColors = [
@@ -121,7 +155,9 @@ const highlightColors = [
 ];
 
 const hoveredPartIndex = ref(-1);
+const hoveredConceptTrackIndex = ref(-1);
 const tooltipRef = ref(null);
+let clearHoverTimeoutId = null;
 const hoverTooltip = ref({
   visible: false,
   left: 0,
@@ -129,17 +165,30 @@ const hoverTooltip = ref({
 });
 
 const splitConcepts = (conceptText = "") => {
-  return conceptText
-    .split(/[,，]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const results = [];
+  const matches = conceptText.matchAll(/([^,，]+?)(\s*[,，]\s*|$)/g);
+
+  for (const match of matches) {
+    const text = match[1]?.trim?.() || "";
+    if (!text) {
+      continue;
+    }
+
+    results.push({
+      text,
+      separator: match[2]?.includes("，") ? "，" : match[2]?.includes(",") ? "," : "",
+    });
+  }
+
+  return results;
 };
 
 const currentConceptHighlights = computed(() => {
   const concepts = splitConcepts(props.conceptText);
 
-  return concepts.map((text, index) => ({
-    text,
+  return concepts.map((concept, index) => ({
+    text: concept.text,
+    separator: concept.separator,
     trackIndex: index,
     color: highlightColors[index % highlightColors.length].base,
     hoverColor: highlightColors[index % highlightColors.length].hover,
@@ -358,7 +407,11 @@ const getUnderlineStyle = (
   };
 };
 
-const hoveredTrackIndexes = computed(() => {
+const localHoveredTrackIndexes = computed(() => {
+  if (hoveredConceptTrackIndex.value >= 0) {
+    return [hoveredConceptTrackIndex.value];
+  }
+
   if (hoveredPartIndex.value < 0) {
     return [];
   }
@@ -368,7 +421,7 @@ const hoveredTrackIndexes = computed(() => {
   ) || [];
 });
 
-const hoveredFragmentIds = computed(() => {
+const localHoveredFragmentIds = computed(() => {
   if (hoveredPartIndex.value < 0) {
     return [];
   }
@@ -376,6 +429,24 @@ const hoveredFragmentIds = computed(() => {
   return currentCueDisplayParts.value[hoveredPartIndex.value]?.lineEntries?.map(
     (entry) => entry.fragmentId
   ).filter(Boolean) || [];
+});
+
+const hoveredTrackIndexes = computed(() => {
+  return Array.from(
+    new Set([
+      ...props.externalActiveTrackIndexes,
+      ...localHoveredTrackIndexes.value,
+    ])
+  );
+});
+
+const hoveredFragmentIds = computed(() => {
+  return Array.from(
+    new Set([
+      ...props.externalActiveFragmentIds,
+      ...localHoveredFragmentIds.value,
+    ])
+  );
 });
 
 const hoveredTooltipGroups = computed(() => {
@@ -447,8 +518,22 @@ const updateTooltipPosition = (targetElement) => {
   hoverTooltip.value = {
     visible: true,
     left: Math.min(Math.max(desiredLeft, minLeft), maxLeft),
-    top: targetRect.top - containerRect.top - 16,
+    top: targetRect.top - containerRect.top - 6,
   };
+};
+
+const cancelScheduledClear = () => {
+  if (clearHoverTimeoutId) {
+    clearTimeout(clearHoverTimeoutId);
+    clearHoverTimeoutId = null;
+  }
+};
+
+const scheduleClearHoveredPart = () => {
+  cancelScheduledClear();
+  clearHoverTimeoutId = setTimeout(() => {
+    clearHoveredPart();
+  }, 120);
 };
 
 const handleCuePartEnter = (index, event) => {
@@ -458,7 +543,16 @@ const handleCuePartEnter = (index, event) => {
     return;
   }
 
+  cancelScheduledClear();
   hoveredPartIndex.value = index;
+  emit("hover-change", {
+    trackIndexes: currentCueDisplayParts.value[index]?.lineEntries?.map(
+      (entry) => entry.trackIndex
+    ) || [],
+    fragmentIds: currentCueDisplayParts.value[index]?.lineEntries?.map(
+      (entry) => entry.fragmentId
+    ).filter(Boolean) || [],
+  });
   updateTooltipPosition(event.currentTarget);
 };
 
@@ -467,6 +561,7 @@ const handleCuePartMove = (event) => {
     return;
   }
 
+  cancelScheduledClear();
   updateTooltipPosition(event.currentTarget);
 };
 
@@ -476,7 +571,7 @@ const handleCuePartLeave = (event) => {
     return;
   }
 
-  clearHoveredPart();
+  scheduleClearHoveredPart();
 };
 
 const handleTooltipLeave = (event) => {
@@ -485,11 +580,40 @@ const handleTooltipLeave = (event) => {
     return;
   }
 
-  clearHoveredPart();
+  scheduleClearHoveredPart();
+};
+
+const handleRootMouseLeave = (event) => {
+  const nextTarget = event?.relatedTarget;
+  if (nextTarget instanceof Node) {
+    if (tooltipRef.value?.contains(nextTarget)) {
+      return;
+    }
+
+    if (event.currentTarget?.contains(nextTarget)) {
+      return;
+    }
+  }
+
+  scheduleClearHoveredPart();
+};
+
+const handleConceptEnter = (trackIndex) => {
+  hoveredConceptTrackIndex.value = trackIndex;
+};
+
+const handleConceptLeave = () => {
+  hoveredConceptTrackIndex.value = -1;
 };
 
 const clearHoveredPart = () => {
+  cancelScheduledClear();
   hoveredPartIndex.value = -1;
+  hoveredConceptTrackIndex.value = -1;
+  emit("hover-change", {
+    trackIndexes: [],
+    fragmentIds: [],
+  });
   hoverTooltip.value = {
     visible: false,
     left: 0,
@@ -500,26 +624,27 @@ const clearHoveredPart = () => {
 
 <style scoped lang="scss">
 .show-highlight {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  margin-top: 0.5em;
-  padding: 1.25em;
-  border-radius: 16px;
-  background: #fff;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 5px 11px;
+//   overflow: hidden;
+  pointer-events: none;
+  font-size: 1.2rem;
 
   &__cue {
     color: #333;
-    font-size: 1.1em;
-    font-style: italic;
+    font-size: 1.2rem;
+    // font-style: italic;
     line-height: 1.7;
     white-space: pre-wrap;
+    word-break: break-word;
   }
 
   &__cue-part,
   &__concept-item {
     display: inline;
+    pointer-events: auto;
   }
 
   &__cue-part.is-linked {
@@ -528,8 +653,9 @@ const clearHoveredPart = () => {
   }
 
   &__cue-part.is-hovered,
-  &__concept-item.is-hovered {
-    color: #202020;
+  &__concept-item.is-hovered,
+  &__concept-separator.is-hovered {
+    color: #111;
   }
 
   &__cue-part.is-linked,
@@ -539,16 +665,25 @@ const clearHoveredPart = () => {
   }
 
   &__concepts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75em 1.5em;
+    display: block;
     color: #333;
-    font-size: 1.05em;
+    font-size: 1.2rem;
     line-height: 1.6;
+    padding-top: 0.1em;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   &__concept-item {
-    white-space: nowrap;
+    display: inline;
+    white-space: pre-wrap;
+  }
+
+  &__concept-separator {
+    display: inline;
+    color: #333;
+    white-space: pre-wrap;
+    pointer-events: auto;
   }
 
   &__tooltip {
@@ -558,8 +693,10 @@ const clearHoveredPart = () => {
     max-width: 80%;
     padding: 1.1em 1.4em;
     border-radius: 12px;
-    background: rgba(220, 220, 220, 0.98);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    background: rgba(223, 223, 223, 1);
+    // box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
     pointer-events: auto;
     transform: translateY(-100%);
   }
@@ -577,7 +714,6 @@ const clearHoveredPart = () => {
   &__tooltip-fragments-title {
     margin: 0 0 0.35em;
     color: #1d2433;
-    font-size: 0.92em;
     font-weight: 700;
     letter-spacing: 0.02em;
     // text-transform: uppercase;
@@ -586,14 +722,13 @@ const clearHoveredPart = () => {
   &__tooltip-fragment-text {
     margin: 0 0 0.75em;
     color: #313746;
-    font-size: 0.98em;
     line-height: 1.55;
+    font-weight: bold;
   }
 
   &__tooltip-title {
     margin: 0;
     color: #1d2433;
-    font-size: 1.05em;
     font-weight: 700;
   }
 
