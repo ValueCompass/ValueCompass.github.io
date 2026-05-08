@@ -92,14 +92,15 @@
           <h4>
             {{ t("culturalValueAnnotation.step2.title") }}
           </h4>
-          <div class="core-action-box">
-            <h5>
-              {{ t("culturalValueAnnotation.step2.coreAction") }}
-            </h5>
-          </div>
-          <div class="seconed-container">
-            <div style="display: flex; justify-content: space-between">
-              <div style="width: calc(50% - 2em)" class="flex-column">
+          <div style="display: flex; justify-content: space-between">
+            <div
+              class="core-action-box flex-column"
+              style="width: calc(50% - 2em)"
+            >
+              <h5>
+                {{ t("culturalValueAnnotation.step2.coreAction") }}
+              </h5>
+              <div class="flex-column">
                 <p>
                   {{ t("culturalValueAnnotation.step2.templateReference") }}
                 </p>
@@ -115,9 +116,7 @@
 
                 <div>
                   <p>
-                    <b>{{
-                      t("culturalValueAnnotation.step2.rankByImportance")
-                    }}</b>
+                    <b>{{ t("culturalValueAnnotation.step2.rankByImportance") }}</b>
                   </p>
                 </div>
                 <div>
@@ -126,24 +125,36 @@
                   </p>
                 </div>
               </div>
-              <div
-                style="
-                  min-height: 6em;
-                  border: 1px solid #d9d9d9;
-                  border-radius: 24px;
-                  padding: 1em;
-                  line-height: 1.5;
-                  width: calc(50% - 2em);
-                "
-              >
-                <p class="example-title">
-                  <img src="@/assets/images/example-icon.png" />{{
-                    t("culturalValueAnnotation.step2.noteExampleText")
-                  }}
-                </p>
-                <p v-for="(example, index) in principleExample" :key="index">
-                  {{ index + 1 }}: {{ example }}
-                </p>
+            </div>
+            <div
+              class="seconed-container"
+              style="
+                min-height: 6em;
+                border: 1px solid #d9d9d9;
+                border-radius: 24px;
+                padding: 1em;
+                line-height: 1.5;
+                width: calc(50% - 2em);
+              "
+            >
+              <div>
+                <div>
+                  <p class="example-title">
+                    <img src="@/assets/images/example-icon.png" />
+                    <span>{{ t("culturalValueAnnotation.step2.exampleTopic") }}</span>
+                  </p>
+                  <div style="padding-left: 1.5em" class="flex-column">
+                    <p>
+                      {{ t("culturalValueAnnotation.step2.noteExampleText") }}
+                    </p>
+                    <p
+                      v-for="(example, index) in principleExample"
+                      :key="index"
+                    >
+                      {{ index + 1 }}: {{ example }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -179,7 +190,9 @@
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step3.title") }}</h4>
           <div class="core-action-box">
-            <h5>{{ t("culturalValueAnnotation.step3.coreAction") }}</h5>
+            <h5>
+              {{ t("culturalValueAnnotation.step3.coreAction") }}
+            </h5>
           </div>
           <div class="seconed-container">
             <div>
@@ -217,7 +230,7 @@
             </el-select>
             <el-select
               v-model="taskValue2"
-              placeholder="Select or Input Level-2"
+               placeholder="Select or Input Level-2"
               filterable
               allow-create
               :disabled="hasClickedSaveAndGetQuestionListBtn"
@@ -234,7 +247,7 @@
           </div>
 
           <div class="">
-            <p style="margin-bottom: 0.7em"><b>Definition:</b></p>
+            <p style="margin-bottom: 0.7em"><b>{{ t("culturalValueAnnotation.step3.definitionLabel") }}</b></p>
             <p>
               {{
                 taskExample && taskExample.definition
@@ -244,7 +257,7 @@
             </p>
           </div>
           <div class="">
-            <p style="margin-bottom: 0.7em"><b>Example:</b></p>
+            <p style="margin-bottom: 0.7em"><b>{{ t("culturalValueAnnotation.step3.exampleLabel") }}</b></p>
             <p>
               {{
                 taskExample && taskExample.example
@@ -324,6 +337,10 @@
             </ul>
           </div>
           <div class="seconed-container flex-column">
+            <p class="title-p">
+              <img src="@/assets/images/step_icon1.png" alt="" />
+              <b>{{ t("culturalValueAnnotation.step4.scoringReferenceTitle") }}</b>
+            </p>
             <p>{{ t("culturalValueAnnotation.step4.scoreIntro") }}</p>
             <ul>
               <li>
@@ -344,6 +361,10 @@
               {{ t("culturalValueAnnotation.step4.aiScoreNote") }}
             </p>
 
+            <p class="title-p">
+              <img src="@/assets/images/step_icon2.png" alt="" />
+              <b>{{ t("culturalValueAnnotation.step4.selectionCriteriaTitle") }}</b>
+            </p>
             <p>{{ t("culturalValueAnnotation.step4.prioritizeTitle") }}</p>
             <ul>
               <li>{{ t("culturalValueAnnotation.step4.prioritize1") }}</li>
@@ -356,6 +377,10 @@
               </li>
             </ul>
           </div>
+          <p>
+            {{ t("culturalValueAnnotation.step4.balanceTypesIntro") }}
+            <b>{{ t("culturalValueAnnotation.step4.balanceTypesEmphasis") }}</b>
+          </p>
         </div>
         <div
           class="highlight-container"
@@ -422,15 +447,6 @@
                     box-sizing: border-box;
                   "
                 >
-                  <!-- <el-input
-									v-model="questionValue_Select"
-									style="position: relative; z-index: 2"
-									type="textarea"
-									:autosize="{ minRows: 2, maxRows: 10 }"
-									placeholder="Please input"
-									:disabled="hasClickedGetAnswerBtn"
-								/> -->
-
                   <el-select
                     class="Question-select cultural-alignment-el-select"
                     popper-class="cultural-alignment-select-popper"
@@ -464,6 +480,7 @@
                     padding: 0;
                     background: #fff;
                     color: rgba(11, 112, 195, 1);
+                    white-space: pre-line;
                   "
                   @click="activeNameSelect1 = 'Refine Question'"
                 >
@@ -508,6 +525,7 @@
                     padding: 0;
                     background: #fff;
                     color: rgba(11, 112, 195, 1);
+                    white-space: pre-line;
                   "
                   @click="activeNameSelect1 = 'Select Existing Question'"
                 >
@@ -599,16 +617,26 @@
       <div class="step step5">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step5.title") }}</h4>
-          <p>
-            {{ t("culturalValueAnnotation.step5.intro") }}
-          </p>
-          <p>
-            {{ t("culturalValueAnnotation.step5.highlightIntro") }}
-          </p>
+          
           <div class="core-action-box flex-column">
             <h5>
               {{ t("culturalValueAnnotation.step5.coreAction") }}
             </h5>
+            <ul>
+              <li>
+                {{ t("culturalValueAnnotation.step5.coreAction1") }}
+              </li>
+              <li>
+                {{ t("culturalValueAnnotation.step5.coreAction2") }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="seconed-container">
+            <p class="title-p">
+              <img src="@/assets/images/step_icon3.png" alt="" />
+              <b>{{ t("culturalValueAnnotation.step5.firstReviewTitle") }}</b>
+            </p>
             <ul class="ul-decimal">
               <li>
                 <p>
@@ -637,7 +665,9 @@
                 </ul>
               </li>
             </ul>
-            <p>
+
+            <p class="title-p">
+              <img src="@/assets/images/step_icon4.png" alt="" />
               <b>{{ t("culturalValueAnnotation.step5.wholeAnswerIntro") }}</b>
             </p>
             <ul class="ul-lower-alpha">
@@ -647,13 +677,10 @@
             <p>
               {{ t("culturalValueAnnotation.step5.addNewHint") }}
             </p>
-          </div>
-          <div class="seconed-container">
-            <p class="note-title">
+
+            <p class="title-p">
               <img src="@/assets/images/note-icon.png" alt="" />
-              <span>{{
-                t("culturalValueAnnotation.step5.importantRulesTitle")
-              }}</span>
+              <span><b>{{ t("culturalValueAnnotation.step5.importantRulesTitle") }}</b></span>
             </p>
             <ul class="ul-decimal">
               <li>
@@ -682,7 +709,6 @@
               v-if="hasClickedGetAnswerBtn && submit_type !== 'revise'"
             >
               <el-button
-                plain
                 color="#0B70C3"
                 @click="handleReselectQuestionClick"
                 >Reselect Question</el-button
@@ -700,14 +726,18 @@
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step6.title") }}</h4>
           <div class="core-action-box">
-            <h5>{{ t("culturalValueAnnotation.step6.coreAction") }}</h5>
+            <h5>
+              {{ t("culturalValueAnnotation.step6.coreAction") }}
+            </h5>
           </div>
           <div class="seconed-container">
-            <p class="note-title">
+            <p class="title-p">
               <img src="@/assets/images/note-icon.png" alt="" />
-              <span>{{ t("culturalValueAnnotation.step6.noteTitle") }}</span>
+              <span
+                ><b>{{ t("culturalValueAnnotation.step6.noteTitle") }}</b></span
+              >
             </p>
-            <ul class="ul-lower-alpha">
+            <ul>
               <li>{{ t("culturalValueAnnotation.step6.note1") }}</li>
               <li>{{ t("culturalValueAnnotation.step6.note2") }}</li>
             </ul>
@@ -901,7 +931,7 @@ const handleSaveAndGetQuestionListBtnClick = () => {
             handleUpdateScores(questionValue_Select_origin.value);
           }, 200);
         } else {
-          ElMessage.warning("No Result");
+          ElMessage.warning(t("common.noResult"));
         }
         questionOptions.value = res.data["candidate_questions"];
 
@@ -912,7 +942,7 @@ const handleSaveAndGetQuestionListBtnClick = () => {
             res.data["question_type_count"]["select existing"];
         }
       } else {
-        ElMessage.error("error");
+        ElMessage.error(t("common.unexpectedError"));
       }
     })
     .catch((err) => {
@@ -1013,7 +1043,7 @@ const handleSelectChange = () => {
 };
 const handleGetAnswerBtnClick = () => {
   if (hasClickedGetAnswerBtn.value) {
-    ElMessage.warning("Get Answer button has already been clicked");
+    ElMessage.warning(t("culturalValueAnnotation.step4.getAnswerAlreadyClicked"));
     return;
   }
 
@@ -1098,16 +1128,16 @@ const handleGetAnswerBtnClick = () => {
         // annotationDataOrigin.key_concepts = res.data.key_concepts;
         hasClickedGetAnswerBtn.value = true;
         ElMessage.success(
-          "Get Answer has been clicked and inputs are now locked",
+          t("culturalValueAnnotation.step4.getAnswerLockedToast"),
         );
         answer_model.value = res.data.answer_model;
       } else {
-        ElMessage.error("error");
+        ElMessage.error(t("common.unexpectedError"));
       }
     })
     .catch((err) => {
       console.log(err);
-      ElMessage.error("error");
+      ElMessage.error(t("common.unexpectedError"));
     })
     .finally(() => {
       isLoadingGetAnswer.value = false;
@@ -1116,7 +1146,7 @@ const handleGetAnswerBtnClick = () => {
 
 const handleReselectQuestionClick = () => {
   resetGetAnswerState();
-  ElMessage.success("You can reselect the question and click Get Answer again");
+  ElMessage.success(t("culturalValueAnnotation.step4.reselectQuestionToast"));
 };
 
 const annotationComponentRef = ref(null);
@@ -1237,15 +1267,15 @@ const submitHighlightAndConcepts = () => {
     submitAnnotation(sendData)
       .then((res) => {
         if (res.data && res.data.ok) {
-          ElMessage.success("Annotation submitted successfully");
+          ElMessage.success(t("common.annotationSubmittedSuccessfully"));
           router.push("/CulturalValueAnnotation/TaskHistory");
         } else {
-          ElMessage.error("Annotation submission failed");
+          ElMessage.error(t("common.annotationSubmissionFailed"));
         }
       })
       .catch((err) => {
         console.log(err);
-        ElMessage.error("Annotation submission failed");
+        ElMessage.error(t("common.annotationSubmissionFailed"));
       })
       .finally(() => {
         // 提交完成后，重置状态
@@ -1606,11 +1636,21 @@ const getQuestionNum = () => {
         background-size: 1.3em auto;
       }
       .seconed-container {
-        color: rgba(51, 51, 51, 1);
+        font-size: 1.125em;
+        color: rgba(34, 34, 34, 1);
         padding-left: 1.875rem;
         display: flex;
         flex-direction: column;
         gap: 0.75em 0;
+        .title-p {
+          position: relative;
+          & > img {
+            position: absolute;
+            left: -1.8em;
+            top: 0;
+            width: 1.4em;
+          }
+        }
       }
       .note-title,
       .example-title {
@@ -1857,6 +1897,7 @@ const getQuestionNum = () => {
     }
 
     .highlight-container {
+      font-size: 1.125em;
       padding: 1.5em 3em;
       background: rgba(243, 243, 243, 1);
       border-radius: 12px;
@@ -1873,13 +1914,6 @@ const getQuestionNum = () => {
       height: 2.7em;
       &.is-disabled {
         background: #fff !important;
-      }
-    }
-    &.Question-select {
-      .el-select__wrapper {
-        &.is-disabled {
-          // background: rgb(204, 240, 252) !important;
-        }
       }
     }
   }
