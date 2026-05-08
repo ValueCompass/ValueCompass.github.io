@@ -35,7 +35,7 @@
           </ul>
         </li>
         <li>
-          <a href="http://www.valuechallenge.ai/" target="_blank">
+          <a href="https://microsoft.github.io/ValueChallenge/" target="_blank">
               <span class="join-now-btn">
                 <span>Global Value Challenge</span>
                 <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
@@ -70,7 +70,7 @@
 
         
 
-        <li
+        <!-- <li
           :class="{ active: $route.path.indexOf('/CulturalAlignment/') != -1 }"
         >
           <router-link to="/CulturalAlignment">Cultural Alignment</router-link>
@@ -78,7 +78,7 @@
 
         <li v-if="showTestYourValues">
           <router-link to="/TestValues">Test Your Values</router-link>
-        </li>
+        </li> -->
         
         <li>
           <router-link to="/AboutUs">About Us</router-link>

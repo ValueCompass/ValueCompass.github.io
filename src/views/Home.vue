@@ -9,7 +9,7 @@
             <img src="@/assets/images/Challenge_gif.gif" alt="" />
           </div>
           <div class="right">
-            <p><span>Join the New Event —— Launching Late April</span></p>
+            <p><span>Join The New Event —— Ongoing</span></p>
             <img
               class="global-ai-values-challenge-img"
               src="@/assets/images/global-ai-values-challenge.png"
@@ -20,7 +20,7 @@
               Global AI Values Challenge to explore human values and shape
               responsible AI.
             </p>
-            <a href="http://www.valuechallenge.ai/" target="_blank">
+            <a href="https://microsoft.github.io/ValueChallenge/" target="_blank">
               <span class="join-now-btn">
                 <span>Join now</span>
                 <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
