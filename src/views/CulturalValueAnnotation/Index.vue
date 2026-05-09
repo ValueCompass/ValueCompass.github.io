@@ -3,11 +3,11 @@
     <UserHeader  class="user-header" />
     <router-view />
     
-    <el-dialog v-model="dialogTableVisible" title="" width="1376" class="onboarding-dialog" align-center>
+    <el-dialog v-if="!isAdminPage" v-model="dialogTableVisible" title="" width="1376" class="onboarding-dialog" align-center>
       <OnboardingDialog :visible="dialogTableVisible"></OnboardingDialog>
     </el-dialog>
 
-    <div v-if="!isOnboardingPage" class="View-tutorial-btn" @click="dialogTableVisible = true"><svgIcon
+    <div v-if="!isOnboardingPage && !isAdminPage" class="View-tutorial-btn" @click="dialogTableVisible = true"><svgIcon
               
                 name="play-icon"
               ></svgIcon><span>View tutorial</span></div>
@@ -24,6 +24,7 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const dialogTableVisible = ref(false)
 const isOnboardingPage = computed(() => route.path === "/CulturalValueAnnotation/onboarding");
+const isAdminPage = computed(() => route.path.startsWith("/CulturalValueAnnotation/admin"));
 
 </script>
 

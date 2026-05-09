@@ -11,12 +11,29 @@
     >
       <div class="box">
         <div class="user-detail">
-          <div>
-            <h2>Welcome to Cultural Data Annotation System</h2>
-            <p>Log in or create an account to continue</p>
+          <div class="mode-switch">
+            <button
+              type="button"
+              :class="{ active: loginMode === 'annotator' }"
+              @click="handleModeChange('annotator')"
+            >
+              Annotator
+            </button>
+            <button
+              type="button"
+              :class="{ active: loginMode === 'admin' }"
+              @click="handleModeChange('admin')"
+            >
+              Admin
+            </button>
           </div>
 
-          <div class="login-container">
+          <div>
+            <h2>Welcome to Cultural Data Annotation System</h2>
+            <p>{{ loginDescription }}</p>
+          </div>
+
+          <div v-if="!isAdminMode" class="login-container annotator-login-container">
             <div class="login-section">
               <p>First Time Login?</p>
               <div>
@@ -54,10 +71,7 @@
                 log in.
               </p>
             </div>
-            <div
-              v-if="isFirstLogin !== null"
-              class="login-section"
-            >
+            <div v-if="isFirstLogin !== null" class="login-section">
               <p>Country</p>
               <div>
                 <el-select
@@ -76,10 +90,7 @@
               </div>
             </div>
 
-            <div
-              v-if="isFirstLogin !== null"
-              class="login-section button-container"
-            >
+            <div v-if="isFirstLogin !== null" class="login-section button-container">
               <el-button
                 color="#0B70C3"
                 :disabled="isDisabled || isLoading"
@@ -90,6 +101,60 @@
               >
             </div>
           </div>
+
+          <div v-else class="login-container admin-login-container">
+            <div class="login-section">
+              <p>Admin Account</p>
+              <div>
+                <el-input
+                  v-model="adminUsername"
+                  placeholder="Please input"
+                ></el-input>
+              </div>
+            </div>
+
+            <div class="login-section">
+              <p>Password</p>
+              <div>
+                <el-input
+                  v-model="adminPassword"
+                  type="password"
+                  show-password
+                  placeholder="Please input"
+                ></el-input>
+              </div>
+            </div>
+
+            <div class="login-section">
+              <p>Country</p>
+              <div>
+                <el-select
+                  v-model="adminCountryValue"
+                  placeholder="Select a country"
+                  filterable
+                  allow-create
+                >
+                  <el-option
+                    v-for="item in countryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </div>
+            </div>
+
+            <div class="login-section button-container">
+              <el-button
+                color="#0B70C3"
+                :disabled="isDisabledAdmin || isLoading"
+                :loading="isLoading"
+                @click="handleAdminLoginClick"
+                :class="{ disabled: isDisabledAdmin || isLoading }"
+                >Login</el-button
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -97,24 +162,32 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { ElMessage } from "element-plus";
 import {
-  login,
   UserRegisterLogin,
+  adminLogin,
 } from "@/service/CulturalValueAnnotationApi.ts";
 import router from "../../router";
 import { syncLocaleFromUserDetail } from "@/i18n";
+import {
+  saveCulturalValueAnnotationAdminDetail,
+  saveCulturalValueAnnotationUserDetail,
+} from "../../utils/culturalValueAnnotationAuth";
 
-
-const dialogVisible = ref(true);
 const isLoading = ref(false);
+
+const loginMode = ref("annotator");
+const isAdminMode = computed(() => loginMode.value === "admin");
 
 const isFirstLogin = ref(null);
 
 const username = ref("");
+const adminUsername = ref("");
+const adminPassword = ref("");
 
 const countryValue = ref("");
+const adminCountryValue = ref("");
 const countryOptions = ref([
   {
     value: "China",
@@ -146,19 +219,33 @@ const countryOptions = ref([
   },
 ]);
 
-const isDisabled = computed(() => {
-  return !username.value.trim() || !countryValue.value
+const loginDescription = computed(() => {
+  return isAdminMode.value
+    ? "Enter the admin account and password to log in."
+    : "Log in or create an account to continue";
 });
 
-const emit = defineEmits(["hideUsrerContainer"]);
+const isDisabled = computed(() => {
+  return (
+    isFirstLogin.value === null ||
+    !username.value.trim() ||
+    !countryValue.value
+  );
+});
 
-const nextStep = () => {
-  if (isDisabled.value) {
-    return;
-  }
-  // 提交表单数据
+const isDisabledAdmin = computed(() => {
+  return (
+    !adminUsername.value.trim() ||
+    !adminPassword.value.trim() ||
+    !adminCountryValue.value
+  );
+});
 
-  isLoading.value = true;
+const handleModeChange = (mode) => {
+  loginMode.value = mode;
+};
+
+const handleAnnotatorLogin = () => {
   let sendData = {};
   if (isFirstLogin.value) {
     sendData = {
@@ -173,89 +260,94 @@ const nextStep = () => {
       country: countryValue.value,
     };
   }
-  UserRegisterLogin(sendData)
+
+  return UserRegisterLogin(sendData)
     .then((res) => {
-      console.log(res);
       if (!res.data.ok) {
         ElMessage.warning(res.data.message);
         return;
-      } else {
-        localStorage.setItem(
-          "userDetail",
-          JSON.stringify({
-            username: res.data.username,
-            country: res.data.country,
-            language: res.data.language,
-            studied_annotation_guidance: res.data.studied_annotation_guidance === true,
-          }),
-        );
-        if (res.data.studied_annotation_guidance === false) {
-          router.push({
-            name: "CulturalValueAnnotationOnboarding",
-          });
-        } else {
-          const storedUserDetail = JSON.parse(
-            localStorage.getItem("userDetail") || "{}",
-          );
-          syncLocaleFromUserDetail(storedUserDetail);
-          router.push({
-            name: "CulturalValueAnnotationHome",
-          });
-          // window.location.reload();
-        }
       }
-      // 登录成功，跳转到下一个页面
-      // router.push({ name: "CulturalValueAnnotation" });
-    })
-    .catch((err) => {
-      console.log(err);
-      ElMessage.error("error");
-    })
-    .finally(() => {
-      // 无论成功还是失败，都执行的操作
-      console.log("无论成功还是失败，都执行的操作");
-      isLoading.value = false;
-    });
-  return;
 
-  login(formData)
-    .then((res) => {
-      console.log(res);
-      if (res.data.ok) {
-        // 登录成功，跳转到下一个页面
-        // router.push({ name: "CulturalValueAnnotation" });
-        localStorage.setItem("userDetail", JSON.stringify(formData));
-        dialogVisible.value = false;
-        emit("hideUsrerContainer");
-        // 页面刷新
-        window.location.reload();
+      saveCulturalValueAnnotationUserDetail({
+        username: res.data.username,
+        country: res.data.country,
+        language: res.data.language,
+        studied_annotation_guidance:
+          res.data.studied_annotation_guidance === true,
+      });
+
+      if (res.data.studied_annotation_guidance === false) {
+        router.push({
+          name: "CulturalValueAnnotationOnboarding",
+        });
       } else {
-        // 登录失败，提示用户
-        ElMessage.error("error");
+        syncLocaleFromUserDetail({
+          username: res.data.username,
+          country: res.data.country,
+          language: res.data.language,
+        });
+        router.push({
+          name: "CulturalValueAnnotationHome",
+        });
       }
-    })
+    });
+};
+
+const handleAdminModeLogin = () => {
+  return adminLogin({
+    username: adminUsername.value.trim(),
+    password: adminPassword.value,
+    country: adminCountryValue.value,
+  }).then((res) => {
+    if (!res.data?.ok) {
+      ElMessage.error(res.data?.message || "Admin login failed");
+      return;
+    }
+
+    saveCulturalValueAnnotationAdminDetail({
+      username: res.data.username,
+      country: res.data.country,
+      language: res.data.language,
+      role: "admin",
+    });
+
+    router.push({
+      name: "CulturalValueAnnotationAdminExport",
+    });
+  });
+};
+
+const nextStep = () => {
+  if (isDisabled.value) {
+    return;
+  }
+
+  isLoading.value = true;
+  handleAnnotatorLogin()
     .catch((err) => {
       console.log(err);
       ElMessage.error("error");
     })
     .finally(() => {
-      // 无论成功还是失败，都执行的操作
-      console.log("无论成功还是失败，都执行的操作");
       isLoading.value = false;
     });
 };
 
-const isHasUserDetail = computed(() => {
-  return localStorage.getItem("userDetail") !== null;
-});
-
-onMounted(() => {
-  if (isHasUserDetail.value) {
-    dialogVisible.value = false;
-  } else {
-    dialogVisible.value = true;
+const handleAdminLoginClick = () => {
+  if (isDisabledAdmin.value) {
+    return;
   }
-});
+
+  isLoading.value = true;
+  handleAdminModeLogin()
+    .catch((err) => {
+      console.log(err);
+      ElMessage.error("error");
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 </script>
 <style scoped lang="scss">
 .container {
@@ -274,10 +366,11 @@ onMounted(() => {
   }
 }
 .box {
-  height: 620px;
+  min-height: 620px;
   margin: 4em auto;
 }
 .user-detail {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2.5em;
@@ -291,6 +384,32 @@ onMounted(() => {
   box-sizing: border-box;
   font-size: 14px;
   line-height: 1.2;
+  .mode-switch {
+    position: absolute;
+    left: 0;
+    top: -4.1rem;
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    background: #fff;
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+
+    button {
+      border: none;
+      background: transparent;
+      color: #1f2937;
+      height: 2.8em;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1rem;
+
+      &.active {
+        background: #0b70c3;
+        color: #fff;
+      }
+    }
+  }
   h2 {
     font-weight: 600;
     font-size: 30px;
