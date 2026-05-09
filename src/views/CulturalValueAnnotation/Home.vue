@@ -555,8 +555,14 @@
               </div>
             </el-tab-pane>
           </el-tabs>
-
-          <div class="score-container">
+          
+          <div v-if="questionErrorTip" class="question-error-tip">
+            <div>
+              <el-icon class="warning-icon"><Warning /></el-icon>
+            <p>{{ questionErrorTip }}</p>
+            </div>
+          </div>
+          <div class="score-container" style="margin-top: -1em;">
             <div>
               <span
                 >{{ t("culturalValueAnnotation.step4.importanceScore") }}:</span
@@ -790,6 +796,9 @@ const { t } = useI18n();
 import UserDetail from "./UserDetail.vue";
 import AnnotationComponent from "./Components/AnnotationComponent.vue";
 import {
+  Warning
+} from "@element-plus/icons-vue";
+import {
   getTopicTaskTaxonomy,
   getCandidateQuestions,
   getQuestionResponse,
@@ -868,6 +877,8 @@ const questionAction = ref("");
 const questionValue_Select = ref("");
 const questionValue_Select_origin = ref("");
 const questionValue_Create = ref("");
+// 复用 step4 的提示区域，展示 Get Answer 前的前端校验错误。
+const questionErrorTip = ref("");
 
 const taskOptions1 = ref([]);
 const taskOptions2 = ref([]);
@@ -1002,6 +1013,7 @@ let annotationDataOrigin_person = reactive({
 
 const resetGetAnswerState = () => {
   hasClickedGetAnswerBtn.value = false;
+  questionErrorTip.value = "";
   answer_model.value = "";
   original_answer_country.value = "";
   questionValue.value = "";
@@ -1074,9 +1086,28 @@ const handleGetAnswerBtnClick = () => {
     return;
   }
 
+  // 每次重新点击前先清掉旧的错误提示，避免残留上一次校验结果。
+  questionErrorTip.value = "";
+
   if (isGetAnswerBtnDisabled.value) {
     return;
   }
+
+  const importanceScore = Number(importanceValue.value);
+  const frequencyScore = Number(frequencyValue.value);
+  // Get Answer 前要求两个分数都 >= 3，且至少一个分数 >= 4。
+  const areScoresValidForGetAnswer =
+    importanceScore >= 3 &&
+    frequencyScore >= 3 &&
+    (importanceScore >= 4 || frequencyScore >= 4);
+
+  if (!areScoresValidForGetAnswer) {
+    // 不满足分数门槛时，只展示页面内提示，不继续请求后端接口。
+    questionErrorTip.value =
+      "Importance and frequency scores must both be at least 3, and at least one of them must be 4 or higher.";
+    return;
+  }
+
   if (!userDetail.username) {
     ElMessage.error(t("common.pleaseFillUserInfo"));
     return;
@@ -1722,6 +1753,19 @@ const getQuestionNum = () => {
             list-style: lower-alpha;
           }
         }
+      }
+    }
+    .question-error-tip{
+      padding-left: 10em;
+      color: rgba(128, 0, 0, 1);
+      
+      min-height: 1.5em;
+      margin-top: -2.2em;
+      &>div{
+        display: flex;
+      flex-direction: row;
+      gap: 0 0.5em;
+      align-items: center;
       }
     }
     .input-container {
