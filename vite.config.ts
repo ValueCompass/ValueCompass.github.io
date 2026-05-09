@@ -16,6 +16,7 @@ const pathResolve = (pathStr: string) => {
 export default defineConfig({
   // base: "/value-compass.github.io",
   base: "./",
+  assetsInclude: ["**/*.pptx", "**/*.docx"],
   plugins: [
     vue({
       template: {

@@ -10,7 +10,7 @@
     <div v-if="!isOnboardingPage" class="View-tutorial-btn" @click="dialogTableVisible = true"><svgIcon
               
                 name="play-icon"
-              ></svgIcon><span>{{isOnboardingPage}}View tutorial</span></div>
+              ></svgIcon><span>View tutorial</span></div>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ const isOnboardingPage = computed(() => route.path === "/CulturalValueAnnotation
 
 :deep(.onboarding-dialog) {
 max-width: 1376px;
-width: 70%;
+width: 75%;
 border-radius: 12px;
 padding: 60px 120px;
 }
@@ -64,7 +64,7 @@ padding: 60px 120px;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
   height: 3em;
-  width: 16em;
+  width: 14em;
   box-sizing: border-box;
   display: flex;
   align-items: center;

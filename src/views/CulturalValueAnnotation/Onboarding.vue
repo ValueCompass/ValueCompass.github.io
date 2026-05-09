@@ -71,6 +71,24 @@
               </p>
             </div>
 
+            <div class="warning-box" style="background: rgba(204, 240, 252, 0.25);color: rgba(10, 17, 31, 1);">
+              <img src="@/assets/images/Annotat-ionResources-icon.png" alt="" style="width:1.5em">
+              <div>
+                <p><b>Annotation Resources</b></p>
+                <p>Download supporting materials before annotation.</p>
+                <p>
+                  <a class="download-a" href="" @click.prevent="handleDownloadSlides"
+                    >[ Download Slides ]</a
+                  >
+                </p>
+                <p>
+                  <a class="download-a" href="" @click.prevent="handleDownloadGuidelineDocument"
+                    >[ Download Guideline Document ]</a
+                  >
+                </p>
+              </div>
+            </div>
+
             <div class="action-block">
               <button
                 type="button"
@@ -200,10 +218,6 @@
 </template>
 
 <script setup>
-import onboardingPreview from "@/assets/images/Collaborators.png";
-import onboardingVideoStep1 from "@/assets/video/video1.mp4";
-import onboardingVideoStep2 from "@/assets/video/video2.mp4";
-import onboardingVideoStep3 from "@/assets/video/video3.mp4";
 import { ElMessage } from "element-plus";
 import {
   Warning,
@@ -217,6 +231,18 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
 import { syncLocaleFromUserDetail } from "@/i18n";
+import {
+  onboardingPreview,
+  createOnboardingSteps,
+  createOnboardingSurveys,
+  normalizeLanguageLabel,
+  getPreferredSurveyLanguage,
+  buildDisplaySurveys,
+  getStoredOnboardingUserDetail,
+  copyTextWithFallback,
+  downloadOnboardingSlides,
+  downloadOnboardingGuidelineDocument,
+} from "@/utils/culturalValueOnboarding";
 
 const currentStep = ref(1);
 const showSurveyModule = ref(false);
@@ -225,120 +251,17 @@ const registeredUserCountry = ref("");
 const registeredUserLanguage = ref("");
 const surveyLinksExpanded = ref(true);
 const router = useRouter();
-
-// 根据用户国家，决定问卷里优先展示的语言版本。
-const countryLanguageMap = {
-  China: "Chinese",
-  Japan: "Japanese",
-  "South Korea": "Korean",
-  Korea: "Korean",
-  "Republic of Korea": "Korean",
+const handleDownloadSlides = () => {
+  downloadOnboardingSlides();
 };
 
-const steps = ref([
-  {
-    id: 1,
-    label: "Step 1",
-    pill: "Step 1. Task Overview & Objectives",
-    heading: "Get to Know the Task",
-    description:
-      "Understand the workflow and purpose of the annotation system.",
-    completed: false,
-    videoSrc: onboardingVideoStep1,
-    videoType: "video/mp4",
-  },
-  {
-    id: 2,
-    label: "Step 2",
-    pill: "Step 2. Key Guidelines & How to Annotate",
-    heading: "Learn the Annotation Rules",
-    description:
-      "Learn rules and criteria to ensure consistent, reliable annotations.",
-    completed: false,
-    videoSrc: onboardingVideoStep2,
-    videoType: "video/mp4",
-  },
-  {
-    id: 3,
-    label: "Step 3",
-    pill: "Step 3. Real Cases & Best Practices",
-    heading: "Examples & Practical",
-    description:
-      "See real examples to reinforce understanding and apply in practice.",
-    completed: false,
-    videoSrc: onboardingVideoStep3,
-    videoType: "video/mp4",
-  },
-]);
+const handleDownloadGuidelineDocument = () => {
+  downloadOnboardingGuidelineDocument();
+};
 
-const surveys = ref([
-  {
-    title: "Basic Information Survey:",
-    completed: false,
-    links: [
-      {
-        label: "English",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNkZGTUdYQkZNTDBWVjI0WTBFUDZCMTMzOC4u",
-      },
-      {
-        label: "Chinese",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNDZDVE04MFNXTVE2SUdHN09WSzRBRTVXSS4u",
-      },
-      {
-        label: "Japanese",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUQ0o5NFE3RjFRTTFKOVpYTUNPT0pMMkhRWi4u",
-      },
-      {
-        label: "Korean",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURjRENlJCUDJLVUFMSVVNSU9NTUdES1E4Vi4u",
-      },
-    ],
-  },
-  {
-    title: "Schwartz Value Survey:",
-    completed: false,
-    links: [
-      {
-        label: "English",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u",
-      },
-      {
-        label: "Chinese",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURVFPVVJHTFMzTzZKWlFURUxWMjBNSUJLSy4u",
-      },
-      {
-        label: "Japanese",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUQUZBUjRVMlZGT0EyVTBTVDdOVVc3RTc3Ti4u",
-      },
-      {
-        label: "Korean",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURjQwWlNZVFlKSjZXTjAwTzlESFFWR1oxVy4u",
-      },
-    ],
-  },
-  {
-    title: "Cultural Value Survey:",
-    completed: false,
-    links: [
-      {
-        label: "English;",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNFEyTzhORDM2RktBRTRUNjFWSTZWSzdDMC4u",
-      },
-      {
-        label: "Chinese;",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUMEtSTkI3VEkwMEc3STRQTkhKRk41UTJPRS4u",
-      },
-      {
-        label: "Japanese;",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURUZWNEQ5TDZFVVFHODRZVFU2WVpDWjQ4WC4u",
-      },
-      {
-        label: "Korean",
-        href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u",
-      },
-    ],
-  },
-]);
+const steps = ref(createOnboardingSteps());
+
+const surveys = ref(createOnboardingSurveys());
 
 const currentStepData = computed(() => {
   return (
@@ -358,54 +281,19 @@ const allSurveysCompleted = computed(() => {
   return surveys.value.every((survey) => survey.completed);
 });
 
-// 部分问卷语言标签末尾带分号，比较前先做一次归一化处理。
-const normalizeLanguageLabel = (label) => {
-  return label.replace(/;$/, "").trim();
-};
-
 const preferredSurveyLanguage = computed(() => {
-  return (
-    registeredUserLanguage.value ||
-    countryLanguageMap[registeredUserCountry.value] ||
-    "English"
-  );
+  return getPreferredSurveyLanguage({
+    country: registeredUserCountry.value,
+    language: registeredUserLanguage.value,
+    preferRegisteredLanguage: true,
+  });
 });
 
-const getVisibleSurveyLinks = (links) => {
-  if (surveyLinksExpanded.value) {
-    return links;
-  }
-
-  const preferredLink = links.find((link) => {
-    return normalizeLanguageLabel(link.label) === preferredSurveyLanguage.value;
-  });
-
-  return preferredLink ? [preferredLink] : links.slice(0, 1);
-};
-
-// 不修改原始问卷数据，只在渲染时调整链接顺序，
-// 让与当前国家匹配的语言版本排在每组问卷的最前面。
 const displaySurveys = computed(() => {
-  return surveys.value.map((survey) => {
-    const links = [...survey.links].sort((left, right) => {
-      const leftIsPreferred =
-        normalizeLanguageLabel(left.label) === preferredSurveyLanguage.value;
-      const rightIsPreferred =
-        normalizeLanguageLabel(right.label) === preferredSurveyLanguage.value;
-
-      if (leftIsPreferred === rightIsPreferred) {
-        return 0;
-      }
-
-      return leftIsPreferred ? -1 : 1;
-    });
-
-    return {
-      survey,
-      links,
-      visibleLinks: getVisibleSurveyLinks(links),
-      canExpand: links.length > 1,
-    };
+  return buildDisplaySurveys({
+    surveys: surveys.value,
+    preferredLanguage: preferredSurveyLanguage.value,
+    surveyLinksExpanded: surveyLinksExpanded.value,
   });
 });
 
@@ -530,21 +418,8 @@ const handleSurveyNext = () => {
 };
 
 const handleCopyRegisteredName = async () => {
-  try {
-    await navigator.clipboard.writeText(registeredUserName.value);
-    ElMessage.success("Name copied");
-  } catch {
-    const textArea = document.createElement("textarea");
-    textArea.value = registeredUserName.value;
-    textArea.setAttribute("readonly", "true");
-    textArea.style.position = "absolute";
-    textArea.style.left = "-9999px";
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textArea);
-    ElMessage.success("Name copied");
-  }
+  await copyTextWithFallback(registeredUserName.value);
+  ElMessage.success("Name copied");
 };
 
 const handleTimeUpdate = () => {
@@ -585,15 +460,10 @@ const handleLoadedMetadata = () => {
 };
 
 onMounted(() => {
-  try {
-    const storedUserDetail = JSON.parse(
-      localStorage.getItem("userDetail") || "{}",
-    );
-    // 从已保存的登录信息中读取用户名、国家和语言，用于问卷区展示与语言排序。
-    registeredUserName.value = storedUserDetail.username?.trim() || "hua";
-    registeredUserCountry.value = storedUserDetail.country?.trim() || "";
-    registeredUserLanguage.value = storedUserDetail.language?.trim() || "";
-  } catch {}
+  const storedUserDetail = getStoredOnboardingUserDetail();
+  registeredUserName.value = storedUserDetail.username;
+  registeredUserCountry.value = storedUserDetail.country;
+  registeredUserLanguage.value = storedUserDetail.language;
 
   if (!videoElement.value) {
     return;
@@ -801,7 +671,7 @@ onBeforeUnmount(() => {
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      gap: 28px;
+      gap: 1.5em;
       padding: 1.875em;
       border-radius: 12px;
       background: rgba(242, 244, 247, 1);
@@ -844,7 +714,7 @@ onBeforeUnmount(() => {
         display: flex;
         align-items: flex-start;
         gap: 1em;
-        padding: 1.5em;
+        padding: 1.25em;
         border-radius: 16px;
         background: #fff1f1;
         color: #b42318;
@@ -862,13 +732,18 @@ onBeforeUnmount(() => {
           font-size: 1.25em;
           margin-top: 0.1em;
         }
+
+        .download-a{
+            color: rgba(11, 112, 195, 1);
+            text-decoration: underline;
+        }
       }
 
       .action-block {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-top: 36px;
+        margin-top: 1em;
 
         p {
           margin: 0;
@@ -885,7 +760,7 @@ onBeforeUnmount(() => {
           justify-content: center;
           gap: 10px;
           width: 100%;
-          height: 56px;
+          height: 3em;
           border: 0;
           border-radius: 8px;
           background: #dfe3ea;
