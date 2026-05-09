@@ -79,7 +79,7 @@
             Value Concept: {{ concept.text }}
           </p>
           <p class="show-highlight__tooltip-reason">
-            Reason: Placeholder explanation for why this cue fragment maps to this concept.
+            Reason: {{ concept.evidence || "-" }}
           </p>
         </div>
       </div>
@@ -108,6 +108,10 @@ const props = defineProps({
     default: "",
   },
   cueConceptCorrespondence: {
+    type: Array,
+    default: () => [],
+  },
+  cueConceptEvidence: {
     type: Array,
     default: () => [],
   },
@@ -449,6 +453,31 @@ const hoveredFragmentIds = computed(() => {
   );
 });
 
+const getEvidenceText = (evidence) => {
+  if (Array.isArray(evidence)) {
+    return evidence
+      .map((item) => {
+        if (typeof item === "string") {
+          return item.trim();
+        }
+
+        return item == null ? "" : String(item).trim();
+      })
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  if (typeof evidence === "string") {
+    return evidence.trim();
+  }
+
+  if (evidence == null) {
+    return "";
+  }
+
+  return String(evidence).trim();
+};
+
 const hoveredTooltipGroups = computed(() => {
   if (hoveredPartIndex.value < 0) {
     return [];
@@ -485,6 +514,9 @@ const hoveredTooltipGroups = computed(() => {
       currentGroup.concepts.push({
         text: matchedConcept.text,
         trackIndex: matchedConcept.trackIndex,
+        evidence: getEvidenceText(
+          props.cueConceptEvidence?.[matchedConcept.trackIndex]
+        ),
       });
     }
   });

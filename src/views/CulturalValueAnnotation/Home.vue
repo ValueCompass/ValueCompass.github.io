@@ -697,7 +697,7 @@
             </ul>
           </div>
 
-          <div class="highlight-container">
+          <div class="highlight-container"  style="font-size: 1rem;">
             <div class="show_question_container" v-if="questionValue">
               <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
               <div class="question_box" style="flex: 1">
@@ -744,7 +744,7 @@
           </div>
         </div>
 
-        <div class="highlight-container">
+        <div class="highlight-container" style="font-size: 1rem;">
           <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
             <div class="question_box">
@@ -845,6 +845,7 @@ const candidateQuestionsReceivedAt = ref(null);
 const pageEnteredAt = ref(null);
 
 const answer_model = ref("");
+const original_answer_country = ref("");
 
 const topicValue1 = ref("");
 const topicValue2 = ref("");
@@ -986,6 +987,8 @@ let annotationDataOrigin = reactive({
   response: "",
   highlight_cues: [],
   key_concepts: [],
+  cues_concepts_correspondence: [],
+  cues_concepts_evidence: [],
 });
 // personal 部分的标注
 let annotationDataOrigin_person = reactive({
@@ -993,11 +996,14 @@ let annotationDataOrigin_person = reactive({
   response: "",
   highlight_cues: [],
   key_concepts: [],
+  cues_concepts_correspondence: [],
+  cues_concepts_evidence: [],
 });
 
 const resetGetAnswerState = () => {
   hasClickedGetAnswerBtn.value = false;
   answer_model.value = "";
+  original_answer_country.value = "";
   questionValue.value = "";
   rawQuestionValue.value = "";
   questionAction.value = "";
@@ -1015,6 +1021,8 @@ const resetGetAnswerState = () => {
     response: "",
     highlight_cues: [],
     key_concepts: [],
+    cues_concepts_correspondence: [],
+    cues_concepts_evidence: [],
   };
 
   annotationDataOrigin_person = {
@@ -1022,6 +1030,8 @@ const resetGetAnswerState = () => {
     response: "",
     highlight_cues: [],
     key_concepts: [],
+    cues_concepts_correspondence: [],
+    cues_concepts_evidence: [],
   };
 };
 
@@ -1143,6 +1153,7 @@ const handleGetAnswerBtnClick = () => {
           t("culturalValueAnnotation.step4.getAnswerLockedToast"),
         );
         answer_model.value = res.data.answer_model;
+        original_answer_country.value = res.data.original_answer_country || "";
       } else {
         ElMessage.error(t("common.unexpectedError"));
       }
@@ -1193,19 +1204,11 @@ const submitHighlightAndConcepts = () => {
     }
 
     // 处理第二个注释组件
-    let component2Data = {
-      response: "",
-      highlight_cues: [],
-      key_concepts: [],
-      actions: [],
-    };
-    if (annotationComponentRef2.value) {
-      component2Data = annotationComponentRef2.value.processAnnotationData();
-      if (component2Data.unmarked) {
-        ElMessage.error(t("common.pleaseMarkAllItems"));
-        isLoadingSubmitHighlightAndConcepts.value = false;
-        return;
-      }
+    const component2Data = annotationComponentRef2.value.processAnnotationData();
+    if (component2Data.unmarked) {
+      ElMessage.error(t("common.pleaseMarkAllItems"));
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
     }
 
     console.log("Component 1 data:", component1Data);
@@ -1221,6 +1224,7 @@ const submitHighlightAndConcepts = () => {
 
     const sendData = {
       answer_model: answer_model.value,
+      original_answer_country: original_answer_country.value,
       username: userDetail.username.trim(),
       country: userDetail.country.trim(),
       language: userDetail.language.trim(),
@@ -1259,6 +1263,10 @@ const submitHighlightAndConcepts = () => {
       key_concepts: component1Data.key_concepts,
       cues_actions: component1Data.cues_actions,
       concepts_actions: component1Data.concepts_actions,
+      // 直接使用组件过滤后的结果，保证长度与 highlight_cues / key_concepts 对齐。
+      cues_concepts_correspondence:
+        component1Data.cues_concepts_correspondence,
+      cues_concepts_evidence: component1Data.cues_concepts_evidence,
 
       // 第二个注释组件的数据 personal 部分的标注
       response_person: component2Data.response,
@@ -1266,6 +1274,10 @@ const submitHighlightAndConcepts = () => {
       key_concepts_person: component2Data.key_concepts,
       cues_actions_person: component2Data.cues_actions,
       concepts_actions_person: component2Data.concepts_actions,
+      // personal 部分同样提交过滤后的 correspondence / evidence，避免与个人标注结果错位。
+      cues_concepts_correspondence_person:
+        component2Data.cues_concepts_correspondence,
+      cues_concepts_evidence_person: component2Data.cues_concepts_evidence,
 
       duration_time: Math.floor(duration_time.value / 1000),
       submit_type: submit_type.value,
@@ -1428,17 +1440,24 @@ onMounted(async () => {
       handleTaskValue2Change(question.task_2);
     }, 100);
     answer_model.value = question.answer_model;
+    original_answer_country.value = question.original_answer_country || "";
     annotationDataOrigin = {
       originalResponse: question.response,
       response: question.response,
       highlight_cues: question.highlight_cues,
       key_concepts: question.key_concepts,
+      cues_concepts_correspondence: question.cues_concepts_correspondence || [],
+      cues_concepts_evidence: question.cues_concepts_evidence || [],
     };
     annotationDataOrigin_person = {
       originalResponse: question.response_person,
       response: question.response_person,
       highlight_cues: question.highlight_cues_person,
       key_concepts: question.key_concepts_person,
+      cues_concepts_correspondence:
+        question.cues_concepts_correspondence_person || [],
+      cues_concepts_evidence:
+        question.cues_concepts_evidence_person || [],
     };
 
     original_response.value = question.response;

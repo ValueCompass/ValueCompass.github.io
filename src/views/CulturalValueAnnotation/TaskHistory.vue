@@ -30,6 +30,7 @@
           </span>
         </template>
       </el-table-column>
+      <el-table-column prop="question_action" label="Question Action" width="140" />
       <el-table-column prop="topic_1" label="Topic 1" width="140" />
       <el-table-column prop="topic_2" label="Topic 2" width="140" />
       <el-table-column prop="task_1" label="Task 1" width="140" />

@@ -27,12 +27,13 @@
               type="textarea"
             />
             <ShowHighlight
-              v-if="!isCueEditMode && !isAddingNew && shouldShowHighlightOverlay"
+              v-if="hasCueConceptCorrespondenceField && !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay"
               overlay-mode="cue"
               :is-adding-new="isAddingNew"
               :cue-text="currentCue"
               :concept-text="currentConcept"
               :cue-concept-correspondence="currentCueCorrespondence"
+              :cue-concept-evidence="currentCueEvidence"
               @hover-change="handleHighlightHoverChange"
             />
           </div>
@@ -81,12 +82,13 @@
               type="textarea"
             />
             <ShowHighlight
-              v-if="!isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay"
+              v-if="hasCueConceptCorrespondenceField && !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay"
               overlay-mode="concepts"
               :is-adding-new="isAddingNew"
               :cue-text="currentCue"
               :concept-text="currentConcept"
               :cue-concept-correspondence="currentCueCorrespondence"
+              :cue-concept-evidence="currentCueEvidence"
               :external-active-track-indexes="sharedHoveredTrackIndexes"
             />
           </div>
@@ -174,6 +176,7 @@ const props = defineProps({
       highlight_cues: [],
       key_concepts: [],
       cues_concepts_correspondence: [],
+      cues_concepts_evidence: [],
     }),
   },
 });
@@ -190,6 +193,18 @@ const cloneCueConceptsCorrespondence = (correspondence = []) => {
   });
 };
 
+const cloneCueConceptsEvidence = (evidence = []) => {
+  return evidence.map((item) => {
+    if (!Array.isArray(item)) {
+      return [];
+    }
+
+    return item.map((evidenceItem) => {
+      return Array.isArray(evidenceItem) ? [...evidenceItem] : evidenceItem;
+    });
+  });
+};
+
 watch(
   () => props.annotationDataOrigin,
   (newVal) => {
@@ -200,6 +215,9 @@ watch(
     annotationData.key_concepts = [...newVal.key_concepts];
     annotationData.cues_concepts_correspondence =
       cloneCueConceptsCorrespondence(newVal.cues_concepts_correspondence);
+    annotationData.cues_concepts_evidence = cloneCueConceptsEvidence(
+      newVal.cues_concepts_evidence || []
+    );
     // 验证highlight_cues是否都存在于response中
     validateHighlightCues();
   }
@@ -211,6 +229,7 @@ const annotationData = reactive({
   highlight_cues: [],
   key_concepts: [],
   cues_concepts_correspondence: [],
+  cues_concepts_evidence: [],
 });
 
 // 跟踪每个关键词的状态（keep/delete/edit/add）
@@ -224,6 +243,7 @@ const validateHighlightCues = () => {
   const validCues = [];
   const validConcepts = [];
   const validCorrespondence = [];
+  const validEvidence = [];
 
   annotationData.highlight_cues.forEach((cue, index) => {
     if (annotationData.response.includes(cue)) {
@@ -232,6 +252,11 @@ const validateHighlightCues = () => {
       validCorrespondence.push(
         cloneCueConceptsCorrespondence([
           annotationData.cues_concepts_correspondence[index] || [],
+        ])[0] || []
+      );
+      validEvidence.push(
+        cloneCueConceptsEvidence([
+          annotationData.cues_concepts_evidence[index] || [],
         ])[0] || []
       );
     } else {
@@ -243,6 +268,7 @@ const validateHighlightCues = () => {
   annotationData.highlight_cues = validCues;
   annotationData.key_concepts = validConcepts;
   annotationData.cues_concepts_correspondence = validCorrespondence;
+  annotationData.cues_concepts_evidence = validEvidence;
   originalHighlightCues.value = [...validCues];
   originalKeyConcepts.value = [...validConcepts];
 
@@ -273,6 +299,9 @@ onMounted(() => {
       cloneCueConceptsCorrespondence(
         props.annotationDataOrigin.cues_concepts_correspondence
       );
+    annotationData.cues_concepts_evidence = cloneCueConceptsEvidence(
+      props.annotationDataOrigin.cues_concepts_evidence || []
+    );
   }
 
   // 验证highlight_cues是否都存在于response中
@@ -450,8 +479,27 @@ const currentCueCorrespondence = computed(() => {
   return annotationData.cues_concepts_correspondence[currentCueIndex.value] || [];
 });
 
+const currentCueEvidence = computed(() => {
+  if (currentCueIndex.value < 0) {
+    return [];
+  }
+
+  return annotationData.cues_concepts_evidence[currentCueIndex.value] || [];
+});
+
 const hasCueConceptCorrespondenceField = computed(() => {
   return Array.isArray(props.annotationDataOrigin?.cues_concepts_correspondence);
+});
+
+// 当前 cue 对应的关系分组里只要有一项非空，就允许显示高亮关系。
+const hasCurrentCueCorrespondenceData = computed(() => {
+  return currentCueCorrespondence.value.some((item) => {
+    if (Array.isArray(item)) {
+      return item.length > 0;
+    }
+
+    return !!item;
+  });
 });
 
 const currentItemMatchesOriginal = computed(() => {
@@ -486,12 +534,17 @@ const currentItemAllowsHighlightOverlay = computed(() => {
     !["edit", "add"].includes(currentItemHighlightStatus.value.concept);
 });
 
+// 只有存在关系字段、当前组关系非空、且当前项仍是原始未编辑状态时才显示 ShowHighlight。
 const shouldShowHighlightOverlay = computed(() => {
   if (!hasCueConceptCorrespondenceField.value) {
     return false;
   }
 
   if (currentCueIndex.value < 0) {
+    return false;
+  }
+
+  if (!hasCurrentCueCorrespondenceData.value) {
     return false;
   }
 
@@ -627,11 +680,14 @@ const handleDeleteClick = (type) => {
       1
     );
 
-    // 4. 从highlightCuesStatus和keyConceptsStatus数组中删除
+    // 4. 从cues_concepts_evidence数组中删除
+    annotationData.cues_concepts_evidence.splice(currentCueIndex.value, 1);
+
+    // 5. 从highlightCuesStatus和keyConceptsStatus数组中删除
     highlightCuesStatus.value.splice(currentCueIndex.value, 1);
     keyConceptsStatus.value.splice(currentCueIndex.value, 1);
 
-    // 5. 从response文本中删除对应的cue
+    // 6. 从response文本中删除对应的cue
     if (deletedCue) {
       // 使用正则表达式移除对应的cue文本
       annotationData.response = annotationData.response.replace(
@@ -642,7 +698,7 @@ const handleDeleteClick = (type) => {
       // annotationData.response = annotationData.response.replace(/\s+/g, ' ').trim();
     }
 
-    // 6. 更新currentCueIndex，确保它指向一个有效的索引
+    // 7. 更新currentCueIndex，确保它指向一个有效的索引
     if (currentCueIndex.value >= annotationData.highlight_cues.length) {
       currentCueIndex.value = Math.max(
         0,
@@ -650,7 +706,7 @@ const handleDeleteClick = (type) => {
       );
     }
 
-    // 7. 如果还有cue，更新currentCuePosition
+    // 8. 如果还有cue，更新currentCuePosition
     if (annotationData.highlight_cues.length > 0) {
       updateCurrentCuePosition();
     } else {
@@ -861,6 +917,7 @@ const handleSubmitAddNew = () => {
   annotationData.highlight_cues.push(editCue.value);
   annotationData.key_concepts.push(editConcept.value);
   annotationData.cues_concepts_correspondence.push([]);
+  annotationData.cues_concepts_evidence.push([]);
   // 为新添加的cue和concept设置状态为add
   highlightCuesStatus.value.push("add");
   keyConceptsStatus.value.push("add");
@@ -929,6 +986,8 @@ const processAnnotationData = () => {
     key_concepts: annotationData.key_concepts,
     cues_actions: highlightCuesStatus.value,
     concepts_actions: keyConceptsStatus.value,
+    cues_concepts_correspondence: annotationData.cues_concepts_correspondence,
+    cues_concepts_evidence: annotationData.cues_concepts_evidence,
   };
 };
 
