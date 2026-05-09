@@ -1041,6 +1041,23 @@ const handleSelectChange = () => {
   questionValue_Select.value = questionValue_Select_origin.value;
   updateQuestionScores(questionValue_Select.value);
 };
+
+// 切到“修改现有问题”标签页不代表真的改过内容。
+// 只有当前文本与原始选中问题不一致时，才按 refine 处理。
+const getExistingQuestionAction = () => {
+  const originalQuestion = questionValue_Select_origin.value.trim();
+  const currentQuestion = questionValue_Select.value.trim();
+
+  if (
+    activeNameSelect1.value === "Select Existing Question" ||
+    currentQuestion === originalQuestion
+  ) {
+    return "select existing";
+  }
+
+  return "refine";
+};
+
 const handleGetAnswerBtnClick = () => {
   if (hasClickedGetAnswerBtn.value) {
     ElMessage.warning(t("culturalValueAnnotation.step4.getAnswerAlreadyClicked"));
@@ -1087,21 +1104,16 @@ const handleGetAnswerBtnClick = () => {
     rawQuestionValue.value = "";
     questionAction.value = "create";
   } else {
+    // question_action 需要与实际提交给后端的编辑结果保持一致。
+    const existingQuestionAction = getExistingQuestionAction();
+
     step3FormData.raw_importance = rawImportanceValue.value;
     step3FormData.raw_frequency = rawFrequencyValue.value;
-    if (activeNameSelect1.value === "Select Existing Question") {
-      step3FormData.raw_question = questionValue_Select_origin.value.trim();
-      step3FormData.question_action = "select existing";
+    step3FormData.raw_question = questionValue_Select_origin.value.trim();
+    step3FormData.question_action = existingQuestionAction;
 
-      rawQuestionValue.value = questionValue_Select_origin.value.trim();
-      questionAction.value = "select existing";
-    } else {
-      step3FormData.raw_question = questionValue_Select_origin.value.trim();
-      step3FormData.question_action = "refine";
-
-      rawQuestionValue.value = questionValue_Select_origin.value.trim();
-      questionAction.value = "refine";
-    }
+    rawQuestionValue.value = questionValue_Select_origin.value.trim();
+    questionAction.value = existingQuestionAction;
   }
 
   console.log(step3FormData);
