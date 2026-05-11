@@ -73,6 +73,25 @@ export const getCurrentDateTime = () => {
     addZero(hours) + ":" + addZero(minutes) + ":" + addZero(seconds);
 }
 
+// 统计中日韩字符数：每个中日韩字符都按 1 个“字”计数，不包含空格。
+export const getCjkCharacterCount = (text = "") => {
+  return (
+    text.match(
+      /[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u30ff\u31f0-\u31ff\uac00-\ud7af]/g,
+    ) || []
+  ).length;
+};
+
+// 统计英文单词数：连续英文字母组成 1 个词，连字符和撇号连接的形式仍算 1 个词。
+export const getEnglishWordCount = (text = "") => {
+  return (text.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g) || []).length;
+};
+
+// 统一长度口径：中日韩 1 个字符算 1 个“字”，英文 1 个单词算 1 个“字”，空格不计。
+export const getPrincipleEffectiveLength = (text = "") => {
+  return getCjkCharacterCount(text) + getEnglishWordCount(text);
+};
+
 
 // 分组函数
 export const groupByDeveloper = (data) => {

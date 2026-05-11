@@ -87,7 +87,7 @@
         </div>
       </div>
 
-      <div class="step step2">
+      <div ref="step2SectionRef" class="step step2">
         <div class="intro-container">
           <h4>
             {{ t("culturalValueAnnotation.step2.title") }}
@@ -139,9 +139,9 @@
             >
               <div>
                 <div>
-                  <p class="example-title">
+                  <p class="example-title" style="margin-bottom: .5em;">
                     <img src="@/assets/images/example-icon.png" />
-                    <span>{{ t("culturalValueAnnotation.step2.exampleTopic") }}</span>
+                    <span>[Topic-: {{ topicValue2 }}]</span>
                   </p>
                   <div style="padding-left: 1.5em" class="flex-column">
                     <p>
@@ -161,7 +161,14 @@
         </div>
 
         <div class="highlight-container">
-          <div class="input-container">
+          <div style="display:flex; gap: .8em;font-size: .875em;">
+            <img style="width:1.4em; height: 1.4em;" src="@/assets/images/note-icon.png" alt="">
+            <div>
+              <p>Please complete at least 3 principles.</p>
+              <p style="margin-top: .4em">Each completed principle must contain at least 10 characters.</p>
+            </div>
+          </div>
+          <div class="input-container" style="margin-top: -.1em">
             <div
               v-for="(principle, index) in principlesList"
               :key="index"
@@ -174,14 +181,38 @@
                   })
                 }}</b></span
               >
-              <el-input
-                type="textarea"
-                autosize
-                v-model="principlesList[index]"
-                style=""
-                placeholder="Please input"
-              />
+              <div class="principle-input-group">
+                <el-input
+                  type="textarea"
+                  autosize
+                  v-model="principlesList[index]"
+                  :class="{
+                    'principle-input-error': isPrincipleInputInvalid(principle),
+                  }"
+                  style=""
+                  placeholder="Please input"
+                />
+                <p
+                  v-if="getPrincipleValidationTip(principle)"
+                  :class="[
+                    'principle-validation-tip',
+                    {
+                      'principle-validation-tip--error': isPrincipleInputInvalid(principle),
+                    },
+                  ]"
+                >
+                  {{ getPrincipleValidationTip(principle) }}
+                </p>
+              </div>
             </div>
+            <p
+              :class="[
+                'principle-completed-tip',
+                {
+                  'principle-completed-tip--error': shouldHighlightPrincipleValidation,
+                },
+              ]"
+            >{{ completedPrincipleCount }} / 5 principle(s) completed</p>
           </div>
         </div>
       </div>
@@ -240,7 +271,7 @@
               <el-option
                 v-for="item in taskOptions2"
                 :key="item"
-                :label="`${item.category} (${topic_task_count?.[topicValue2]?.[item.category] ?? 0})`"
+                :label="`${item.category} (candidate questions for annotation = ${topic_task_count?.[topicValue2]?.[item.category] ?? 0})`"
                 :value="item.category"
               />
             </el-select>
@@ -270,7 +301,7 @@
           <div style="display: flex">
             <el-popover
               placement="right-start"
-              :width="300"
+              :width="500"
               :disabled="taskOptions2 && taskOptions2.length === 0"
             >
               <template #reference>
@@ -312,7 +343,7 @@
                       }"
                     >
                       {{
-                        `${item.category} (${topic_task_count?.[topicValue2]?.[item.category] ?? 0})`
+                        `${item.category} (candidate questions for annotation = ${topic_task_count?.[topicValue2]?.[item.category] ?? 0})`
                       }}
                     </li>
                   </ul>
@@ -805,6 +836,11 @@ import {
   submitAnnotation,
   GetAllCompletedAnnotations,
 } from "@/service/CulturalValueAnnotationApi";
+import {
+  getCjkCharacterCount,
+  getEnglishWordCount,
+  getPrincipleEffectiveLength,
+} from "@/utils/common";
 import { Language } from "@amcharts/amcharts4/core";
 
 let userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
@@ -855,10 +891,105 @@ const pageEnteredAt = ref(null);
 
 const answer_model = ref("");
 const original_answer_country = ref("");
+const step2SectionRef = ref(null);
 
 const topicValue1 = ref("");
 const topicValue2 = ref("");
 const principlesList = ref(["", "", "", "", ""]);
+
+// 单条 principle 的最小有效长度：中日韩字符按 1 计，英文单词按 1 计。
+const MIN_PRINCIPLE_EFFECTIVE_LENGTH = 10;
+// 点击 Get Question List 前，至少需要完成 3 条有效 principle。
+const MIN_COMPLETED_PRINCIPLE_COUNT = 3;
+// 记录是否已经点击过 Get Question List 并触发过 principle 校验。
+const hasTriggeredPrincipleValidation = ref(false);
+
+// principle 校验失败时，把页面滚动回 Step 2，方便用户直接看到错误提示和输入框状态。
+const scrollToStep2Section = () => {
+  step2SectionRef.value?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+};
+
+// principle 的有效长度至少为 10，允许中日韩字符和英文单词混合累计。
+const isPrincipleLongEnough = (text = "") => {
+  const trimmedText = text.trim();
+
+  if (!trimmedText) {
+    return false;
+  }
+
+  // 有效长度由 utils 中的公共统计函数负责：中日韩字符数 + 英文单词数。
+  return getPrincipleEffectiveLength(trimmedText) >= MIN_PRINCIPLE_EFFECTIVE_LENGTH;
+};
+
+// 收集所有“已填写但长度不合格”的 principle 序号，用于点击按钮后的统一报错提示。
+const getInvalidPrincipleIndexes = () => {
+  return principlesList.value.reduce((invalidIndexes, principle, index) => {
+    if (principle.trim() && !isPrincipleLongEnough(principle)) {
+      invalidIndexes.push(index + 1);
+    }
+
+    return invalidIndexes;
+  }, []);
+};
+
+  // 输入框下方的文案默认作为规则说明存在；当该条已填写但长度不足时，展示当前长度信息。
+const getPrincipleValidationTip = (text = "") => {
+  const trimmedText = text.trim();
+
+  if (!trimmedText || isPrincipleLongEnough(trimmedText)) {
+    return "";
+  }
+
+  const cjkCharacterCount = getCjkCharacterCount(trimmedText);
+  const englishWordCount = getEnglishWordCount(trimmedText);
+  const effectiveLength = getPrincipleEffectiveLength(trimmedText);
+
+  return `At least 10 characters. (${effectiveLength})`;
+};
+
+// 只要存在“已填写但长度不合格”的 principle，就认为当前有长度校验错误。
+const hasInvalidPrinciples = computed(() => {
+  return getInvalidPrincipleIndexes().length > 0;
+});
+
+// Get Question List 之前至少需要 3 条“已填写且长度合格”的 principle。
+const hasInsufficientCompletedPrinciples = computed(() => {
+  return completedPrincipleCount.value < MIN_COMPLETED_PRINCIPLE_COUNT;
+});
+
+// 默认保持黑色说明，只有点击按钮后且数量或长度校验失败时才切换为红色错误态。
+const shouldHighlightPrincipleValidation = computed(() => {
+  return (
+    hasTriggeredPrincipleValidation.value &&
+    (hasInvalidPrinciples.value || hasInsufficientCompletedPrinciples.value)
+  );
+});
+
+// 单个输入框是否显示红色错误态：
+// 1. 用户已经点击过 Get Question List；
+// 2. 当前整体校验失败；
+// 3. 这一条本身有内容但长度不达标。
+const isPrincipleInputInvalid = (principle = "") => {
+  const trimmedPrinciple = principle.trim();
+
+  return (
+    shouldHighlightPrincipleValidation.value &&
+    !!trimmedPrinciple &&
+    !isPrincipleLongEnough(trimmedPrinciple)
+  );
+};
+
+// 只有已填写且满足最小长度要求的 principle，才计入已完成数量。
+const completedPrincipleCount = computed(() => {
+  return principlesList.value.filter((principle) => {
+    const trimmedPrinciple = principle.trim();
+
+    return trimmedPrinciple && isPrincipleLongEnough(trimmedPrinciple);
+  }).length;
+});
 
 const topicOptions1 = ref([]);
 const topicOptions2 = ref([]);
@@ -894,10 +1025,40 @@ const isSaveAndGetQuestionListBtnDisabled = computed(() => {
     !topicValue1.value.trim() ||
     !topicValue2.value.trim() ||
     !taskValue1.value.trim() ||
-    !taskValue2.value.trim() ||
-    principlesList.value.filter((item) => item.trim() !== "").length < 3
+    !taskValue2.value.trim()
+    // principle 相关规则改为点击按钮时统一校验，这里不再提前按数量禁用按钮。
   );
 });
+
+// Get Question List / Submit Annotation 前共用同一套 principle 校验，避免两个入口规则不一致。
+const validatePrinciplesBeforeContinue = () => {
+  // 点击按钮后才正式进入 principle 校验态，页面上的黑色说明也会在失败时切成红色。
+  hasTriggeredPrincipleValidation.value = true;
+
+  // 先校验“大前提”：至少 3 条 principle 已填写且每条长度都达标。
+  if (hasInsufficientCompletedPrinciples.value) {
+    // 校验失败时先滚动到 Step 2，让用户第一时间看到 principle 的错误提示。
+    scrollToStep2Section();
+    ElMessage.error(
+      `Please complete at least ${MIN_COMPLETED_PRINCIPLE_COUNT} valid principles before continuing.`
+    );
+    return false;
+  }
+
+  // 数量达标后，再补充指出具体哪几条 principle 的长度仍然不符合要求。
+  const invalidPrincipleIndexes = getInvalidPrincipleIndexes();
+  if (invalidPrincipleIndexes.length > 0) {
+    // 有具体不合格项时，同样回到 Step 2，并提示是哪几条 principle 长度不达标。
+    scrollToStep2Section();
+    ElMessage.error(
+      `Principle ${invalidPrincipleIndexes.join(", ")} must contain at least 10 units. Chinese/Japanese/Korean characters count as 1 unit each, English words count as 1 unit each, and spaces are not counted.`
+    );
+    return false;
+  }
+
+  return true;
+};
+
 const handleSaveAndGetQuestionListBtnClick = () => {
   if (isSaveAndGetQuestionListBtnDisabled.value) {
     return;
@@ -905,6 +1066,11 @@ const handleSaveAndGetQuestionListBtnClick = () => {
 
   if (!userDetail.username) {
     ElMessage.error(t("common.pleaseFillUserInfo"));
+    return;
+  }
+
+  // 获取候选问题前，先通过统一的 principle 前置校验。
+  if (!validatePrinciplesBeforeContinue()) {
     return;
   }
 
@@ -933,6 +1099,8 @@ const handleSaveAndGetQuestionListBtnClick = () => {
       if (res.data && res.data["candidate_questions"]) {
         candidateQuestionsReceivedAt.value = Date.now();
         // ElMessage.success("提交成功");
+        // 请求成功后清空 principle 错误态，避免后续页面继续保留红色校验提示。
+        hasTriggeredPrincipleValidation.value = false;
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
           questionValue_Select.value =
@@ -1208,6 +1376,11 @@ const annotationComponentRef2 = ref(null);
 
 const isLoadingSubmitHighlightAndConcepts = ref(false);
 const submitHighlightAndConcepts = () => {
+  // 最终提交前也要走同一套 principle 校验，避免跳过 Get Question List 后直接提交脏数据。
+  if (!validatePrinciplesBeforeContinue()) {
+    return;
+  }
+
   if (!annotationComponentRef.value) {
     ElMessage.error(t("common.pleaseCompleteAnnotation"));
     return;
@@ -1797,14 +1970,36 @@ const getQuestionNum = () => {
         .principle-item {
           width: 100%;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           span {
             margin-right: 1em;
+            padding-top: 0.4em;
           }
-          & > .el-input,
-          & > .el-textarea {
+          .principle-input-group {
             width: calc(100% - 7em);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35em;
           }
+          .principle-validation-tip {
+            color: #222;
+            font-size: 0.875rem;
+            line-height: 1.4;
+          }
+          .principle-validation-tip--error {
+            color: #b22222;
+          }
+          :deep(.principle-input-error .el-textarea__inner) {
+            border-color: #b22222 !important;
+            box-shadow: 0 0 0 1px rgba(178, 34, 34, 0.15);
+          }
+        }
+        .principle-completed-tip {
+          font-size: 0.875em;
+          color: #222;
+        }
+        .principle-completed-tip--error {
+          color: #b22222;
         }
       }
     }
