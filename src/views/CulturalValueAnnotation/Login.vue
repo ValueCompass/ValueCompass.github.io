@@ -59,8 +59,13 @@
                 <el-input
                   v-model="username"
                   placeholder="Please input"
+                  :class="{ 'login-input-error': !!annotatorLoginErrorTip }"
+                    @input="annotatorLoginErrorTip = ''"
                 ></el-input>
               </div>
+                <p v-if="annotatorLoginErrorTip" class="login-error-tip">
+                  {{ annotatorLoginErrorTip }}
+                </p>
               <p v-if="isFirstLogin === true">
                 The name can be your real name or alias. It will be used to
                 track your training completion. Please use the same name again
@@ -109,8 +114,13 @@
                 <el-input
                   v-model="adminUsername"
                   placeholder="Please input"
+                  :class="{ 'login-input-error': !!adminLoginErrorTip }"
+                  @input="adminLoginErrorTip = ''"
                 ></el-input>
               </div>
+              <p v-if="adminLoginErrorTip" class="login-error-tip">
+                {{ adminLoginErrorTip }}
+              </p>
             </div>
 
             <div class="login-section">
@@ -162,7 +172,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { ElMessage } from "element-plus";
 import {
   UserRegisterLogin,
@@ -185,6 +195,8 @@ const isFirstLogin = ref(null);
 const username = ref("");
 const adminUsername = ref("");
 const adminPassword = ref("");
+const annotatorLoginErrorTip = ref("");
+const adminLoginErrorTip = ref("");
 
 const countryValue = ref("");
 const adminCountryValue = ref("");
@@ -243,7 +255,13 @@ const isDisabledAdmin = computed(() => {
 
 const handleModeChange = (mode) => {
   loginMode.value = mode;
+  annotatorLoginErrorTip.value = "";
+  adminLoginErrorTip.value = "";
 };
+
+watch(isFirstLogin, () => {
+  annotatorLoginErrorTip.value = "";
+});
 
 const handleAnnotatorLogin = () => {
   let sendData = {};
@@ -264,9 +282,11 @@ const handleAnnotatorLogin = () => {
   return UserRegisterLogin(sendData)
     .then((res) => {
       if (!res.data.ok) {
-        ElMessage.warning(res.data.message);
+        annotatorLoginErrorTip.value = res.data.message || "Login failed";
         return;
       }
+
+      annotatorLoginErrorTip.value = "";
 
       saveCulturalValueAnnotationUserDetail({
         username: res.data.username,
@@ -300,9 +320,11 @@ const handleAdminModeLogin = () => {
     country: adminCountryValue.value,
   }).then((res) => {
     if (!res.data?.ok) {
-      ElMessage.error(res.data?.message || "Admin login failed");
+      adminLoginErrorTip.value = res.data?.message || "Admin login failed";
       return;
     }
+
+    adminLoginErrorTip.value = "";
 
     saveCulturalValueAnnotationAdminDetail({
       username: res.data.username,
@@ -322,11 +344,12 @@ const nextStep = () => {
     return;
   }
 
+  annotatorLoginErrorTip.value = "";
   isLoading.value = true;
   handleAnnotatorLogin()
     .catch((err) => {
       console.log(err);
-      ElMessage.error("error");
+      annotatorLoginErrorTip.value = "Login failed";
     })
     .finally(() => {
       isLoading.value = false;
@@ -338,11 +361,12 @@ const handleAdminLoginClick = () => {
     return;
   }
 
+  adminLoginErrorTip.value = "";
   isLoading.value = true;
   handleAdminModeLogin()
     .catch((err) => {
       console.log(err);
-      ElMessage.error("error");
+      adminLoginErrorTip.value = "Admin login failed";
     })
     .finally(() => {
       isLoading.value = false;
@@ -410,6 +434,11 @@ const handleAdminLoginClick = () => {
       }
     }
   }
+    .login-error-tip {
+      color: #b22222;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
   h2 {
     font-weight: 600;
     font-size: 30px;
@@ -462,6 +491,12 @@ const handleAdminLoginClick = () => {
           height: 57px;
           font-size: 18px;
         }
+      }
+      :deep(.login-input-error .el-input__wrapper) {
+        box-shadow: 0 0 0 1px rgba(178, 34, 34, 1) inset !important;
+      }
+      :deep(.login-input-error .el-input__wrapper.is-focus) {
+        box-shadow: 0 0 0 1px rgba(178, 34, 34, 1) inset !important;
       }
       :deep(.el-select) {
         .el-select__wrapper {
