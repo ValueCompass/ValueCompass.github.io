@@ -33,8 +33,14 @@
 import UserHeader from "./Components/UserHeader.vue";
 import OnboardingDialog from "./OnboardingDialog.vue";
 
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import {
+  hasAutoOpenedCulturalValueAnnotationTutorialThisLogin,
+  hasCulturalValueAnnotationAnnotatorLogin,
+  hasStudiedCulturalValueAnnotationGuidance,
+  markCulturalValueAnnotationTutorialAutoOpenedThisLogin,
+} from "../../utils/culturalValueAnnotationAuth";
 
 const route = useRoute();
 const dialogTableVisible = ref(false)
@@ -105,6 +111,26 @@ const handleTutorialDialogClosed = () => {
   isDialogClosing.value = false;
   dialogAnimationStyle.value = {};
 };
+
+onMounted(async () => {
+  await nextTick();
+
+  // 只有 annotator 才需要自动补弹教程视频；admin 页面和 onboarding 页面都跳过。
+  // 同时要求该 annotator 已经完成过 onboarding，避免首次培训流程被这个弹窗打断。
+  // 最后再结合 sessionStorage 标记，保证同一次登录过程中只自动弹出一次。
+  if (
+    !isOnboardingPage.value &&
+    !isAdminPage.value &&
+    hasCulturalValueAnnotationAnnotatorLogin() &&
+    hasStudiedCulturalValueAnnotationGuidance() &&
+    !hasAutoOpenedCulturalValueAnnotationTutorialThisLogin()
+  ) {
+    // 满足条件后立刻写入“本次登录已自动弹过”的标记，防止用户在本轮登录里
+    // 离开模块后再次进入时重复自动弹窗；手动点击 View tutorial 不受这个限制。
+    markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
+    openTutorialDialog();
+  }
+});
 
 </script>
 
