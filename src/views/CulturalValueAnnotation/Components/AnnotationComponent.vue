@@ -26,6 +26,10 @@
               :autosize="{ minRows: 7, maxRows: 7 }"
               type="textarea"
             />
+            <!-- cue 侧覆盖层：
+                 - external-active-track-indexes：接收父组件同步的高亮轨道，让 concept hover 时 cue 下划线也联动
+                 - shared-tooltip：接收父组件统一管理的 tooltip 数据，保证 cue / concept hover 时弹窗位置一致
+                 - hover-change：cue 侧 hover 时把轨道和 tooltip 内容上报给父组件 -->
             <ShowHighlight
               v-if="hasCueConceptCorrespondenceField && !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay"
               overlay-mode="cue"
@@ -34,6 +38,8 @@
               :concept-text="currentConcept"
               :cue-concept-correspondence="currentCueCorrespondence"
               :cue-concept-evidence="currentCueEvidence"
+              :external-active-track-indexes="sharedHoveredTrackIndexes"
+              :shared-tooltip="sharedHighlightTooltip"
               @hover-change="handleHighlightHoverChange"
             />
           </div>
@@ -81,6 +87,10 @@
               :autosize="{ minRows: 3, maxRows: 3 }"
               type="textarea"
             />
+            <!-- concept 侧覆盖层：
+                 - external-active-track-indexes：接收父组件同步的高亮轨道，让 cue hover 时 concept 下划线也联动
+                 - disable-local-tooltip：禁止 concept 实例自行渲染弹窗，统一交由 cue 侧锚点处显示
+                 - hover-change：concept hover 时把轨道和 tooltip 内容上报给父组件 -->
             <ShowHighlight
               v-if="hasCueConceptCorrespondenceField && !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay"
               overlay-mode="concepts"
@@ -90,6 +100,8 @@
               :cue-concept-correspondence="currentCueCorrespondence"
               :cue-concept-evidence="currentCueEvidence"
               :external-active-track-indexes="sharedHoveredTrackIndexes"
+              :disable-local-tooltip="true"
+              @hover-change="handleHighlightHoverChange"
             />
           </div>
 
@@ -318,17 +330,29 @@ const currentCuePosition = ref({
 
 const isCueEditMode = ref(false);
 const isConceptEditMode = ref(false);
+// 父组件统一维护的高亮轨道列表，cue / concept 两侧实例共用，保证 hover 联动高亮同步。
 const sharedHoveredTrackIndexes = ref([]);
+// 父组件统一维护的 tooltip 状态：
+// - visible：是否显示弹窗
+// - cueGroups：cue hover 时的片段分组数据，交给 cue 侧实例渲染
+// - conceptData：concept hover 时的对应数据，也交给 cue 侧实例在同一位置渲染
+const sharedHighlightTooltip = ref({
+  visible: false,
+  cueGroups: [],
+  conceptData: null,
+});
 
 // 标识是否正在添加新的cue和concept
 const isAddingNew = ref(false);
 
 const getStatusDisplayText = (status) => {
-  if (status === "edit") {
-    return "revise";
-  }
-
-  return status;
+  const map = {
+    edit: "revised",
+    keep: "kept",
+    delete: "deleted",
+    add: "added",
+  };
+  return map[status] ?? status;
 };
 
 const getKeepResultStatus = (type) => {
@@ -554,10 +578,21 @@ const shouldShowHighlightOverlay = computed(() => {
   );
 });
 
+// 统一处理 cue / concept 两侧 ShowHighlight 的 hover-change 事件：
+// 1. 把最新命中的轨道写入 sharedHoveredTrackIndexes，驱动两侧下划线联动高亮
+// 2. 把 tooltip 数据写入 sharedHighlightTooltip，由 cue 侧统一渲染弹窗
 const handleHighlightHoverChange = (payload) => {
   sharedHoveredTrackIndexes.value = Array.isArray(payload?.trackIndexes)
     ? payload.trackIndexes
     : [];
+
+  sharedHighlightTooltip.value = {
+    visible: payload?.tooltip?.visible === true,
+    cueGroups: Array.isArray(payload?.tooltip?.cueGroups)
+      ? payload.tooltip.cueGroups
+      : [],
+    conceptData: payload?.tooltip?.conceptData || null,
+  };
 };
 
 // 编辑模式下的cue值
@@ -1015,6 +1050,7 @@ defineExpose({
     &.left {
       border: 1px solid #666;
       padding: 1em;
+      background: #fff;
     }
     &.right {
       & > div:nth-child(1) {
@@ -1105,6 +1141,6 @@ defineExpose({
 
 :deep(.el-textarea__inner) {
   --el-textarea-inner-height: 300px;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 </style>

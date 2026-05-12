@@ -762,7 +762,7 @@
               </div>
             </div>
             <div
-              style="margin-top: 1em"
+              style="margin-top: 0em"
               v-if="hasClickedGetAnswerBtn && submit_type !== 'revise'"
             >
               <el-button
@@ -770,6 +770,7 @@
                 @click="handleReselectQuestionClick"
                 >Reselect Question</el-button
               >
+              <p style="margin-top: 1em"><b>Notice：</b>You can also reselect or create new questions.</p>
             </div>
             <AnnotationComponent
               :annotationDataOrigin="annotationDataOrigin"

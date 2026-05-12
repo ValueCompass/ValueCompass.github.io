@@ -345,14 +345,22 @@
 
 
 .response-text {
+  color: #333;
+  font-size: 1.125em;;
   .highlight-keyword {
-    background: #FEFBA0;
+    background: rgba(255, 254, 211, 1);
     font-weight: 700;
     font-style: italic;
-    padding: 0 .4em;
+    // padding: 0 .4em;
+    margin-right: .5em;
+    color: #999;
+    &:hover{
+      background-color: #FCF014;
+    }
 
     &.current {
       background: #FCF014 !important;
+      color: #333;
     }
 
     // &.keep,
