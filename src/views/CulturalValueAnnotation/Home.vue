@@ -479,7 +479,12 @@
                   "
                 >
                   <el-select
-                    class="Question-select cultural-alignment-el-select"
+                    :class="[
+                      'Question-select cultural-alignment-el-select',
+                      {
+                        'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                      },
+                    ]"
                     popper-class="cultural-alignment-select-popper"
                     :fit-input-width="true"
                     v-model="questionValue_Select_origin"
@@ -540,6 +545,9 @@
                 >
                   <el-input
                     v-model="questionValue_Select"
+                    :class="{
+                      'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                    }"
                     style="position: relative; z-index: 2"
                     type="textarea"
                     :autosize="{ minRows: 2, maxRows: 10 }"
@@ -577,6 +585,9 @@
                 <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
                 <el-input
                   v-model="questionValue_Create"
+                  :class="{
+                    'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                  }"
                   style="width: calc(100% - 16em)"
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 10 }"
@@ -587,7 +598,10 @@
             </el-tab-pane>
           </el-tabs>
           
-          <div v-if="questionErrorTip" class="question-error-tip">
+          <div
+            v-if="shouldShowGetAnswerValidationError"
+            class="question-error-tip"
+          >
             <div>
               <el-icon class="warning-icon"><Warning /></el-icon>
             <p>{{ questionErrorTip }}</p>
@@ -600,6 +614,9 @@
               >
               <el-select
                 v-model="importanceValue"
+                :class="{
+                  'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                }"
                 placeholder="Select"
                 :disabled="hasClickedGetAnswerBtn"
               >
@@ -617,6 +634,9 @@
               >
               <el-select
                 v-model="frequencyValue"
+                :class="{
+                  'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                }"
                 placeholder="Select"
                 :disabled="hasClickedGetAnswerBtn"
               >
@@ -1010,6 +1030,8 @@ const questionValue_Select_origin = ref("");
 const questionValue_Create = ref("");
 // 复用 step4 的提示区域，展示 Get Answer 前的前端校验错误。
 const questionErrorTip = ref("");
+// 记录用户是否已经触发过 Step 4 的分数门槛校验，用来控制输入框红色错误态。
+const hasTriggeredGetAnswerValidation = ref(false);
 
 const taskOptions1 = ref([]);
 const taskOptions2 = ref([]);
@@ -1151,6 +1173,30 @@ const isGetAnswerBtnDisabled = computed(() => {
   );
 });
 
+// Get Answer 前要求两个分数都 >= 3，且至少一个分数 >= 4。
+const areScoresValidForGetAnswer = computed(() => {
+  const importanceScore = Number(importanceValue.value);
+  const frequencyScore = Number(frequencyValue.value);
+
+  return (
+    importanceScore >= 3 &&
+    frequencyScore >= 3 &&
+    (importanceScore >= 4 || frequencyScore >= 4)
+  );
+});
+
+// 只有在用户点击 Get Answer 且分数门槛不满足时，才高亮问题框和分数框。
+const shouldHighlightGetAnswerValidation = computed(() => {
+  return (
+    hasTriggeredGetAnswerValidation.value && !areScoresValidForGetAnswer.value
+  );
+});
+
+// 错误文案与红框共用同一套失败态，避免出现“提示还在但边框已恢复”的不同步情况。
+const shouldShowGetAnswerValidationError = computed(() => {
+  return !!questionErrorTip.value && shouldHighlightGetAnswerValidation.value;
+});
+
 // 后端第一次传过来的 或者上次提交的
 let original_response = ref("");
 let original_highlight_cues = ref([]);
@@ -1256,23 +1302,17 @@ const handleGetAnswerBtnClick = () => {
 
   // 每次重新点击前先清掉旧的错误提示，避免残留上一次校验结果。
   questionErrorTip.value = "";
+  hasTriggeredGetAnswerValidation.value = false;
 
   if (isGetAnswerBtnDisabled.value) {
     return;
   }
 
-  const importanceScore = Number(importanceValue.value);
-  const frequencyScore = Number(frequencyValue.value);
-  // Get Answer 前要求两个分数都 >= 3，且至少一个分数 >= 4。
-  const areScoresValidForGetAnswer =
-    importanceScore >= 3 &&
-    frequencyScore >= 3 &&
-    (importanceScore >= 4 || frequencyScore >= 4);
-
-  if (!areScoresValidForGetAnswer) {
-    // 不满足分数门槛时，只展示页面内提示，不继续请求后端接口。
+  if (!areScoresValidForGetAnswer.value) {
+    // 不满足分数门槛时，高亮当前问题框和两个分数框，并阻止继续请求后端接口。
+    hasTriggeredGetAnswerValidation.value = true;
     questionErrorTip.value =
-      "Importance and frequency scores must both be at least 3, and at least one of them must be 4 or higher.";
+      "This question does not meet the score requirements. Please revise the question to better reflect cultural relevance and real-world frequency, ensuring both scores are ≥ 3 and at least one score is ≥ 4.";
     return;
   }
 
@@ -1370,6 +1410,14 @@ const handleReselectQuestionClick = () => {
   resetGetAnswerState();
   ElMessage.success(t("culturalValueAnnotation.step4.reselectQuestionToast"));
 };
+
+watch(areScoresValidForGetAnswer, (isValid) => {
+  // 一旦分数恢复合法，就同步清理旧的错误文案和高亮态，保持提示与边框一致。
+  if (isValid && hasTriggeredGetAnswerValidation.value) {
+    hasTriggeredGetAnswerValidation.value = false;
+    questionErrorTip.value = "";
+  }
+});
 
 const annotationComponentRef = ref(null);
 const annotationComponentRef2 = ref(null);
@@ -1991,7 +2039,7 @@ const getQuestionNum = () => {
           }
           :deep(.principle-input-error .el-textarea__inner) {
             border-color: #b22222 !important;
-            box-shadow: 0 0 0 1px rgba(178, 34, 34, 0.15);
+            box-shadow: 0 0 0 1px #b22222;
           }
         }
         .principle-completed-tip {
@@ -2021,6 +2069,12 @@ const getQuestionNum = () => {
       }
     }
     &.step4 {
+      :deep(.get-answer-input-error .el-select__wrapper),
+      :deep(.get-answer-input-error .el-textarea__inner) {
+        border-color: #b22222 !important;
+        box-shadow: 0 0 0 1px #b22222;
+      }
+
       .annotated-summary {
         display: flex;
         align-items: center;
@@ -2222,26 +2276,7 @@ const getQuestionNum = () => {
   padding: 2.5em 3em;
 }
 
-.highlight-keyword {
-  font-weight: bold;
-  cursor: pointer;
-  color: #1890ff;
-}
 
-.highlight-keyword.pass {
-  background-color: red;
-  color: white;
-}
-
-.highlight-keyword.fail {
-  background-color: gray;
-  color: white;
-}
-
-.highlight-keyword.processed {
-  background-color: #e6f7ff;
-  color: #1890ff;
-}
 
 .el-button {
   height: 2.8em;
