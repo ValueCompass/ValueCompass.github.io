@@ -33,7 +33,10 @@
             <p>{{ loginDescription }}</p>
           </div>
 
-          <div v-if="!isAdminMode" class="login-container annotator-login-container">
+          <div
+            v-if="!isAdminMode"
+            class="login-container annotator-login-container"
+          >
             <div class="login-section">
               <p>First Time Login?</p>
               <div>
@@ -60,21 +63,23 @@
                   v-model="username"
                   placeholder="Please input"
                   :class="{ 'login-input-error': !!annotatorLoginErrorTip }"
-                    @input="annotatorLoginErrorTip = ''"
+                  @input="annotatorLoginErrorTip = ''"
                 ></el-input>
               </div>
+              <div style="min-height: 2.4em">
                 <p v-if="annotatorLoginErrorTip" class="login-error-tip">
                   {{ annotatorLoginErrorTip }}
                 </p>
-              <p v-if="isFirstLogin === true">
-                The name can be your real name or alias. It will be used to
-                track your training completion. Please use the same name again
-                in the later survey.
-              </p>
-              <p v-else>
-                If you have used this system before, please enter your name to
-                log in.
-              </p>
+                <p v-if="!annotatorLoginErrorTip && isFirstLogin === true">
+                  The name can be your real name or alias. It will be used to
+                  track your training completion. Please use the same name again
+                  in the later survey.
+                </p>
+                <p v-else-if="!annotatorLoginErrorTip">
+                  If you have used this system before, please enter your name to
+                  log in.
+                </p>
+              </div>
             </div>
             <div v-if="isFirstLogin !== null" class="login-section">
               <p>Country</p>
@@ -95,7 +100,10 @@
               </div>
             </div>
 
-            <div v-if="isFirstLogin !== null" class="login-section button-container">
+            <div
+              v-if="isFirstLogin !== null"
+              class="login-section button-container"
+            >
               <el-button
                 color="#0B70C3"
                 :disabled="isDisabled || isLoading"
@@ -239,9 +247,7 @@ const loginDescription = computed(() => {
 
 const isDisabled = computed(() => {
   return (
-    isFirstLogin.value === null ||
-    !username.value.trim() ||
-    !countryValue.value
+    isFirstLogin.value === null || !username.value.trim() || !countryValue.value
   );
 });
 
@@ -279,38 +285,37 @@ const handleAnnotatorLogin = () => {
     };
   }
 
-  return UserRegisterLogin(sendData)
-    .then((res) => {
-      if (!res.data.ok) {
-        annotatorLoginErrorTip.value = res.data.message || "Login failed";
-        return;
-      }
+  return UserRegisterLogin(sendData).then((res) => {
+    if (!res.data.ok) {
+      annotatorLoginErrorTip.value = res.data.message || "Login failed";
+      return;
+    }
 
-      annotatorLoginErrorTip.value = "";
+    annotatorLoginErrorTip.value = "";
 
-      saveCulturalValueAnnotationUserDetail({
+    saveCulturalValueAnnotationUserDetail({
+      username: res.data.username,
+      country: res.data.country,
+      language: res.data.language,
+      studied_annotation_guidance:
+        res.data.studied_annotation_guidance === true,
+    });
+
+    if (res.data.studied_annotation_guidance === false) {
+      router.push({
+        name: "CulturalValueAnnotationOnboarding",
+      });
+    } else {
+      syncLocaleFromUserDetail({
         username: res.data.username,
         country: res.data.country,
         language: res.data.language,
-        studied_annotation_guidance:
-          res.data.studied_annotation_guidance === true,
       });
-
-      if (res.data.studied_annotation_guidance === false) {
-        router.push({
-          name: "CulturalValueAnnotationOnboarding",
-        });
-      } else {
-        syncLocaleFromUserDetail({
-          username: res.data.username,
-          country: res.data.country,
-          language: res.data.language,
-        });
-        router.push({
-          name: "CulturalValueAnnotationHome",
-        });
-      }
-    });
+      router.push({
+        name: "CulturalValueAnnotationHome",
+      });
+    }
+  });
 };
 
 const handleAdminModeLogin = () => {
@@ -434,11 +439,11 @@ const handleAdminLoginClick = () => {
       }
     }
   }
-    .login-error-tip {
-      color: #b22222;
-      font-size: 0.875rem;
-      line-height: 1.4;
-    }
+  .login-error-tip {
+    color: rgba(128, 0, 0, 1);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
   h2 {
     font-weight: 600;
     font-size: 30px;
@@ -491,17 +496,21 @@ const handleAdminLoginClick = () => {
           height: 57px;
           font-size: 18px;
         }
+        .el-input__wrapper {
+          border-radius: 8px;
+        }
       }
       :deep(.login-input-error .el-input__wrapper) {
-        box-shadow: 0 0 0 1px rgba(178, 34, 34, 1) inset !important;
+        box-shadow: 0 0 0 2px rgba(128, 0, 0, 1) inset !important;
       }
       :deep(.login-input-error .el-input__wrapper.is-focus) {
-        box-shadow: 0 0 0 1px rgba(178, 34, 34, 1) inset !important;
+        box-shadow: 0 0 0 2px rgba(128, 0, 0, 1) inset !important;
       }
       :deep(.el-select) {
         .el-select__wrapper {
           height: 57px;
           font-size: 18px;
+          border-radius: 8px;
         }
       }
     }
