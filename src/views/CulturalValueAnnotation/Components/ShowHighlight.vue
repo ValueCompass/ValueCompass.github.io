@@ -16,60 +16,48 @@
         @mouseenter="cancelScheduledClear"
         @mouseleave="handleTooltipLeave"
       >
-        <!-- cue hover 时的分组列表：每组对应一个 cue 片段及其关联 concept -->
-        <div
-          v-for="(group, index) in resolvedCueTooltipGroups"
-          :key="`${group.fragmentId}-${index}`"
-          class="show-highlight__tooltip-group"
+        <!-- cue hover：每个 fragment×concept 对渲染一个条目 -->
+        <template
+          v-for="(group, gIndex) in resolvedCueTooltipGroups"
+          :key="`cue-group-${group.fragmentId}-${gIndex}`"
         >
-          <p class="show-highlight__tooltip-fragments-title">
-            Text fragment：
-          </p>
-          <p class="show-highlight__tooltip-fragment-text">
-            {{ group.text }}
-          </p>
-
-          <!-- 该 cue 片段关联的所有 concept 逐条展示 -->
           <div
-            v-for="(concept, conceptIndex) in group.concepts"
-            :key="`${group.fragmentId}-${concept.trackIndex}-${conceptIndex}`"
-            class="show-highlight__tooltip-item"
+            v-for="(concept, cIndex) in group.concepts"
+            :key="`cue-item-${group.fragmentId}-${concept.trackIndex}-${cIndex}`"
+            class="show-highlight__tooltip-entry"
           >
-            <p class="show-highlight__tooltip-title">
-              Value Concept: {{ concept.text }}
-            </p>
-            <p class="show-highlight__tooltip-reason">
-              Reason: {{ concept.evidence || "-" }}
-            </p>
+            <span class="show-highlight__tooltip-bullet">•</span>
+            <div class="show-highlight__tooltip-body">
+              <p class="show-highlight__tooltip-label">Text Fragment:</p>
+              <p class="show-highlight__tooltip-fragment-text">{{ group.text }}</p>
+              <p class="show-highlight__tooltip-concept-line">
+                <span class="show-highlight__tooltip-label">Value Concept:</span> {{ concept.text }}
+              </p>
+              <p class="show-highlight__tooltip-label">Evidence:</p>
+              <p class="show-highlight__tooltip-evidence-text">{{ concept.evidence || "-" }}</p>
+            </div>
           </div>
-        </div>
+        </template>
 
-        <!-- concept hover 时展示该 concept 对应的所有 cue 片段和 reason -->
-        <div
-          v-if="resolvedConceptTooltipData"
-          class="show-highlight__tooltip-group"
-        >
-          <p class="show-highlight__tooltip-title">
-            Value Concept: {{ resolvedConceptTooltipData.text }}
-          </p>
-
+        <!-- concept hover：每个 cue 片段渲染一个条目 -->
+        <template v-if="resolvedConceptTooltipData">
           <div
             v-for="(fragment, index) in resolvedConceptTooltipData.fragments"
-            :key="`${resolvedConceptTooltipData.trackIndex}-${index}-${fragment}`"
-            class="show-highlight__tooltip-item"
+            :key="`concept-frag-${resolvedConceptTooltipData.trackIndex}-${index}`"
+            class="show-highlight__tooltip-entry"
           >
-            <p class="show-highlight__tooltip-fragments-title">
-              Text fragment：
-            </p>
-            <p class="show-highlight__tooltip-fragment-text">
-              {{ fragment }}
-            </p>
+            <span class="show-highlight__tooltip-bullet">•</span>
+            <div class="show-highlight__tooltip-body">
+              <p class="show-highlight__tooltip-label">Text Fragment:</p>
+              <p class="show-highlight__tooltip-fragment-text">{{ fragment }}</p>
+              <p class="show-highlight__tooltip-concept-line">
+                <span class="show-highlight__tooltip-label">Value Concept:</span> {{ resolvedConceptTooltipData.text }}
+              </p>
+              <p class="show-highlight__tooltip-label">Evidence:</p>
+              <p class="show-highlight__tooltip-evidence-text">{{ resolvedConceptTooltipData.evidence || "-" }}</p>
+            </div>
           </div>
-
-          <p class="show-highlight__tooltip-reason">
-            Reason: {{ resolvedConceptTooltipData.evidence || "-" }}
-          </p>
-        </div>
+        </template>
       </div>
 
       <!-- 本地 cue tooltip：未接入父组件共享 tooltip（即没有传 sharedTooltip）时的回退渲染 -->
@@ -80,32 +68,27 @@
         @mouseenter="cancelScheduledClear"
         @mouseleave="handleTooltipLeave"
       >
-        <div
-          v-for="(group, index) in hoveredTooltipGroups"
-          :key="`${group.fragmentId}-${index}`"
-          class="show-highlight__tooltip-group"
+        <template
+          v-for="(group, gIndex) in hoveredTooltipGroups"
+          :key="`local-group-${group.fragmentId}-${gIndex}`"
         >
-          <p class="show-highlight__tooltip-fragments-title">
-            Text fragment：
-          </p>
-          <p class="show-highlight__tooltip-fragment-text">
-            {{ group.text }}
-          </p>
-
-          <!-- 该 cue 片段关联的所有 concept 逐条展示 -->
           <div
-            v-for="(concept, conceptIndex) in group.concepts"
-            :key="`${group.fragmentId}-${concept.trackIndex}-${conceptIndex}`"
-            class="show-highlight__tooltip-item"
+            v-for="(concept, cIndex) in group.concepts"
+            :key="`local-item-${group.fragmentId}-${concept.trackIndex}-${cIndex}`"
+            class="show-highlight__tooltip-entry"
           >
-            <p class="show-highlight__tooltip-title">
-              Value Concept: {{ concept.text }}
-            </p>
-            <p class="show-highlight__tooltip-reason">
-              Reason: {{ concept.evidence || "-" }}
-            </p>
+            <span class="show-highlight__tooltip-bullet">•</span>
+            <div class="show-highlight__tooltip-body">
+              <p class="show-highlight__tooltip-label">Text Fragment:</p>
+              <p class="show-highlight__tooltip-fragment-text">{{ group.text }}</p>
+              <p class="show-highlight__tooltip-concept-line">
+                <span class="show-highlight__tooltip-label">Value Concept:</span> {{ concept.text }}
+              </p>
+              <p class="show-highlight__tooltip-label">Evidence:</p>
+              <p class="show-highlight__tooltip-evidence-text">{{ concept.evidence || "-" }}</p>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
 
       <span
@@ -895,6 +878,7 @@ const clearHoveredPart = () => {
     line-height: 1.7;
     white-space: pre-wrap;
     word-break: break-word;
+    font-style: italic;
   }
 
   &__cue-part,
@@ -956,54 +940,66 @@ const clearHoveredPart = () => {
     top: -8px;
     left: 50%;
     z-index: 20;
-    width: 80%;
-    max-width: 80%;
-    padding: 1.1em 1.4em;
+    width: 100%;
+    // box-sizing: border-box;
+    padding: 0 .8em;
     border-radius: 12px;
-    background: rgba(223, 223, 223, 1);
-    // box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    background: rgba(235, 237, 240, 1);
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
     font-size: 14px;
     pointer-events: auto;
     transform: translate(-50%, -100%);
   }
 
-  &__tooltip-group + &__tooltip-group {
-    margin-top: 1em;
-    padding-top: 0.9em;
-    border-top: 1px solid rgba(29, 36, 51, 0.12);
+  &__tooltip-entry {
+    display: flex;
+    gap: 0.55em;
+    padding: 0.85em 0;
+
+    & + & {
+      border-top: 1px solid rgba(29, 36, 51, 0.12);
+    }
   }
 
-  &__tooltip-item + &__tooltip-item {
-    margin-top: 0.9em;
-  }
-
-  &__tooltip-fragments-title {
-    margin: 0 0 0.35em;
+  &__tooltip-bullet {
+    flex-shrink: 0;
     color: #1d2433;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    // text-transform: uppercase;
+    line-height: 1.5;
+    margin-top: 0.05em;
+  }
+
+  &__tooltip-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.12em;
+  }
+
+  &__tooltip-label {
+    margin: 0;
+    color: rgba(5, 64, 140, 1);
+    font-weight: 700;
+    line-height: 1.5;
   }
 
   &__tooltip-fragment-text {
-    margin: 0 0 0.75em;
-    color: #313746;
-    line-height: 1.55;
-    font-weight: bold;
-  }
-
-  &__tooltip-title {
-    margin: 0;
-    color: #1d2433;
-    font-weight: 700;
-  }
-
-  &__tooltip-reason {
-    margin: 0.2em 0 0;
-    color: #313746;
-    font-size: 1em;
+    margin: 0 0 0.25em;
+    // color: rgba(5, 64, 140, 1);
     font-style: italic;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  &__tooltip-concept-line {
+    margin: 0 0 0.2em;
+    color: #1d2433;
+    line-height: 1.5;
+  }
+
+  &__tooltip-evidence-text {
+    margin: 0;
+    color: #313746;
     line-height: 1.6;
   }
 }

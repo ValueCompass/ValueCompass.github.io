@@ -16,7 +16,7 @@
             <el-input
               v-model="editCueValue"
               :disabled="!isCueEditMode"
-              class="annotation-overlay-input"
+              class="annotation-overlay-input cue-text-input"
               :class="{
                 'is-highlight-overlay':
                   !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay,
@@ -1142,5 +1142,9 @@ defineExpose({
 :deep(.el-textarea__inner) {
   --el-textarea-inner-height: 300px;
   font-size: 1rem;
+}
+
+:deep(.cue-text-input .el-textarea__inner) {
+  font-style: italic;
 }
 </style>
