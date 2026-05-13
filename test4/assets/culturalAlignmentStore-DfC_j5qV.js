@@ -1,1 +1,0 @@
-import{ap as e}from"./index-BNAwl5cD.js";const n=e("culturalAlignmentStore",{state:()=>({question_info_data:null,answer_info_data:null,isTopicSelectionPageUpdateData:!0,isComparesionPageUpdateData:!0,isArenaPageUpdateData:!0,currentQuestion:null}),actions:{setQuestion(t){this.currentQuestion=t},clearQuestion(){this.currentQuestion=null}}});export{n as u};
