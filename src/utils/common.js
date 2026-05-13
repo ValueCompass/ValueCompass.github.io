@@ -92,6 +92,48 @@ export const getPrincipleEffectiveLength = (text = "") => {
   return getCjkCharacterCount(text) + getEnglishWordCount(text);
 };
 
+// 标准化问题文本：统一大小写、去掉标点/符号并合并空格，避免格式差异影响相似度判断。
+export const normalizeQuestion = (question = "") => {
+  return String(question)
+    .toLowerCase()
+    .replace(/[\p{P}\p{S}]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+// 用编辑距离计算两个问题的相似度，返回 0 到 1；1 表示完全一致。
+export const getQuestionSimilarity = (leftQuestion, rightQuestion) => {
+  const left = normalizeQuestion(leftQuestion);
+  const right = normalizeQuestion(rightQuestion);
+
+  if (!left || !right) return 0;
+  if (left === right) return 1;
+
+  // left 是当前输入的问题，right 是候选问题。
+  // 如果用户只是从候选问题中删除了一部分文本，当前问题会成为候选问题的连续子串。
+  // 这种删除场景不能通过；但如果是在候选问题基础上新增文本，则继续走下面的相似度计算，低于 90% 可以通过。
+  if (left.length < right.length && left.length >= 10 && right.includes(left)) {
+    return 1;
+  }
+
+  const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    let previous = row[0];
+    row[0] = leftIndex;
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const temp = row[rightIndex];
+      row[rightIndex] = Math.min(
+        row[rightIndex] + 1,
+        row[rightIndex - 1] + 1,
+        previous + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1),
+      );
+      previous = temp;
+    }
+  }
+
+  return 1 - row[right.length] / Math.max(left.length, right.length);
+};
+
 
 // 分组函数
 export const groupByDeveloper = (data) => {

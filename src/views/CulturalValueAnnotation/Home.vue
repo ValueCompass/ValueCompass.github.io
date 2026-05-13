@@ -861,6 +861,8 @@ import {
   getCjkCharacterCount,
   getEnglishWordCount,
   getPrincipleEffectiveLength,
+  getQuestionSimilarity,
+  normalizeQuestion,
 } from "@/utils/common";
 import { Language } from "@amcharts/amcharts4/core";
 
@@ -1029,6 +1031,8 @@ const questionAction = ref("");
 const questionValue_Select = ref("");
 const questionValue_Select_origin = ref("");
 const questionValue_Create = ref("");
+// Step4 当前问题选择模式。需要在后续 computed / watch 之前初始化，避免 setup 阶段访问未初始化变量。
+const activeNameSelect1 = ref("Select Existing Question"); //Create New
 // 复用 step4 的提示区域，展示 Get Answer 前的前端校验错误。
 const questionErrorTip = ref("");
 // 记录用户是否已经触发过 Step 4 的分数门槛校验，用来控制输入框红色错误态。
@@ -1170,7 +1174,9 @@ const isGetAnswerBtnDisabled = computed(() => {
     !frequencyValue.value ||
     !(activeNameSelect1.value == "Create New"
       ? questionValue_Create.value.trim()
-      : questionValue_Select.value.trim())
+      : activeNameSelect1.value === "Refine Question"
+        ? questionValue_Select.value.trim()
+        : questionValue_Select_origin.value.trim())
   );
 });
 
@@ -1195,7 +1201,7 @@ const shouldHighlightGetAnswerValidation = computed(() => {
 
 // 错误文案与红框共用同一套失败态，避免出现“提示还在但边框已恢复”的不同步情况。
 const shouldShowGetAnswerValidationError = computed(() => {
-  return !!questionErrorTip.value && shouldHighlightGetAnswerValidation.value;
+  return !!questionErrorTip.value && hasTriggeredGetAnswerValidation.value;
 });
 
 // 后端第一次传过来的 或者上次提交的
@@ -1279,22 +1285,6 @@ const handleSelectChange = () => {
   updateQuestionScores(questionValue_Select.value);
 };
 
-// 切到“修改现有问题”标签页不代表真的改过内容。
-// 只有当前文本与原始选中问题不一致时，才按 refine 处理。
-const getExistingQuestionAction = () => {
-  const originalQuestion = questionValue_Select_origin.value.trim();
-  const currentQuestion = questionValue_Select.value.trim();
-
-  if (
-    activeNameSelect1.value === "Select Existing Question" ||
-    currentQuestion === originalQuestion
-  ) {
-    return "select existing";
-  }
-
-  return "refine";
-};
-
 const handleGetAnswerBtnClick = () => {
   if (hasClickedGetAnswerBtn.value) {
     ElMessage.warning(t("culturalValueAnnotation.step4.getAnswerAlreadyClicked"));
@@ -1306,6 +1296,32 @@ const handleGetAnswerBtnClick = () => {
   hasTriggeredGetAnswerValidation.value = false;
 
   if (isGetAnswerBtnDisabled.value) {
+    return;
+  }
+
+  const currentQuestionValue =
+    activeNameSelect1.value == "Create New"
+      ? questionValue_Create.value.trim()
+      : activeNameSelect1.value === "Refine Question"
+        ? questionValue_Select.value.trim()
+        : questionValue_Select_origin.value.trim();
+
+  // 分数门槛校验前，先校验“修改现有问题 / 创建新问题”是否与当前类别候选问题相似度超过 90%。
+  const shouldCheckQuestionSimilarity =
+    activeNameSelect1.value === "Create New" ||
+    activeNameSelect1.value === "Refine Question";
+  const hasSimilarQuestion =
+    shouldCheckQuestionSimilarity &&
+    questionOptions.value.some((candidateQuestion) => {
+      return (
+        getQuestionSimilarity(currentQuestionValue, candidateQuestion?.question || "") > 0.9
+      );
+    });
+
+  if (hasSimilarQuestion) {
+    hasTriggeredGetAnswerValidation.value = true;
+    questionErrorTip.value =
+      "This question has over 90% semantic similarity with an existing one. Please revise it.";
     return;
   }
 
@@ -1325,10 +1341,7 @@ const handleGetAnswerBtnClick = () => {
   // Allow repeated Get Answer: clear previous API-populated result state first.
   resetGetAnswerState();
 
-  questionValue.value =
-    activeNameSelect1.value == "Create New"
-      ? questionValue_Create.value.trim()
-      : questionValue_Select.value.trim();
+  questionValue.value = currentQuestionValue;
   const step3FormData = {
     username: userDetail.username.trim(),
     country: userDetail.country.trim(),
@@ -1354,8 +1367,11 @@ const handleGetAnswerBtnClick = () => {
     rawQuestionValue.value = "";
     questionAction.value = "create";
   } else {
-    // question_action 需要与实际提交给后端的编辑结果保持一致。
-    const existingQuestionAction = getExistingQuestionAction();
+    // question_action 根据当前 tab 直接决定，不再额外判断是否和原问题相同。
+    const existingQuestionAction =
+      activeNameSelect1.value === "Refine Question"
+        ? "refine"
+        : "select existing";
 
     step3FormData.raw_importance = rawImportanceValue.value;
     step3FormData.raw_frequency = rawFrequencyValue.value;
@@ -1740,7 +1756,6 @@ const handleTaskHistoryClick = () => {
 };
 
 //
-const activeNameSelect1 = ref("Select Existing Question"); //Create New
 // create new 模式下，如果没有候选问题，则强制切到 Create New。
 const shouldForceCreateNewTab = computed(() => {
   return (
