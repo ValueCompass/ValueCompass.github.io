@@ -217,6 +217,13 @@ const cloneCueConceptsEvidence = (evidence = []) => {
   });
 };
 
+const shouldClearCueConceptRelation = (cueStatus, conceptStatus) => {
+  // 只要 cue 或 concept 任意一侧被编辑/删除，原有的 cue-concept 对应关系和证据就不再可信，提交时需要清空。
+  return [cueStatus, conceptStatus].some((status) => {
+    return status === "edit" || status === "delete";
+  });
+};
+
 watch(
   () => props.annotationDataOrigin,
   (newVal) => {
@@ -1015,14 +1022,45 @@ const processAnnotationData = () => {
     );
   });
 
+  // 提交前重新整理 correspondence：
+  // - 如果当前 index 的 cue/concept 任意一侧是 edit/delete，则对应项清空为 []；
+  // - 其他状态保留原有关系；
+  // - 以 highlight_cues 为基准遍历，保证输出长度始终和 cue/concept 数组对齐。
+  const processedCorrespondence = annotationData.highlight_cues.map(
+    (_, index) => {
+      return shouldClearCueConceptRelation(
+        highlightCuesStatus.value[index],
+        keyConceptsStatus.value[index]
+      )
+        ? []
+        : cloneCueConceptsCorrespondence([
+            annotationData.cues_concepts_correspondence[index] || [],
+          ])[0] || [];
+    }
+  );
+
+  // evidence 与 correspondence 使用同一套清空规则，避免编辑/删除后的旧证据继续被提交。
+  const processedEvidence = annotationData.highlight_cues.map(
+    (_, index) => {
+      return shouldClearCueConceptRelation(
+        highlightCuesStatus.value[index],
+        keyConceptsStatus.value[index]
+      )
+        ? []
+        : cloneCueConceptsEvidence([
+            annotationData.cues_concepts_evidence[index] || [],
+          ])[0] || [];
+    }
+  );
+
   return {
     response: processedResponse,
     highlight_cues: annotationData.highlight_cues,
     key_concepts: annotationData.key_concepts,
     cues_actions: highlightCuesStatus.value,
     concepts_actions: keyConceptsStatus.value,
-    cues_concepts_correspondence: annotationData.cues_concepts_correspondence,
-    cues_concepts_evidence: annotationData.cues_concepts_evidence,
+    cues_concepts_correspondence: processedCorrespondence,
+    cues_concepts_evidence: processedEvidence,
   };
 };
 
