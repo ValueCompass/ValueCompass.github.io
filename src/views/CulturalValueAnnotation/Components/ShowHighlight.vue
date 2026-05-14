@@ -97,22 +97,15 @@
         class="show-highlight__cue-part"
         :class="{
           'is-linked': part.lineEntries.length > 0,
-          'is-hovered': hoveredPartIndex === index ||
-            part.lineEntries.some((entry) => hoveredTrackIndexes.includes(entry.trackIndex)),
-          'is-dimmed': hoveredTrackIndexes.length > 0 &&
-            hoveredPartIndex !== index &&
-            !part.lineEntries.some((entry) => hoveredTrackIndexes.includes(entry.trackIndex)),
+          'is-hovered': isCuePartHovered(part, index),
+          'is-dimmed': isCuePartDimmed(part, index),
         }"
         :style="getUnderlineStyle(
           part.lineEntries,
           part.activeTrackCount,
           hoveredFragmentIds,
-          // 当前分段被直接 hover，或者该分段命中了外部同步过来的轨道（concept hover 时），则传入高亮轨道
-          hoveredPartIndex === index ||
-            part.lineEntries.some((entry) => hoveredTrackIndexes.includes(entry.trackIndex))
-            ? hoveredTrackIndexes
-            : [],
-          hoveredTrackIndexes.length > 0
+          getCuePartActiveTrackIndexes(part, index),
+          isCueHighlightActive
         )"
         @mouseenter="handleCuePartEnter(index, $event)"
         @mousemove="handleCuePartMove($event)"
@@ -579,6 +572,54 @@ const hoveredFragmentIds = computed(() => {
   );
 });
 
+// cue hover 和 concept hover 的高亮规则不同：
+// - cue hover：只高亮鼠标所在的 cue fragmentId，避免同一 concept 对应的其他 cue 片段也亮起来；
+// - concept hover：没有本地 cue fragmentId 时，才按 concept trackIndex 高亮所有关联 cue 片段。
+const hasLocalCueFragmentHover = computed(() => {
+  return localHoveredFragmentIds.value.length > 0;
+});
+
+const isCueHighlightActive = computed(() => {
+  return hoveredFragmentIds.value.length > 0 || hoveredTrackIndexes.value.length > 0;
+});
+
+const cuePartHasActiveFragment = (part) => {
+  return part.lineEntries.some((entry) => {
+    return entry.fragmentId && hoveredFragmentIds.value.includes(entry.fragmentId);
+  });
+};
+
+const cuePartHasActiveTrack = (part) => {
+  return part.lineEntries.some((entry) => {
+    return hoveredTrackIndexes.value.includes(entry.trackIndex);
+  });
+};
+
+const isCuePartHovered = (part, index) => {
+  if (hoveredPartIndex.value === index || cuePartHasActiveFragment(part)) {
+    return true;
+  }
+
+  return !hasLocalCueFragmentHover.value && cuePartHasActiveTrack(part);
+};
+
+const isCuePartDimmed = (part, index) => {
+  return isCueHighlightActive.value && !isCuePartHovered(part, index);
+};
+
+const getCuePartActiveTrackIndexes = (part, index) => {
+  // 本地 cue hover 时，cue 侧只通过 fragmentId 高亮当前片段；trackIndex 仅用于同步 concept 侧。
+  if (hasLocalCueFragmentHover.value) {
+    return [];
+  }
+
+  if (hoveredPartIndex.value === index || cuePartHasActiveTrack(part)) {
+    return hoveredTrackIndexes.value;
+  }
+
+  return [];
+};
+
 // evidence 可能是数组或字符串，统一转为可展示的纯文本。
 const getEvidenceText = (evidence) => {
   if (Array.isArray(evidence)) {
@@ -947,6 +988,9 @@ const clearHoveredPart = () => {
     background: rgba(235, 237, 240, 1);
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
     font-size: 14px;
+    // tooltip 位于 cue 容器内部，cue 容器本身是斜体；这里先重置为正常字体，
+    // 只在 Text Fragment 的 cue 片段上单独设置 italic。
+    font-style: normal;
     pointer-events: auto;
     transform: translate(-50%, -100%);
   }
@@ -993,13 +1037,13 @@ const clearHoveredPart = () => {
 
   &__tooltip-concept-line {
     margin: 0 0 0.2em;
-    color: #1d2433;
+    color: rgba(10, 17, 31, 1);
     line-height: 1.5;
   }
 
   &__tooltip-evidence-text {
     margin: 0;
-    color: #313746;
+    color: rgba(10, 17, 31, 1);
     line-height: 1.6;
   }
 }
