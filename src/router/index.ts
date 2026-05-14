@@ -228,7 +228,7 @@ const routes: Array<RouteRecordRaw> = [
             }
           },
           {
-            path: 'admin',
+            path: 'admin-export',
             name: 'CulturalValueAnnotationAdminExport',
             component: () => import('../views/CulturalValueAnnotation/AdminExport.vue'),
             meta: {
@@ -276,7 +276,7 @@ router.beforeEach((to, from, next) => {
   if (isCulturalValueAnnotationRoute && to.name === 'CulturalValueAnnotationLogin') {
     if (hasCulturalValueAnnotationAdminLogin()) {
       next({
-        path: '/CulturalValueAnnotation/admin'
+        path: '/CulturalValueAnnotation/admin-export'
       })
       return
     }

@@ -332,15 +332,13 @@ const handleAdminModeLogin = () => {
     adminLoginErrorTip.value = "";
 
     saveCulturalValueAnnotationAdminDetail({
-      username: res.data.username,
-      country: res.data.country,
-      language: res.data.language,
-      role: "admin",
+      username: res.data.username || adminUsername.value.trim(),
+      country: res.data.country || adminCountryValue.value,
+      language: res.data.language || "",
+      role: res.data.role || "admin",
     });
 
-    router.push({
-      name: "CulturalValueAnnotationAdminExport",
-    });
+    return router.push("/CulturalValueAnnotation/admin-export");
   });
 };
 
