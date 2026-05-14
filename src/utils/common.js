@@ -101,25 +101,13 @@ export const normalizeQuestion = (question = "") => {
     .trim();
 };
 
-// 用编辑距离计算两个问题的相似度，返回 0 到 1；1 表示完全一致。
-export const getQuestionSimilarity = (leftQuestion, rightQuestion) => {
-  const left = normalizeQuestion(leftQuestion);
-  const right = normalizeQuestion(rightQuestion);
-
-  if (!left || !right) return 0;
-  if (left === right) return 1;
-
-  // left 是当前输入的问题，right 是候选问题。
-  // 如果用户只是从候选问题中删除了一部分文本，当前问题会成为候选问题的连续子串。
-  // 这种删除场景不能通过；但如果是在候选问题基础上新增文本，则继续走下面的相似度计算，低于 90% 可以通过。
-  if (left.length < right.length && left.length >= 10 && right.includes(left)) {
-    return 1;
-  }
-
+const getEditDistanceSimilarity = (left, right) => {
   const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+
   for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
     let previous = row[0];
     row[0] = leftIndex;
+
     for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
       const temp = row[rightIndex];
       row[rightIndex] = Math.min(
@@ -132,6 +120,52 @@ export const getQuestionSimilarity = (leftQuestion, rightQuestion) => {
   }
 
   return 1 - row[right.length] / Math.max(left.length, right.length);
+};
+
+const getLcsSimilarity = (left, right) => {
+  let previousRow = Array(right.length + 1).fill(0);
+
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    const currentRow = Array(right.length + 1).fill(0);
+
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      if (left[leftIndex - 1] === right[rightIndex - 1]) {
+        currentRow[rightIndex] = previousRow[rightIndex - 1] + 1;
+      } else {
+        currentRow[rightIndex] = Math.max(
+          previousRow[rightIndex],
+          currentRow[rightIndex - 1],
+        );
+      }
+    }
+
+    previousRow = currentRow;
+  }
+
+  return previousRow[right.length] / Math.max(left.length, right.length);
+};
+
+// leftQuestion 是用户编辑后的问题 a，rightQuestion 是原本的候选问题 b。
+// 判断规则：
+// 1. a 是 b 的连续子串：直接视为不通过。
+// 2. b 是 a 的连续子串：允许扩写，但仍进入编辑距离和 LCS 相似度判断。
+// 3. 编辑相似度或 LCS 相似度超过 90%：不通过。
+// 返回 0 到 1；调用方使用 > 0.9 判断是否不通过。
+export const getQuestionSimilarity = (leftQuestion, rightQuestion) => {
+  const left = normalizeQuestion(leftQuestion);
+  const right = normalizeQuestion(rightQuestion);
+
+  if (!left || !right) return 0;
+  if (left === right) return 1;
+
+  if (left.length < right.length && right.includes(left)) {
+    return 1;
+  }
+
+  const editSimilarity = getEditDistanceSimilarity(left, right);
+  const lcsSimilarity = getLcsSimilarity(left, right);
+
+  return Math.max(editSimilarity, lcsSimilarity);
 };
 
 
