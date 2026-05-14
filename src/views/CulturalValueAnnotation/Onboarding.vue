@@ -231,6 +231,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
 import { syncLocaleFromUserDetail } from "@/i18n";
+import { markCulturalValueAnnotationTutorialAutoOpenedThisLogin } from "@/utils/culturalValueAnnotationAuth";
 import {
   onboardingPreview,
   createOnboardingSteps,
@@ -407,6 +408,7 @@ const handleSurveyNext = () => {
             studied_annotation_guidance: true,
           }),
         );
+        markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
         syncLocaleFromUserDetail(storedUserDetail);
         router.push("/CulturalValueAnnotation/home");
         // setTimeout(() => {
