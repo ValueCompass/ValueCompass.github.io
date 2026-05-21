@@ -187,8 +187,8 @@ const props = defineProps({
       response: "",
       highlight_cues: [],
       key_concepts: [],
-      cues_concepts_correspondence: [],
-      cues_concepts_evidence: [],
+      value_concepts_evidence: [],
+      value_concepts_justification: [],
     }),
   },
 });
@@ -232,10 +232,10 @@ watch(
     // 创建副本而不是直接引用，确保两个组件实例的数据独立
     annotationData.highlight_cues = [...newVal.highlight_cues];
     annotationData.key_concepts = [...newVal.key_concepts];
-    annotationData.cues_concepts_correspondence =
-      cloneCueConceptsCorrespondence(newVal.cues_concepts_correspondence);
-    annotationData.cues_concepts_evidence = cloneCueConceptsEvidence(
-      newVal.cues_concepts_evidence || []
+    annotationData.value_concepts_evidence =
+      cloneCueConceptsCorrespondence(newVal.value_concepts_evidence);
+    annotationData.value_concepts_justification = cloneCueConceptsEvidence(
+      newVal.value_concepts_justification || []
     );
     // 验证highlight_cues是否都存在于response中
     validateHighlightCues();
@@ -247,8 +247,8 @@ const annotationData = reactive({
   response: "",
   highlight_cues: [],
   key_concepts: [],
-  cues_concepts_correspondence: [],
-  cues_concepts_evidence: [],
+  value_concepts_evidence: [],
+  value_concepts_justification: [],
 });
 
 // 跟踪每个关键词的状态（keep/delete/edit/add）
@@ -270,12 +270,12 @@ const validateHighlightCues = () => {
       validConcepts.push(annotationData.key_concepts[index]);
       validCorrespondence.push(
         cloneCueConceptsCorrespondence([
-          annotationData.cues_concepts_correspondence[index] || [],
+          annotationData.value_concepts_evidence[index] || [],
         ])[0] || []
       );
       validEvidence.push(
         cloneCueConceptsEvidence([
-          annotationData.cues_concepts_evidence[index] || [],
+          annotationData.value_concepts_justification[index] || [],
         ])[0] || []
       );
     } else {
@@ -286,8 +286,8 @@ const validateHighlightCues = () => {
   // 更新数组
   annotationData.highlight_cues = validCues;
   annotationData.key_concepts = validConcepts;
-  annotationData.cues_concepts_correspondence = validCorrespondence;
-  annotationData.cues_concepts_evidence = validEvidence;
+  annotationData.value_concepts_evidence = validCorrespondence;
+  annotationData.value_concepts_justification = validEvidence;
   originalHighlightCues.value = [...validCues];
   originalKeyConcepts.value = [...validConcepts];
 
@@ -314,12 +314,12 @@ onMounted(() => {
       ...props.annotationDataOrigin.highlight_cues,
     ];
     annotationData.key_concepts = [...props.annotationDataOrigin.key_concepts];
-    annotationData.cues_concepts_correspondence =
+    annotationData.value_concepts_evidence =
       cloneCueConceptsCorrespondence(
-        props.annotationDataOrigin.cues_concepts_correspondence
+        props.annotationDataOrigin.value_concepts_evidence
       );
-    annotationData.cues_concepts_evidence = cloneCueConceptsEvidence(
-      props.annotationDataOrigin.cues_concepts_evidence || []
+    annotationData.value_concepts_justification = cloneCueConceptsEvidence(
+      props.annotationDataOrigin.value_concepts_justification || []
     );
   }
 
@@ -507,7 +507,7 @@ const currentCueCorrespondence = computed(() => {
     return [];
   }
 
-  return annotationData.cues_concepts_correspondence[currentCueIndex.value] || [];
+  return annotationData.value_concepts_evidence[currentCueIndex.value] || [];
 });
 
 const currentCueEvidence = computed(() => {
@@ -515,11 +515,11 @@ const currentCueEvidence = computed(() => {
     return [];
   }
 
-  return annotationData.cues_concepts_evidence[currentCueIndex.value] || [];
+  return annotationData.value_concepts_justification[currentCueIndex.value] || [];
 });
 
 const hasCueConceptCorrespondenceField = computed(() => {
-  return Array.isArray(props.annotationDataOrigin?.cues_concepts_correspondence);
+  return Array.isArray(props.annotationDataOrigin?.value_concepts_evidence);
 });
 
 // 当前 cue 对应的关系分组里只要有一项非空，就允许显示高亮关系。
@@ -716,14 +716,14 @@ const handleDeleteClick = (type) => {
     // 2. 从key_concepts数组中删除
     annotationData.key_concepts.splice(currentCueIndex.value, 1);
 
-    // 3. 从cues_concepts_correspondence数组中删除
-    annotationData.cues_concepts_correspondence.splice(
+    // 3. 从value_concepts_evidence数组中删除
+    annotationData.value_concepts_evidence.splice(
       currentCueIndex.value,
       1
     );
 
-    // 4. 从cues_concepts_evidence数组中删除
-    annotationData.cues_concepts_evidence.splice(currentCueIndex.value, 1);
+    // 4. 从value_concepts_justification数组中删除
+    annotationData.value_concepts_justification.splice(currentCueIndex.value, 1);
 
     // 5. 从highlightCuesStatus和keyConceptsStatus数组中删除
     highlightCuesStatus.value.splice(currentCueIndex.value, 1);
@@ -958,8 +958,8 @@ const handleSubmitAddNew = () => {
   // 添加到数组中
   annotationData.highlight_cues.push(editCue.value);
   annotationData.key_concepts.push(editConcept.value);
-  annotationData.cues_concepts_correspondence.push([]);
-  annotationData.cues_concepts_evidence.push([]);
+  annotationData.value_concepts_evidence.push([]);
+  annotationData.value_concepts_justification.push([]);
   // 为新添加的cue和concept设置状态为add
   highlightCuesStatus.value.push("add");
   keyConceptsStatus.value.push("add");
@@ -1034,7 +1034,7 @@ const processAnnotationData = () => {
       )
         ? []
         : cloneCueConceptsCorrespondence([
-            annotationData.cues_concepts_correspondence[index] || [],
+            annotationData.value_concepts_evidence[index] || [],
           ])[0] || [];
     }
   );
@@ -1048,7 +1048,7 @@ const processAnnotationData = () => {
       )
         ? []
         : cloneCueConceptsEvidence([
-            annotationData.cues_concepts_evidence[index] || [],
+            annotationData.value_concepts_justification[index] || [],
           ])[0] || [];
     }
   );
@@ -1059,8 +1059,8 @@ const processAnnotationData = () => {
     key_concepts: annotationData.key_concepts,
     cues_actions: highlightCuesStatus.value,
     concepts_actions: keyConceptsStatus.value,
-    cues_concepts_correspondence: processedCorrespondence,
-    cues_concepts_evidence: processedEvidence,
+    value_concepts_evidence: processedCorrespondence,
+    value_concepts_justification: processedEvidence,
   };
 };
 

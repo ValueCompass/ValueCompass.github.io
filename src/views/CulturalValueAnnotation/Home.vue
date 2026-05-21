@@ -193,7 +193,7 @@
                   placeholder="Please input"
                 />
                 <p
-                  v-if="getPrincipleValidationTip(principle)"
+                  v-if="isPrincipleInputInvalid(principle)"
                   :class="[
                     'principle-validation-tip',
                     {
@@ -382,9 +382,15 @@
               </li>
               <li>
                 <b>{{
-                  t("culturalValueAnnotation.step4.frequencyHintTitle")
+                  t("culturalValueAnnotation.step4.distinctivenessHintTitle")
                 }}</b>
-                {{ t("culturalValueAnnotation.step4.frequencyHintText") }}
+                {{ t("culturalValueAnnotation.step4.distinctivenessHintText") }}
+              </li>
+              <li>
+                <b>{{
+                  t("culturalValueAnnotation.step4.plausibilityHintTitle")
+                }}</b>
+                {{ t("culturalValueAnnotation.step4.plausibilityHintText") }}
               </li>
             </ul>
 
@@ -487,7 +493,7 @@
                     ]"
                     popper-class="cultural-alignment-select-popper"
                     :fit-input-width="true"
-                    v-model="questionValue_Select_origin"
+                    v-model="questionValue_selectExisting_input"
                     placeholder="Select"
                     @change="handleSelectChange"
                     :disabled="hasClickedGetAnswerBtn"
@@ -508,7 +514,8 @@
                     />
                   </el-select>
                 </div>
-                <button
+                <el-button
+                  type="primary"
                   style="
                     width: 4.5rem;
                     height: 4.5rem;
@@ -517,11 +524,14 @@
                     background: #fff;
                     color: rgba(11, 112, 195, 1);
                     white-space: pre-line;
+                    margin: 0;
+                    align-self: center;
                   "
                   @click="activeNameSelect1 = 'Refine Question'"
+                  :disabled="hasClickedGetAnswerBtn"
                 >
                   Edit<br />the<br />Question
-                </button>
+                </el-button>
               </div>
             </el-tab-pane>
             <el-tab-pane
@@ -544,7 +554,7 @@
                   "
                 >
                   <el-input
-                    v-model="questionValue_Select"
+                    v-model="questionValue_refine_input"
                     :class="{
                       'get-answer-input-error': shouldHighlightGetAnswerValidation,
                     }"
@@ -556,7 +566,8 @@
                   />
                 </div>
 
-                <button
+                <el-button
+                  type="primary"
                   style="
                     width: 4.5rem;
                     height: 4.5rem;
@@ -565,11 +576,14 @@
                     background: #fff;
                     color: rgba(11, 112, 195, 1);
                     white-space: pre-line;
+                    margin: 0;
+                    align-self: center;
                   "
                   @click="activeNameSelect1 = 'Select Existing Question'"
+                  :disabled="hasClickedGetAnswerBtn"
                 >
                   Change<br />the<br />Question
-                </button>
+                </el-button>
               </div>
             </el-tab-pane>
             <el-tab-pane
@@ -584,7 +598,7 @@
               <div class="input-container question-input-container">
                 <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
                 <el-input
-                  v-model="questionValue_Create"
+                  v-model="questionValue_create_input"
                   :class="{
                     'get-answer-input-error': shouldHighlightGetAnswerValidation,
                   }"
@@ -630,10 +644,10 @@
             </div>
             <div>
               <span
-                >{{ t("culturalValueAnnotation.step4.frequencyScore") }}:</span
+                >{{ t("culturalValueAnnotation.step4.distinctivenessScore") }}:</span
               >
               <el-select
-                v-model="frequencyValue"
+                v-model="distinctivenessValue"
                 :class="{
                   'get-answer-input-error': shouldHighlightGetAnswerValidation,
                 }"
@@ -641,8 +655,28 @@
                 :disabled="hasClickedGetAnswerBtn"
               >
                 <el-option
-                  v-for="option in frequencyScoreOptions"
-                  :key="`frequency-${option.value}`"
+                  v-for="option in distinctivenessScoreOptions"
+                  :key="`distinctiveness-${option.value}`"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </div>
+            <div>
+              <span
+                >{{ t("culturalValueAnnotation.step4.plausibilityScore") }}:</span
+              >
+              <el-select
+                v-model="plausibilityValue"
+                :class="{
+                  'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                }"
+                placeholder="Select"
+                :disabled="hasClickedGetAnswerBtn"
+              >
+                <el-option
+                  v-for="option in plausibilityScoreOptions"
+                  :key="`plausibility-${option.value}`"
                   :label="option.label"
                   :value="option.value"
                 />
@@ -853,6 +887,7 @@ import {
 import {
   getTopicTaskTaxonomy,
   getCandidateQuestions,
+  computeQuestionSimilarity,
   getQuestionResponse,
   submitAnnotation,
   GetAllCompletedAnnotations,
@@ -862,7 +897,6 @@ import {
   getEnglishWordCount,
   getPrincipleEffectiveLength,
   getQuestionSimilarity,
-  normalizeQuestion,
 } from "@/utils/common";
 import { Language } from "@amcharts/amcharts4/core";
 
@@ -899,12 +933,35 @@ const importanceScoreOptions = computed(() => [
   { value: 5, label: t("culturalValueAnnotation.step4.importanceOption5") },
 ]);
 
-const frequencyScoreOptions = computed(() => [
-  { value: 1, label: t("culturalValueAnnotation.step4.frequencyOption1") },
-  { value: 2, label: t("culturalValueAnnotation.step4.frequencyOption2") },
-  { value: 3, label: t("culturalValueAnnotation.step4.frequencyOption3") },
-  { value: 4, label: t("culturalValueAnnotation.step4.frequencyOption4") },
-  { value: 5, label: t("culturalValueAnnotation.step4.frequencyOption5") },
+const plausibilityScoreOptions = computed(() => [
+  { value: 1, label: t("culturalValueAnnotation.step4.plausibilityOption1") },
+  { value: 2, label: t("culturalValueAnnotation.step4.plausibilityOption2") },
+  { value: 3, label: t("culturalValueAnnotation.step4.plausibilityOption3") },
+  { value: 4, label: t("culturalValueAnnotation.step4.plausibilityOption4") },
+  { value: 5, label: t("culturalValueAnnotation.step4.plausibilityOption5") },
+]);
+
+const distinctivenessScoreOptions = computed(() => [
+  {
+    value: 1,
+    label: t("culturalValueAnnotation.step4.distinctivenessOption1"),
+  },
+  {
+    value: 2,
+    label: t("culturalValueAnnotation.step4.distinctivenessOption2"),
+  },
+  {
+    value: 3,
+    label: t("culturalValueAnnotation.step4.distinctivenessOption3"),
+  },
+  {
+    value: 4,
+    label: t("culturalValueAnnotation.step4.distinctivenessOption4"),
+  },
+  {
+    value: 5,
+    label: t("culturalValueAnnotation.step4.distinctivenessOption5"),
+  },
 ]);
 
 const submit_type = ref("create new"); // "create new" or "revise"
@@ -970,7 +1027,7 @@ const getPrincipleValidationTip = (text = "") => {
   const englishWordCount = getEnglishWordCount(trimmedText);
   const effectiveLength = getPrincipleEffectiveLength(trimmedText);
 
-  return `At least 10 characters. (${effectiveLength})`;
+  return `At least 10 characters.`;
 };
 
 // 只要存在“已填写但长度不合格”的 principle，就认为当前有长度校验错误。
@@ -1021,16 +1078,18 @@ const taskValue1 = ref("");
 const taskValue2 = ref("");
 const questionValue = ref("");
 const importanceValue = ref(null);
-const frequencyValue = ref(null);
+const distinctivenessValue = ref(null);
+const plausibilityValue = ref(null);
 const rawQuestionValue = ref("");
 const rawImportanceValue = ref(null);
-const rawFrequencyValue = ref(null);
+const rawDistinctivenessValue = ref(null);
+const rawPlausibilityValue = ref(null);
 
 const questionAction = ref("");
 
-const questionValue_Select = ref("");
-const questionValue_Select_origin = ref("");
-const questionValue_Create = ref("");
+const questionValue_refine_input = ref("");
+const questionValue_selectExisting_input = ref("");
+const questionValue_create_input = ref("");
 // Step4 当前问题选择模式。需要在后续 computed / watch 之前初始化，避免 setup 阶段访问未初始化变量。
 const activeNameSelect1 = ref("Select Existing Question"); //Create New
 // 复用 step4 的提示区域，展示 Get Answer 前的前端校验错误。
@@ -1130,12 +1189,12 @@ const handleSaveAndGetQuestionListBtnClick = () => {
         hasTriggeredPrincipleValidation.value = false;
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
-          questionValue_Select.value =
+          questionValue_refine_input.value =
             res.data["candidate_questions"][0].question;
-          questionValue_Select_origin.value =
+          questionValue_selectExisting_input.value =
             res.data["candidate_questions"][0].question;
           setTimeout(() => {
-            handleUpdateScores(questionValue_Select_origin.value);
+            handleUpdateScores(questionValue_selectExisting_input.value);
           }, 200);
         } else {
           ElMessage.warning(t("common.noResult"));
@@ -1171,24 +1230,31 @@ const isGetAnswerBtnDisabled = computed(() => {
     !taskValue1.value.trim() ||
     !taskValue2.value.trim() ||
     !importanceValue.value ||
-    !frequencyValue.value ||
+    !distinctivenessValue.value ||
+    !plausibilityValue.value ||
     !(activeNameSelect1.value == "Create New"
-      ? questionValue_Create.value.trim()
+      ? questionValue_create_input.value.trim()
       : activeNameSelect1.value === "Refine Question"
-        ? questionValue_Select.value.trim()
-        : questionValue_Select_origin.value.trim())
+        ? questionValue_refine_input.value.trim()
+        : questionValue_selectExisting_input.value.trim())
   );
 });
 
-// Get Answer 前要求两个分数都 >= 3，且至少一个分数 >= 4。
+// Get Answer 前要求三个分数都 >= 3，且至少一个分数 >= 4。
 const areScoresValidForGetAnswer = computed(() => {
   const importanceScore = Number(importanceValue.value);
-  const frequencyScore = Number(frequencyValue.value);
+  const distinctivenessScore = Number(distinctivenessValue.value);
+  const plausibilityScore = Number(plausibilityValue.value);
 
   return (
     importanceScore >= 3 &&
-    frequencyScore >= 3 &&
-    (importanceScore >= 4 || frequencyScore >= 4)
+    distinctivenessScore >= 3 &&
+    plausibilityScore >= 3 &&
+    (
+      importanceScore >= 4 ||
+      distinctivenessScore >= 4 ||
+      plausibilityScore >= 4
+    )
   );
 });
 
@@ -1219,8 +1285,8 @@ let annotationDataOrigin = reactive({
   response: "",
   highlight_cues: [],
   key_concepts: [],
-  cues_concepts_correspondence: [],
-  cues_concepts_evidence: [],
+  value_concepts_evidence: [],
+  value_concepts_justification: [],
 });
 // personal 部分的标注
 let annotationDataOrigin_person = reactive({
@@ -1228,8 +1294,8 @@ let annotationDataOrigin_person = reactive({
   response: "",
   highlight_cues: [],
   key_concepts: [],
-  cues_concepts_correspondence: [],
-  cues_concepts_evidence: [],
+  value_concepts_evidence: [],
+  value_concepts_justification: [],
 });
 
 const resetGetAnswerState = () => {
@@ -1254,8 +1320,8 @@ const resetGetAnswerState = () => {
     response: "",
     highlight_cues: [],
     key_concepts: [],
-    cues_concepts_correspondence: [],
-    cues_concepts_evidence: [],
+    value_concepts_evidence: [],
+    value_concepts_justification: [],
   };
 
   annotationDataOrigin_person = {
@@ -1263,8 +1329,8 @@ const resetGetAnswerState = () => {
     response: "",
     highlight_cues: [],
     key_concepts: [],
-    cues_concepts_correspondence: [],
-    cues_concepts_evidence: [],
+    value_concepts_evidence: [],
+    value_concepts_justification: [],
   };
 };
 
@@ -1274,18 +1340,51 @@ const updateQuestionScores = (questionText) => {
   );
   if (selectedQuestion) {
     rawImportanceValue.value = selectedQuestion.importance;
-    rawFrequencyValue.value = selectedQuestion.frequency;
+    rawDistinctivenessValue.value = selectedQuestion.distinctiveness;
+    rawPlausibilityValue.value = selectedQuestion.plausibility;
     importanceValue.value = selectedQuestion.importance;
-    frequencyValue.value = selectedQuestion.frequency;
+    distinctivenessValue.value = selectedQuestion.distinctiveness;
+    plausibilityValue.value = selectedQuestion.plausibility;
   }
 };
 
-const handleSelectChange = () => {
-  questionValue_Select.value = questionValue_Select_origin.value;
-  updateQuestionScores(questionValue_Select.value);
+const getRawQuestionAndScores = () => {
+  if (activeNameSelect1.value === "Create New") {
+    questionAction.value = "create";
+    questionValue.value = questionValue_create_input.value.trim();
+    rawQuestionValue.value = null;
+    rawImportanceValue.value = null;
+    rawDistinctivenessValue.value = null;
+    rawPlausibilityValue.value = null;
+    return;
+  }
+
+  questionAction.value =
+    activeNameSelect1.value === "Refine Question"
+      ? "refine"
+      : "select existing";
+  questionValue.value =
+    activeNameSelect1.value === "Refine Question"
+      ? questionValue_refine_input.value.trim()
+      : questionValue_selectExisting_input.value.trim();
+
+  const selectedQuestionText = questionValue_selectExisting_input.value.trim();
+  const selectedQuestion = questionOptions.value.find(
+    (item) => item.question === selectedQuestionText,
+  );
+
+  rawQuestionValue.value = selectedQuestionText || null;
+  rawImportanceValue.value = selectedQuestion?.importance ?? null;
+  rawDistinctivenessValue.value = selectedQuestion?.distinctiveness ?? null;
+  rawPlausibilityValue.value = selectedQuestion?.plausibility ?? null;
 };
 
-const handleGetAnswerBtnClick = () => {
+const handleSelectChange = () => {
+  questionValue_refine_input.value = questionValue_selectExisting_input.value;
+  updateQuestionScores(questionValue_refine_input.value);
+};
+
+const handleGetAnswerBtnClick = async () => {
   if (hasClickedGetAnswerBtn.value) {
     ElMessage.warning(t("culturalValueAnnotation.step4.getAnswerAlreadyClicked"));
     return;
@@ -1299,22 +1398,19 @@ const handleGetAnswerBtnClick = () => {
     return;
   }
 
-  const currentQuestionValue =
-    activeNameSelect1.value == "Create New"
-      ? questionValue_Create.value.trim()
-      : activeNameSelect1.value === "Refine Question"
-        ? questionValue_Select.value.trim()
-        : questionValue_Select_origin.value.trim();
+  resetGetAnswerState();
+  getRawQuestionAndScores();
 
   // 分数门槛校验前，先校验“修改现有问题 / 创建新问题”是否与当前类别候选问题相似度超过 90%。
   const shouldCheckQuestionSimilarity =
     activeNameSelect1.value === "Create New" ||
     activeNameSelect1.value === "Refine Question";
+
   const hasSimilarQuestion =
     shouldCheckQuestionSimilarity &&
     questionOptions.value.some((candidateQuestion) => {
       return (
-        getQuestionSimilarity(currentQuestionValue, candidateQuestion?.question || "") > 0.9
+        getQuestionSimilarity(questionValue.value, candidateQuestion?.question || "") > 0.9
       );
     });
 
@@ -1324,12 +1420,53 @@ const handleGetAnswerBtnClick = () => {
       "This question has over 90% semantic similarity with an existing one. Please revise it.";
     return;
   }
+  //  对于创建新问题，增加对于similarity的检查，如果是ok是false，提示错误用户
+  let similarityQuestionForCreateQuestion = null;
+  if (activeNameSelect1.value === "Create New") {
+    let shouldStopAfterSimilarityCheck = false;
+    isLoadingGetAnswer.value = true;
+    await computeQuestionSimilarity({
+        question_action: "create",
+        question: questionValue.value,
+        country: userDetail.country?.trim() || "",
+      })
+      .then((response) => {
+        const similarityResponse = response?.data;
+        if (similarityResponse?.ok === false) {
+          hasTriggeredGetAnswerValidation.value = true;
+          questionErrorTip.value =
+            similarityResponse.message ||
+            "There is a very similar question that has already been annotated by many users, please choose that question to annotate instead of creating a new one.";
+          shouldStopAfterSimilarityCheck = true;
+        }else {
+          if(similarityResponse?.raw_question){
+            rawQuestionValue.value = similarityResponse.raw_question.question || "";
+            rawImportanceValue.value = similarityResponse.raw_question.importance ?? null;
+            rawDistinctivenessValue.value = similarityResponse.raw_question.distinctiveness ?? null;
+            rawPlausibilityValue.value = similarityResponse.raw_question.plausibility ?? null;
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        ElMessage.error("error:" + err.message);
+        hasTriggeredGetAnswerValidation.value = true;
+        questionErrorTip.value = "netWork Error";
+        shouldStopAfterSimilarityCheck = true;
+      }).finally(() => {
+        isLoadingGetAnswer.value = false;
+      });
+
+    if (shouldStopAfterSimilarityCheck) {
+      return;
+    }
+  }
 
   if (!areScoresValidForGetAnswer.value) {
-    // 不满足分数门槛时，高亮当前问题框和两个分数框，并阻止继续请求后端接口。
+    // 不满足分数门槛时，高亮当前问题框和三个分数框，并阻止继续请求后端接口。
     hasTriggeredGetAnswerValidation.value = true;
     questionErrorTip.value =
-      "This question does not meet the score requirements. Please revise the question to better reflect cultural relevance and real-world frequency, ensuring both scores are ≥ 3 and at least one score is ≥ 4.";
+      "This question does not meet the score requirements. Please revise the question to better reflect cultural relevance, distinctiveness, and plausibility, ensuring all three scores are ≥ 3 and at least one score is ≥ 4.";
     return;
   }
 
@@ -1338,54 +1475,30 @@ const handleGetAnswerBtnClick = () => {
     return;
   }
 
-  // Allow repeated Get Answer: clear previous API-populated result state first.
-  resetGetAnswerState();
-
-  questionValue.value = currentQuestionValue;
-  const step3FormData = {
+  
+  
+  const formData = {
     username: userDetail.username.trim(),
     country: userDetail.country.trim(),
     language: userDetail.language.trim(),
     task_1: taskValue1.value.trim(),
     task_2: taskValue2.value.trim(),
     question: questionValue.value.trim(),
-    country: userDetail.country.trim(),
-    language: userDetail.language.trim(),
-    raw_question: "",
-    question_action: "",
+    raw_question: rawQuestionValue.value?.trim() || "",
+    question_action: questionAction.value,
     importance: importanceValue.value,
-    frequency: frequencyValue.value,
-    raw_importance: null,
-    raw_frequency: null,
+    distinctiveness: distinctivenessValue.value,
+    plausibility: plausibilityValue.value,
+    raw_importance: rawImportanceValue.value,
+    raw_distinctiveness: rawDistinctivenessValue.value,
+    raw_plausibility: rawPlausibilityValue.value,
   };
-  if (activeNameSelect1.value == "Create New") {
-    step3FormData.raw_question = "";
-    step3FormData.question_action = "create";
-    step3FormData.raw_importance = null;
-    step3FormData.raw_frequency = null;
+  
 
-    rawQuestionValue.value = "";
-    questionAction.value = "create";
-  } else {
-    // question_action 根据当前 tab 直接决定，不再额外判断是否和原问题相同。
-    const existingQuestionAction =
-      activeNameSelect1.value === "Refine Question"
-        ? "refine"
-        : "select existing";
-
-    step3FormData.raw_importance = rawImportanceValue.value;
-    step3FormData.raw_frequency = rawFrequencyValue.value;
-    step3FormData.raw_question = questionValue_Select_origin.value.trim();
-    step3FormData.question_action = existingQuestionAction;
-
-    rawQuestionValue.value = questionValue_Select_origin.value.trim();
-    questionAction.value = existingQuestionAction;
-  }
-
-  console.log(step3FormData);
+  console.log(formData);
   isLoadingGetAnswer.value = true;
 
-  getQuestionResponse(step3FormData)
+  getQuestionResponse(formData)
     .then((res) => {
       console.log(res);
       if (res.data) {
@@ -1507,15 +1620,11 @@ const submitHighlightAndConcepts = () => {
       raw_question: rawQuestionValue.value || "",
       question_action: questionAction.value || "",
       importance: importanceValue.value || null,
-      frequency: frequencyValue.value || null,
-      raw_importance:
-        questionAction.value != "create"
-          ? rawImportanceValue.value || null
-          : null,
-      raw_frequency:
-        questionAction.value != "create"
-          ? rawFrequencyValue.value || null
-          : null,
+      distinctiveness: distinctivenessValue.value || null,
+      plausibility: plausibilityValue.value || null,
+      raw_importance: rawImportanceValue.value ?? null,
+      raw_distinctiveness: rawDistinctivenessValue.value ?? null,
+      raw_plausibility: rawPlausibilityValue.value ?? null,
 
       // 原始响应
       original_response: original_response.value || "",
@@ -1533,9 +1642,10 @@ const submitHighlightAndConcepts = () => {
       cues_actions: component1Data.cues_actions,
       concepts_actions: component1Data.concepts_actions,
       // 直接使用组件过滤后的结果，保证长度与 highlight_cues / key_concepts 对齐。
-      cues_concepts_correspondence:
-        component1Data.cues_concepts_correspondence,
-      cues_concepts_evidence: component1Data.cues_concepts_evidence,
+      value_concepts_evidence:
+        component1Data.value_concepts_evidence,
+      value_concepts_justification:
+        component1Data.value_concepts_justification,
 
       // 第二个注释组件的数据 personal 部分的标注
       response_person: component2Data.response,
@@ -1544,9 +1654,10 @@ const submitHighlightAndConcepts = () => {
       cues_actions_person: component2Data.cues_actions,
       concepts_actions_person: component2Data.concepts_actions,
       // personal 部分同样提交过滤后的 correspondence / evidence，避免与个人标注结果错位。
-      cues_concepts_correspondence_person:
-        component2Data.cues_concepts_correspondence,
-      cues_concepts_evidence_person: component2Data.cues_concepts_evidence,
+      value_concepts_evidence_person:
+        component2Data.value_concepts_evidence,
+      value_concepts_justification_person:
+        component2Data.value_concepts_justification,
 
       duration_time: Math.floor(duration_time.value / 1000),
       submit_type: submit_type.value,
@@ -1669,26 +1780,28 @@ onMounted(async () => {
     console.log("要编辑的question信息", question);
     // 填充表单数据
     questionValue.value = question.question;
-    questionValue_Create.value = question.question;
+    questionValue_create_input.value = question.question;
     rawQuestionValue.value = question.raw_question;
     questionAction.value = question.question_action;
 
     importanceValue.value = question.importance;
-    frequencyValue.value = question.frequency;
+    distinctivenessValue.value = question.distinctiveness;
+    plausibilityValue.value = question.plausibility;
     rawImportanceValue.value = question.raw_importance;
-    rawFrequencyValue.value = question.raw_frequency;
+    rawDistinctivenessValue.value = question.raw_distinctiveness;
+    rawPlausibilityValue.value = question.raw_plausibility;
 
     if (question.question_action == "create") {
       activeNameSelect1.value = "Create New";
-      questionValue_Create.value = question.question;
+      questionValue_create_input.value = question.question;
     } else if (question.question_action == "select existing") {
       activeNameSelect1.value = "Select Existing Question";
-      questionValue_Select.value = question.question;
-      questionValue_Select_origin.value = question.raw_question;
+      questionValue_refine_input.value = question.question;
+      questionValue_selectExisting_input.value = question.raw_question;
     } else {
       activeNameSelect1.value = "Refine Question";
-      questionValue_Select.value = question.question;
-      questionValue_Select_origin.value = question.raw_question;
+      questionValue_refine_input.value = question.question;
+      questionValue_selectExisting_input.value = question.raw_question;
     }
 
     topicValue1.value = question.topic_1;
@@ -1715,18 +1828,18 @@ onMounted(async () => {
       response: question.response,
       highlight_cues: question.highlight_cues,
       key_concepts: question.key_concepts,
-      cues_concepts_correspondence: question.cues_concepts_correspondence || [],
-      cues_concepts_evidence: question.cues_concepts_evidence || [],
+      value_concepts_evidence: question.value_concepts_evidence || [],
+      value_concepts_justification: question.value_concepts_justification || [],
     };
     annotationDataOrigin_person = {
       originalResponse: question.response_person,
       response: question.response_person,
       highlight_cues: question.highlight_cues_person,
       key_concepts: question.key_concepts_person,
-      cues_concepts_correspondence:
-        question.cues_concepts_correspondence_person || [],
-      cues_concepts_evidence:
-        question.cues_concepts_evidence_person || [],
+      value_concepts_evidence:
+        question.value_concepts_evidence_person || [],
+      value_concepts_justification:
+        question.value_concepts_justification_person || [],
     };
 
     original_response.value = question.response;
@@ -1813,14 +1926,15 @@ const handleClick = (tab, event) => {
   }
   console.log(tab, event);
 
-  handleUpdateScores(questionValue_Select_origin.value);
+  handleUpdateScores(questionValue_selectExisting_input.value);
 };
 
 const handleUpdateScores = (question) => {
   setTimeout(() => {
     if (activeNameSelect1.value === "Create New") {
       importanceValue.value = "";
-      frequencyValue.value = "";
+      distinctivenessValue.value = "";
+      plausibilityValue.value = "";
     } else {
       updateQuestionScores(question);
     }
@@ -2195,10 +2309,12 @@ const getQuestionNum = () => {
       .score-container {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 0 1rem;
         margin-top: -1rem;
         & > div {
-          width: 50%;
+          flex: 1 1 calc(33.333% - 1rem);
+          min-width: 18rem;
           display: flex;
           align-items: center;
           span {

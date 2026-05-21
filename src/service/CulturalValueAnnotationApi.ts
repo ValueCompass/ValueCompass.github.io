@@ -8,7 +8,7 @@ const request = createAxios({
 });
 
 export const login = (data: any): any => {
-    return request.post("/annotations_test/user_login/", data)
+    return request.post("/annotations_test_2/user_login/", data)
 
     const result = {
         data: {
@@ -24,7 +24,7 @@ export const login = (data: any): any => {
 }
 
 export const UserRegisterLogin = (data: any): any => {
-    return request.post("/annotations_test/user_register_login/", data)
+    return request.post("/annotations_test_2/user_register_login/", data)
 
     const result = {
         data: {
@@ -44,8 +44,51 @@ export const UserRegisterLogin = (data: any): any => {
     });
 }
 
+export const adminLogin = (data: any): any => {
+    return request.post("/annotations_test_2/admin_login/", data)
+    const isValidAdmin = true
+    const result = {
+        data: isValidAdmin
+            ? {
+                ok: true,
+                username: "test1",
+                country: data.country || "China",
+                language: "Chinese",
+                role: "admin",
+            }
+            : {
+                ok: false,
+                message: "Invalid admin account or password",
+            }
+    }
+
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 600);
+    });
+}
+
+export const getAdminAnnotationUsers = (data: any): any => {
+    return request.post("/annotations_test_2/all_user_completed_annotations/", data) 
+    const result = {
+        data: {
+            ok: true,
+            all_user_annotations: {
+                username1: {}
+            }
+        }
+    }
+
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 600);
+    });
+}
+
 export const StudiedAnnotationGuidance = (data: any): any => {
-    return request.post("/annotations_test/studied_annotation_guidance/", data)
+    return request.post("/annotations_test_2/studied_annotation_guidance/", data)
 
     const result = {
         data: {
@@ -61,7 +104,7 @@ export const StudiedAnnotationGuidance = (data: any): any => {
 }
 
 export const getTopicTaskTaxonomy = (data: any): any => {
-    return request.post("/annotations_test/get_topic_task_taxonomy/", data) 
+    return request.post("/annotations_test_2/get_topic_task_taxonomy/", data) 
 
     const result = {
         data: {
@@ -78,7 +121,7 @@ export const getTopicTaskTaxonomy = (data: any): any => {
 }
 
 export const getCandidateQuestions = (data: any): any => {
-    return request.post("/annotations_test/get_candidate_questions/", data) 
+    return request.post("/annotations_test_2/get_candidate_questions/", data) 
 
     const result = {
         data: {
@@ -93,15 +136,43 @@ export const getCandidateQuestions = (data: any): any => {
     });
 }
 
+export const computeQuestionSimilarity = (data: any): any => {
+    return request.post("/annotations_test_2/compute_question_similarity/", data)
+
+    const result = {
+        data: {
+            ok: true,
+            raw_question: "",
+        }
+    }
+
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 1000);
+    });
+}
+
 export const getQuestionResponse = (data: any): any => {
-    return request.post("/annotations_test/get_question_response/", data) 
+    return request.post("/annotations_test_2/get_question_response/", data) 
 
     const result = {
         data: {
             "response": `This question touches on a sensitive topic that varies widely across cultures and educational traditions. In many modern Western societies, open communication is seen as essential for helping children understand rules through dialogue rather than fear. At the same time, empathy is emphasized as a way to acknowledge children’s emotions and experiences as legitimate and meaningful. Many educators and parents believe that respecting individual autonomy and self-expression helps children develop an internal sense of responsibility. There is also a strong focus on protecting children’s emotional well-being by making them feel valued, respected, and psychologically safe. Finally, avoiding punitive punishment is thought to support critical thinking and creativity by encouraging children to reflect rather than merely obey.`,
+            "original_answer_country": "United States",
 
             "highlight_cues": ["open communication is seen as essential for helping children understand rules through dialogue rather than fear.", "placeholder2", "placeholder3"],
             "key_concepts": ["Sensitivity to ethical boundaries that shift across cultural contexts.", "concept2", "concept3"],
+            "value_concepts_evidence": [
+                [["open communication is seen as essential for helping children understand rules through dialogue rather than fear."]],
+                [],
+                []
+            ],
+            "value_concepts_justification": [
+                ["The fragment directly reflects a preference for dialogue-based guidance instead of punishment."],
+                [],
+                []
+            ],
 
         }
     }
@@ -114,7 +185,7 @@ export const getQuestionResponse = (data: any): any => {
 }
 
 export const submitAnnotation = (data: any): any => {
-    return request.post("/annotations_test/submit_annotation/", data) 
+    return request.post("/annotations_test_2/submit_annotation/", data) 
 
     const result = {
         data: {
@@ -134,7 +205,7 @@ export const submitAnnotation = (data: any): any => {
 
 
 export const GetAllCompletedAnnotations = (data: any): any => {
-    return request.post("/annotations_test/all_completed_annotations/", data) 
+    return request.post("/annotations_test_2/all_completed_annotations/", data) 
 
     const result = {
         data: {
@@ -177,7 +248,7 @@ export const GetAllCompletedAnnotations = (data: any): any => {
 
 
 export const DeleteAnnotationItem = (data: any): any => {
-    return request.post("annotations_test/delete_annotation/", data) 
+    return request.post("annotations_test_2/delete_annotation/", data) 
 
     const result = {
         data: {
