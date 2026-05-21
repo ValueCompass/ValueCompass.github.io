@@ -165,7 +165,7 @@
             <img style="width:1.4em; height: 1.4em;" src="@/assets/images/note-icon.png" alt="">
             <div>
               <p>Please complete at least 3 principles.</p>
-              <p style="margin-top: .4em">Each completed principle must contain at least 10 characters.</p>
+              <p style="margin-top: .4em">Each completed principle must contain at least 15 characters.</p>
             </div>
           </div>
           <div class="input-container" style="margin-top: -.1em">
@@ -978,7 +978,7 @@ const topicValue2 = ref("");
 const principlesList = ref(["", "", "", "", ""]);
 
 // 单条 principle 的最小有效长度：中日韩字符按 1 计，英文单词按 1 计。
-const MIN_PRINCIPLE_EFFECTIVE_LENGTH = 10;
+const MIN_PRINCIPLE_EFFECTIVE_LENGTH = 15;
 // 点击 Get Question List 前，至少需要完成 3 条有效 principle。
 const MIN_COMPLETED_PRINCIPLE_COUNT = 3;
 // 记录是否已经点击过 Get Question List 并触发过 principle 校验。
@@ -992,7 +992,7 @@ const scrollToStep2Section = () => {
   });
 };
 
-// principle 的有效长度至少为 10，允许中日韩字符和英文单词混合累计。
+// principle 的有效长度至少为 15，允许中日韩字符和英文单词混合累计。
 const isPrincipleLongEnough = (text = "") => {
   const trimmedText = text.trim();
 
@@ -1027,7 +1027,7 @@ const getPrincipleValidationTip = (text = "") => {
   const englishWordCount = getEnglishWordCount(trimmedText);
   const effectiveLength = getPrincipleEffectiveLength(trimmedText);
 
-  return `At least 10 characters.`;
+  return `At least 15 characters.`;
 };
 
 // 只要存在“已填写但长度不合格”的 principle，就认为当前有长度校验错误。
@@ -1410,14 +1410,14 @@ const handleGetAnswerBtnClick = async () => {
     shouldCheckQuestionSimilarity &&
     questionOptions.value.some((candidateQuestion) => {
       return (
-        getQuestionSimilarity(questionValue.value, candidateQuestion?.question || "") > 0.9
+        getQuestionSimilarity(questionValue.value, candidateQuestion?.question || "") >= 0.8
       );
     });
 
   if (hasSimilarQuestion) {
     hasTriggeredGetAnswerValidation.value = true;
     questionErrorTip.value =
-      "This question has over 90% semantic similarity with an existing one. Please revise it.";
+      "This question is too semantically similar to an existing one. Please revise it.";
     return;
   }
   //  对于创建新问题，增加对于similarity的检查，如果是ok是false，提示错误用户

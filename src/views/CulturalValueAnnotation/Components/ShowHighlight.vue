@@ -91,26 +91,30 @@
         </template>
       </div>
 
-      <span
-        v-for="(part, index) in currentCueDisplayParts"
-        :key="`${part.start}-${index}`"
-        class="show-highlight__cue-part"
-        :class="{
-          'is-linked': part.lineEntries.length > 0,
-          'is-hovered': isCuePartHovered(part, index),
-          'is-dimmed': isCuePartDimmed(part, index),
-        }"
-        :style="getUnderlineStyle(
-          part.lineEntries,
-          part.activeTrackCount,
-          hoveredFragmentIds,
-          getCuePartActiveTrackIndexes(part, index),
-          isCueHighlightActive
-        )"
-        @mouseenter="handleCuePartEnter(index, $event)"
-        @mousemove="handleCuePartMove($event)"
-        @mouseleave="handleCuePartLeave"
-      >{{ part.text }}</span>
+      <div class="show-highlight__content-scroll">
+        <div class="show-highlight__content-inner">
+          <span
+            v-for="(part, index) in currentCueDisplayParts"
+            :key="`${part.start}-${index}`"
+            class="show-highlight__cue-part"
+            :class="{
+              'is-linked': part.lineEntries.length > 0,
+              'is-hovered': isCuePartHovered(part, index),
+              'is-dimmed': isCuePartDimmed(part, index),
+            }"
+            :style="getUnderlineStyle(
+              part.lineEntries,
+              part.activeTrackCount,
+              hoveredFragmentIds,
+              getCuePartActiveTrackIndexes(part, index),
+              isCueHighlightActive
+            )"
+            @mouseenter="handleCuePartEnter(index, $event)"
+            @mousemove="handleCuePartMove($event)"
+            @mouseleave="handleCuePartLeave"
+          >{{ part.text }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- concept 模式：在 Value Concepts 输入框上覆盖显示可 hover 的 concept 文本 -->
@@ -118,33 +122,37 @@
       v-if="!isAddingNew && isConceptMode && currentConceptHighlights.length"
       class="show-highlight__concepts"
     >
-      <template v-for="(concept, index) in currentConceptHighlights" :key="`${concept.text}-${index}`">
-        <span
-          class="show-highlight__concept-item"
-          :class="{
-            'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex),
-            'is-dimmed': hoveredTrackIndexes.length > 0 && !hoveredTrackIndexes.includes(concept.trackIndex),
-          }"
-          :style="getUnderlineStyle(
-            [{ color: concept.color, hoverColor: concept.hoverColor, dimColor: concept.dimColor, trackIndex: 0 }],
-            1,
-            [],
-            hoveredTrackIndexes.includes(concept.trackIndex) ? [0] : [],
-            hoveredTrackIndexes.length > 0
-          )"
-          @mouseenter="handleConceptEnter(concept.trackIndex)"
-          @mouseleave="handleConceptLeave"
-        >{{ concept.text }}</span><span
-          v-if="concept.separator"
-          class="show-highlight__concept-separator"
-          :class="{
-            'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex),
-            'is-dimmed': hoveredTrackIndexes.length > 0 && !hoveredTrackIndexes.includes(concept.trackIndex),
-          }"
-          @mouseenter="handleConceptEnter(concept.trackIndex)"
-          @mouseleave="handleConceptLeave"
-        >{{ concept.separator }}&nbsp;</span>
-      </template>
+      <div class="show-highlight__content-scroll">
+        <div class="show-highlight__content-inner">
+          <template v-for="(concept, index) in currentConceptHighlights" :key="`${concept.text}-${index}`">
+            <span
+              class="show-highlight__concept-item"
+              :class="{
+                'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex),
+                'is-dimmed': hoveredTrackIndexes.length > 0 && !hoveredTrackIndexes.includes(concept.trackIndex),
+              }"
+              :style="getUnderlineStyle(
+                [{ color: concept.color, hoverColor: concept.hoverColor, dimColor: concept.dimColor, trackIndex: 0 }],
+                1,
+                [],
+                hoveredTrackIndexes.includes(concept.trackIndex) ? [0] : [],
+                hoveredTrackIndexes.length > 0
+              )"
+              @mouseenter="handleConceptEnter(concept.trackIndex)"
+              @mouseleave="handleConceptLeave"
+            >{{ concept.text }}</span><span
+              v-if="concept.separator"
+              class="show-highlight__concept-separator"
+              :class="{
+                'is-hovered': hoveredTrackIndexes.includes(concept.trackIndex),
+                'is-dimmed': hoveredTrackIndexes.length > 0 && !hoveredTrackIndexes.includes(concept.trackIndex),
+              }"
+              @mouseenter="handleConceptEnter(concept.trackIndex)"
+              @mouseleave="handleConceptLeave"
+            >{{ concept.separator }}&nbsp;</span>
+          </template>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -278,6 +286,20 @@ const splitConcepts = (conceptText = "") => {
   return results;
 };
 
+const decodeEscapedFragmentText = (text = "") => {
+  return String(text)
+    .replace(/\\"/g, '"')
+    .replace(/\\'/g, "'")
+    .replace(/\\\\/g, "\\")
+    .trim();
+};
+
+const normalizeFragmentForMatch = (text = "") => {
+  return String(text)
+    .replace(/[“”«»「」『』]/g, '"')
+    .replace(/[‘’‹›]/g, "'");
+};
+
 // 把 concept 字符串转换成可渲染列表，并为每个 concept 分配颜色和关联的 cue 片段。
 const currentConceptHighlights = computed(() => {
   const concepts = splitConcepts(props.conceptText);
@@ -291,7 +313,7 @@ const currentConceptHighlights = computed(() => {
     dimColor: highlightColors[index % highlightColors.length].dim,
     fragments: Array.isArray(props.cueConceptCorrespondence?.[index])
       ? props.cueConceptCorrespondence[index]
-          .map((item) => item?.trim?.() || "")
+          .map((item) => decodeEscapedFragmentText(item))
           .filter(Boolean)
       : [],
   }));
@@ -304,6 +326,8 @@ const currentCueDisplayParts = computed(() => {
     return [];
   }
 
+  const comparableCueText = normalizeFragmentForMatch(cueText);
+
   const matchedFragments = [];
   // searchOffsets：记录每个片段的上次匹配终点，防止同一片段文本被重复匹配到同一位置。
   const searchOffsets = new Map();
@@ -312,7 +336,8 @@ const currentCueDisplayParts = computed(() => {
     concept.fragments.forEach((fragment) => {
       const searchKey = `${conceptIndex}-${fragment}`;
       const startOffset = searchOffsets.get(searchKey) || 0;
-      const start = cueText.indexOf(fragment, startOffset);
+      const comparableFragment = normalizeFragmentForMatch(fragment);
+      const start = comparableCueText.indexOf(comparableFragment, startOffset);
 
       if (start === -1) {
         return;
@@ -906,11 +931,14 @@ const clearHoveredPart = () => {
   position: absolute;
   inset: 0;
   z-index: 3;
-  padding: 5px 11px;
+  // padding: 5px 11px;
 //   overflow: hidden;
   pointer-events: none;
   font-size: 1rem;
+  &>div{
+    height: 100%;
 
+  }
   &__cue {
     position: relative;
     color: #222;
@@ -920,6 +948,17 @@ const clearHoveredPart = () => {
     white-space: pre-wrap;
     word-break: break-word;
     font-style: italic;
+  }
+
+  &__content-scroll {
+    height: 100%;
+    overflow: auto;
+    padding: 5px 11px;
+    box-sizing: border-box;
+  }
+
+  &__content-inner {
+    min-height: 100%;
   }
 
   &__cue-part,
