@@ -152,20 +152,40 @@ const getLcsSimilarity = (left, right) => {
 // 3. 编辑相似度或 LCS 相似度超过 90%：不通过。
 // 返回 0 到 1；调用方使用 > 0.9 判断是否不通过。
 export const getQuestionSimilarity = (leftQuestion, rightQuestion) => {
-  const left = normalizeQuestion(leftQuestion);
-  const right = normalizeQuestion(rightQuestion);
+  const left = String(leftQuestion || "");
+  const rawRightQuestion = String(rightQuestion || "");
+  const lastHalfWidthLeftParenIndex = rawRightQuestion.lastIndexOf("(");
+  const lastFullWidthLeftParenIndex = rawRightQuestion.lastIndexOf("（");
+  const lastLeftParenIndex = Math.max(
+    lastHalfWidthLeftParenIndex,
+    lastFullWidthLeftParenIndex,
+  );
+  const truncatedRightQuestion =
+    (lastLeftParenIndex >= 0
+      ? rawRightQuestion.slice(0, lastLeftParenIndex)
+      : rawRightQuestion
+    ).trim() || "";
 
-  if (!left || !right) return 0;
-  if (left === right) return 1;
+  const getSimilarityAgainstRightQuestion = (right) => {
+    if (!left || !right) return 0;
+    if (left === right) return 1;
 
-  if (left.length < right.length && right.includes(left)) {
-    return 1;
-  }
+    if (left.length < right.length && right.includes(left)) {
+      return 1;
+    }
 
-  const editSimilarity = getEditDistanceSimilarity(left, right);
-  const lcsSimilarity = getLcsSimilarity(left, right);
+    const editSimilarity = getEditDistanceSimilarity(left, right);
+    const lcsSimilarity = getLcsSimilarity(left, right);
 
-  return Math.max(editSimilarity, lcsSimilarity);
+    console.log(`Comparing "${left}" with "${right}": Edit Similarity = ${editSimilarity}, LCS Similarity = ${lcsSimilarity}`);
+
+    return Math.max(editSimilarity, lcsSimilarity);
+  };
+
+  return Math.max(
+    getSimilarityAgainstRightQuestion(rawRightQuestion),
+    getSimilarityAgainstRightQuestion(truncatedRightQuestion),
+  );
 };
 
 
