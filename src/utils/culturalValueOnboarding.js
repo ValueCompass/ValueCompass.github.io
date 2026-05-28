@@ -1,32 +1,83 @@
 import onboardingPreview from "@/assets/images/Collaborators.png";
-import onboardingVideoStep1 from "@/assets/video/video1.mp4";
-import onboardingVideoStep2 from "@/assets/video/video2.mp4";
-import onboardingVideoStep3 from "@/assets/video/video3.mp4";
-import annotationSlidesPart1 from "@/assets/annotationPdf/Human Annotation Guideline Video - Part 1.pptx";
-import annotationSlidesPart2 from "@/assets/annotationPdf/Human Annotation Guideline Video - Part 2.pptx";
-import annotationSlidesPart3 from "@/assets/annotationPdf/Human Annotation Guideline Video - Part 3.pptx";
-import annotationGuidelineDocument from "@/assets/annotationPdf/Human Annotation Guidelines v3 - English.docx";
+import onboardingVideoStep1 from "@/assets/CulturalAnnotation/English/Part 1.mp4";
+import onboardingVideoStep2 from "@/assets/CulturalAnnotation/English/Part 2.mp4";
+import onboardingVideoStep3 from "@/assets/CulturalAnnotation/English/Part 3.mp4";
+import annotationSlidesPart1 from "@/assets/CulturalAnnotation/English/Human Annotation Guideline Video - Part 1.pptx";
+import annotationSlidesPart2 from "@/assets/CulturalAnnotation/English/Human Annotation Guideline Video - Part 2.pptx";
+import annotationSlidesPart3 from "@/assets/CulturalAnnotation/English/Human Annotation Guideline Video - Part 3.pptx";
+import annotationGuidelineDocument from "@/assets/CulturalAnnotation/English/Human Annotation Guidelines v3 - English.docx";
+import onboardingVideoStep1Chinese from "@/assets/CulturalAnnotation/Chinese/Part 1 - Chinese.mp4";
+import onboardingVideoStep2Chinese from "@/assets/CulturalAnnotation/Chinese/Part 2 - Chinese.mp4";
+import onboardingVideoStep3Chinese from "@/assets/CulturalAnnotation/Chinese/Part 3 - Chinese.mp4";
+import annotationSlidesPart1Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 1 - Chinese.pptx";
+import annotationSlidesPart2Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 2.pptx";
+import annotationSlidesPart3Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 3 - Chinese.pptx";
+import annotationGuidelineDocumentChinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guidelines v3 - China.docx";
 
 export { onboardingPreview };
 
-const slideDownloads = [
-  {
-    url: annotationSlidesPart1,
-    fileName: "Human Annotation Guideline Video - Part 1.pptx",
+const onboardingResourceMap = {
+  English: {
+    videos: [
+      onboardingVideoStep1,
+      onboardingVideoStep2,
+      onboardingVideoStep3,
+    ],
+    slides: [
+      {
+        url: annotationSlidesPart1,
+        fileName: "Human Annotation Guideline Video - Part 1.pptx",
+      },
+      {
+        url: annotationSlidesPart2,
+        fileName: "Human Annotation Guideline Video - Part 2.pptx",
+      },
+      {
+        url: annotationSlidesPart3,
+        fileName: "Human Annotation Guideline Video - Part 3.pptx",
+      },
+    ],
+    guidelineDocument: {
+      url: annotationGuidelineDocument,
+      fileName: "Human Annotation Guidelines v3 - English.docx",
+    },
   },
-  {
-    url: annotationSlidesPart2,
-    fileName: "Human Annotation Guideline Video - Part 2.pptx",
+  Chinese: {
+    videos: [
+      onboardingVideoStep1Chinese,
+      onboardingVideoStep2Chinese,
+      onboardingVideoStep3Chinese,
+    ],
+    slides: [
+      {
+        url: annotationSlidesPart1Chinese,
+        fileName: "Human Annotation Guideline Video - Part 1 - Chinese.pptx",
+      },
+      {
+        url: annotationSlidesPart2Chinese,
+        fileName: "Human Annotation Guideline Video - Part 2.pptx",
+      },
+      {
+        url: annotationSlidesPart3Chinese,
+        fileName: "Human Annotation Guideline Video - Part 3 - Chinese.pptx",
+      },
+    ],
+    guidelineDocument: {
+      url: annotationGuidelineDocumentChinese,
+      fileName: "Human Annotation Guidelines v3 - China.docx",
+    },
   },
-  {
-    url: annotationSlidesPart3,
-    fileName: "Human Annotation Guideline Video - Part 3.pptx",
-  },
-];
+};
 
-const guidelineDocumentDownload = {
-  url: annotationGuidelineDocument,
-  fileName: "Human Annotation Guidelines v3 - English.docx",
+const normalizeOnboardingResourceLanguage = (language = "") => {
+  return String(language).trim().toLowerCase() === "chinese"
+    ? "Chinese"
+    : "English";
+};
+
+const getOnboardingResourceSet = (language = "") => {
+  const resourceLanguage = normalizeOnboardingResourceLanguage(language);
+  return onboardingResourceMap[resourceLanguage] || onboardingResourceMap.English;
 };
 
 export const countryLanguageMap = {
@@ -38,6 +89,9 @@ export const countryLanguageMap = {
 };
 
 export const createOnboardingSteps = ({ completed = false } = {}) => {
+  const { language } = getStoredOnboardingUserDetail();
+  const resourceSet = getOnboardingResourceSet(language);
+
   return [
     {
       id: 1,
@@ -47,7 +101,7 @@ export const createOnboardingSteps = ({ completed = false } = {}) => {
       description:
         "Understand the workflow and purpose of the annotation system.",
       completed,
-      videoSrc: onboardingVideoStep1,
+      videoSrc: resourceSet.videos[0],
       videoType: "video/mp4",
     },
     {
@@ -58,7 +112,7 @@ export const createOnboardingSteps = ({ completed = false } = {}) => {
       description:
         "Learn rules and criteria to ensure consistent, reliable annotations.",
       completed,
-      videoSrc: onboardingVideoStep2,
+      videoSrc: resourceSet.videos[1],
       videoType: "video/mp4",
     },
     {
@@ -69,7 +123,7 @@ export const createOnboardingSteps = ({ completed = false } = {}) => {
       description:
         "See real examples to reinforce understanding and apply in practice.",
       completed,
-      videoSrc: onboardingVideoStep3,
+      videoSrc: resourceSet.videos[2],
       videoType: "video/mp4",
     },
   ];
@@ -248,7 +302,10 @@ const triggerFileDownload = (url, fileName) => {
 };
 
 export const downloadOnboardingSlides = () => {
-  slideDownloads.forEach((file, index) => {
+  const { language } = getStoredOnboardingUserDetail();
+  const resourceSet = getOnboardingResourceSet(language);
+
+  resourceSet.slides.forEach((file, index) => {
     window.setTimeout(() => {
       triggerFileDownload(file.url, file.fileName);
     }, index * 150);
@@ -256,8 +313,11 @@ export const downloadOnboardingSlides = () => {
 };
 
 export const downloadOnboardingGuidelineDocument = () => {
+  const { language } = getStoredOnboardingUserDetail();
+  const resourceSet = getOnboardingResourceSet(language);
+
   triggerFileDownload(
-    guidelineDocumentDownload.url,
-    guidelineDocumentDownload.fileName,
+    resourceSet.guidelineDocument.url,
+    resourceSet.guidelineDocument.fileName,
   );
 };
