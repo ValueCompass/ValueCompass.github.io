@@ -165,7 +165,7 @@
             <img style="width:1.4em; height: 1.4em;" src="@/assets/images/note-icon.png" alt="">
             <div>
               <p>Please complete at least 3 principles.</p>
-              <p style="margin-top: .4em">Each completed principle must contain at least 15 characters.</p>
+              <p style="margin-top: .4em">Each completed principle must contain at least 30 Chinese/Japanese/Korean characters or 25 English words.</p>
             </div>
           </div>
           <div class="input-container" style="margin-top: -.1em">
@@ -213,6 +213,10 @@
                 },
               ]"
             >{{ completedPrincipleCount }} / 5 principle(s) completed</p>
+            <p
+              v-if="principleValidationErrorMessage"
+              class="principle-validation-error-tip"
+            >{{ principleValidationErrorMessage }}</p>
           </div>
         </div>
       </div>
@@ -897,6 +901,12 @@ import {
   getEnglishWordCount,
   getPrincipleEffectiveLength,
   getQuestionSimilarity,
+  isPrincipleLongEnough,
+  MIN_PRINCIPLE_CJK_CHARACTER_COUNT,
+  MIN_PRINCIPLE_ENGLISH_WORD_COUNT,
+  findPrinciplesSimilarToExamples,
+  findDuplicatePrinciples,
+  PRINCIPLE_SIMILARITY_THRESHOLD,
 } from "@/utils/common";
 import { Language } from "@amcharts/amcharts4/core";
 
@@ -977,12 +987,12 @@ const topicValue1 = ref("");
 const topicValue2 = ref("");
 const principlesList = ref(["", "", "", "", ""]);
 
-// 单条 principle 的最小有效长度：中日韩字符按 1 计，英文单词按 1 计。
-const MIN_PRINCIPLE_EFFECTIVE_LENGTH = 15;
 // 点击 Get Question List 前，至少需要完成 3 条有效 principle。
 const MIN_COMPLETED_PRINCIPLE_COUNT = 3;
 // 记录是否已经点击过 Get Question List 并触发过 principle 校验。
 const hasTriggeredPrincipleValidation = ref(false);
+// principle 校验失败时的具体原因，同时用于在 principle-completed-tip 下方的红字提示。
+const principleValidationErrorMessage = ref("");
 
 // principle 校验失败时，把页面滚动回 Step 2，方便用户直接看到错误提示和输入框状态。
 const scrollToStep2Section = () => {
@@ -990,18 +1000,6 @@ const scrollToStep2Section = () => {
     behavior: "smooth",
     block: "start",
   });
-};
-
-// principle 的有效长度至少为 15，允许中日韩字符和英文单词混合累计。
-const isPrincipleLongEnough = (text = "") => {
-  const trimmedText = text.trim();
-
-  if (!trimmedText) {
-    return false;
-  }
-
-  // 有效长度由 utils 中的公共统计函数负责：中日韩字符数 + 英文单词数。
-  return getPrincipleEffectiveLength(trimmedText) >= MIN_PRINCIPLE_EFFECTIVE_LENGTH;
 };
 
 // 收集所有“已填写但长度不合格”的 principle 序号，用于点击按钮后的统一报错提示。
@@ -1027,7 +1025,7 @@ const getPrincipleValidationTip = (text = "") => {
   const englishWordCount = getEnglishWordCount(trimmedText);
   const effectiveLength = getPrincipleEffectiveLength(trimmedText);
 
-  return `At least 15 characters.`;
+  return `At least ${MIN_PRINCIPLE_CJK_CHARACTER_COUNT} Chinese/Japanese/Korean characters or ${MIN_PRINCIPLE_ENGLISH_WORD_COUNT} English words.`;
 };
 
 // 只要存在“已填写但长度不合格”的 principle，就认为当前有长度校验错误。
@@ -1120,14 +1118,15 @@ const isSaveAndGetQuestionListBtnDisabled = computed(() => {
 const validatePrinciplesBeforeContinue = () => {
   // 点击按钮后才正式进入 principle 校验态，页面上的黑色说明也会在失败时切成红色。
   hasTriggeredPrincipleValidation.value = true;
+  // 每次校验前先重置上一次的错误提示，避免提示与当前状态不同步。
+  principleValidationErrorMessage.value = "";
 
   // 先校验“大前提”：至少 3 条 principle 已填写且每条长度都达标。
   if (hasInsufficientCompletedPrinciples.value) {
     // 校验失败时先滚动到 Step 2，让用户第一时间看到 principle 的错误提示。
     scrollToStep2Section();
-    ElMessage.error(
-      `Please complete at least ${MIN_COMPLETED_PRINCIPLE_COUNT} valid principles before continuing.`
-    );
+    const errorMessage = `Please complete at least ${MIN_COMPLETED_PRINCIPLE_COUNT} valid principles before continuing.`;
+    principleValidationErrorMessage.value = errorMessage;
     return false;
   }
 
@@ -1136,9 +1135,38 @@ const validatePrinciplesBeforeContinue = () => {
   if (invalidPrincipleIndexes.length > 0) {
     // 有具体不合格项时，同样回到 Step 2，并提示是哪几条 principle 长度不达标。
     scrollToStep2Section();
-    ElMessage.error(
-      `Principle ${invalidPrincipleIndexes.join(", ")} must contain at least 10 units. Chinese/Japanese/Korean characters count as 1 unit each, English words count as 1 unit each, and spaces are not counted.`
-    );
+    const errorMessage = `Principle ${invalidPrincipleIndexes.join(", ")} must contain at least 10 units. Chinese/Japanese/Korean characters count as 1 unit each, English words count as 1 unit each, and spaces are not counted.`;
+    principleValidationErrorMessage.value = errorMessage;
+    return false;
+  }
+
+  // 查重阈值以百分比呈现，保证提示与 common.js 里的阈值保持一致。
+  const principleSimilarityThresholdLabel = `${Math.round(PRINCIPLE_SIMILARITY_THRESHOLD * 100)}%`;
+
+  // 与示例 principle 查重：避免标注者直接拷贝或微调示例。
+  const principlesSimilarToExamples = findPrinciplesSimilarToExamples(
+    principlesList.value,
+    principleExample.value || [],
+  );
+  if (principlesSimilarToExamples.length > 0) {
+    scrollToStep2Section();
+    const duplicatedPrincipleIndexes = Array.from(
+      new Set(principlesSimilarToExamples.map((item) => item.principleIndex))
+    ).join(", ");
+    const errorMessage = `Principle ${duplicatedPrincipleIndexes} is too similar to the example principles. Please rewrite it in your own words.`;
+    principleValidationErrorMessage.value = errorMessage;
+    return false;
+  }
+
+  // 标注者多条 principle 互查重：避免自己写的多条之间重复。
+  const duplicatePrinciples = findDuplicatePrinciples(principlesList.value);
+  if (duplicatePrinciples.length > 0) {
+    scrollToStep2Section();
+    const duplicatePairs = duplicatePrinciples
+      .map((item) => `${item.leftIndex} & ${item.rightIndex}`)
+      .join("; ");
+    const errorMessage = `Principles ${duplicatePairs} are too similar to each other. Please make them distinct.`;
+    principleValidationErrorMessage.value = errorMessage;
     return false;
   }
 
@@ -1187,6 +1215,7 @@ const handleSaveAndGetQuestionListBtnClick = () => {
         // ElMessage.success("提交成功");
         // 请求成功后清空 principle 错误态，避免后续页面继续保留红色校验提示。
         hasTriggeredPrincipleValidation.value = false;
+        principleValidationErrorMessage.value = "";
         hasClickedSaveAndGetQuestionListBtn.value = true;
         if (res.data["candidate_questions"].length > 0) {
           questionValue_refine_input.value =
@@ -2178,6 +2207,12 @@ const getQuestionNum = () => {
         }
         .principle-completed-tip--error {
           color: #b22222;
+        }
+        .principle-validation-error-tip {
+          margin-top: -0.5em;
+          font-size: 0.875em;
+          color: #b22222;
+          line-height: 1.4;
         }
       }
     }

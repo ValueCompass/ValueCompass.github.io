@@ -92,6 +92,24 @@ export const getPrincipleEffectiveLength = (text = "") => {
   return getCjkCharacterCount(text) + getEnglishWordCount(text);
 };
 
+// principle 单条最小长度规则：中日韩字符 ≥ 30 或 英文单词 ≥ 25，满足任意一个即算合格。
+export const MIN_PRINCIPLE_CJK_CHARACTER_COUNT = 30;
+export const MIN_PRINCIPLE_ENGLISH_WORD_COUNT = 25;
+
+// principle 单条长度是否满足最小要求：中日韩字符数与英文单词数任意一项达标即算通过。
+export const isPrincipleLongEnough = (text = "") => {
+  const trimmedText = String(text).trim();
+
+  if (!trimmedText) {
+    return false;
+  }
+
+  return (
+    getCjkCharacterCount(trimmedText) >= MIN_PRINCIPLE_CJK_CHARACTER_COUNT ||
+    getEnglishWordCount(trimmedText) >= MIN_PRINCIPLE_ENGLISH_WORD_COUNT
+  );
+};
+
 // 标准化问题文本：统一大小写、去掉标点/符号并合并空格，避免格式差异影响相似度判断。
 export const normalizeQuestion = (question = "") => {
   return String(question)
@@ -186,6 +204,119 @@ export const getQuestionSimilarity = (leftQuestion, rightQuestion) => {
     getSimilarityAgainstRightQuestion(rawRightQuestion),
     getSimilarityAgainstRightQuestion(truncatedRightQuestion),
   );
+};
+
+// principle 查重阈值：相似度达到该值即视为重复，不允许通过校验。
+export const PRINCIPLE_SIMILARITY_THRESHOLD = 0.8;
+
+// 衡量 shorterText 被 longerText "覆盖" 的程度（基于归一化后的字符串和 LCS）。
+// 用于捕捉拼接攻击：例如把多条示例 principle 串起来当作一条提交时，
+// 标准的 getQuestionSimilarity 会因总长被稀释而漏判，但 contained 文本仍然几乎完整出现在 container 中。
+const getNormalizedContainmentRatio = (longerText, shorterText) => {
+  const longer = normalizeQuestion(longerText);
+  const shorter = normalizeQuestion(shorterText);
+  if (!longer || !shorter) {
+    return 0;
+  }
+
+  if (longer.includes(shorter)) {
+    return 1;
+  }
+
+  // getLcsSimilarity 的分母是 max(len)，反推 LCS 长度后再除以 shorter.length，
+  // 得到的就是 "shorter 在 longer 中保留了多少比例"。
+  const lcsSimilarity = getLcsSimilarity(longer, shorter);
+  const lcsLength = lcsSimilarity * Math.max(longer.length, shorter.length);
+  return lcsLength / shorter.length;
+};
+
+// 综合相似度：整体相似度 + 覆盖率（双向取最大）。
+const getPrincipleDuplicateScore = (textA, textB) => {
+  const baseSimilarity = getQuestionSimilarity(textA, textB);
+  const containmentSimilarity = Math.max(
+    getNormalizedContainmentRatio(textA, textB),
+    getNormalizedContainmentRatio(textB, textA),
+  );
+  return Math.max(baseSimilarity, containmentSimilarity);
+};
+
+// 找出与「示例 principle」相似度过高的标注 principle。
+// 返回 [{ principleIndex: 1-based, exampleIndex: 1-based, similarity }]
+export const findPrinciplesSimilarToExamples = (
+  principles = [],
+  examplePrinciples = [],
+  threshold = PRINCIPLE_SIMILARITY_THRESHOLD,
+) => {
+  const results = [];
+
+  principles.forEach((principle, principleIndex) => {
+    const trimmedPrinciple = String(principle || "").trim();
+    if (!trimmedPrinciple) {
+      return;
+    }
+
+    examplePrinciples.forEach((example, exampleIndex) => {
+      const trimmedExample = String(example || "").trim();
+      if (!trimmedExample) {
+        return;
+      }
+
+      const similarity = getPrincipleDuplicateScore(
+        trimmedPrinciple,
+        trimmedExample,
+      );
+      if (similarity >= threshold) {
+        results.push({
+          principleIndex: principleIndex + 1,
+          exampleIndex: exampleIndex + 1,
+          similarity,
+        });
+      }
+    });
+  });
+
+  return results;
+};
+
+// 找出标注者多条 principle 之间相似度过高的两两组合。
+// 返回 [{ leftIndex: 1-based, rightIndex: 1-based, similarity }]
+export const findDuplicatePrinciples = (
+  principles = [],
+  threshold = PRINCIPLE_SIMILARITY_THRESHOLD,
+) => {
+  const results = [];
+
+  for (let leftIndex = 0; leftIndex < principles.length; leftIndex += 1) {
+    const leftPrinciple = String(principles[leftIndex] || "").trim();
+    if (!leftPrinciple) {
+      continue;
+    }
+
+    for (
+      let rightIndex = leftIndex + 1;
+      rightIndex < principles.length;
+      rightIndex += 1
+    ) {
+      const rightPrinciple = String(principles[rightIndex] || "").trim();
+      if (!rightPrinciple) {
+        continue;
+      }
+
+      const similarity = getPrincipleDuplicateScore(
+        leftPrinciple,
+        rightPrinciple,
+      );
+      if (similarity >= threshold) {
+        results.push({
+          leftIndex: leftIndex + 1,
+          rightIndex: rightIndex + 1,
+          similarity,
+        });
+      }
+    }
+  }
+
+  return results;
 };
 
 
