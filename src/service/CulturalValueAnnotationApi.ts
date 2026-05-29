@@ -69,8 +69,17 @@ export const adminLogin = (data: any): any => {
     });
 }
 
-export const getAdminAnnotationUsers = (data: any): any => {
-    return request.post("/annotations_test_2/all_user_completed_annotations/", data) 
+export const getAdminAnnotationUsers = (data: any, token = ""): any => {
+    const config = token
+        ? {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                // Token: token,
+            },
+        }
+        : undefined;
+
+    return request.post("/annotations_test_2/all_user_completed_annotations/", data, config) 
     const result = {
         data: {
             ok: true,

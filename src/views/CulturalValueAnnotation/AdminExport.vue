@@ -325,11 +325,12 @@ const handleDownloadSelectedExcel = () => {
 
 onMounted(() => {
   const adminDetail = getCulturalValueAnnotationAdminDetail() || {};
+  const adminToken = String(adminDetail.token || "").trim();
 
   isLoading.value = true;
   getAdminAnnotationUsers({
     country: String(adminDetail.country || "").trim(),
-  })
+  }, adminToken)
     .then((res) => {
       if (res.data?.ok) {
         users.value = normalizeAdminUsers(

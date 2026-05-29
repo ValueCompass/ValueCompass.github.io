@@ -336,6 +336,7 @@ const handleAdminModeLogin = () => {
       country: res.data.country || adminCountryValue.value,
       language: res.data.language || "",
       role: res.data.role || "admin",
+      token: res.data.token || res.data.access_token || res.data.jwt || "",
     });
 
     return router.push("/CulturalValueAnnotation/admin-export");
