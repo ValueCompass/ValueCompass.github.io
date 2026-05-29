@@ -409,13 +409,10 @@
             <p>{{ t("culturalValueAnnotation.step4.prioritizeTitle") }}</p>
             <ul>
               <li>{{ t("culturalValueAnnotation.step4.prioritize1") }}</li>
-              <li>{{ t("culturalValueAnnotation.step4.prioritize2") }}</li>
               <li>
-                <b>{{ t("culturalValueAnnotation.step4.prioritize3") }}</b>
+                <b>{{ t("culturalValueAnnotation.step4.prioritize2") }}</b>
               </li>
-              <li>
-                {{ t("culturalValueAnnotation.step4.prioritize4") }}
-              </li>
+              <li>{{ t("culturalValueAnnotation.step4.prioritize3") }} </li>
             </ul>
           </div>
           <p>
@@ -783,7 +780,6 @@
                 <ul class="ul-lower-alpha">
                   <li>{{ t("culturalValueAnnotation.step5.rule1a") }}</li>
                   <li>{{ t("culturalValueAnnotation.step5.rule1b") }}</li>
-                  <li>{{ t("culturalValueAnnotation.step5.rule1c") }}</li>
                 </ul>
               </li>
               <li>
@@ -1269,21 +1265,19 @@ const isGetAnswerBtnDisabled = computed(() => {
   );
 });
 
-// Get Answer 前要求三个分数都 >= 3，且至少一个分数 >= 4。
+// Get Answer 前要求三个分数都 >= 3，且至少两个分数 >= 4。
 const areScoresValidForGetAnswer = computed(() => {
   const importanceScore = Number(importanceValue.value);
   const distinctivenessScore = Number(distinctivenessValue.value);
   const plausibilityScore = Number(plausibilityValue.value);
+  const scores = [importanceScore, distinctivenessScore, plausibilityScore];
+  const highScoreCount = scores.filter((score) => score >= 4).length;
 
   return (
     importanceScore >= 3 &&
     distinctivenessScore >= 3 &&
     plausibilityScore >= 3 &&
-    (
-      importanceScore >= 4 ||
-      distinctivenessScore >= 4 ||
-      plausibilityScore >= 4
-    )
+    highScoreCount >= 2
   );
 });
 
@@ -1495,7 +1489,7 @@ const handleGetAnswerBtnClick = async () => {
     // 不满足分数门槛时，高亮当前问题框和三个分数框，并阻止继续请求后端接口。
     hasTriggeredGetAnswerValidation.value = true;
     questionErrorTip.value =
-      "This question does not meet the score requirements. Please revise the question to better reflect cultural relevance, distinctiveness, and plausibility, ensuring all three scores are ≥ 3 and at least one score is ≥ 4.";
+      "This question does not meet the score requirements. Please revise the question to better reflect cultural relevance, distinctiveness, and plausibility, ensuring all three scores are ≥ 3 and at least two scores are ≥ 4.";
     return;
   }
 
