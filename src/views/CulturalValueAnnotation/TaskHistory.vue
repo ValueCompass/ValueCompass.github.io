@@ -13,6 +13,9 @@
         >
       </div>
     </div>
+    <div v-if="isAdminView" class="admin-view-user">
+      Username: {{ resolvedUserDetail.username }}
+    </div>
     <el-table
       :data="tableData"
       border
@@ -25,7 +28,10 @@
       <el-table-column type="index" width="90" label="Number" />
       <el-table-column prop="question" label="Question" min-width="360">
         <template #default="scope">
-          <span>
+          <span
+            :class="{ 'question-link': isAdminView }"
+            @click="isAdminView && handleQuestionClick(scope.row, scope.$index)"
+          >
             {{ scope.row.question }}
           </span>
         </template>
@@ -46,7 +52,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" width="160" fixed="right">
+      <el-table-column v-if="!isAdminView" label="Actions" width="160" fixed="right">
         <template #default="scope">
           <div class="action-buttons">
             <button
@@ -67,7 +73,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="bth-container">
+    <div v-if="!isAdminView" class="bth-container">
       <el-button type="primary" color="#0B70C3" @click="handleCreateClick"
         >Create a new one</el-button
       >
@@ -80,8 +86,31 @@ import { reactive, ref, computed, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { GetAllCompletedAnnotations, DeleteAnnotationItem } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+const viewUsername = String(route.query.username || "").trim();
+const viewCountry = String(route.query.country || "").trim();
+const viewLanguage = String(route.query.language || "").trim();
+const isAdminView = route.path.startsWith("/CulturalValueAnnotation/admin") ||
+  String(route.query.adminView || "") === "1";
+
+const resolvedUserDetail = computed(() => {
+  if (isAdminView && viewUsername) {
+    return {
+      username: viewUsername,
+      country: viewCountry,
+      language: viewLanguage || String(userDetail.language || "").trim(),
+    };
+  }
+
+  return {
+    username: String(userDetail.username || "").trim(),
+    country: String(userDetail.country || "").trim(),
+    language: String(userDetail.language || "").trim(),
+  };
+});
 const tableRowKeys = ref([]);
 
 // 点击问题时的处理函数
@@ -98,7 +127,16 @@ const handleQuestionClick = (question, rowIndex) => {
   console.log("要传的question信息", question);
   sessionStorage.setItem("editCurrentQuestion", JSON.stringify(question));
   router.push({
-    path: "/CulturalValueAnnotation/edit/" + index,
+    path: isAdminView
+      ? "/CulturalValueAnnotation/admin/read/" + index
+      : "/CulturalValueAnnotation/edit/" + index,
+    query: isAdminView
+      ? {
+          username: resolvedUserDetail.value.username,
+          country: resolvedUserDetail.value.country,
+          language: resolvedUserDetail.value.language,
+        }
+      : undefined,
     // params: question,
     // query: question
   });
@@ -127,9 +165,9 @@ const handleDeleteRow = async (row, rowIndex) => {
     //   annotation: row,
     // };
     const payload = {
-      username: userDetail.username,
-      country: userDetail.country,
-      language: userDetail.language,
+      username: resolvedUserDetail.value.username,
+      country: resolvedUserDetail.value.country,
+      language: resolvedUserDetail.value.language,
       ...row,
       data_index: row.index
     };
@@ -182,18 +220,21 @@ const downLoadData = ref(null);
 const tableLoading = ref(false);
 
 onMounted(() => {
-  const userDetailStorage = localStorage.getItem("userDetail");
-  if (!userDetailStorage) {
-    router.push({ path: "/CulturalValueAnnotation/Login" });
+  if (!resolvedUserDetail.value.username) {
+    router.push({
+      path: isAdminView
+        ? "/CulturalValueAnnotation/admin/UserList"
+        : "/CulturalValueAnnotation/Login",
+    });
     return;
   }
 
   tableLoading.value = true;
 
   GetAllCompletedAnnotations({
-    username: userDetail.username,
-    country: userDetail.country,
-    language: userDetail.language,
+    username: resolvedUserDetail.value.username,
+    country: resolvedUserDetail.value.country,
+    language: resolvedUserDetail.value.language,
   })
     .then((res) => {
       console.log(res.data);
@@ -264,8 +305,8 @@ const downloadTaskHistory = () => {
   // 生成文件名（包含时间戳、username和language）
   const now = new Date();
   const timestamp = now.toISOString().replace(/[:.]/g, "-").slice(0, -5);
-  const username = userDetail.username || 'anonymous';
-  const language = userDetail.language || 'unknown';
+  const username = resolvedUserDetail.value.username || 'anonymous';
+  const language = resolvedUserDetail.value.language || 'unknown';
   link.download = `task-history-${username}-${language}-${timestamp}.json`;
 
   // 触发下载
@@ -380,8 +421,8 @@ const downloadExcel = () => {
   // 生成文件名（包含时间戳、username和language）
   const now = new Date();
   const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, -5);
-  const username = userDetail.username || 'anonymous';
-  const language = userDetail.language || 'unknown';
+  const username = resolvedUserDetail.value.username || 'anonymous';
+  const language = resolvedUserDetail.value.language || 'unknown';
   link.download = `task-history-${username}-${language}-${timestamp}.csv`;
 
   // 触发下载
@@ -439,6 +480,13 @@ const downloadExcel = () => {
 
 :deep(.el-table__body-wrapper) {
   font-size: 16px;
+}
+
+.admin-view-user {
+  margin-top: 1.5em;
+  color: #001e44;
+  font-size: 1.1em;
+  font-weight: 600;
 }
 
 .bth-container {

@@ -331,15 +331,18 @@ const handleAdminModeLogin = () => {
 
     adminLoginErrorTip.value = "";
 
-    saveCulturalValueAnnotationAdminDetail({
+    const adminDetail = {
       username: res.data.username || adminUsername.value.trim(),
       country: res.data.country || adminCountryValue.value,
       language: res.data.language || "",
       role: res.data.role || "admin",
       token: res.data.token || res.data.access_token || res.data.jwt || "",
-    });
+    };
 
-    return router.push("/CulturalValueAnnotation/admin-export");
+    saveCulturalValueAnnotationAdminDetail(adminDetail);
+    syncLocaleFromUserDetail(adminDetail);
+
+    return router.push("/CulturalValueAnnotation/admin/UserList");
   });
 };
 

@@ -34,7 +34,8 @@ const props = defineProps({
 const route = useRoute();
 
 const isAdminPage = computed(() => {
-  return route.path.startsWith("/CulturalValueAnnotation/admin-export");
+  return route.path.startsWith("/CulturalValueAnnotation/admin") ||
+    route.path.startsWith("/CulturalValueAnnotation/admin-export");
 });
 
 const displayUserInfo = computed(() => {

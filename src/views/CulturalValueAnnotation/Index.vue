@@ -53,7 +53,10 @@ const dialogAnimationStyle = ref({});
 const TUTORIAL_CLOSE_ANIMATION_MS = 420;
 
 const isOnboardingPage = computed(() => route.path === "/CulturalValueAnnotation/onboarding");
-const isAdminPage = computed(() => route.path.startsWith("/CulturalValueAnnotation/admin-export"));
+const isAdminPage = computed(() => {
+  return route.path.startsWith("/CulturalValueAnnotation/admin") ||
+    route.path.startsWith("/CulturalValueAnnotation/admin-export");
+});
 
 const openTutorialDialog = async () => {
   // 每次重新打开时清掉上一次关闭动画留下的状态。

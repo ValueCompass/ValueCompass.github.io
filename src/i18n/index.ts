@@ -22,9 +22,16 @@ const countryLanguageMap = {
 }
 
 export const resolveLocale = (userDetail?: Record<string, any>) => {
-  const currentUserDetail = userDetail || JSON.parse(localStorage.getItem('userDetail') || '{}')
-  const storedLanguage = currentUserDetail.language
-  const storedCountry = currentUserDetail.country
+  const currentUserDetail = userDetail ||
+    JSON.parse(localStorage.getItem('userDetail') || '{}')
+  const currentAdminDetail = userDetail
+    ? {}
+    : JSON.parse(localStorage.getItem('culturalValueAnnotationAdminDetail') || '{}')
+  const currentDetail = currentUserDetail.language || currentUserDetail.country
+    ? currentUserDetail
+    : currentAdminDetail
+  const storedLanguage = currentDetail.language
+  const storedCountry = currentDetail.country
 
   if (!storedLanguage) {
     const fallbackLanguage = countryLanguageMap[storedCountry as keyof typeof countryLanguageMap]

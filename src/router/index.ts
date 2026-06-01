@@ -229,8 +229,31 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'admin-export',
+            redirect: '/CulturalValueAnnotation/admin/UserList',
+            meta: {
+              requiresCulturalValueAnnotationAdminAuth: true
+            }
+          },
+          {
+            path: 'admin/UserList',
             name: 'CulturalValueAnnotationAdminExport',
             component: () => import('../views/CulturalValueAnnotation/AdminExport.vue'),
+            meta: {
+              requiresCulturalValueAnnotationAdminAuth: true
+            }
+          },
+          {
+            path: 'admin/TaskHistory',
+            name: 'CulturalValueAnnotationAdminTaskHistory',
+            component: () => import('../views/CulturalValueAnnotation/TaskHistory.vue'),
+            meta: {
+              requiresCulturalValueAnnotationAdminAuth: true
+            }
+          },
+          {
+            path: 'admin/read/:id',
+            name: 'CulturalValueAnnotationAdminRead',
+            component: () => import('../views/CulturalValueAnnotation/Home.vue'),
             meta: {
               requiresCulturalValueAnnotationAdminAuth: true
             }
@@ -276,7 +299,7 @@ router.beforeEach((to, from, next) => {
   if (isCulturalValueAnnotationRoute && to.name === 'CulturalValueAnnotationLogin') {
     if (hasCulturalValueAnnotationAdminLogin()) {
       next({
-        path: '/CulturalValueAnnotation/admin-export'
+        path: '/CulturalValueAnnotation/admin/UserList'
       })
       return
     }
@@ -295,14 +318,17 @@ router.beforeEach((to, from, next) => {
   }
 
   if (isCulturalValueAnnotationRoute && to.matched.some((record) => record.meta.requiresCulturalValueAnnotationAuth)) {
-    if (!hasCulturalValueAnnotationAnnotatorLogin()) {
+    const isTaskHistoryRoute = to.name === 'TaskHistory'
+    const hasAdminAccessToTaskHistory = isTaskHistoryRoute && hasCulturalValueAnnotationAdminLogin()
+
+    if (!hasCulturalValueAnnotationAnnotatorLogin() && !hasAdminAccessToTaskHistory) {
       next({
         path: '/CulturalValueAnnotation/Login'
       })
       return
     }
 
-    if (to.name !== 'CulturalValueAnnotationOnboarding' && !hasStudiedCulturalValueAnnotationGuidance()) {
+    if (!hasAdminAccessToTaskHistory && to.name !== 'CulturalValueAnnotationOnboarding' && !hasStudiedCulturalValueAnnotationGuidance()) {
       next({
         path: '/CulturalValueAnnotation/onboarding'
       })

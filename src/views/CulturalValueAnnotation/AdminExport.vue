@@ -30,7 +30,7 @@
         <el-table-column type="selection" width="48" />
         <el-table-column prop="name" label="Name" min-width="180">
           <template #default="scope">
-            <span class="name-link">{{ scope.row.name }}</span>
+            <span class="name-link" @click="handleUserNameClick(scope.row)">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -92,13 +92,22 @@
 import { computed, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { Lock } from "@element-plus/icons-vue";
-import { getAdminAnnotationUsers } from "@/service/CulturalValueAnnotationApi";
 import { getCulturalValueAnnotationAdminDetail } from "@/utils/culturalValueAnnotationAuth";
+import router from "@/router";
+import { useAdminExportStore } from "@/stores/adminExportStore";
 
-const isLoading = ref(false);
 const searchKeyword = ref("");
-const users = ref([]);
 const selectedUsers = ref([]);
+const adminExportStore = useAdminExportStore();
+const adminDetail = getCulturalValueAnnotationAdminDetail() || {};
+
+const users = computed(() => {
+  return adminExportStore.getCachedUsers(adminDetail);
+});
+
+const isLoading = computed(() => {
+  return adminExportStore.isCacheLoading(adminDetail);
+});
 
 const getAnnotationList = (annotations) => {
   if (Array.isArray(annotations)) {
@@ -110,53 +119,6 @@ const getAnnotationList = (annotations) => {
   }
 
   return [];
-};
-
-const getQuestionTypeCounts = (annotations) => {
-  return getAnnotationList(annotations).reduce(
-    (counts, annotation) => {
-      const action = String(annotation.question_action || "").trim().toLowerCase();
-
-      if (action === "select existing") {
-        counts.selectCount += 1;
-      } else if (action === "refine") {
-        counts.refineCount += 1;
-      } else if (action === "create" || action === "create new") {
-        counts.createCount += 1;
-      }
-
-      return counts;
-    },
-    {
-      selectCount: 0,
-      refineCount: 0,
-      createCount: 0,
-    },
-  );
-};
-
-const normalizeAdminUsers = (responseUsers, fallbackCountry) => {
-  if (Array.isArray(responseUsers)) {
-    return responseUsers;
-  }
-
-  if (!responseUsers || typeof responseUsers !== "object") {
-    return [];
-  }
-
-  return Object.entries(responseUsers).map(([username, annotations]) => {
-    const annotationList = getAnnotationList(annotations);
-    const questionTypeCounts = getQuestionTypeCounts(annotations);
-
-    return {
-      id: username,
-      name: username,
-      country: fallbackCountry,
-      completedAnnotations: annotationList.length,
-      annotations,
-      ...questionTypeCounts,
-    };
-  });
 };
 
 const getSearchText = (item) => {
@@ -195,6 +157,16 @@ const filteredUsers = computed(() => {
 
 const handleSelectionChange = (value) => {
   selectedUsers.value = value;
+};
+
+const handleUserNameClick = (user) => {
+  router.push({
+    path: "/CulturalValueAnnotation/admin/TaskHistory",
+    query: {
+      username: String(user?.name || "").trim(),
+      country: String(user?.country || "").trim(),
+    },
+  });
 };
 
 const formatTimestampToChinaTime = (timestamp) => {
@@ -324,29 +296,10 @@ const handleDownloadSelectedExcel = () => {
 };
 
 onMounted(() => {
-  const adminDetail = getCulturalValueAnnotationAdminDetail() || {};
-  const adminToken = String(adminDetail.token || "").trim();
-
-  isLoading.value = true;
-  getAdminAnnotationUsers({
-    country: String(adminDetail.country || "").trim(),
-  }, adminToken)
-    .then((res) => {
-      if (res.data?.ok) {
-        users.value = normalizeAdminUsers(
-          res.data.all_user_annotations,
-          String(adminDetail.country || "").trim(),
-        );
-        return;
-      }
-
-      ElMessage.error("Failed to load admin data");
-    })
+  adminExportStore
+    .ensureAdminUsers(adminDetail)
     .catch(() => {
       ElMessage.error("Failed to load admin data");
-    })
-    .finally(() => {
-      isLoading.value = false;
     });
 });
 </script>
@@ -403,6 +356,7 @@ onMounted(() => {
     color: #0b70c3;
     text-decoration: underline;
     font-weight: 600;
+    cursor: pointer;
   }
 
   .is-zero {

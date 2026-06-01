@@ -1,5 +1,8 @@
 <template>
-  <div class="main-container" style="margin-bottom: 4em; margin-top: 2em">
+  <div
+    :class="['main-container', { 'admin-readonly': isAdminView }]"
+    style="margin-bottom: 4em; margin-top: 2em"
+  >
     <div style="display: flex; flex-direction: column; gap: 0.6em">
       <div style="display: flex">
         <el-button
@@ -851,7 +854,7 @@
       </div>
     </div>
 
-    <div style="display: flex; justify-content: center; margin-top: 2em">
+    <div v-if="!isAdminView" style="display: flex; justify-content: center; margin-top: 2em">
       <el-button
         color="#0B70C3"
         style="height: 3em"
@@ -866,7 +869,7 @@
       >
     </div>
 
-    <UserDetail @hideUsrerContainer="hideUsrerContainer"></UserDetail>
+    <!-- <UserDetail @hideUsrerContainer="hideUsrerContainer"></UserDetail> -->
   </div>
 </template>
 
@@ -879,6 +882,10 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+const isAdminView = computed(() => {
+  return route.path.startsWith("/CulturalValueAnnotation/admin/read") ||
+    String(route.query.adminView || "") === "1";
+});
 import UserDetail from "./UserDetail.vue";
 import AnnotationComponent from "./Components/AnnotationComponent.vue";
 import {
@@ -1813,7 +1820,7 @@ const topic_task_count = ref(null);
 
 const editCurrentQuestionDetail = ref(null);
 onMounted(async () => {
-  if (!userDetail.username || !userDetail.country || !userDetail.language) {
+  if (!isAdminView.value && (!userDetail.username || !userDetail.country || !userDetail.language)) {
     return;
   }
 
@@ -1824,7 +1831,9 @@ onMounted(async () => {
   console.log(route.params.id);
   // getQuestionNum();
 
-  await handleGetTopicTaskTaxonomy();
+  if (!isAdminView.value) {
+    await handleGetTopicTaskTaxonomy();
+  }
 
   const editCurrentQuestion = sessionStorage.getItem("editCurrentQuestion");
   if (route.params.id && !editCurrentQuestion) {
@@ -2481,6 +2490,17 @@ const getQuestionNum = () => {
 .el-button {
   height: 2.8em;
   font-size: 1em;
+}
+
+.admin-readonly {
+  :deep(.el-button),
+  :deep(.el-select),
+  :deep(.el-input),
+  :deep(.el-textarea),
+  :deep(.el-tabs__item) {
+    pointer-events: none;
+    cursor: default;
+  }
 }
 </style>
 
