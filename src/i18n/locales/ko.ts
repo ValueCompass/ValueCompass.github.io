@@ -56,6 +56,7 @@ export default {
       selectExisting: '기존 질문 선택',
       refine: '기존 질문 수정',
       createNew: '새 질문 만들기',
+      availableQuestions: '(후보 질문 {count}개)',
       definitionLabel: '정의:',
       exampleLabel: '예시:',
       definitionFallback: '설명을 보려면 작업 카테고리를 선택하세요.',

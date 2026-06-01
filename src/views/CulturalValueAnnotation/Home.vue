@@ -275,7 +275,7 @@
               <el-option
                 v-for="item in taskOptions2"
                 :key="item"
-                :label="`${item.category} (candidate questions for annotation = ${topic_task_count?.[topicValue2]?.[item.category] ?? 0})`"
+                :label="`${item.category} ${t('culturalValueAnnotation.step3.availableQuestions', { count: topic_task_count?.[topicValue2]?.[item.category] ?? 0 })}`"
                 :value="item.category"
               />
             </el-select>
@@ -347,7 +347,7 @@
                       }"
                     >
                       {{
-                        `${item.category} (candidate questions for annotation = ${topic_task_count?.[topicValue2]?.[item.category] ?? 0})`
+                        t('culturalValueAnnotation.step3.availableQuestions', { count: topic_task_count?.[topicValue2]?.[item.category] ?? 0 })
                       }}
                     </li>
                   </ul>

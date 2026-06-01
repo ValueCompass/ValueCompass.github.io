@@ -56,6 +56,7 @@ export default {
       selectExisting: 'Select Existing Question',
       refine: 'Refine Existing Question',
       createNew: 'Create New Question',
+      availableQuestions: '({count} Available Questions)',
       definitionLabel: 'Definition:',
       exampleLabel: 'Example:',
       definitionFallback: 'Select a task category to view its description.',

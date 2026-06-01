@@ -56,6 +56,7 @@ export default {
       selectExisting: '既存の質問を選択',
       refine: '既存の質問を修正',
       createNew: '新しい質問を作成',
+      availableQuestions: '(候補質問 {count} 件)',
       definitionLabel: '定義:',
       exampleLabel: '例:',
       definitionFallback: 'タスクカテゴリを選択すると、その説明が表示されます。',

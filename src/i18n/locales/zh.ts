@@ -56,6 +56,7 @@ export default {
       selectExisting: '选择现有问题',
       refine: '修改现有的问题',
       createNew: '创建新问题',
+      availableQuestions: '({count} 个可选问题)',
       definitionLabel: '定义：',
       exampleLabel: '示例：',
       definitionFallback: '选择一个任务类别以查看其描述。',
