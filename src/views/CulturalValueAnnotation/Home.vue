@@ -1575,6 +1575,22 @@ watch(areScoresValidForGetAnswer, (isValid) => {
 const annotationComponentRef = ref(null);
 const annotationComponentRef2 = ref(null);
 
+const areAllActionsKeep = (actions = []) => {
+  return Array.isArray(actions) && actions.length > 0 && actions.every((item) => item === "keep");
+};
+
+const shouldPromptAllKeepDoubleCheck = (culturalData, personalData) => {
+  const isCulturalAllKeep =
+    areAllActionsKeep(culturalData?.cues_actions) &&
+    areAllActionsKeep(culturalData?.concepts_actions);
+
+  const isPersonalAllKeep =
+    areAllActionsKeep(personalData?.cues_actions) &&
+    areAllActionsKeep(personalData?.concepts_actions);
+
+  return isCulturalAllKeep && isPersonalAllKeep;
+};
+
 const isLoadingSubmitHighlightAndConcepts = ref(false);
 const submitHighlightAndConcepts = () => {
   // 最终提交前也要走同一套 principle 校验，避免跳过 Get Question List 后直接提交脏数据。
@@ -1616,98 +1632,121 @@ const submitHighlightAndConcepts = () => {
       return;
     }
 
-    console.log("Component 1 data:", component1Data);
-    console.log("Component 2 data:", component2Data);
+    const proceedSubmit = () => {
+      console.log("Component 1 data:", component1Data);
+      console.log("Component 2 data:", component2Data);
 
-    if (submit_type.value === "revise" && pageEnteredAt.value) {
-      duration_time.value = Date.now() - pageEnteredAt.value;
-    } else if (candidateQuestionsReceivedAt.value) {
-      duration_time.value = Date.now() - candidateQuestionsReceivedAt.value;
-    } else {
-      duration_time.value = 0;
-    }
+      if (submit_type.value === "revise" && pageEnteredAt.value) {
+        duration_time.value = Date.now() - pageEnteredAt.value;
+      } else if (candidateQuestionsReceivedAt.value) {
+        duration_time.value = Date.now() - candidateQuestionsReceivedAt.value;
+      } else {
+        duration_time.value = 0;
+      }
 
-    const sendData = {
-      answer_model: answer_model.value,
-      original_answer_country: original_answer_country.value,
-      username: userDetail.username.trim(),
-      country: userDetail.country.trim(),
-      language: userDetail.language.trim(),
-      topic_1: topicValue1.value.trim(),
-      topic_2: topicValue2.value.trim(),
-      principles: principlesList.value.filter((item) => item.trim() !== ""),
-      task_1: taskValue1.value,
-      task_2: taskValue2.value,
+      const sendData = {
+        answer_model: answer_model.value,
+        original_answer_country: original_answer_country.value,
+        username: userDetail.username.trim(),
+        country: userDetail.country.trim(),
+        language: userDetail.language.trim(),
+        topic_1: topicValue1.value.trim(),
+        topic_2: topicValue2.value.trim(),
+        principles: principlesList.value.filter((item) => item.trim() !== ""),
+        task_1: taskValue1.value,
+        task_2: taskValue2.value,
 
-      question: questionValue.value,
-      raw_question: rawQuestionValue.value || "",
-      question_action: questionAction.value || "",
-      importance: importanceValue.value || null,
-      distinctiveness: distinctivenessValue.value || null,
-      plausibility: plausibilityValue.value || null,
-      raw_importance: rawImportanceValue.value ?? null,
-      raw_distinctiveness: rawDistinctivenessValue.value ?? null,
-      raw_plausibility: rawPlausibilityValue.value ?? null,
+        question: questionValue.value,
+        raw_question: rawQuestionValue.value || "",
+        question_action: questionAction.value || "",
+        importance: importanceValue.value || null,
+        distinctiveness: distinctivenessValue.value || null,
+        plausibility: plausibilityValue.value || null,
+        raw_importance: rawImportanceValue.value ?? null,
+        raw_distinctiveness: rawDistinctivenessValue.value ?? null,
+        raw_plausibility: rawPlausibilityValue.value ?? null,
 
-      // 原始响应
-      original_response: original_response.value || "",
-      original_highlight_cues: original_highlight_cues.value || [],
-      original_key_concepts: original_key_concepts.value || [],
-      original_response_person: original_response_person.value || "",
-      original_highlight_cues_person:
-        original_highlight_cues_person.value || [],
-      original_key_concepts_person: original_key_concepts_person.value || [],
+        // 原始响应
+        original_response: original_response.value || "",
+        original_highlight_cues: original_highlight_cues.value || [],
+        original_key_concepts: original_key_concepts.value || [],
+        original_response_person: original_response_person.value || "",
+        original_highlight_cues_person:
+          original_highlight_cues_person.value || [],
+        original_key_concepts_person: original_key_concepts_person.value || [],
 
-      // cultural 部分的标注
-      response: component1Data.response,
-      highlight_cues: component1Data.highlight_cues,
-      key_concepts: component1Data.key_concepts,
-      cues_actions: component1Data.cues_actions,
-      concepts_actions: component1Data.concepts_actions,
-      // 直接使用组件过滤后的结果，保证长度与 highlight_cues / key_concepts 对齐。
-      value_concepts_evidence:
-        component1Data.value_concepts_evidence,
-      value_concepts_justification:
-        component1Data.value_concepts_justification,
+        // cultural 部分的标注
+        response: component1Data.response,
+        highlight_cues: component1Data.highlight_cues,
+        key_concepts: component1Data.key_concepts,
+        cues_actions: component1Data.cues_actions,
+        concepts_actions: component1Data.concepts_actions,
+        // 直接使用组件过滤后的结果，保证长度与 highlight_cues / key_concepts 对齐。
+        value_concepts_evidence:
+          component1Data.value_concepts_evidence,
+        value_concepts_justification:
+          component1Data.value_concepts_justification,
 
-      // 第二个注释组件的数据 personal 部分的标注
-      response_person: component2Data.response,
-      highlight_cues_person: component2Data.highlight_cues,
-      key_concepts_person: component2Data.key_concepts,
-      cues_actions_person: component2Data.cues_actions,
-      concepts_actions_person: component2Data.concepts_actions,
-      // personal 部分同样提交过滤后的 correspondence / evidence，避免与个人标注结果错位。
-      value_concepts_evidence_person:
-        component2Data.value_concepts_evidence,
-      value_concepts_justification_person:
-        component2Data.value_concepts_justification,
+        // 第二个注释组件的数据 personal 部分的标注
+        response_person: component2Data.response,
+        highlight_cues_person: component2Data.highlight_cues,
+        key_concepts_person: component2Data.key_concepts,
+        cues_actions_person: component2Data.cues_actions,
+        concepts_actions_person: component2Data.concepts_actions,
+        // personal 部分同样提交过滤后的 correspondence / evidence，避免与个人标注结果错位。
+        value_concepts_evidence_person:
+          component2Data.value_concepts_evidence,
+        value_concepts_justification_person:
+          component2Data.value_concepts_justification,
 
-      duration_time: Math.floor(duration_time.value / 1000),
-      submit_type: submit_type.value,
-      timestamp: new Date().toISOString(),
-    };
-    console.log(sendData);
-    if (editCurrentQuestionDetail.value) {
-      sendData.data_index = editCurrentQuestionDetail.value.index;
-    }
-    console.log(sendData);
-    submitAnnotation(sendData)
-      .then((res) => {
-        if (res.data && res.data.ok) {
-          ElMessage.success(t("common.annotationSubmittedSuccessfully"));
-          router.push("/CulturalValueAnnotation/TaskHistory");
-        } else {
+        duration_time: Math.floor(duration_time.value / 1000),
+        submit_type: submit_type.value,
+        timestamp: new Date().toISOString(),
+      };
+      console.log(sendData);
+      if (editCurrentQuestionDetail.value) {
+        sendData.data_index = editCurrentQuestionDetail.value.index;
+      }
+      console.log(sendData);
+      submitAnnotation(sendData)
+        .then((res) => {
+          if (res.data && res.data.ok) {
+            ElMessage.success(t("common.annotationSubmittedSuccessfully"));
+            router.push("/CulturalValueAnnotation/TaskHistory");
+          } else {
+            ElMessage.error(t("common.annotationSubmissionFailed"));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
           ElMessage.error(t("common.annotationSubmissionFailed"));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        ElMessage.error(t("common.annotationSubmissionFailed"));
-      })
-      .finally(() => {
-        // 提交完成后，重置状态
-        isLoadingSubmitHighlightAndConcepts.value = false;
-      });
+        })
+        .finally(() => {
+          // 提交完成后，重置状态
+          isLoadingSubmitHighlightAndConcepts.value = false;
+        });
+    };
+
+    if (shouldPromptAllKeepDoubleCheck(component1Data, component2Data)) {
+      ElMessageBox.confirm(
+        t("common.allKeepDoubleCheckMessage"),
+        t("common.allKeepDoubleCheckTitle"),
+        {
+          confirmButtonText: t("common.allKeepDoubleCheckConfirm"),
+          cancelButtonText: t("common.allKeepDoubleCheckCancel"),
+          type: "warning",
+        },
+      )
+        .then(() => {
+          proceedSubmit();
+        })
+        .catch(() => {
+          isLoadingSubmitHighlightAndConcepts.value = false;
+        });
+      return;
+    }
+
+    proceedSubmit();
   });
 };
 

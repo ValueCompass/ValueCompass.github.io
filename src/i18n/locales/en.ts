@@ -16,6 +16,10 @@ export default {
     keep: 'Completely correct, keep',
     delete: 'Completely incorrect, delete',
     edit: 'Partially correct, edit',
+    allKeepDoubleCheckTitle: 'Please Confirm Again',
+    allKeepDoubleCheckMessage: 'You selected "Completely correct, keep" for all fragments in both the Cultural Values and Personal Values sections. Please confirm again: do you truly believe both datasets are fully aligned?',
+    allKeepDoubleCheckConfirm: 'Confirm Submit',
+    allKeepDoubleCheckCancel: 'Back to Review',
   },
   culturalValueAnnotation: {
     step1: {

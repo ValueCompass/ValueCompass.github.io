@@ -16,6 +16,10 @@ export default {
     keep: '完全に正しい、保持',
     delete: '完全に誤っている、削除',
     edit: '一部は正しい、修正',
+    allKeepDoubleCheckTitle: '再確認してください',
+    allKeepDoubleCheckMessage: '「文化的価値観」と「個人的価値観」の両方で、すべての断片を「完全に正しい、保持」として選択しています。もう一度確認してください。本当にこの2つのデータがどちらも完全に一致していると判断しますか？',
+    allKeepDoubleCheckConfirm: '送信を確定',
+    allKeepDoubleCheckCancel: '確認に戻る',
   },
   culturalValueAnnotation: {
     step1: {

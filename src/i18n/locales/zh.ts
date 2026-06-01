@@ -16,6 +16,10 @@ export default {
     keep: '完全符合，保留',
     delete: '完全不符合，删除',
     edit: '部分符合，修改',
+    allKeepDoubleCheckTitle: '请再次确认',
+    allKeepDoubleCheckMessage: '你在“文化价值观”和“个人价值观”两部分中，对所有片段都选择了“完全符合，保留”。请再次确认：你是否真的认为这两条数据都完全符合？',
+    allKeepDoubleCheckConfirm: '确认提交',
+    allKeepDoubleCheckCancel: '返回检查',
   },
   culturalValueAnnotation: {
     step1: {
