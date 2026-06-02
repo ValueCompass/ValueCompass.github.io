@@ -20,6 +20,9 @@ export default {
     allKeepDoubleCheckMessage: '"문화적 가치관"과 "개인적 가치관" 두 부분에서 모든 조각에 대해 "완전히 정확함, 유지"를 선택했습니다. 다시 한 번 확인해 주세요. 정말로 이 두 데이터가 모두 완전히 부합한다고 판단하십니까?',
     allKeepDoubleCheckConfirm: '제출 확인',
     allKeepDoubleCheckCancel: '검토로 돌아가기',
+    text: '텍스트',
+    value: '가치관',
+    justification: '설명',
   },
   culturalValueAnnotation: {
     step1: {

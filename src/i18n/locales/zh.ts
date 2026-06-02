@@ -20,6 +20,9 @@ export default {
     allKeepDoubleCheckMessage: '你在“文化价值观”和“个人价值观”两部分中，对所有片段都选择了“完全符合，保留”。请再次确认：你是否真的认为这两条数据都完全符合？',
     allKeepDoubleCheckConfirm: '确认提交',
     allKeepDoubleCheckCancel: '返回检查',
+    text: '文本',
+    value: '价值观',
+    justification: '解释',
   },
   culturalValueAnnotation: {
     step1: {

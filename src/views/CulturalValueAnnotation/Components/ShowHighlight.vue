@@ -28,12 +28,12 @@
           >
             <span class="show-highlight__tooltip-bullet">•</span>
             <div class="show-highlight__tooltip-body">
-              <p class="show-highlight__tooltip-label">Text Fragment:</p>
+              <p class="show-highlight__tooltip-label">{{ t("common.text") }}:</p>
               <p class="show-highlight__tooltip-fragment-text">{{ group.text }}</p>
               <p class="show-highlight__tooltip-concept-line">
-                <span class="show-highlight__tooltip-label">Value Concept:</span> {{ concept.text }}
+                <span class="show-highlight__tooltip-label">{{ t("common.value") }}:</span> {{ concept.text }}
               </p>
-              <p class="show-highlight__tooltip-label">Evidence:</p>
+              <p class="show-highlight__tooltip-label">{{ t("common.justification") }}:</p>
               <p class="show-highlight__tooltip-evidence-text">{{ concept.evidence || "-" }}</p>
             </div>
           </div>
@@ -48,12 +48,12 @@
           >
             <span class="show-highlight__tooltip-bullet">•</span>
             <div class="show-highlight__tooltip-body">
-              <p class="show-highlight__tooltip-label">Text Fragment:</p>
+              <p class="show-highlight__tooltip-label">{{ t("common.text") }}:</p>
               <p class="show-highlight__tooltip-fragment-text">{{ fragment }}</p>
               <p class="show-highlight__tooltip-concept-line">
-                <span class="show-highlight__tooltip-label">Value Concept:</span> {{ resolvedConceptTooltipData.text }}
+                <span class="show-highlight__tooltip-label">{{ t("common.value") }}:</span> {{ resolvedConceptTooltipData.text }}
               </p>
-              <p class="show-highlight__tooltip-label">Evidence:</p>
+              <p class="show-highlight__tooltip-label">{{ t("common.justification") }}:</p>
               <p class="show-highlight__tooltip-evidence-text">{{ resolvedConceptTooltipData.evidence || "-" }}</p>
             </div>
           </div>
@@ -79,12 +79,12 @@
           >
             <span class="show-highlight__tooltip-bullet">•</span>
             <div class="show-highlight__tooltip-body">
-              <p class="show-highlight__tooltip-label">Text Fragment:</p>
+              <p class="show-highlight__tooltip-label">{{ t("common.text") }}:</p>
               <p class="show-highlight__tooltip-fragment-text">{{ group.text }}</p>
               <p class="show-highlight__tooltip-concept-line">
-                <span class="show-highlight__tooltip-label">Value Concept:</span> {{ concept.text }}
+                <span class="show-highlight__tooltip-label">{{ t("common.value") }}:</span> {{ concept.text }}
               </p>
-              <p class="show-highlight__tooltip-label">Evidence:</p>
+              <p class="show-highlight__tooltip-label">{{ t("common.justification") }}:</p>
               <p class="show-highlight__tooltip-evidence-text">{{ concept.evidence || "-" }}</p>
             </div>
           </div>
@@ -160,6 +160,9 @@
 
 <script setup>
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps({
   overlayMode: {

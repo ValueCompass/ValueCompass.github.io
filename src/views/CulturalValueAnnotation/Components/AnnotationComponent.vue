@@ -11,7 +11,7 @@
     <div class="right" style="height: 40em">
       <div>
         <div>
-          <p>Text fragment:</p>
+          <p>{{ t("common.text") }}:</p>
           <div class="highlight-input-overlay">
             <el-input
               v-model="editCueValue"
@@ -72,7 +72,7 @@
           </div>
         </div>
         <div>
-          <p>Value Concepts:</p>
+          <p>{{ t("common.value") }}:</p>
           <div class="highlight-input-overlay">
             <el-input
               v-model="editConceptValue"
