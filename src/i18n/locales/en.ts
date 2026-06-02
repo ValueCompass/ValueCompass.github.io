@@ -39,7 +39,7 @@ export default {
       topic: 'Topic:'
     },
     step2: {
-      title: 'Step 2. List Key Value Principles for This Topic in Your Culture',
+      title: 'Step 2.  List key value principles for this topic in your culture',
       coreAction: 'Core Action: List 3-5 principles that describe how people in your culture usually think or behave under this topic.',
       noteExampleText: 'Example Principles:',
       principle: 'Principle {index}:',
@@ -51,6 +51,14 @@ export default {
       template5: 'Under <Topic>, people usually do A rather than B.',
       rankByImportance: 'Rank by importance (write the most important first)',
       noDuplicates: 'No duplicates. Do not repeat example principles, and do not repeat among your own principles.',
+      minimumPrinciplesTip: 'Please complete at least 3 principles.',
+      principleLengthTip: 'Each completed principle must contain at least 30 Chinese/Japanese/Korean characters or 25 English words.',
+      completedPrinciplesTip: '{count} / 5 principle(s) completed',
+      principleInputLengthTip: 'At least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
+      insufficientPrinciplesError: 'Please complete at least {count} valid principles before continuing.',
+      invalidPrincipleLengthError: 'Principle {indexes} must contain at least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
+      similarToExamplePrinciplesError: 'Principle {indexes} is too similar to the example principles. Please rewrite it in your own words.',
+      duplicatePrinciplesError: 'Principles {pairs} are too similar to each other. Please make them distinct.',
       exampleTopic: '[Topic: Parent-Child Relationship]'
     },
     step3: {
@@ -117,11 +125,15 @@ export default {
       getAnswerAlreadyClicked: 'The Get Answer button has already been clicked',
       getAnswerLockedToast: 'Get Answer has been clicked and inputs are now locked',
       reselectQuestionToast: 'You can reselect the question and click Get Answer again',
+      similarQuestionError: 'This question is too semantically similar to an existing one. Please revise it.',
+      createSimilarQuestionError: 'There is a very similar question that has already been annotated by many users, please choose that question to annotate instead of creating a new one.',
+      networkError: 'Network error',
+      scoreRequirementError: 'This question does not meet the score requirements. Please revise the question to better reflect cultural relevance, cultural distinctiveness, and real-life plausibility, ensuring all three scores are ≥ 3 and at least two scores are ≥ 4.',
       noteLabel: 'Note:',
       summaryNote: 'You must cover and balance three types of questions: Select, Refine, Create. Avoid using only one type.'
     },
     step5: {
-      title: 'Step 5. Annotate the Answer to Align with Cultural Values',
+      title: 'Step 5. Annotate the answer to align with cultural values',
       intro: 'For the question, the platform provides an initial response. You will review the answer and adjust it to align with cultural values.',
       highlightIntro: 'We highlight all value-related text fragments in the response and identify their reflected values.',
       coreAction: 'Core Action: Review and adjust the answer to align with cultural values.',
@@ -147,7 +159,7 @@ export default {
       rule2: 'Just focus on values and text reflecting values. Please ignore other differences not caused by values, such as language style (colloquial vs. written, formal vs. casual), text format and structure (paragraphing, punctuation conventions, etc.), and length. These issues are not within the scope of annotation.'
     },
     step6: {
-      title: 'Step 6. Annotate the Answer to Align with Personal Values (same workflow as Step 5)',
+      title: 'Step 6. Annotate the answer to align with personal values (same workflow as Step 5)',
       coreAction: 'Core Action: Repeat the workflow in Step 5, but use YOUR personal values.',
       noteTitle: 'Note: Ground your annotation on:',
       note1: 'Whether the values and texts align with your own personal values and behavior practices.',

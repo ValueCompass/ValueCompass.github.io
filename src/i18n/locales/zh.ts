@@ -51,6 +51,14 @@ export default {
       template5: '在 <Topic> 下，人们通常会 xxx，而不会 xxx。',
       rankByImportance: '按重要性排序（最重要的写在前面）',
       noDuplicates: '不要重复。不要跟示例原则重复，多条原则之间也不要重复。',
+      minimumPrinciplesTip: '请至少完成 3 条原则。',
+      principleLengthTip: '每条已完成的原则必须包含至少 30 个中文/日文/韩文字符，或 25 个英文单词。',
+      completedPrinciplesTip: '已完成 {count} / 5 条原则',
+      principleInputLengthTip: '至少 {cjkCount} 个中文/日文/韩文字符，或 {englishCount} 个英文单词。',
+      insufficientPrinciplesError: '请至少完成 {count} 条有效原则后再继续。',
+      invalidPrincipleLengthError: '原则 {indexes} 必须包含至少 {cjkCount} 个中文/日文/韩文字符，或 {englishCount} 个英文单词。',
+      similarToExamplePrinciplesError: '原则 {indexes} 与示例原则过于相似。请用自己的话重写。',
+      duplicatePrinciplesError: '原则 {pairs} 彼此过于相似。请让它们更加不同。',
       exampleTopic: '[主题：亲子关系]'
     },
     step3: {
@@ -117,6 +125,10 @@ export default {
       getAnswerAlreadyClicked: '获取回答按钮已经被点击过了',
       getAnswerLockedToast: '你已点击获取回答，输入项现已锁定',
       reselectQuestionToast: '你现在可以重新选择问题并再次点击获取回答',
+      similarQuestionError: '这个问题与已有问题在语义上过于相似。请修改后再继续。',
+      createSimilarQuestionError: '已有一个非常相似的问题被许多用户标注过，请选择该问题进行标注，而不是创建新问题。',
+      networkError: '网络错误',
+      scoreRequirementError: '该问题不满足分数要求。请修改问题，使其更好地体现价值重要性、文化差异性和问题真实性，并确保三项分数都 ≥ 3，且至少两项分数 ≥ 4。',
       noteLabel: '注：',
       summaryNote: '你必须覆盖并平衡三类问题：选择、修改、创建。避免只使用其中一种。'
     },

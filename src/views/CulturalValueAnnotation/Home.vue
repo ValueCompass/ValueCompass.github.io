@@ -167,8 +167,8 @@
           <div style="display:flex; gap: .8em;font-size: .875em;">
             <img style="width:1.4em; height: 1.4em;" src="@/assets/images/note-icon.png" alt="">
             <div>
-              <p>Please complete at least 3 principles.</p>
-              <p style="margin-top: .4em">Each completed principle must contain at least 30 Chinese/Japanese/Korean characters or 25 English words.</p>
+              <p>{{ t("culturalValueAnnotation.step2.minimumPrinciplesTip") }}</p>
+              <p style="margin-top: .4em">{{ t("culturalValueAnnotation.step2.principleLengthTip") }}</p>
             </div>
           </div>
           <div class="input-container" style="margin-top: -.1em">
@@ -215,7 +215,7 @@
                   'principle-completed-tip--error': shouldHighlightPrincipleValidation,
                 },
               ]"
-            >{{ completedPrincipleCount }} / 5 principle(s) completed</p>
+            >{{ t("culturalValueAnnotation.step2.completedPrinciplesTip", { count: completedPrincipleCount }) }}</p>
             <p
               v-if="principleValidationErrorMessage"
               class="principle-validation-error-tip"
@@ -1028,7 +1028,10 @@ const getPrincipleValidationTip = (text = "") => {
   const englishWordCount = getEnglishWordCount(trimmedText);
   const effectiveLength = getPrincipleEffectiveLength(trimmedText);
 
-  return `At least ${MIN_PRINCIPLE_CJK_CHARACTER_COUNT} Chinese/Japanese/Korean characters or ${MIN_PRINCIPLE_ENGLISH_WORD_COUNT} English words.`;
+  return t("culturalValueAnnotation.step2.principleInputLengthTip", {
+    cjkCount: MIN_PRINCIPLE_CJK_CHARACTER_COUNT,
+    englishCount: MIN_PRINCIPLE_ENGLISH_WORD_COUNT,
+  });
 };
 
 // 只要存在“已填写但长度不合格”的 principle，就认为当前有长度校验错误。
@@ -1128,8 +1131,10 @@ const validatePrinciplesBeforeContinue = () => {
   if (hasInsufficientCompletedPrinciples.value) {
     // 校验失败时先滚动到 Step 2，让用户第一时间看到 principle 的错误提示。
     scrollToStep2Section();
-    const errorMessage = `Please complete at least ${MIN_COMPLETED_PRINCIPLE_COUNT} valid principles before continuing.`;
-    principleValidationErrorMessage.value = errorMessage;
+    principleValidationErrorMessage.value = t(
+      "culturalValueAnnotation.step2.insufficientPrinciplesError",
+      { count: MIN_COMPLETED_PRINCIPLE_COUNT },
+    );
     return false;
   }
 
@@ -1138,13 +1143,16 @@ const validatePrinciplesBeforeContinue = () => {
   if (invalidPrincipleIndexes.length > 0) {
     // 有具体不合格项时，同样回到 Step 2，并提示是哪几条 principle 长度不达标。
     scrollToStep2Section();
-    const errorMessage = `Principle ${invalidPrincipleIndexes.join(", ")} must contain at least 10 units. Chinese/Japanese/Korean characters count as 1 unit each, English words count as 1 unit each, and spaces are not counted.`;
-    principleValidationErrorMessage.value = errorMessage;
+    principleValidationErrorMessage.value = t(
+      "culturalValueAnnotation.step2.invalidPrincipleLengthError",
+      {
+        indexes: invalidPrincipleIndexes.join(", "),
+        cjkCount: MIN_PRINCIPLE_CJK_CHARACTER_COUNT,
+        englishCount: MIN_PRINCIPLE_ENGLISH_WORD_COUNT,
+      },
+    );
     return false;
   }
-
-  // 查重阈值以百分比呈现，保证提示与 common.js 里的阈值保持一致。
-  const principleSimilarityThresholdLabel = `${Math.round(PRINCIPLE_SIMILARITY_THRESHOLD * 100)}%`;
 
   // 与示例 principle 查重：避免标注者直接拷贝或微调示例。
   const principlesSimilarToExamples = findPrinciplesSimilarToExamples(
@@ -1156,8 +1164,10 @@ const validatePrinciplesBeforeContinue = () => {
     const duplicatedPrincipleIndexes = Array.from(
       new Set(principlesSimilarToExamples.map((item) => item.principleIndex))
     ).join(", ");
-    const errorMessage = `Principle ${duplicatedPrincipleIndexes} is too similar to the example principles. Please rewrite it in your own words.`;
-    principleValidationErrorMessage.value = errorMessage;
+    principleValidationErrorMessage.value = t(
+      "culturalValueAnnotation.step2.similarToExamplePrinciplesError",
+      { indexes: duplicatedPrincipleIndexes },
+    );
     return false;
   }
 
@@ -1168,8 +1178,10 @@ const validatePrinciplesBeforeContinue = () => {
     const duplicatePairs = duplicatePrinciples
       .map((item) => `${item.leftIndex} & ${item.rightIndex}`)
       .join("; ");
-    const errorMessage = `Principles ${duplicatePairs} are too similar to each other. Please make them distinct.`;
-    principleValidationErrorMessage.value = errorMessage;
+    principleValidationErrorMessage.value = t(
+      "culturalValueAnnotation.step2.duplicatePrinciplesError",
+      { pairs: duplicatePairs },
+    );
     return false;
   }
 
@@ -1446,8 +1458,7 @@ const handleGetAnswerBtnClick = async () => {
 
   if (hasSimilarQuestion) {
     hasTriggeredGetAnswerValidation.value = true;
-    questionErrorTip.value =
-      "This question is too semantically similar to an existing one. Please revise it.";
+    questionErrorTip.value = t("culturalValueAnnotation.step4.similarQuestionError");
     return;
   }
   //  对于创建新问题，增加对于similarity的检查，如果是ok是false，提示错误用户
@@ -1465,8 +1476,8 @@ const handleGetAnswerBtnClick = async () => {
         if (similarityResponse?.ok === false) {
           hasTriggeredGetAnswerValidation.value = true;
           questionErrorTip.value =
-            similarityResponse.message ||
-            "There is a very similar question that has already been annotated by many users, please choose that question to annotate instead of creating a new one.";
+            // similarityResponse.message ||
+            t("culturalValueAnnotation.step4.createSimilarQuestionError");
           shouldStopAfterSimilarityCheck = true;
         }else {
           if(similarityResponse?.raw_question){
@@ -1481,7 +1492,7 @@ const handleGetAnswerBtnClick = async () => {
         console.log(err);
         ElMessage.error("error:" + err.message);
         hasTriggeredGetAnswerValidation.value = true;
-        questionErrorTip.value = "netWork Error";
+        questionErrorTip.value = t("culturalValueAnnotation.step4.networkError");
         shouldStopAfterSimilarityCheck = true;
       }).finally(() => {
         isLoadingGetAnswer.value = false;
@@ -1495,8 +1506,7 @@ const handleGetAnswerBtnClick = async () => {
   if (!areScoresValidForGetAnswer.value) {
     // 不满足分数门槛时，高亮当前问题框和三个分数框，并阻止继续请求后端接口。
     hasTriggeredGetAnswerValidation.value = true;
-    questionErrorTip.value =
-      "This question does not meet the score requirements. Please revise the question to better reflect cultural relevance, distinctiveness, and plausibility, ensuring all three scores are ≥ 3 and at least two scores are ≥ 4.";
+    questionErrorTip.value = t("culturalValueAnnotation.step4.scoreRequirementError");
     return;
   }
 

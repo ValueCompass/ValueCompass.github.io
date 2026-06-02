@@ -51,6 +51,14 @@ export default {
       template5: '＜Topic＞では、人々は通常 B より A を行う。',
       rankByImportance: '重要度順に並べてください（最も重要なものを先に記載）',
       noDuplicates: '重複しないでください。例示の原則と重複しないようにし、複数の原則同士も重複しないようにしてください。',
+      minimumPrinciplesTip: 'Please complete at least 3 principles.',
+      principleLengthTip: 'Each completed principle must contain at least 30 Chinese/Japanese/Korean characters or 25 English words.',
+      completedPrinciplesTip: '{count} / 5 principle(s) completed',
+      principleInputLengthTip: 'At least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
+      insufficientPrinciplesError: 'Please complete at least {count} valid principles before continuing.',
+      invalidPrincipleLengthError: 'Principle {indexes} must contain at least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
+      similarToExamplePrinciplesError: 'Principle {indexes} is too similar to the example principles. Please rewrite it in your own words.',
+      duplicatePrinciplesError: 'Principles {pairs} are too similar to each other. Please make them distinct.',
       exampleTopic: '[トピック: 親子関係]'
     },
     step3: {
@@ -117,6 +125,10 @@ export default {
       getAnswerAlreadyClicked: '回答取得ボタンはすでにクリックされています',
       getAnswerLockedToast: '回答を取得しました。入力欄は現在ロックされています',
       reselectQuestionToast: '質問を再選択して、もう一度回答取得をクリックできます',
+      similarQuestionError: 'この質問は既存の質問と意味的に類似しすぎています。修正してください。',
+      createSimilarQuestionError: '多くのユーザーがすでにアノテーションした非常に類似した質問があります。新しい質問を作成するのではなく、その質問を選択してアノテーションしてください。',
+      networkError: 'ネットワークエラー',
+      scoreRequirementError: 'この質問はスコア要件を満たしていません。価値の重要性、文化的差異性、問題の現実性をよりよく反映するように質問を修正し、3つのスコアすべてが3以上、かつ少なくとも2つのスコアが4以上になるようにしてください。',
       noteLabel: '注:',
       summaryNote: '3種類の質問をバランスよく網羅する必要があります: 選択、修正、作成。1種類だけに偏らないでください。'
     },

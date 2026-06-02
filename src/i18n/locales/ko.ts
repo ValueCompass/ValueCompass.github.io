@@ -51,6 +51,14 @@ export default {
       template5: '<Topic>에서는 사람들은 보통 B보다 A를 한다.',
       rankByImportance: '중요도 순으로 작성하세요 (가장 중요한 것을 먼저)',
       noDuplicates: '중복하지 마세요. 예시 원칙과도 중복하지 말고, 작성한 여러 원칙끼리도 서로 중복하지 마세요.',
+      minimumPrinciplesTip: 'Please complete at least 3 principles.',
+      principleLengthTip: 'Each completed principle must contain at least 30 Chinese/Japanese/Korean characters or 25 English words.',
+      completedPrinciplesTip: '{count} / 5 principle(s) completed',
+      principleInputLengthTip: 'At least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
+      insufficientPrinciplesError: 'Please complete at least {count} valid principles before continuing.',
+      invalidPrincipleLengthError: 'Principle {indexes} must contain at least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
+      similarToExamplePrinciplesError: 'Principle {indexes} is too similar to the example principles. Please rewrite it in your own words.',
+      duplicatePrinciplesError: 'Principles {pairs} are too similar to each other. Please make them distinct.',
       exampleTopic: '[주제: 부모-자녀 관계]'
     },
     step3: {
@@ -117,6 +125,10 @@ export default {
       getAnswerAlreadyClicked: '답변 가져오기 버튼이 이미 클릭되었습니다',
       getAnswerLockedToast: '답변 가져오기를 클릭하여 입력이 잠겼습니다',
       reselectQuestionToast: '질문을 다시 선택하고 답변 가져오기를 다시 클릭할 수 있습니다',
+      similarQuestionError: '이 질문은 기존 질문과 의미적으로 너무 유사합니다. 수정해 주세요.',
+      createSimilarQuestionError: '이미 많은 사용자가 어노테이션한 매우 유사한 질문이 있습니다. 새 질문을 만들지 말고 해당 질문을 선택하여 어노테이션해 주세요.',
+      networkError: '네트워크 오류',
+      scoreRequirementError: '이 질문은 점수 요건을 충족하지 않습니다. 가치 중요성, 문화적 차이, 문제 현실성을 더 잘 반영하도록 질문을 수정하고, 세 점수가 모두 3 이상이며 최소 두 점수가 4 이상이 되도록 해 주세요.',
       noteLabel: '참고:',
       summaryNote: '세 가지 질문 유형을 균형 있게 모두 다뤄야 합니다: 선택, 수정, 생성. 한 가지 유형만 사용하지 마세요.'
     },
