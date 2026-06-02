@@ -17,21 +17,43 @@
       <OnboardingDialog :visible="dialogTableVisible"></OnboardingDialog>
     </el-dialog>
 
-    <div
-      v-if="!isOnboardingPage && !isAdminPage"
-      ref="tutorialButtonRef"
-      class="View-tutorial-btn"
-      @click="openTutorialDialog"
-    ><svgIcon
-              
-                name="play-icon"
-              ></svgIcon><span>View tutorial</span></div>
+    <el-dialog
+      v-if="!isAdminPage"
+      v-model="surveyDialogVisible"
+      title=""
+      width="900"
+      class="survey-dialog"
+      align-center
+    >
+      <SurveyDialog></SurveyDialog>
+    </el-dialog>
+
+    <div v-if="!isOnboardingPage && !isAdminPage" class="side-action-group">
+      <div
+        class="side-action-btn View-survey-btn"
+        @click="openSurveyDialog"
+      ><img
+                  class="side-action-image-icon"
+                  src="@/assets/images/survery-icon.png"
+                  alt=""
+                /><span>Survey</span></div>
+
+      <div
+        ref="tutorialButtonRef"
+        class="side-action-btn View-tutorial-btn"
+        @click="openTutorialDialog"
+      ><svgIcon
+                
+                  name="play-icon"
+                ></svgIcon><span>View tutorial</span></div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import UserHeader from "./Components/UserHeader.vue";
 import OnboardingDialog from "./OnboardingDialog.vue";
+import SurveyDialog from "./SurveyDialog.vue";
 
 import { computed, nextTick, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -44,6 +66,7 @@ import {
 
 const route = useRoute();
 const dialogTableVisible = ref(false)
+const surveyDialogVisible = ref(false)
 // 标记弹窗当前是否处于关闭动画阶段，用来切换退场样式。
 const isDialogClosing = ref(false);
 // 记录右侧 View tutorial 按钮的 DOM，用于计算弹窗收缩的目标位置。
@@ -64,6 +87,10 @@ const openTutorialDialog = async () => {
   dialogAnimationStyle.value = {};
   dialogTableVisible.value = true;
   await nextTick();
+};
+
+const openSurveyDialog = () => {
+  surveyDialogVisible.value = true;
 };
 
 const updateDialogCloseAnimationStyle = () => {
@@ -177,20 +204,23 @@ transform:
   z-index: 9999 !important;
 }
 
-.View-tutorial-btn {
+.side-action-group {
   position: fixed;
-  
-  cursor: pointer;
   z-index: 5;
-  right: -4.5em;
+  right: -8.8em;
   top: 45%;
   transform: rotate(90deg);
-  background-color: rgba(245, 195, 68, 1);
-  padding: 0.5em 1.5em;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.side-action-btn {
+  cursor: pointer;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
   height: 3em;
-  width: 14em;
+  width: 12em;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -206,5 +236,24 @@ transform:
     margin-right: 0.5em;
     color: #000;
   }
+
+  .side-action-image-icon {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 0.5em;
+    object-fit: contain;
+  }
+}
+
+.View-survey-btn {
+  background-color: rgba(204, 240, 252, 1);
+  width: 9em;
+  .side-action-image-icon {
+    transform: rotate(-90deg);
+  }
+}
+
+.View-tutorial-btn {
+  background-color: rgba(245, 195, 68, 1);
 }
 </style>
