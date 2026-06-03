@@ -66,8 +66,8 @@ export default {
       principleInputLengthTip: 'At least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
       insufficientPrinciplesError: 'Please complete at least {count} valid principles before continuing.',
       invalidPrincipleLengthError: 'Principle {indexes} must contain at least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
-      similarToExamplePrinciplesError: 'Principle {indexes} is too similar to the example principles. Please rewrite it in your own words.',
-      duplicatePrinciplesError: 'Principles {pairs} are too similar to each other. Please make them distinct.',
+      similarToExamplePrinciplesError: 'Principle {indexes} is too similar to the example principles. Please try to provide key value principles from multiple different aspects under this topic.',
+      duplicatePrinciplesError: 'Principles {pairs} are too similar to each other. Please try to provide key value principles from multiple different aspects under this topic.',
       exampleTopic: '[Topic: Parent-Child Relationship]'
     },
     step3: {

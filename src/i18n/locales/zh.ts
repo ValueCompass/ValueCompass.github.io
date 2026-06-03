@@ -66,8 +66,8 @@ export default {
       principleInputLengthTip: '至少 {cjkCount} 个中文/日文/韩文字符，或 {englishCount} 个英文单词。',
       insufficientPrinciplesError: '请至少完成 {count} 条有效原则后再继续。',
       invalidPrincipleLengthError: '原则 {indexes} 必须包含至少 {cjkCount} 个中文/日文/韩文字符，或 {englishCount} 个英文单词。',
-      similarToExamplePrinciplesError: '原则 {indexes} 与示例原则过于相似。请用自己的话重写。',
-      duplicatePrinciplesError: '原则 {pairs} 彼此过于相似。请让它们更加不同。',
+      similarToExamplePrinciplesError: '原则 {indexes} 与示例原则过于相似，请尽量从这个话题下的多个不同方面提供关键价值原则。',
+      duplicatePrinciplesError: '原则 {pairs} 彼此过于相似，请尽量从这个话题下的多个不同方面提供关键价值原则。',
       exampleTopic: '[主题：亲子关系]'
     },
     step3: {
