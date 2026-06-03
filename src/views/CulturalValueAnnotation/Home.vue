@@ -327,15 +327,14 @@
                     "
                     :loading="isLoadingSaveAndGetQuestionList"
                     color="#0B70C3"
-                    >Get Question List</el-button
+                    >{{ t("common.getQuestionList") }}</el-button
                   >
                   <el-button
                     v-else
                     style="height: 2.8em; font-size: 1em"
                     :disabled="true"
                     color="#0B70C3"
-                    >Your have clicked the button to get the question
-                    list.</el-button
+                    >{{ t("common.getQuestionListClicked") }}</el-button
                   >
                 </div>
               </template>
@@ -538,7 +537,7 @@
                   @click="activeNameSelect1 = 'Refine Question'"
                   :disabled="hasClickedGetAnswerBtn"
                 >
-                  Edit<br />the<br />Question
+                  {{ t("common.editQuestionButton") }}
                 </el-button>
               </div>
             </el-tab-pane>
@@ -590,7 +589,7 @@
                   @click="activeNameSelect1 = 'Select Existing Question'"
                   :disabled="hasClickedGetAnswerBtn"
                 >
-                  Change<br />the<br />Question
+                  {{ t("common.changeQuestionButton") }}
                 </el-button>
               </div>
             </el-tab-pane>
@@ -705,8 +704,8 @@
               color="#0B70C3"
               >{{
                 hasClickedGetAnswerBtn
-                  ? "Your have clicked Get Answer button."
-                  : "Get Answer"
+                  ? t("common.getAnswerClicked")
+                  : t("common.getAnswer")
               }}</el-button
             >
           </div>
@@ -809,7 +808,7 @@
               <el-button
                 color="#0B70C3"
                 @click="handleReselectQuestionClick"
-                >Reselect Question</el-button
+                >{{ t("common.reselectQuestion") }}</el-button
               >
               <p style="margin-top: 1em"><b>Notice：</b>You can also reselect or create new questions.</p>
             </div>
@@ -869,7 +868,7 @@
         "
         :loading="isLoadingSubmitHighlightAndConcepts"
         @click="submitHighlightAndConcepts"
-        >Submit Annotation</el-button
+        >{{ t("common.submitAnnotation") }}</el-button
       >
     </div>
 
