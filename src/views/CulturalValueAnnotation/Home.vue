@@ -95,14 +95,17 @@
           <h4>
             {{ t("culturalValueAnnotation.step2.title") }}
           </h4>
-          <div style="display: flex; justify-content: space-between">
-            <div
-              class="core-action-box flex-column"
-              style="width: calc(50% - 2em)"
-            >
-              <h5>
+          <div class="core-action-box">
+            <h5>
                 {{ t("culturalValueAnnotation.step2.coreAction") }}
               </h5>
+          </div>
+          <div class="seconed-container" style="display: flex; justify-content: space-between;flex-direction: row;">
+            <div
+              class=" flex-column"
+              style="width: calc(60% - 2em)"
+            >
+              
               <div class="flex-column">
                 <p>
                   {{ t("culturalValueAnnotation.step2.templateReference") }}
@@ -130,11 +133,10 @@
               </div>
             </div>
             <div
-              class="seconed-container"
               style="
                 min-height: 6em;
-                border: 1px solid #d9d9d9;
-                border-radius: 24px;
+                border: 1px solid rgba(51, 51, 51, 1);
+                border-radius: 1rem;
                 padding: 1em;
                 line-height: 1.5;
                 width: calc(50% - 2em);
@@ -150,12 +152,14 @@
                     <p>
                       {{ t("culturalValueAnnotation.step2.noteExampleText") }}
                     </p>
-                    <p
-                      v-for="(example, index) in principleExample"
-                      :key="index"
-                    >
-                      {{ index + 1 }}: {{ example }}
-                    </p>
+                    <ul>
+                      <li
+                        v-for="(example, index) in principleExample.slice(0, 1)"
+                        :key="index"
+                      >
+                        {{ example }}
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
