@@ -2056,7 +2056,9 @@ const handleTaskValue2Change = (newValue) => {
   console.log("Selected category:", newValue);
 
   // 保存当前的taskOptions2数组，因为我们即将要替换它
-  const currentTaskOptions2 = [...taskOptions2.value];
+  const currentTaskOptions2 = Array.isArray(taskOptions2.value)
+    ? [...taskOptions2.value]
+    : [];
 
   // 查找完整的item对象
   const selectedItem = currentTaskOptions2.find(
@@ -2067,7 +2069,10 @@ const handleTaskValue2Change = (newValue) => {
     taskExample.value = selectedItem;
     // 可以在这里使用完整的item对象
     // 例如：selectedItem.xxx
+    return;
   }
+
+  taskExample.value = [];
 };
 
 const principleExample = ref([]);
@@ -2077,8 +2082,12 @@ const topic_principle_examples = ref({});
 let task_taxonomy_examples = {};
 const handleTopicValue2Change = (newValue) => {
   if (newValue) {
-    principleExample.value = topic_principle_examples.value[newValue];
+    const nextExamples = topic_principle_examples.value?.[newValue];
+    principleExample.value = Array.isArray(nextExamples) ? nextExamples : [];
+    return;
   }
+
+  principleExample.value = [];
 };
 
 const getQuestionNum = () => {
