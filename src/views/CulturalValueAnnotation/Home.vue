@@ -1316,6 +1316,8 @@ const shouldShowGetAnswerValidationError = computed(() => {
 let original_response = ref("");
 let original_highlight_cues = ref([]);
 let original_key_concepts = ref([]);
+let original_value_concepts_evidence = ref([]);
+let original_value_concepts_justification = ref([]);
 
 let original_response_person = ref("");
 let original_highlight_cues_person = ref([]);
@@ -1352,6 +1354,8 @@ const resetGetAnswerState = () => {
   original_response.value = "";
   original_highlight_cues.value = [];
   original_key_concepts.value = [];
+  original_value_concepts_evidence.value = [];
+  original_value_concepts_justification.value = [];
 
   original_response_person.value = "";
   original_highlight_cues_person.value = [];
@@ -1549,6 +1553,10 @@ const handleGetAnswerBtnClick = async () => {
         original_response.value = res.data.response;
         original_highlight_cues.value = res.data.highlight_cues;
         original_key_concepts.value = res.data.key_concepts;
+        original_value_concepts_evidence.value =
+          res.data.value_concepts_evidence || [];
+        original_value_concepts_justification.value =
+          res.data.value_concepts_justification || [];
 
         original_response_person.value = res.data.response;
         original_highlight_cues_person.value = res.data.highlight_cues;
@@ -1687,6 +1695,10 @@ const submitHighlightAndConcepts = () => {
         original_response: original_response.value || "",
         original_highlight_cues: original_highlight_cues.value || [],
         original_key_concepts: original_key_concepts.value || [],
+        original_value_concepts_evidence:
+          original_value_concepts_evidence.value || [],
+        original_value_concepts_justification:
+          original_value_concepts_justification.value || [],
         original_response_person: original_response_person.value || "",
         original_highlight_cues_person:
           original_highlight_cues_person.value || [],
@@ -1926,6 +1938,10 @@ onMounted(async () => {
     original_response.value = question.response;
     original_highlight_cues.value = question.highlight_cues;
     original_key_concepts.value = question.key_concepts;
+    original_value_concepts_evidence.value =
+      question.original_value_concepts_evidence || [];
+    original_value_concepts_justification.value =
+      question.original_value_concepts_justification || [];
 
     original_response_person.value = question.response_person;
     original_highlight_cues_person.value = question.highlight_cues_person;
