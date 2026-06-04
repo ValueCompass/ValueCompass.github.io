@@ -225,18 +225,18 @@ const countryOptions = ref([
     value: "Singapore",
     label: "Singapore",
   },
-  {
-    value: "Malaysia",
-    label: "Malaysia",
-  },
-  {
-    value: "Indonesia",
-    label: "Indonesia",
-  },
-  {
-    value: "India",
-    label: "India",
-  },
+  // {
+  //   value: "Malaysia",
+  //   label: "Malaysia",
+  // },
+  // {
+  //   value: "Indonesia",
+  //   label: "Indonesia",
+  // },
+  // {
+  //   value: "India",
+  //   label: "India",
+  // },
 ]);
 
 const loginDescription = computed(() => {
