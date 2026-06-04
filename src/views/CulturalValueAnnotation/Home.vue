@@ -4,14 +4,25 @@
     style="margin-bottom: 4em; margin-top: 2em"
   >
     <div style="display: flex; flex-direction: column; gap: 0.6em">
-      <div style="display: flex">
+      <div style="">
         <el-button
+          v-if="!isAdminView"
           style="height: 2.8em; font-size: 1em; position: relative; z-index: 4"
           type="primary"
           color="#0B70C3"
           plain
           @click="handleTaskHistoryClick"
           >Task History</el-button
+        >
+        <el-button
+          v-else
+          class="admin-back-button"
+          style="height: 2.8em;font-size: 1em; position: relative; z-index: 4"
+          type="primary"
+          color="#0B70C3"
+          plain
+          @click="handleAdminBackClick"
+          >Back</el-button
         >
       </div>
     </div>
@@ -1986,6 +1997,10 @@ const handleTaskHistoryClick = () => {
   });
 };
 
+const handleAdminBackClick = () => {
+  router.back();
+};
+
 //
 // create new 模式下，如果没有候选问题，则强制切到 Create New。
 const shouldForceCreateNewTab = computed(() => {
@@ -2583,6 +2598,11 @@ const getQuestionNum = () => {
   :deep(.el-tabs__item) {
     pointer-events: none;
     cursor: default;
+  }
+
+  :deep(.admin-back-button) {
+    pointer-events: auto;
+    cursor: pointer;
   }
 }
 </style>

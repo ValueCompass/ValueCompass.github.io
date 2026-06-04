@@ -1,6 +1,11 @@
 <template>
   <div class="main-container" style="position: relative">
     <div>
+      <div v-if="isAdminView" style="display: flex; justify-content: flex-start; margin-top: 2rem;">
+        <el-button style="height: 2.8em;font-size: 1em; position: relative; z-index: 4" color="#0B70C3" plain @click="handleAdminBackClick"
+          >Back</el-button
+        >
+      </div>
       <h2 style="margin-top: 2rem; font-size: 1.5em; color: #0b70c3">
         Task History
       </h2>
@@ -211,6 +216,12 @@ const tableData = ref([
 const handleCreateClick = () => {
   router.push({
     path: "/CulturalValueAnnotation/home",
+  });
+};
+
+const handleAdminBackClick = () => {
+  router.push({
+    path: "/CulturalValueAnnotation/admin/UserList",
   });
 };
 
