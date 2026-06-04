@@ -246,7 +246,7 @@ transform:
 }
 
 .View-survey-btn {
-  background-color: rgba(204, 240, 252, 1);
+  background-color: rgba(194, 194, 194, 1);
   width: 9em;
   .side-action-image-icon {
     transform: rotate(-90deg);

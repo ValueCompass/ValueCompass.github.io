@@ -58,6 +58,8 @@
             <el-select
               v-model="topicValue1"
               placeholder="Select Level-1"
+              popper-class="cultural-alignment-select-popper"
+              :fit-input-width="true"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
               style="flex: 1"
             >
@@ -72,6 +74,8 @@
             <el-select
               v-model="topicValue2"
               placeholder="Select or Input Level-2"
+              popper-class="cultural-alignment-select-popper"
+              :fit-input-width="true"
               filterable
               allow-create
               style="flex: 1"
@@ -249,19 +253,22 @@
           </div>
         </div>
 
-        <div class="highlight-container">
+        <div class="highlight-container" style="flex-direction: row;">
           <!-- <span
             ><b>{{ t("culturalValueAnnotation.step3.task") }}</b></span
           > -->
-          <div class="input-container" style="margin: 0">
+          <div class="input-container" style="margin: 0; width: calc( 50% - 1em); gap: 1.5em; align-items: flex-start; justify-content: flex-start; flex-direction: column;">
             <span style="width: 100%"
               ><b>{{ t("culturalValueAnnotation.step3.task") }}</b></span
             >
             <el-select
+              class="select-auto-height"
               v-model="taskValue1"
               placeholder="Select Level-1"
+              popper-class="cultural-alignment-select-popper"
+              :fit-input-width="true"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
-              style="width: calc(50% - 1em)"
+              style="width: 100%"
             >
               <el-option
                 v-for="item in taskOptions1"
@@ -271,45 +278,32 @@
               />
             </el-select>
             <el-select
+              class="select-auto-height"
               v-model="taskValue2"
-               placeholder="Select or Input Level-2"
-              filterable
-              allow-create
+              placeholder="Select or Input Level-2"
+              popper-class="cultural-alignment-select-popper"
+              :fit-input-width="true"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
+              @visible-change="handleTaskValue2DropdownVisibleChange"
               @change="handleTaskValue2Change"
-              style="width: calc(50% - 1em)"
+              style="width: 100%"
             >
               <el-option
                 v-for="item in taskOptions2"
                 :key="item"
                 :label="`${item.category} ${t('culturalValueAnnotation.step3.availableQuestions', { count: topic_task_count?.[topicValue2]?.[item.category] ?? 0 })}`"
                 :value="item.category"
-              />
+              >
+                <div
+                  @mouseenter="handleTaskOptionHover(item)"
+                  @mouseleave="handleTaskOptionLeave"
+                >
+                  {{ `${item.category} ${t('culturalValueAnnotation.step3.availableQuestions', { count: topic_task_count?.[topicValue2]?.[item.category] ?? 0 })}` }}
+                </div>
+              </el-option>
             </el-select>
-          </div>
 
-          <div class="">
-            <p style="margin-bottom: 0.7em"><b>{{ t("culturalValueAnnotation.step3.definitionLabel") }}</b></p>
-            <p>
-              {{
-                taskExample && taskExample.definition
-                  ? taskExample.definition
-                  : t("culturalValueAnnotation.step3.definitionFallback")
-              }}
-            </p>
-          </div>
-          <div class="">
-            <p style="margin-bottom: 0.7em"><b>{{ t("culturalValueAnnotation.step3.exampleLabel") }}</b></p>
-            <p>
-              {{
-                taskExample && taskExample.example
-                  ? taskExample.example
-                  : t("culturalValueAnnotation.step3.exampleFallback")
-              }}
-            </p>
-          </div>
-
-          <div style="display: flex">
+             <div style="display: flex">
             <el-popover
               placement="right-start"
               :width="500"
@@ -319,7 +313,7 @@
                 <div>
                   <el-button
                     v-if="!hasClickedSaveAndGetQuestionListBtn"
-                    style="height: 2.8em; font-size: 1em"
+                    style="height: 2.8em; font-size: 1em;margin: 0"
                     @click="handleSaveAndGetQuestionListBtnClick"
                     :disabled="
                       isSaveAndGetQuestionListBtnDisabled ||
@@ -360,6 +354,30 @@
                 </div>
               </template>
             </el-popover>
+          </div>
+          </div>
+
+          <div style="margin: 0; width: calc( 50% - 1em); padding: .75em 1.5rem; box-sizing: border-box; display: flex; flex-direction: column; gap: 1.2em; border: 1px solid rgba(51, 51, 51, 1); border-radius: 1rem;" >
+            <div class="">
+              <p style="margin-bottom: 0.7em"><b>{{ t("culturalValueAnnotation.step3.definitionLabel") }}</b></p>
+              <p>
+                {{
+                  displayedTaskExample && displayedTaskExample.definition
+                    ? displayedTaskExample.definition
+                    : t("culturalValueAnnotation.step3.definitionFallback")
+                }}
+              </p>
+            </div>
+            <div class="">
+              <p style="margin-bottom: 0.7em"><b>{{ t("culturalValueAnnotation.step3.exampleLabel") }}</b></p>
+              <p>
+                {{
+                  displayedTaskExample && displayedTaskExample.example
+                    ? displayedTaskExample.example
+                    : t("culturalValueAnnotation.step3.exampleFallback")
+                }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -493,7 +511,7 @@
                 >
                   <el-select
                     :class="[
-                      'Question-select cultural-alignment-el-select',
+                      'select-auto-height',
                       {
                         'get-answer-input-error': shouldHighlightGetAnswerValidation,
                       },
@@ -2077,6 +2095,33 @@ const handleTaskValue2Change = (newValue) => {
 
 const principleExample = ref([]);
 const taskExample = ref([]);
+const hoveredTaskExample = ref(null);
+
+const displayedTaskExample = computed(() => {
+  return hoveredTaskExample.value || taskExample.value;
+});
+
+const findTaskOptionByCategory = (category) => {
+  const currentTaskOptions2 = Array.isArray(taskOptions2.value)
+    ? taskOptions2.value
+    : [];
+
+  return currentTaskOptions2.find((item) => item.category === category) || null;
+};
+
+const handleTaskOptionHover = (item) => {
+  hoveredTaskExample.value = item || null;
+};
+
+const handleTaskOptionLeave = () => {
+  hoveredTaskExample.value = null;
+};
+
+const handleTaskValue2DropdownVisibleChange = (visible) => {
+  if (!visible) {
+    hoveredTaskExample.value = null;
+  }
+};
 
 const topic_principle_examples = ref({});
 let task_taxonomy_examples = {};
@@ -2543,60 +2588,45 @@ const getQuestionNum = () => {
 </style>
 
 <style lang="scss">
-.step-container .step4 {
-  .cultural-alignment-el-select {
+.step-container {
+  .select-auto-height {
     .el-select__wrapper {
       box-shadow: none !important;
-      border: 1px solid rgba(217, 217, 217, 1);
+        background-color: #fff;
+        border: 1px solid rgb(217, 217, 217);
+
       border-radius: 6px;
       padding: 0.3em 0.75em;
-      font-size: 1.25rem;
+      font-size: 1.25rem !important;
       min-height: 4em;
-      height: auto;
+      height: auto !important;
       align-items: stretch;
 
       .el-select__selected-item {
         line-height: 1.3;
         white-space: normal;
       }
-    }
 
-    &.Question-select {
-      .el-select__wrapper {
-        border: none;
-        background-color: #fff;
-        border: 1px solid rgb(217, 217, 217);
-
-        .text-content {
-          min-height: 3rem;
-          height: auto;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          overflow: visible;
-
-          & > div {
-            width: 100%;
-            display: flex;
-            overflow: visible;
-
-            p {
-              padding: 0;
-              width: 100%;
-              line-height: 1.3;
-              white-space: normal;
-              word-break: break-word;
-            }
-          }
-        }
+      .el-select__placeholder{
+        position: static;
+        transform: none;
       }
     }
+
   }
-  .el-textarea__inner {
+  .step4 .el-textarea__inner {
     padding: 0.3em 1em !important;
     font-size: 1.25rem;
     min-height: 4em !important;
     box-sizing: border-box;
+  }
+  .step3{
+    .select-auto-height {
+      .el-select__wrapper {
+        min-height: 2.7em;
+        font-size: 1.125rem !important;
+      }
+    }
   }
 }
 
