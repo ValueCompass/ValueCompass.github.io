@@ -54,11 +54,11 @@ export default {
       noteExampleText: 'Example Principles:',
       principle: 'Principle {index}:',
       templateReference: 'Use these templates:',
-      template1: 'Under <Topic>, people are encouraged to do ...',
-      template2: 'Under <Topic>, people should avoid …',
-      template3: 'Under <Topic>, … is considered correct / appropriate / proper',
-      template4: 'Under <Topic>, … is considered incorrect / inappropriate / should be avoided.',
-      template5: 'Under <Topic>, people usually do A rather than B.',
+      template1: 'For <Topic>, people are encouraged to do ...',
+      template2: 'For <Topic>, people should avoid …',
+      template3: 'For <Topic>, … is considered correct / appropriate / proper',
+      template4: 'For <Topic>, … is considered incorrect / inappropriate / should be avoided.',
+      template5: 'For <Topic>, people usually do A rather than B.',
       rankByImportance: 'Rank by importance (write the most important first)',
       noDuplicates: 'No duplicates. Do not repeat example principles, and do not repeat among your own principles.',
       minimumPrinciplesTip: 'Please complete at least 3 principles.',
@@ -143,7 +143,7 @@ export default {
       summaryNote: 'You must cover and balance three types of questions: Select, Refine, Create. Avoid using only one type.'
     },
     step5: {
-      title: 'Step 5. Annotate the answer to align with cultural values',
+      title: 'Step 5. Annotate the answer to align with cultural values (Mainstream Values in Your Culture, Not Your Personal Values)',
       intro: 'For the question, the platform provides an initial response. You will review the answer and adjust it to align with cultural values.',
       highlightIntro: 'We highlight all value-related text fragments in the response and identify their reflected values.',
       coreAction: 'Core Action: Review and adjust the answer to align with cultural values.',
@@ -169,7 +169,7 @@ export default {
       rule2: 'Just focus on values and text reflecting values. Please ignore other differences not caused by values, such as language style (colloquial vs. written, formal vs. casual), text format and structure (paragraphing, punctuation conventions, etc.), and length. These issues are not within the scope of annotation.'
     },
     step6: {
-      title: 'Step 6. Annotate the answer to align with personal values (same workflow as Step 5)',
+      title: 'Step 6. Annotate the answer to align with personal values (same workflow as Step5, use Your Personal Values)',
       coreAction: 'Core Action: Repeat the workflow in Step 5, but use YOUR personal values.',
       noteTitle: 'Note: Ground your annotation on:',
       note1: 'Whether the values and texts align with your own personal values and behavior practices.',
