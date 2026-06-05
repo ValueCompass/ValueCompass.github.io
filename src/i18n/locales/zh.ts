@@ -13,6 +13,7 @@ export default {
     pleaseCompleteAnnotation: '请先完成注释',
     pleaseMarkAllItems: '请标记完所有项目后再提交',
     fetchFailed: '获取失败',
+    loginExpiredRelogin: '登录过期，请重新登录',
     keep: '完全符合，保留',
     delete: '完全不符合，删除',
     edit: '部分符合，修改',

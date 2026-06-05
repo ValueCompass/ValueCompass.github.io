@@ -13,6 +13,7 @@ export default {
     pleaseCompleteAnnotation: '先にアノテーションを完了してください',
     pleaseMarkAllItems: '送信前にすべての項目をマークしてください',
     fetchFailed: '取得に失敗しました',
+    loginExpiredRelogin: 'ログインの有効期限が切れました。再度ログインしてください。',
     keep: '完全に正しい、保持',
     delete: '完全に誤っている、削除',
     edit: '一部は正しい、修正',

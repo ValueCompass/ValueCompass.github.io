@@ -92,10 +92,12 @@
 import { computed, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { Lock } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
 import { getCulturalValueAnnotationAdminDetail } from "@/utils/culturalValueAnnotationAuth";
 import router from "@/router";
 import { useAdminExportStore } from "@/stores/adminExportStore";
 
+const { t } = useI18n();
 const searchKeyword = ref("");
 const selectedUsers = ref([]);
 const adminExportStore = useAdminExportStore();
@@ -298,8 +300,10 @@ const handleDownloadSelectedExcel = () => {
 onMounted(() => {
   adminExportStore
     .ensureAdminUsers(adminDetail)
-    .catch(() => {
-      ElMessage.error("Failed to load admin data");
+    .catch((error) => {
+      ElMessage.error(
+        error?.i18nKey ? t(error.i18nKey) : error?.message || "Failed to load admin data",
+      );
     });
 });
 </script>

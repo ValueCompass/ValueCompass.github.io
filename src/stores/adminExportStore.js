@@ -119,6 +119,15 @@ export const useAdminExportStore = defineStore("adminExportStore", {
 
           return normalizedUsers;
         })
+        .catch((error) => {
+          if (error?.response?.status === 401) {
+            const loginExpiredError = new Error("Login expired");
+            loginExpiredError.i18nKey = "common.loginExpiredRelogin";
+            throw loginExpiredError;
+          }
+
+          throw error;
+        })
         .finally(() => {
           this.loadingByAdminKey[cacheKey] = false;
           delete pendingRequests[cacheKey];

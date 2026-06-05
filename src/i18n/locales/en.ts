@@ -13,6 +13,7 @@ export default {
     pleaseCompleteAnnotation: 'Please complete annotations first',
     pleaseMarkAllItems: 'Please mark all items before submitting',
     fetchFailed: 'Fetch failed',
+    loginExpiredRelogin: 'Your login has expired. Please log in again.',
     keep: 'Completely correct, keep',
     delete: 'Completely incorrect, delete',
     edit: 'Partially correct, edit',

@@ -13,6 +13,7 @@ export default {
     pleaseCompleteAnnotation: '먼저 어노테이션을 완료해 주세요',
     pleaseMarkAllItems: '제출하기 전에 모든 항목을 표시해 주세요',
     fetchFailed: '가져오기에 실패했습니다',
+    loginExpiredRelogin: '로그인이 만료되었습니다. 다시 로그인해 주세요.',
     keep: '완전히 정확함, 유지',
     delete: '완전히 부정확함, 삭제',
     edit: '부분적으로 정확함, 수정',
