@@ -62,7 +62,7 @@ export default {
       rankByImportance: 'Rank by importance (write the most important first)',
       noDuplicates: 'No duplicates. Do not repeat example principles, and do not repeat among your own principles.',
       minimumPrinciplesTip: 'Please complete at least 3 principles.',
-      principleLengthTip: 'Each completed principle must contain at least 30 Chinese/Japanese/Korean characters or 25 English words.',
+      principleLengthTip: 'Each completed principle must contain at least 20 Chinese/Japanese/Korean characters or 15 English words.',
       completedPrinciplesTip: '{count} / 5 principle(s) completed',
       principleInputLengthTip: 'At least {cjkCount} Chinese/Japanese/Korean characters or {englishCount} English words.',
       insufficientPrinciplesError: 'Please complete at least {count} valid principles before continuing.',

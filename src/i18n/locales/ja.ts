@@ -62,7 +62,7 @@ export default {
       rankByImportance: '重要度順に並べてください（最も重要なものを先に記載）',
       noDuplicates: '重複しないでください。例示の原則と重複しないようにし、複数の原則同士も重複しないようにしてください。',
       minimumPrinciplesTip: '少なくとも 3 つの原則を完成させてください。',
-      principleLengthTip: '完成した各原則には、少なくとも中日韓の文字 {cjkCount} 文字、または英単語 {englishCount} 語が含まれている必要があります。',
+      principleLengthTip: '完成した各原則には、少なくとも 20 文字の中日韓文字、または 15 語の英単語が含まれている必要があります。',
       completedPrinciplesTip: '{count} / 5 個の原則を完了',
       principleInputLengthTip: '少なくとも中日韓の文字 {cjkCount} 文字、または英単語 {englishCount} 語。',
       insufficientPrinciplesError: '続行する前に、少なくとも {count} 個の有効な原則を完成させてください。',

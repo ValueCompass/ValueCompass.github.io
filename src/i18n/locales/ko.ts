@@ -62,7 +62,7 @@ export default {
       rankByImportance: '중요도 순으로 작성하세요 (가장 중요한 것을 먼저)',
       noDuplicates: '중복하지 마세요. 예시 원칙과도 중복하지 말고, 작성한 여러 원칙끼리도 서로 중복하지 마세요.',
       minimumPrinciplesTip: '최소 3개의 원칙을 작성해 주세요.',
-      principleLengthTip: '완성된 각 원칙에는 최소 {cjkCount}자의 중일한 문자 또는 {englishCount}개의 영어 단어가 포함되어야 합니다.',
+      principleLengthTip: '완성된 각 원칙에는 최소 20자의 중일한 문자 또는 15개의 영어 단어가 포함되어야 합니다.',
       completedPrinciplesTip: '{count} / 5개 원칙 완료',
       principleInputLengthTip: '최소 {cjkCount}자의 중일한 문자 또는 {englishCount}개의 영어 단어.',
       insufficientPrinciplesError: '계속하기 전에 최소 {count}개의 유효한 원칙을 완성해 주세요.',

@@ -92,9 +92,9 @@ export const getPrincipleEffectiveLength = (text = "") => {
   return getCjkCharacterCount(text) + getEnglishWordCount(text);
 };
 
-// principle 单条最小长度规则：中日韩字符 ≥ 30 或 英文单词 ≥ 25，满足任意一个即算合格。
-export const MIN_PRINCIPLE_CJK_CHARACTER_COUNT = 30;
-export const MIN_PRINCIPLE_ENGLISH_WORD_COUNT = 25;
+// principle 单条最小长度规则：中日韩字符 ≥ 20 或 英文单词 ≥ 15，满足任意一个即算合格。
+export const MIN_PRINCIPLE_CJK_CHARACTER_COUNT = 20;
+export const MIN_PRINCIPLE_ENGLISH_WORD_COUNT = 15;
 
 // principle 单条长度是否满足最小要求：中日韩字符数与英文单词数任意一项达标即算通过。
 export const isPrincipleLongEnough = (text = "") => {

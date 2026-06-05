@@ -62,7 +62,7 @@ export default {
       rankByImportance: '按重要性排序（最重要的写在前面）',
       noDuplicates: '不要重复。不要跟示例原则重复，多条原则之间也不要重复。',
       minimumPrinciplesTip: '请至少完成 3 条原则。',
-      principleLengthTip: '每条已完成的原则必须包含至少 30 个中文/日文/韩文字符，或 25 个英文单词。',
+      principleLengthTip: '每条已完成的原则必须包含至少 20 个中文/日文/韩文字符，或 15 个英文单词。',
       completedPrinciplesTip: '已完成 {count} / 5 条原则',
       principleInputLengthTip: '至少 {cjkCount} 个中文/日文/韩文字符，或 {englishCount} 个英文单词。',
       insufficientPrinciplesError: '请至少完成 {count} 条有效原则后再继续。',
