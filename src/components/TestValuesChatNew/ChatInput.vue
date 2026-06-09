@@ -17,15 +17,24 @@
           @input="handleInput"
         />
         <div class="icon-box">
-          <el-button aria-label="Start recording" :disabled="isListening">
-            <svg-icon name="recrod_btn" @click="startRecognition"></svg-icon>
+          <el-button
+            type="button"
+            aria-label="Start recording"
+            :disabled="isListening"
+            @click="startRecognition"
+          >
+            <svg-icon name="recrod_btn"></svg-icon>
           </el-button>
-          <el-button aria-label="Send message" :disabled="!textareaText.trim() || isSendLoading">
+          <el-button
+            type="button"
+            aria-label="Send message"
+            :disabled="!textareaText.trim() || isSendLoading"
+            @click="sendMessage"
+          >
             <svg-icon
               class="send_btn"
               name="send_btn"
               :class="!textareaText.trim() || isSendLoading ? 'disabled' : ''"
-              @click="sendMessage"
             ></svg-icon>
           </el-button>
         </div>
@@ -36,11 +45,21 @@
           {{ fullText }} ...
         </div>
         <div class="icon-box">
-          <el-button aria-label="Cancel recording" :disabled="!isListening">
-            <svg-icon name="cancel_btn" @click="cancelRecognition"></svg-icon>
+          <el-button
+            type="button"
+            aria-label="Cancel recording"
+            :disabled="!isListening"
+            @click="cancelRecognition"
+          >
+            <svg-icon name="cancel_btn"></svg-icon>
           </el-button>
-          <el-button aria-label="Confirm message" :disabled="!isListening">
-            <svg-icon name="confirm_btn" @click="confirmRecognition"></svg-icon>
+          <el-button
+            type="button"
+            aria-label="Confirm message"
+            :disabled="!isListening"
+            @click="confirmRecognition"
+          >
+            <svg-icon name="confirm_btn"></svg-icon>
           </el-button>
         </div>
       </template>
@@ -190,6 +209,12 @@ defineExpose({
     padding: 0 0.2em 0 0;
     line-height: 1.2;
     color: #000;
+
+    &::placeholder {
+      color: #757575;
+      -webkit-text-fill-color: #757575;
+      opacity: 1;
+    }
   }
 
   .icon-box {

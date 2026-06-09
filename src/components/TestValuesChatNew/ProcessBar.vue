@@ -11,8 +11,8 @@
           class="star-icon"
           :class="['star-icon-' + i, i == 7 ? 'star-icon-final' : '']"
         >
-          <svgIcon v-if="i < 7" name="Star-Process"></svgIcon>
-          <svgIcon v-else name="final_star"></svgIcon>
+          <svgIcon v-if="i < 7" name="Star-Process" :aria-label="chatProcessText[i - 1]"></svgIcon>
+          <svgIcon v-else name="final_star" :aria-label="chatProcessText[i - 1]"></svgIcon>
 
           <text>{{ chatProcessText[i - 1] }}</text>
         </div>
@@ -233,11 +233,11 @@ const getStarLightClass = (starIndex) => {
   // 最终星星颜色动画
   @keyframes finnalStarColorAnimation {
     0% {
-      color: #afbec9; // 初始灰色
+      color: #5F6B7A; // 初始灰色
       transform: translate(-50%, -50%) scale(1);
     }
     30% {
-      color: #afbec9; // 保持灰色（600ms quick阶段）
+      color: #5F6B7A; // 保持灰色（600ms quick阶段）
       transform: translate(-50%, -50%) scale(0.5);
     }
     100% {
@@ -264,11 +264,11 @@ const getStarLightClass = (starIndex) => {
   // 最终星星颜色动画
   @keyframes finnalStarColorAnimation {
     0% {
-      color: #afbec9; // 初始灰色
+      color: #5F6B7A; // 初始灰色
       transform: translate(-50%, -50%) scale(1);
     }
     30% {
-      color: #afbec9; // 保持灰色（600ms quick阶段）
+      color: #5F6B7A; // 保持灰色（600ms quick阶段）
       transform: translate(-50%, -50%) scale(0.5);
     }
     100% {
@@ -317,7 +317,7 @@ const getStarLightClass = (starIndex) => {
       top: 50%;
       transform: translate(-50%, -50%);
       position: absolute;
-      color: #afbec9;
+      color: #5F6B7A;
     }
 
     &.star-icon-final {
@@ -359,12 +359,12 @@ const getStarLightClass = (starIndex) => {
   }
   .line-icon {
     // background: #DCDCDC;
-    color: #afbec9;
+    color: #5F6B7A;
     position: absolute;
     width: 6px;
     height: 16%;
     transform-origin: top center; /* 设置旋转中心为左上角 */
-    background: #afbec9;
+    background: #5F6B7A;
     & > div {
       position: absolute;
       width: 100%;

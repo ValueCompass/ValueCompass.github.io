@@ -26,15 +26,25 @@
           :class="selectedIndex == index ? 'on' : ''"
           v-for="(item, index) in options"
           :key="index"
-          @click="hancelTypeIndexChange(index)"
         >
-          <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
-          <span>{{ item.label }}</span>
-          <SvgIcon
-            class="info"
-            name="info"
+          <button
+            type="button"
+            class="point-option-button"
+            :aria-pressed="selectedIndex == index"
+            :aria-label="`Select ${item.label}`"
+            @click="hancelTypeIndexChange(index)"
+          >
+            <SvgIcon class="point-type-icon" name="point-type-icon"></SvgIcon>
+            <span>{{ item.label }}</span>
+          </button>
+          <button
+            type="button"
+            class="point-info-button"
+            :aria-label="`Show introduction for ${item.label}`"
             @click.stop="showIntro(index)"
-          ></SvgIcon>
+          >
+            <SvgIcon class="info" name="info"></SvgIcon>
+          </button>
         </li>
       </ul>
       <p style="margin: 1em 0; font-size: 1.25em"><b>Selected Points</b></p>
@@ -70,6 +80,13 @@
                   <span
                     class="check-icon"
                     :class="isGroupChecked(item) ? 'is-checked' : ''"
+                    tabindex="0"
+                    role="checkbox"
+                    :aria-checked="isGroupChecked(item)"
+                    :aria-label="`select ${item.name}`"
+                    @click.stop="checkSubArray(index, item.name)"
+                    @keydown.enter.prevent="checkSubArray(index, item.name)"
+                    @keydown.space.prevent="checkSubArray(index, item.name)"
                   ></span
                   ><span>{{ item.name }}</span>
                 </p>
@@ -93,35 +110,42 @@
         <div>
           <div v-if="!(props.type && props.type == 1)">
             <el-switch
-              aria-label="switch"
+              aria-label="show selected points details"
               v-model="tablePointDetailShow"
               class="switch"
               inline-prompt
-              :active-action-icon="Check"
-              :inactive-action-icon="Close"
+              :active-action-icon="Select"
+              :inactive-action-icon="CloseBold"
               @change="swicthChange"
+              size="large"
             />
-            <span
-              style="color: #004f8f; font-size: 1.125em; cursor: pointer"
+            <button
+              type="button"
+              class="toggle-selected-points-button"
+              aria-label="Toggle selected points details"
               @click="
                 tablePointDetailShow = !tablePointDetailShow;
                 swicthChange(tablePointDetailShow);
               "
-              >Show Selected Points</span
+              >Show Selected Points</button
             >
           </div>
         </div>
         <div>
-          <el-button class="btn select-all-btn" @click="handleCheckAllChange"
-            >Select All</el-button
+          <el-button class="btn select-all-btn" :aria-label="selectAllAriaLabel" @click="handleCheckAllChange"
+            >{{ selectAllAriaLabel }}</el-button
           >
           <el-button
             class="btn apply-btn"
+            aria-label="Apply"
             :disabled="checkedPoints.length == 0"
             @click="applyChange()"
             >Apply</el-button
           >
         </div>
+      </div>
+      <div class="sr-only" aria-live="polite" aria-atomic="true">
+        {{ liveAnnouncement }}
       </div>
     </div>
 
@@ -129,8 +153,8 @@
   </div>
 </template>
 <script setup>
-import { ref, defineEmits, defineExpose, defineProps } from "vue";
-import { Check, Close } from "@element-plus/icons-vue";
+import { ref, computed, nextTick, defineEmits, defineExpose, defineProps } from "vue";
+import { Select, CloseBold } from "@element-plus/icons-vue";
 import homepageSwiper from "@/components/homepageSwiper.vue";
 
 const props = defineProps({
@@ -365,8 +389,23 @@ const SchwartzData = {
 const selectedIndex = ref(-1);
 const points = ref([]);
 const checkedPoints = ref([]);
+const liveAnnouncement = ref("");
+
+const selectAllAriaLabel = computed(() => {
+  if (points.value.length > 0 && checkedPoints.value.length === points.value.length) {
+    return "Clear All";
+  }
+
+  return "Select All";
+});
 
 const emit = defineEmits(["applyChange", "swicthChange", "showIntro"]);
+
+const announceLiveMessage = async (message) => {
+  liveAnnouncement.value = "";
+  await nextTick();
+  liveAnnouncement.value = message;
+};
 
 const applyChange = () => {
   console.log("applyChange", checkedPoints.value);
@@ -381,15 +420,22 @@ const applyChange = () => {
 };
 
 const handleCheckAllChange = () => {
+  if (points.value.length === 0) {
+    announceLiveMessage("No points available to select.");
+    return;
+  }
+
   if (
     checkedPoints.value.length > 0 &&
     checkedPoints.value.length == points.value.length
   ) {
     checkedPoints.value = [];
+    announceLiveMessage("All selected points cleared.");
   } else {
     checkedPoints.value = points.value.map((item) => {
       return item.label;
     });
+    announceLiveMessage(`All ${checkedPoints.value.length} points selected.`);
   }
 
   // applyChange();
@@ -480,6 +526,17 @@ defineExpose({
 <style scoped lang="scss">
 .select-container {
   position: relative;
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
   ul {
     width: calc(100% - 6em);
     display: flex;
@@ -489,7 +546,6 @@ defineExpose({
     gap: 0 0.5em;
     li {
       line-height: 1.4;
-      cursor: pointer;
       padding: 0.65em 3%;
       display: flex;
       flex-wrap: nowrap;
@@ -499,6 +555,27 @@ defineExpose({
       color: rgba(114, 114, 114, 1);
       font-weight: 600;
       border-bottom: 2px solid transparent;
+      .point-option-button,
+      .point-info-button {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+      }
+      .point-option-button {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .point-info-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 4px;
+      }
       span {
         white-space: nowrap;
         font-size: 1em;
@@ -541,9 +618,33 @@ defineExpose({
     flex-direction: row;
     justify-content: space-between;
     .switch {
+      --el-switch-on-color: #368fd4;
+      --el-switch-off-color: #368fd4;
       margin-right: 0.8em;
+
+      :deep(.el-switch__action) {
+        color: #0f4ea3;
+      }
+
+      :deep(.el-switch__action .el-icon) {
+        color: #0f4ea3;
+      }
     }
-    .btn {
+    .toggle-selected-points-button {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      background: transparent;
+      color: #004f8f;
+      font: inherit;
+      font-size: 1.125em;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid #0b70c3;
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
     }
     .select-all-btn {
       color: var(--theme-color);
@@ -586,14 +687,11 @@ defineExpose({
 
     .el-checkbox__input {
       transform: translateY(0.3em);
-      background: url(@/assets/images/Checkbox-base.png) no-repeat !important;
+      // background: url(@/assets/images/Checkbox-base.png) no-repeat !important;
       background-size: 100% 100% !important;
       &.is-checked {
-        background: url(@/assets/images/Checkbox-checked.png) no-repeat !important;
+        // background: url(@/assets/images/Checkbox-checked.png) no-repeat !important;
         background-size: 100% 100% !important;
-      }
-      .el-checkbox__inner {
-        opacity: 0;
       }
     }
   }
@@ -662,6 +760,13 @@ defineExpose({
           height: 1rem;
           background: url(@/assets/images/Checkbox-base.png) no-repeat !important;
           background-size: 100% 100% !important;
+
+            &:focus-visible {
+              outline: 2px solid #000;
+              outline-offset: 2px;
+              border-radius: 2px;
+            }
+
           &.is-checked {
             background: url(@/assets/images/Checkbox-checked.png) no-repeat !important;
             background-size: 100% 100% !important;

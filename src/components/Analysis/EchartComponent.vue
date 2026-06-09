@@ -61,7 +61,7 @@ const setRadarChart = (data, typeNum) => {
     return {
       name: item + " (" + data[item].toFixed(2) + ")",
       color:
-        props.hasHightlight && index == 0 ? "rgba(16, 147, 255, 1)" : "black",
+        props.hasHightlight && index == 0 ? "#0B70C3" : "black",
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
       max: maxValue,
@@ -119,7 +119,7 @@ const setRadarHighlight = (data, item) => {
   const indicator = Object.keys(data).map((indica, index) => {
     return {
       name: indica + " (" + data[indica].toFixed(2) + ")",
-      color: item == indica ? "rgba(16, 147, 255, 1)" : "black",
+      color: item == indica ? "#0B70C3" : "black",
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
       max: maxValue,
@@ -172,7 +172,7 @@ onMounted(async () => {
       },
       triggerEvent: true,
       indicator: [
-        { name: "Benevolence", max: 1, color: "rgba(16, 147, 255, 1)" },
+        { name: "Benevolence", max: 1, color: "#0B70C3" },
         { name: "Achievement", max: 1, axisLabel: { show: false } },
         { name: "Universalism", max: 1, axisLabel: { show: false } },
         { name: "Tradition", max: 1, axisLabel: { show: false } },
@@ -191,7 +191,7 @@ onMounted(async () => {
   //     // 修改雷达图的颜色
   //     const radar = chartInstance.getOption().radar[0];
   //     const indicator = radar.indicator.map((item) => {
-  //       if (item.name == params.name && item.color !== "rgba(16, 147, 255, 1)") {
+  //       if (item.name == params.name && item.color !== "#0B70C3") {
   //         item.color = "green";
   //       }
   //       return item;
@@ -219,14 +219,14 @@ onMounted(async () => {
       const radar = chartInstance.getOption().radar[0];
       const indicator = radar.indicator.map((item) => {
         params.name = params.name.replace(/[\r\n]/g, "");
-        if (item.name != params.name && item.color == "rgba(16, 147, 255, 1)") {
+        if (item.name != params.name && item.color == "#0B70C3") {
           delete item.color;
         }
         if (
           item.name == params.name &&
-          item.color !== "rgba(16, 147, 255, 1)"
+          item.color !== " #0B70C3"
         ) {
-          item.color = "rgba(16, 147, 255, 1)";
+          item.color = " #0B70C3";
           let name = item.name;
           name = name.split(" (")[0];
           emit("setCurrentCaseData", name);
@@ -256,7 +256,7 @@ onMounted(async () => {
       const indicator = radar.indicator.map((item) => {
         if (
           item.name == params.name &&
-          item.color !== "rgba(16, 147, 255, 1)"
+          item.color !== " #0B70C3"
         ) {
           delete item.color;
         }

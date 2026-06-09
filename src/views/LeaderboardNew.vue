@@ -16,6 +16,7 @@
             :default-sort="{ prop: 'place' }"
             style="width: 100%"
             ref="tableRef"
+            @sort-change="handleSortChange"
           >
             <el-table-column
               prop="place"
@@ -25,7 +26,15 @@
               fixed
             >
               <template #header>
-                <span style="padding-left: 3em">Rank</span>
+                <button
+                  type="button"
+                  class="sortable-header-button sortable-header-button--rank"
+                  :aria-label="getSortAriaLabel('place', 'Rank')"
+                  :aria-sort="getSortAriaSort('place')"
+                  @click="toggleSort('place')"
+                >
+                  <span style="padding-left: 3em">Rank</span>
+                </button>
               </template>
               <template #default="scope">
                 <span
@@ -71,14 +80,27 @@
               sortable
               fixed
             >
+              <template #header>
+                <button
+                  type="button"
+                  class="sortable-header-button"
+                  :aria-label="getSortAriaLabel('modelName', 'Model Name')"
+                  :aria-sort="getSortAriaSort('modelName')"
+                  @click="toggleSort('modelName')"
+                >
+                  Model Name
+                </button>
+              </template>
               <template #default="scope">
                 <p class="table-color">
-                  <span
-                    style="cursor: pointer"
-                    class="model-name-a"
+                  <button
+                    type="button"
+                    class="table-action-button model-name-button"
+                    :aria-label="`View details for ${scope.row.modelName}`"
                     @click="handleDetailClick(scope.row)"
-                    >{{ scope.row.modelName }}</span
                   >
+                    <span class="model-name-a">{{ scope.row.modelName }}</span>
+                  </button>
                 </p>
               </template>
             </el-table-column>
@@ -90,6 +112,17 @@
               sortable
               fixed
             >
+              <template #header>
+                <button
+                  type="button"
+                  class="sortable-header-button"
+                  :aria-label="getSortAriaLabel('developer', 'Developer')"
+                  :aria-sort="getSortAriaSort('developer')"
+                  @click="toggleSort('developer')"
+                >
+                  Developer
+                </button>
+              </template>
             </el-table-column>
             <el-table-column
               align="left"
@@ -100,36 +133,74 @@
               fixed
             >
               <template #header>
-                <span style="padding-right: 1.2em">Score</span>
+                <button
+                  type="button"
+                  class="sortable-header-button sortable-header-button--score"
+                  :aria-label="getSortAriaLabel('points', 'Score')"
+                  :aria-sort="getSortAriaSort('points')"
+                  @click="toggleSort('points')"
+                >
+                  <span style="padding-right: 1.2em">Score</span>
+                </button>
 
-                <SvgIcon
-                  class="show-intro-icon"
-                  name="icon-question"
+                <button
+                  type="button"
+                  class="table-action-button icon-button show-intro-button"
+                  aria-label="Show score introduction"
                   @click="showScoreIntro(true)"
-                ></SvgIcon>
+                >
+                  <SvgIcon
+                    class="show-intro-icon"
+                    name="icon-question"
+                  ></SvgIcon>
+                </button>
                 <el-tooltip
                   effect="customized"
                   :content="!tablePointDetailShow ? 'show more' : 'show less'"
                   placement="top"
+                  :visible="activeTooltipKey === getPointsToggleTooltipKey('show')"
+                  manual
                   v-if="!tablePointDetailShow"
                 >
-                  <SvgIcon
-                    class="points-show"
-                    name="points-show"
+                  <button
+                    type="button"
+                    class="table-action-button icon-button points-show-button"
+                    aria-label="Show more score details"
                     @click="showPointsDetail($event, true)"
-                  ></SvgIcon>
+                    @mouseenter="showTooltip(getPointsToggleTooltipKey('show'))"
+                    @mouseleave="hideTooltip(getPointsToggleTooltipKey('show'))"
+                    @focus="showTooltip(getPointsToggleTooltipKey('show'))"
+                    @blur="hideTooltip(getPointsToggleTooltipKey('show'))"
+                  >
+                    <SvgIcon
+                      class="points-show"
+                      name="points-show"
+                    ></SvgIcon>
+                  </button>
                 </el-tooltip>
                 <el-tooltip
                   v-else
                   effect="customized"
                   :content="!tablePointDetailShow ? 'show more' : 'show less'"
                   placement="top"
+                  :visible="activeTooltipKey === getPointsToggleTooltipKey('hide')"
+                  manual
                 >
-                  <SvgIcon
-                    class="points-show"
-                    name="points-hide"
+                  <button
+                    type="button"
+                    class="table-action-button icon-button points-show-button"
+                    aria-label="Show less score details"
                     @click="showPointsDetail($event, false)"
-                  ></SvgIcon>
+                    @mouseenter="showTooltip(getPointsToggleTooltipKey('hide'))"
+                    @mouseleave="hideTooltip(getPointsToggleTooltipKey('hide'))"
+                    @focus="showTooltip(getPointsToggleTooltipKey('hide'))"
+                    @blur="hideTooltip(getPointsToggleTooltipKey('hide'))"
+                  >
+                    <SvgIcon
+                      class="points-show"
+                      name="points-hide"
+                    ></SvgIcon>
+                  </button>
                 </el-tooltip>
               </template>
               <template #default="scope">
@@ -159,43 +230,54 @@
                 >
                   <template #header>
                     <template v-if="SelectedPointsRef.selectedIndex == 0">{{
-                      item.indexOf("-") > -1
-                        ? item
-                            .split("-")
-                            .map((x) => x[0].toUpperCase())
-                            .join("")
-                        : item.substring(0, 3)
+                      ''
                     }}</template>
-                    <template v-else-if="SelectedPointsRef.selectedIndex == 1">
-                      <span
-                        v-html="
-                          item
-                            .split('/')
-                            .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-                            .join('/<br>')
-                        "
-                      ></span>
-                    </template>
-
-                    <template
-                      v-else-if="SelectedPointsRef.selectedIndex == 2"
-                      >{{
-                        item
-                          .split(" ")
-                          .map((x) => x.charAt(0).toUpperCase())
-                          .join("")
-                      }}</template
+                    <button
+                      type="button"
+                      class="sortable-header-button"
+                      :aria-label="getSortAriaLabel(item, item)"
+                      :aria-sort="getSortAriaSort(item)"
+                      @click="toggleSort(item)"
                     >
-                    <template v-else-if="SelectedPointsRef.selectedIndex == 3">
-                      <span
-                        v-html="
+                      <template v-if="SelectedPointsRef.selectedIndex == 0">{{
+                        item.indexOf("-") > -1
+                          ? item
+                              .split("-")
+                              .map((x) => x[0].toUpperCase())
+                              .join("")
+                          : item.substring(0, 3)
+                      }}</template>
+                      <template v-else-if="SelectedPointsRef.selectedIndex == 1">
+                        <span
+                          v-html="
+                            item
+                              .split('/')
+                              .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                              .join('/<br>')
+                          "
+                        ></span>
+                      </template>
+
+                      <template
+                        v-else-if="SelectedPointsRef.selectedIndex == 2"
+                        >{{
                           item
-                            .split('-')
-                            .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-                            .join('-<br>')
-                        "
-                      ></span>
-                    </template>
+                            .split(" ")
+                            .map((x) => x.charAt(0).toUpperCase())
+                            .join("")
+                        }}</template
+                      >
+                      <template v-else-if="SelectedPointsRef.selectedIndex == 3">
+                        <span
+                          v-html="
+                            item
+                              .split('-')
+                              .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                              .join('-<br>')
+                          "
+                        ></span>
+                      </template>
+                    </button>
                   </template>
                 </el-table-column>
               </template>
@@ -225,7 +307,19 @@
               min-width="140"
               sortable
               fixed="right"
-            />
+            >
+              <template #header>
+                <button
+                  type="button"
+                  class="sortable-header-button"
+                  :aria-label="getSortAriaLabel('releaseDate', 'Release Date')"
+                  :aria-sort="getSortAriaSort('releaseDate')"
+                  @click="toggleSort('releaseDate')"
+                >
+                  Release Date
+                </button>
+              </template>
+            </el-table-column>
 
             <el-table-column label="Compare" min-width="90" fixed="right">
               <template #default="scope">
@@ -239,13 +333,25 @@
                     effect="customized"
                     content="compare"
                     placement="top"
+                    :visible="activeTooltipKey === getCompareTooltipKey(scope.row, 'add')"
+                    manual
                   >
-                    <SvgIcon
-                      class="add"
-                      name="add"
+                    <button
+                      type="button"
+                      class="table-action-button icon-button compare-button"
+                      :aria-label="`Add ${scope.row.modelName} to compare`"
                       @click="compareBtnClick(scope.row)"
-                      style="padding: 0 1.2em; color: var(--theme-color)"
-                    ></SvgIcon>
+                      @mouseenter="showTooltip(getCompareTooltipKey(scope.row, 'add'))"
+                      @mouseleave="hideTooltip(getCompareTooltipKey(scope.row, 'add'))"
+                      @focus="showTooltip(getCompareTooltipKey(scope.row, 'add'))"
+                      @blur="hideTooltip(getCompareTooltipKey(scope.row, 'add'))"
+                    >
+                      <SvgIcon
+                        class="add"
+                        name="add"
+                        style="padding: 0 1.2em; color: var(--theme-color)"
+                      ></SvgIcon>
+                    </button>
                   </el-tooltip>
                 </div>
 
@@ -255,11 +361,18 @@
                     compareArr.length >= 5
                   "
                 >
-                  <SvgIcon
-                    class="add disabled"
-                    name="add-disabled"
-                    style="padding: 0 1.2em"
-                  ></SvgIcon>
+                  <button
+                    type="button"
+                    class="table-action-button icon-button compare-button"
+                    disabled
+                    aria-label="Compare unavailable"
+                  >
+                    <SvgIcon
+                      class="add disabled"
+                      name="add-disabled"
+                      style="padding: 0 1.2em"
+                    ></SvgIcon>
+                  </button>
                 </div>
 
                 <div v-else>
@@ -267,26 +380,54 @@
                     effect="customized"
                     content="compare pool"
                     placement="top"
+                    :visible="activeTooltipKey === getCompareTooltipKey(scope.row, 'selected')"
+                    manual
                   >
-                    <SvgIcon
-                      style="color: var(--theme-color); padding: 0 1.2em"
-                      class="add"
-                      name="model-checked-icon"
+                    <button
+                      type="button"
+                      class="table-action-button icon-button compare-button"
+                      :aria-label="`Remove ${scope.row.modelName} from compare`"
                       @click="compareBtnClick(scope.row)"
-                    ></SvgIcon>
+                      @mouseenter="showTooltip(getCompareTooltipKey(scope.row, 'selected'))"
+                      @mouseleave="hideTooltip(getCompareTooltipKey(scope.row, 'selected'))"
+                      @focus="showTooltip(getCompareTooltipKey(scope.row, 'selected'))"
+                      @blur="hideTooltip(getCompareTooltipKey(scope.row, 'selected'))"
+                    >
+                      <SvgIcon
+                        style="color: var(--theme-color); padding: 0 1.2em"
+                        class="add"
+                        name="model-checked-icon"
+                      ></SvgIcon>
+                    </button>
                   </el-tooltip>
                 </div>
               </template>
             </el-table-column>
             <el-table-column label="Details" min-width="90" fixed="right">
               <template #default="scope">
-                <el-tooltip effect="customized" content="view" placement="top">
-                  <SvgIcon
-                    class="jump"
-                    name="jump"
+                <el-tooltip
+                  effect="customized"
+                  content="view"
+                  placement="top"
+                  :visible="activeTooltipKey === getViewTooltipKey(scope.row)"
+                  manual
+                >
+                  <button
+                    type="button"
+                    class="table-action-button icon-button details-button"
+                    :aria-label="`View details for ${scope.row.modelName}`"
                     @click="handleDetailClick(scope.row)"
-                    style="padding: 0 1em; color: var(--theme-color)"
-                  ></SvgIcon>
+                    @mouseenter="showTooltip(getViewTooltipKey(scope.row))"
+                    @mouseleave="hideTooltip(getViewTooltipKey(scope.row))"
+                    @focus="showTooltip(getViewTooltipKey(scope.row))"
+                    @blur="hideTooltip(getViewTooltipKey(scope.row))"
+                  >
+                    <SvgIcon
+                      class="jump"
+                      name="jump"
+                      style="padding: 0 1em; color: var(--theme-color)"
+                    ></SvgIcon>
+                  </button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -317,6 +458,10 @@ import axios from "axios";
 import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
 import { useRouter } from "vue-router";
 const tableRef = ref(null);
+const currentSort = ref({
+  prop: "place",
+  order: "ascending",
+});
 
 import scoreIntro from "../components/scoreIntro.vue";
 const scoreIntroRef = ref(null);
@@ -433,6 +578,30 @@ const applyChange = (value) => {
 };
 
 const router = useRouter();
+const activeTooltipKey = ref("");
+
+const showTooltip = (key) => {
+  activeTooltipKey.value = key;
+};
+
+const hideTooltip = (key) => {
+  if (activeTooltipKey.value === key) {
+    activeTooltipKey.value = "";
+  }
+};
+
+const getCompareTooltipKey = (row, state) => {
+  return `compare-${state}-${String(row?.modelName || "")}`;
+};
+
+const getViewTooltipKey = (row) => {
+  return `view-${String(row?.modelName || "")}`;
+};
+
+const getPointsToggleTooltipKey = (state) => {
+  return `points-toggle-${state}`;
+};
+
 const goAnalysisPage = (modelName) => {
   router.push({
     path: "/benchmarks/valueAnalysis",
@@ -520,6 +689,61 @@ const formatter = (row, column) => {
   }
 };
 
+const handleSortChange = ({ prop, order }) => {
+  currentSort.value = {
+    prop: prop || "",
+    order: order || "",
+  };
+};
+
+const getNextSortOrder = (prop) => {
+  if (currentSort.value.prop !== prop || !currentSort.value.order) {
+    return "ascending";
+  }
+
+  if (currentSort.value.order === "ascending") {
+    return "descending";
+  }
+
+  return null;
+};
+
+const toggleSort = (prop) => {
+  const nextOrder = getNextSortOrder(prop);
+
+  if (!tableRef.value) {
+    return;
+  }
+
+  if (!nextOrder) {
+    tableRef.value.clearSort();
+    currentSort.value = { prop: "", order: "" };
+    return;
+  }
+
+  tableRef.value.sort(prop, nextOrder);
+};
+
+const getSortAriaSort = (prop) => {
+  if (currentSort.value.prop !== prop || !currentSort.value.order) {
+    return "none";
+  }
+
+  return currentSort.value.order === "ascending" ? "ascending" : "descending";
+};
+
+const getSortAriaLabel = (prop, label) => {
+  const ariaSort = getSortAriaSort(prop);
+  const sortText =
+    ariaSort === "ascending"
+      ? "sorted ascending"
+      : ariaSort === "descending"
+        ? "sorted descending"
+        : "not sorted";
+
+  return `${label}, ${sortText}. Activate to change sorting.`;
+};
+
 const showPointsDetail = (e, bool) => {
   e.cancelBubble = true;
   console.log("showPointsDetail");
@@ -605,6 +829,7 @@ const handleMouseUp = () => {
     }
 
     .table-color {
+      padding: 2px 0;
       font-weight: 600;
       font-size: 1.125em;
     }
@@ -680,10 +905,6 @@ const handleMouseUp = () => {
 
 :deep(.el-table) {
   border: 1px solid rgba(0, 0, 0, 0.2);
-
-  :deep(.el-table__body) {
-    // border-spacing: 0 0.5em;
-  }
   .el-table__cell.is-left {
     text-align: left;
   }
@@ -739,27 +960,102 @@ const handleMouseUp = () => {
 .show-intro-icon {
   width: 1.2em;
   height: 1.2em;
+}
+
+.sortable-header-button {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:focus-visible {
+    outline: 2px solid #0b70c3;
+    outline-offset: 2px;
+  }
+}
+
+.sortable-header-button--rank {
+  text-align: left;
+}
+
+.sortable-header-button--score {
+  position: relative;
+  z-index: 1;
+}
+
+.show-intro-button {
   position: absolute;
   left: 3em;
   top: 50%;
   transform: translateY(calc(-50% + 2px));
 }
 .points-show {
-  position: absolute;
-  left: 5.5em;
   width: 1.6em;
   height: 1.6em;
+}
+
+.points-show-button {
+  position: absolute;
+  left: 5.5em;
   top: 50%;
   transform: translateY(calc(-50% + 2px));
 }
 
-svg {
-  &.add,
-  &.jump {
-    cursor: pointer;
-  }
+.table-action-button {
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease,
+    box-shadow 0.2s ease, text-decoration-color 0.2s ease;
 }
 
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+}
+
+.model-name-button {
+  cursor: pointer;
+}
+
+.table-action-button:hover{
+  color: var(--theme-color);
+}
+
+.table-action-button:focus-visible {
+  outline: none;
+  background: rgba(11, 112, 195, 0.12);
+  box-shadow: 0 0 0 2px rgba(11, 112, 195, 1);
+  color: var(--theme-color);
+}
+
+
+.model-name-button:disabled,
+.model-name-button[disabled] {
+  cursor: default;
+}
+
+.model-name-button:hover .model-name-a,
+.model-name-button:focus-visible .model-name-a,
 .model-name-a:hover {
   color: var(--theme-color);
   text-decoration: underline;

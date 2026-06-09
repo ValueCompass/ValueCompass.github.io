@@ -60,7 +60,7 @@
                         >
                       </div>
 
-                      <button
+                      <el-button
                         v-if="item.type === 'model' && item.audio_url"
                         class="read-aloud-btn"
                         type="button"
@@ -78,7 +78,7 @@
                           aria-hidden="true"
                         />
                         <span>{{ getReadAloudLabel(index) }}</span>
-                      </button>
+                      </el-button>
                     </li>
 
                     <li v-if="isSendLoading">
@@ -756,8 +756,8 @@ defineExpose({
                 }
 
                 &.playing {
-                  background: rgba(11, 112, 195, 0.12);
-                  color: rgba(114, 114, 114, 1);
+                  // background: rgba(11, 112, 195, 0.12);
+                  // color: rgba(114, 114, 114, 1);
                 }
 
                 img {
@@ -768,6 +768,7 @@ defineExpose({
                 span {
                   display: inline-block;
                   white-space: nowrap;
+                  padding-left: 0.5em;
                 }
               }
             }

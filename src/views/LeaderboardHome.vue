@@ -346,6 +346,11 @@ const vDrag = {
       &:hover {
         color: var(--theme-color);
       }
+      &:focus-visible {
+        //  background: rgba(11, 112, 195, 0.12);
+        // box-shadow: 0 0 0 2px rgba(11, 112, 195, 0.45);
+        color: var(--theme-color);
+      }
       &.router-link-active {
         background: var(--theme-color);
         color: #ffffff;

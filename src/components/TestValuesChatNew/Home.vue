@@ -16,9 +16,9 @@
         </ul>
       </div>
 
-      <span @click="toTest" class="button github-btn" style="font-size: 1.5em"
+      <button @click="toTest" class="button github-btn" style="font-size: 1.5em"
         >Get Started <i class="icon"></i
-      ></span>
+      ></button>
       <!-- <div class="language-div">
         <div>
           <p>Select your language to begin</p>
