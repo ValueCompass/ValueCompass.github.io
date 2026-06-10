@@ -1503,6 +1503,19 @@ const getRawQuestionAndScores = () => {
   );
 
   rawQuestionValue.value = selectedQuestionText || null;
+
+  if (
+    editCurrentQuestionDetail.value &&
+    rawQuestionValue.value === editCurrentQuestionDetail.value.raw_question.trim()
+  ) {
+    rawImportanceValue.value = editCurrentQuestionDetail.value.raw_importance ?? null;
+    rawDistinctivenessValue.value =
+      editCurrentQuestionDetail.value.raw_distinctiveness ?? null;
+    rawPlausibilityValue.value =
+      editCurrentQuestionDetail.value.raw_plausibility ?? null;
+    return;
+  }
+
   rawImportanceValue.value = selectedQuestion?.importance ?? null;
   rawDistinctivenessValue.value = selectedQuestion?.distinctiveness ?? null;
   rawPlausibilityValue.value = selectedQuestion?.plausibility ?? null;
