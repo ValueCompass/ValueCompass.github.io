@@ -502,7 +502,7 @@
           </div>
           <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
             <el-tab-pane
-              :disabled="isSelectExistingTabDisabled"
+              :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab"
               :label="
                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                 t('culturalValueAnnotation.step3.selectExisting') +
@@ -571,7 +571,7 @@
               </div>
             </el-tab-pane>
             <el-tab-pane
-              :disabled="isRefineTabDisabled"
+              :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab"
               :label="
                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                 t('culturalValueAnnotation.step3.refine') +
@@ -623,7 +623,7 @@
               </div>
             </el-tab-pane>
             <el-tab-pane
-              :disabled="isCreateNewTabDisabled"
+              :disabled="hasClickedGetAnswerBtn"
               :label="
                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                 t('culturalValueAnnotation.step3.createNew') +
@@ -832,7 +832,7 @@
             </div>
             <div
               style="margin-top: 0em"
-              v-if="hasClickedGetAnswerBtn && submit_type !== 'revise'"
+              v-if="hasClickedGetAnswerBtn"
             >
               <el-button
                 color="#0B70C3"
@@ -1296,6 +1296,54 @@ const handleSaveAndGetQuestionListBtnClick = () => {
     });
 };
 
+const fetchCandidateQuestionsForEdit = async (question) => {
+  if (!question || questionOptions.value.length > 0) {
+    return;
+  }
+
+  const inputObj = {
+    username: userDetail.username?.trim() || "",
+    country: userDetail.country?.trim() || "",
+    language: userDetail.language?.trim() || "",
+    topic_1: String(question.topic_1 || "").trim(),
+    topic_2: String(question.topic_2 || "").trim(),
+    timestamp: new Date().toISOString(),
+    task_1: String(question.task_1 || "").trim(),
+    task_2: String(question.task_2 || "").trim(),
+  };
+
+  if (
+    !inputObj.username ||
+    !inputObj.country ||
+    !inputObj.language ||
+    !inputObj.topic_1 ||
+    !inputObj.topic_2 ||
+    !inputObj.task_1 ||
+    !inputObj.task_2
+  ) {
+    return;
+  }
+
+  try {
+    const res = await getCandidateQuestions(inputObj);
+    const candidateQuestions = res?.data?.candidate_questions;
+    if (!Array.isArray(candidateQuestions)) {
+      return;
+    }
+
+    questionOptions.value = candidateQuestions;
+
+    if (res.data?.question_type_count) {
+      actionCounts.create = res.data.question_type_count.create;
+      actionCounts.refine = res.data.question_type_count.refine;
+      actionCounts["select existing"] =
+        res.data.question_type_count["select existing"];
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // step3 用户选定问题之后，点击 Generate，要求后端返回初步生成的数据
 // Input 字段：task_1(str), task_2(str), question (str)
 // Response 是一个 dict，如下，匹配 highlight_cues 的文字对 response 中相应的部分进行 highlight
@@ -1381,6 +1429,9 @@ const resetGetAnswerState = () => {
   original_answer_country.value = "";
   questionValue.value = "";
   rawQuestionValue.value = "";
+  rawImportanceValue.value = null;
+  rawDistinctivenessValue.value = null;
+  rawPlausibilityValue.value = null;
   questionAction.value = "";
 
   original_response.value = "";
@@ -1899,15 +1950,19 @@ onMounted(async () => {
     submit_type.value = "revise";
 
     const question = JSON.parse(editCurrentQuestion);
+    await fetchCandidateQuestionsForEdit(question);
     editCurrentQuestionDetail.value = question;
     hasClickedGetAnswerBtn.value = true;
     hasClickedSaveAndGetQuestionListBtn.value = true;
     console.log("要编辑的question信息", question);
     // 填充表单数据
     questionValue.value = question.question;
-    questionValue_create_input.value = question.question;
     rawQuestionValue.value = question.raw_question;
     questionAction.value = question.question_action;
+
+    questionValue_create_input.value = "";
+    questionValue_refine_input.value = "";
+    questionValue_selectExisting_input.value = "";
 
     importanceValue.value = question.importance;
     distinctivenessValue.value = question.distinctiveness;
@@ -1921,8 +1976,8 @@ onMounted(async () => {
       questionValue_create_input.value = question.question;
     } else if (question.question_action == "select existing") {
       activeNameSelect1.value = "Select Existing Question";
-      questionValue_refine_input.value = question.question;
       questionValue_selectExisting_input.value = question.raw_question;
+      questionValue_refine_input.value = question.question;
     } else {
       activeNameSelect1.value = "Refine Question";
       questionValue_refine_input.value = question.question;
@@ -2008,32 +2063,6 @@ const shouldForceCreateNewTab = computed(() => {
     submit_type.value === "create new" &&
     hasClickedSaveAndGetQuestionListBtn.value &&
     questionOptions.value.length === 0
-  );
-});
-
-// Select Existing Question 何时禁用：
-// 1. create new 模式且无候选问题时；
-// 2. revise 模式下当前选中的不是该 tab 时。
-const isSelectExistingTabDisabled = computed(() => {
-  return (
-    shouldForceCreateNewTab.value ||
-    (submit_type.value === "revise" &&
-      activeNameSelect1.value !== "Select Existing Question")
-  );
-});
-
-const isRefineTabDisabled = computed(() => {
-  return (
-    shouldForceCreateNewTab.value ||
-    (submit_type.value === "revise" &&
-      activeNameSelect1.value !== "Refine Question")
-  );
-});
-
-// revise 模式下，如果当前不是 Create New，则禁止切到 Create New。
-const isCreateNewTabDisabled = computed(() => {
-  return (
-    submit_type.value === "revise" && activeNameSelect1.value !== "Create New"
   );
 });
 
