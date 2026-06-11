@@ -164,7 +164,8 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Login.vue'),
     meta: {
       keepAlive: false, //此页面需要缓存
-      requiresFrontEndAuth: false
+      requiresFrontEndAuth: false,
+      hideAppChrome: true
     },
 
 

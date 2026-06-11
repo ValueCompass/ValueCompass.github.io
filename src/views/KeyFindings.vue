@@ -8,9 +8,9 @@
     >
       Read report
     </a>
-    <p class="h1">
+    <h1 class="h1">
       Insights about LLMs Values from the Value Compass Benchmarks
-    </p>
+    </h1>
     <div v-for="(section, i) in InsightsData" :key="i">
       <h2>{{ section.h2 }}</h2>
       <template v-if="section.list">
@@ -21,9 +21,18 @@
             class="item"
             :class="item.open ? 'open' : ''"
           >
-            <div class="title" @click="toggle(item)">
+            <div class="title">
               <div class="left">
-                <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
+                <button
+                  type="button"
+                  class="toggle-button"
+                  :aria-expanded="item.open === true"
+                  :aria-controls="`insight-details-${i}-${index}`"
+                  :aria-label="`Toggle Finding ${index + 1}`"
+                  @click="toggle(item)"
+                >
+                  <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
+                </button>
                 <SvgIcon class="star" name="star"></SvgIcon>
                 <span>Finding {{ index + 1 }}</span>
               </div>
@@ -36,7 +45,11 @@
               @enter="enter"
               @leave="leave"
             >
-              <div v-show="item.open" class="details">
+              <div
+                v-show="item.open"
+                :id="`insight-details-${i}-${index}`"
+                class="details"
+              >
                 <div v-html="item.details"></div>
               </div>
             </transition>
@@ -62,9 +75,18 @@
               class="item"
               :class="item.open ? 'open' : ''"
             >
-              <div class="title" @click="toggle(item)">
+              <div class="title">
                 <div class="left">
-                  <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
+                  <button
+                    type="button"
+                    class="toggle-button"
+                    :aria-expanded="item.open === true"
+                    :aria-controls="`sub-insight-details-${i}-${j}-${index}`"
+                    :aria-label="`Toggle Finding ${index + 1}`"
+                    @click="toggle(item)"
+                  >
+                    <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
+                  </button>
                   <SvgIcon class="star" name="star"></SvgIcon>
                   <span>Finding {{ index + 1 }}</span>
                 </div>
@@ -77,7 +99,11 @@
                 @enter="enter"
                 @leave="leave"
               >
-                <div v-show="item.open" class="details">
+                <div
+                  v-show="item.open"
+                  :id="`sub-insight-details-${i}-${j}-${index}`"
+                  class="details"
+                >
                   <div v-html="item.details"></div>
                 </div>
               </transition>
@@ -365,6 +391,7 @@ const downloadPdf = () => {
       align-items: center;
       // gap: 48px;
       flex: 1 0 0;
+
       .left {
         width: 12.5em;
         color: #004f8f;
@@ -374,16 +401,31 @@ const downloadPdf = () => {
         flex-direction: row;
         align-items: center;
         gap: 0.75em;
-        cursor: pointer;
+
         span {
           font-size: 1.125em;
+        }
+      }
+      .toggle-button {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:focus-visible {
+          outline: 3px solid #004f8f;
+          outline-offset: 4px;
+          border-radius: 0.5em;
         }
       }
       .right {
         font-weight: 700;
         color: rgba(0, 0, 0, 0.88);
         font-size: 1.25em;
-        cursor: pointer;
         flex: 1 0 0;
         line-height: 1.5;
       }

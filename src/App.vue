@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app-container">
-    <Header class="header-component" style="" />
-    <div id="content" style="">
+    <Header v-if="!hideAppChrome" class="header-component" style="" />
+    <div id="content" :class="{ 'content-without-chrome': hideAppChrome }" style="">
       <div
         style="
           min-height: calc(100% - 40px);
@@ -24,16 +24,20 @@
           />
         </router-view>
       </div>
-      <Footer class="footer-component" />
+      <Footer v-if="!hideAppChrome" class="footer-component" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { provide, nextTick, ref } from "vue";
+import { computed, provide, nextTick, ref } from "vue";
+import { useRoute } from "vue-router";
 import Header from "./components/navBarNew.vue";
 import Footer from "./components/Footer.vue";
 
 const isRouterActive = ref(true);
+const route = useRoute();
+const hideAppChrome = computed(() => route.meta.hideAppChrome === true);
+
 provide("reload", () => {
   isRouterActive.value = false;
   nextTick(() => {
@@ -56,6 +60,10 @@ provide("reload", () => {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &.content-without-chrome {
+      padding-top: 0;
+    }
   }
   .header-component {
     position: absolute;
@@ -63,12 +71,6 @@ provide("reload", () => {
     left: 0;
     width: 100%;
     z-index: 2003;
-  }
-  .footer-component {
-    // position: absolute;
-    // bottom:0;
-    // left:0;
-    // z-index: 10;
   }
 }
 </style>

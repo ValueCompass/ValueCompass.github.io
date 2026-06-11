@@ -74,6 +74,12 @@ export default {
     box-sizing: border-box;
     font-size: 1rem;
   }
+  input:focus-visible,
+  button:focus-visible {
+    outline: 3px solid #7db7ff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 101, 255, 0.2);
+  }
   button {
     background: rgba(0, 101, 255, 0.5);
     color: #fff;
