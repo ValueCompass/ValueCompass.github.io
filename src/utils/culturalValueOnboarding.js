@@ -44,9 +44,9 @@ const onboardingResourceMap = {
   },
   Chinese: {
     videos: [
-      onboardingVideoStep1Chinese,
-      onboardingVideoStep2Chinese,
-      onboardingVideoStep3Chinese,
+      "https://chinese-training-video-1258865474.cos.ap-beijing.myqcloud.com/Part%201%20-%20Chinese.mp4",
+      "https://chinese-training-video-1258865474.cos.ap-beijing.myqcloud.com/Part%202%20-%20Chinese.mp4",
+      "https://chinese-training-video-1258865474.cos.ap-beijing.myqcloud.com/Part%203%20-%20Chinese.mp4",
     ],
     slides: [
       {
