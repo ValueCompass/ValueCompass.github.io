@@ -6,11 +6,12 @@
           type="password"
           @keydown.enter="login"
           placeholder="Please enter password"
+          aria-label="Password"
           v-model.trim="token"
         />
       </div>
       <div>
-        <button @click="login">Enter</button>
+        <button @click="login" aria-label="Enter">Enter</button>
       </div>
     </div>
   </div>

@@ -35,26 +35,26 @@
     </div>
     <div class="img-div">
       <div class="testValues-img">
-        <img src="@/assets/images/testValues/0.png" alt="test" />
+        <img src="@/assets/images/testValues/0.png" alt="decorative" />
         <img
           class="img img1"
           src="@/assets/images/testValues/1@2x.png"
-          alt="test"
+          alt="decorative"
         />
         <img
           class="img img2"
           src="@/assets/images/testValues/2@2x.png"
-          alt="test"
+          alt="decorative"
         />
         <img
           class="img img3"
           src="@/assets/images/testValues/3@2x.png"
-          alt="test"
+          alt="decorative"
         />
         <img
           class="img img4"
           src="@/assets/images/testValues/4@2x.png"
-          alt="test"
+          alt="decorative"
         />
       </div>
     </div>

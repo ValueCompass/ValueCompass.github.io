@@ -141,7 +141,7 @@ onMounted(async () => {
   position: relative;
   & > div {
     position: relative;
-    z-index: 2003;
+    // z-index: 2003;
   }
 
   .img-div {

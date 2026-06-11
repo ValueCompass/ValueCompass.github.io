@@ -627,7 +627,7 @@ defineExpose({
   left: 50%;
   transform: translateX(-50%);
   top: 0;
-  z-index: 9999 !important;
+  // z-index: 9999 !important;
   .chat-container {
     display: flex;
     flex-direction: row;

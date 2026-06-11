@@ -60,12 +60,12 @@
           <img
             class="img img1"
             src="@/assets/images/testValues/home_2@2x.png"
-            alt="test"
+            alt="decorative"
           />
           <img
             class="img img2"
             src="@/assets/images/testValues/home_4@2x.png"
-            alt="test"
+            alt="decorative"
           />
         </div>
       </div>

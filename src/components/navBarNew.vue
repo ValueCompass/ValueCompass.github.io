@@ -12,11 +12,23 @@
           <!-- <a href="">Home</a> -->
         </li>
         <li
-          @mouseenter="mouseenter"
-          @mouseleave="mouseleave"
+          ref="researchMenuRef"
           class="has-child-nav"
+          :class="{ 'enter-active': isResearchMenuOpen }"
+          @mouseenter="openResearchMenu"
+          @mouseleave="closeResearchMenu"
+          @focusin="openResearchMenu"
+          @focusout="handleResearchFocusout"
+          @keydown="handleResearchKeydown"
         >
-          <a href="https://valuecompass.github.io/Research/papers/">Research</a>
+          <a
+            ref="researchTriggerRef"
+            href="https://valuecompass.github.io/Research/papers/"
+            aria-haspopup="true"
+            :aria-expanded="isResearchMenuOpen"
+          >
+            Research
+          </a>
           <SvgIcon class="down-arrow" name="down-arrow"></SvgIcon>
           <ul class="nav-child-ul">
             <li>
@@ -84,11 +96,10 @@
           <router-link to="/AboutUs">About Us</router-link>
         </li>
         <li class="icon-li">
-          <a href="mailto:valuecompass@microsoft.com" aria-label="Email">
+          <a href="mailto:valuecompass@microsoft.com" aria-label="Email" @click="copyEmail('valuecompass@microsoft.com')">
             <SvgIcon
               class="SvgIcon email-icon"
               name="email-icon"
-              @click="copyEmail('valuecompass@microsoft.com')"
             ></SvgIcon>
           </a>
         </li>
@@ -110,6 +121,9 @@ import { ElMessage } from "element-plus";
 import { getGeoStatus } from "../service/api";
 
 const showTestYourValues = ref(false);
+const isResearchMenuOpen = ref(false);
+const researchMenuRef = ref<HTMLElement | null>(null);
+const researchTriggerRef = ref<HTMLElement | null>(null);
 
 onMounted(async () => {
   try {
@@ -129,6 +143,68 @@ const mouseenter = (e: any) => {
 const mouseleave = (e: any) => {
   console.log("mouseleave");
   e.currentTarget.classList.remove("enter-active");
+};
+const openResearchMenu = () => {
+  isResearchMenuOpen.value = true;
+};
+const closeResearchMenu = () => {
+  isResearchMenuOpen.value = false;
+};
+const getResearchMenuLinks = () => {
+  return Array.from(
+    researchMenuRef.value?.querySelectorAll(".nav-child-ul a") ?? []
+  ) as HTMLElement[];
+};
+const handleResearchFocusout = (event: FocusEvent) => {
+  const nextTarget = event.relatedTarget;
+
+  if (
+    nextTarget instanceof Node &&
+    researchMenuRef.value?.contains(nextTarget)
+  ) {
+    return;
+  }
+
+  closeResearchMenu();
+};
+const handleResearchKeydown = (event: KeyboardEvent) => {
+  const menuLinks = getResearchMenuLinks();
+  const activeElement = document.activeElement as HTMLElement | null;
+  const currentLinkIndex = menuLinks.findIndex((link) => link === activeElement);
+
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    openResearchMenu();
+
+    if (currentLinkIndex >= 0) {
+      menuLinks[(currentLinkIndex + 1) % menuLinks.length]?.focus();
+      return;
+    }
+
+    menuLinks[0]?.focus();
+    return;
+  }
+
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    openResearchMenu();
+
+    if (currentLinkIndex >= 0) {
+      menuLinks[
+        (currentLinkIndex - 1 + menuLinks.length) % menuLinks.length
+      ]?.focus();
+      return;
+    }
+
+    menuLinks[menuLinks.length - 1]?.focus();
+    return;
+  }
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeResearchMenu();
+    researchTriggerRef.value?.focus();
+  }
 };
 const copyEmail = (text: string) => {
   copyText(text);

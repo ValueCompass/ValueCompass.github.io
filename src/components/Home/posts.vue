@@ -4,7 +4,13 @@
     <div>
       <ul class="posts-news">
         <li v-for="(post, index) in posts" :key="index">
-          <a :href="'https://valuecompass.github.io/Research' + post.permalink">
+          <a
+            :ref="(element) => setCardLinkRef(element, index)"
+            :tabindex="index === currentIndex ? 0 : -1"
+            :href="'https://valuecompass.github.io/Research' + post.permalink"
+            @focus="handleCardFocus(index)"
+            @keydown="handleCardKeydown($event, index)"
+          >
             <div class="img-div">
               <div>
                 <img :src="getAssetsFile('posts/' + post.image)" alt="" />
@@ -45,6 +51,65 @@ console.log(dayjs("2012-2-2").format("MMMM D,YYYY"));
 const getAssetsFile = (url: any) => {
   return new URL(`../../assets/${url}`, import.meta.url).href;
 };
+const cardLinkRefs = ref<HTMLElement[]>([]);
+const currentIndex = ref(0);
+
+const setCardLinkRef = (element: unknown, index: number) => {
+  if (!(element instanceof HTMLElement)) {
+    return;
+  }
+
+  cardLinkRefs.value[index] = element;
+};
+
+const handleCardFocus = (index: number) => {
+  currentIndex.value = index;
+};
+
+const moveFocus = (index: number) => {
+  if (!posts.value.length) {
+    return;
+  }
+
+  let nextIndex = index;
+
+  if (nextIndex < 0) {
+    nextIndex = posts.value.length - 1;
+  }
+
+  if (nextIndex >= posts.value.length) {
+    nextIndex = 0;
+  }
+
+  const currentElement = cardLinkRefs.value[currentIndex.value];
+  const nextElement = cardLinkRefs.value[nextIndex];
+
+  if (!nextElement) {
+    return;
+  }
+
+  if (currentElement) {
+    currentElement.tabIndex = -1;
+  }
+
+  nextElement.tabIndex = 0;
+  nextElement.focus();
+  currentIndex.value = nextIndex;
+};
+
+const handleCardKeydown = (event: KeyboardEvent, index: number) => {
+  if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+    event.preventDefault();
+    moveFocus(index + 1);
+    return;
+  }
+
+  if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+    event.preventDefault();
+    moveFocus(index - 1);
+  }
+};
+
 const posts = ref([
   // {
   //   title:
@@ -118,18 +183,6 @@ const posts = ref([
     .img-div {
       padding: 1.19em 1.625em;
       background: #ffffff;
-      &>div{
-        // width: 100%;
-        // padding-top: 50%;
-        // position: relative;
-        // overflow: hidden;
-        // img{
-        //   position: absolute;
-        //   left: 0;
-        //   top: 50%;
-        //   transform: translateY(-50%);
-        // }
-      }
     }
     img {
       width: 100%;
@@ -176,6 +229,16 @@ const posts = ref([
       .article__title{
         color: #004F8F;
       }
+    }
+
+    &:focus-within {
+      box-shadow: 0px 0px 12px 0px rgba(0, 79, 143, 1);
+      border-color: #004f8f;
+    }
+
+    & > a:focus-visible {
+      outline: 3px solid #004f8f;
+      outline-offset: 2px;
     }
   }
 }
