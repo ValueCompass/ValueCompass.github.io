@@ -124,6 +124,7 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
         },
       },
       axisLabel: {
+        color: "#767676",
         formatter: function (value) {
           return value.toFixed(0); // 保留一位小数
         },
@@ -162,6 +163,7 @@ onMounted(async () => {
       axisLabel: {
         show: true,
         fontSize: 14,
+        color: "#767676",
       },
       axisName: {
         fontSize: 14,
