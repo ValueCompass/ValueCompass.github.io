@@ -13,6 +13,7 @@ import annotationSlidesPart1Chinese from "@/assets/CulturalAnnotation/Chinese/Hu
 import annotationSlidesPart2Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 2.pptx";
 import annotationSlidesPart3Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 3 - Chinese.pptx";
 import annotationGuidelineDocumentChinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guidelines v3 - China.docx";
+import onboardingVideoStep2Japanese from "@/assets/CulturalAnnotation/Japanese/Part 2.mp4";
 
 export { onboardingPreview };
 
@@ -67,12 +68,45 @@ const onboardingResourceMap = {
       fileName: "Human Annotation Guidelines v3 - China.docx",
     },
   },
+  Japanese: {
+    videos: [
+      onboardingVideoStep1,
+      onboardingVideoStep2Japanese,
+      onboardingVideoStep3,
+    ],
+    slides: [
+      {
+        url: annotationSlidesPart1,
+        fileName: "Human Annotation Guideline Video - Part 1.pptx",
+      },
+      {
+        url: annotationSlidesPart2,
+        fileName: "Human Annotation Guideline Video - Part 2.pptx",
+      },
+      {
+        url: annotationSlidesPart3,
+        fileName: "Human Annotation Guideline Video - Part 3.pptx",
+      },
+    ],
+    guidelineDocument: {
+      url: annotationGuidelineDocument,
+      fileName: "Human Annotation Guidelines v3 - English.docx",
+    },
+  },
 };
 
 const normalizeOnboardingResourceLanguage = (language = "") => {
-  return String(language).trim().toLowerCase() === "chinese"
-    ? "Chinese"
-    : "English";
+  const normalizedLanguage = String(language).trim().toLowerCase();
+
+  if (normalizedLanguage === "chinese") {
+    return "Chinese";
+  }
+
+  if (normalizedLanguage === "japanese") {
+    return "Japanese";
+  }
+
+  return "English";
 };
 
 const getOnboardingResourceSet = (language = "") => {

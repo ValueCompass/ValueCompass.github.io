@@ -1471,9 +1471,13 @@ const updateQuestionScores = (questionText) => {
     rawImportanceValue.value = selectedQuestion.importance;
     rawDistinctivenessValue.value = selectedQuestion.distinctiveness;
     rawPlausibilityValue.value = selectedQuestion.plausibility;
-    importanceValue.value = selectedQuestion.importance;
-    distinctivenessValue.value = selectedQuestion.distinctiveness;
-    plausibilityValue.value = selectedQuestion.plausibility;
+    // importanceValue.value = selectedQuestion.importance;
+    // distinctivenessValue.value = selectedQuestion.distinctiveness;
+    // plausibilityValue.value = selectedQuestion.plausibility;
+
+    importanceValue.value = null;
+    distinctivenessValue.value = null;
+    plausibilityValue.value = null;
   }
 };
 
