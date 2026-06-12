@@ -13,7 +13,9 @@ import annotationSlidesPart1Chinese from "@/assets/CulturalAnnotation/Chinese/Hu
 import annotationSlidesPart2Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 2.pptx";
 import annotationSlidesPart3Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 3 - Chinese.pptx";
 import annotationGuidelineDocumentChinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guidelines v3 - China.docx";
+import onboardingVideoStep1Japanese from "@/assets/CulturalAnnotation/Japanese/Part 1.mp4";
 import onboardingVideoStep2Japanese from "@/assets/CulturalAnnotation/Japanese/Part 2.mp4";
+import onboardingVideoStep3Japanese from "@/assets/CulturalAnnotation/Japanese/Part 3.mp4";
 
 export { onboardingPreview };
 
@@ -70,9 +72,9 @@ const onboardingResourceMap = {
   },
   Japanese: {
     videos: [
-      onboardingVideoStep1,
+      onboardingVideoStep1Japanese,
       onboardingVideoStep2Japanese,
-      onboardingVideoStep3,
+      onboardingVideoStep3Japanese,
     ],
     slides: [
       {
