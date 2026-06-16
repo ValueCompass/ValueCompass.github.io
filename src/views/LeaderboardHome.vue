@@ -87,7 +87,12 @@
         <div class="leaderboard-nav-container">
           <ul class="nav-child-ul main-container">
             <li>
-              <router-link to="/benchmarks/benchmarks">
+              <router-link
+                to="/benchmarks/benchmarks"
+                data-nav-path="/benchmarks/benchmarks"
+                @click="handleNavLinkActivate('/benchmarks/benchmarks')"
+                @keydown="handleNavKeydown('/benchmarks/benchmarks', $event)"
+              >
                 <SvgIcon
                   class="svg-icon"
                   name="icon-AlignmentLeaderboard"
@@ -96,19 +101,34 @@
               >
             </li>
             <li>
-              <router-link to="/benchmarks/valueAnalysis"
+              <router-link
+                to="/benchmarks/valueAnalysis"
+                data-nav-path="/benchmarks/valueAnalysis"
+                @click="handleNavLinkActivate('/benchmarks/valueAnalysis')"
+                @keydown="handleNavKeydown('/benchmarks/valueAnalysis', $event)"
+              
                 ><SvgIcon class="svg-icon" name="icon-ValueAnalysis"></SvgIcon
                 >Analysis</router-link
               >
             </li>
             <li>
-              <router-link to="/benchmarks/valueComparison"
+              <router-link
+                to="/benchmarks/valueComparison"
+                data-nav-path="/benchmarks/valueComparison"
+                @click="handleNavLinkActivate('/benchmarks/valueComparison')"
+                @keydown="handleNavKeydown('/benchmarks/valueComparison', $event)"
+              
                 ><SvgIcon class="svg-icon" name="icon-ValueComparison"></SvgIcon
                 >Comparison</router-link
               >
             </li>
             <li>
-              <router-link to="/benchmarks/keyFindings"
+              <router-link
+                to="/benchmarks/keyFindings"
+                data-nav-path="/benchmarks/keyFindings"
+                @click="handleNavLinkActivate('/benchmarks/keyFindings')"
+                @keydown="handleNavKeydown('/benchmarks/keyFindings', $event)"
+              
                 ><SvgIcon class="svg-icon" name="icon-keyFindings"></SvgIcon
                 >Key Findings</router-link
               >
@@ -144,10 +164,19 @@
 import { ref, watch, reactive, nextTick, onActivated } from "vue";
 import axios from "axios";
 import { getKeyValue, mergeObj, getAvaData } from "../utils/common.js";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import homepageSwiper from "../components/homepageSwiper.vue";
 
 const homepageSwiperRef = ref(null);
+// 记录触发路由切换的导航项，便于切换后恢复焦点。
+const pendingFocusedNavPath = ref("");
+const route = useRoute();
+const leaderboardNavPaths = [
+  "/benchmarks/benchmarks",
+  "/benchmarks/valueAnalysis",
+  "/benchmarks/valueComparison",
+  "/benchmarks/keyFindings",
+];
 
 const showIntro = (index) => {
   if (isDragging) {
@@ -157,6 +186,58 @@ const showIntro = (index) => {
 };
 
 const affixRef = ref(null);
+
+// 在路由内容切换前，先保存当前点击的导航路径。
+const handleNavLinkActivate = (path) => {
+  pendingFocusedNavPath.value = path;
+};
+
+// 在导航链接之间使用左右方向键移动焦点，保持横向 Tab 的使用习惯。
+const handleNavKeydown = (path, event) => {
+  const currentIndex = leaderboardNavPaths.indexOf(path);
+  if (currentIndex === -1) {
+    return;
+  }
+
+  let nextIndex = currentIndex;
+
+  if (event.key === "ArrowRight") {
+    nextIndex = (currentIndex + 1) % leaderboardNavPaths.length;
+  } else if (event.key === "ArrowLeft") {
+    nextIndex =
+      (currentIndex - 1 + leaderboardNavPaths.length) % leaderboardNavPaths.length;
+  } else {
+    return;
+  }
+
+  event.preventDefault();
+  const navLink = document.querySelector(
+    `.nav-child-ul a[data-nav-path="${leaderboardNavPaths[nextIndex]}"]`,
+  );
+  if (navLink && typeof navLink.focus === "function") {
+    navLink.focus();
+  }
+};
+
+watch(
+  () => route.path,
+  async () => {
+    if (!pendingFocusedNavPath.value) {
+      return;
+    }
+
+    // 等待路由内容渲染完成后，把焦点放回当前导航链接。
+    await nextTick();
+    const navLink = document.querySelector(
+      `.nav-child-ul a[data-nav-path="${pendingFocusedNavPath.value}"]`,
+    );
+    if (navLink && typeof navLink.focus === "function") {
+      navLink.focus();
+    }
+    pendingFocusedNavPath.value = "";
+  },
+);
+
 onActivated(() => {
   nextTick(() => {
     if (affixRef.value) {
