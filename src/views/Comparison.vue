@@ -28,7 +28,12 @@
             >
               <span
                 class="close"
+                tabindex="0"
+                role="button"
+                :aria-label="`Remove ${item.model_name} from compare`"
                 @click="closeModel(item.model_name, index)"
+                @keydown.enter.prevent="closeModel(item.model_name, index)"
+                @keydown.space.prevent="closeModel(item.model_name, index)"
               ></span>
               <p class="name">{{ item.model_name }}</p>
               <!-- <p style="display: none">{{ modelInfo[item] }}</p> -->
@@ -58,8 +63,13 @@
                 v-for="item in 5 - checkedModelDetailList.length"
                 :key="item"
                 class="model-li add-model"
+                tabindex="0"
+                role="button"
+                aria-label="Add model to compare"
                 :ref="(el) => (buttonRefs[item] = el)"
                 @click="showPopover(item)"
+                @keydown.enter.prevent="showPopover(item)"
+                @keydown.space.prevent="showPopover(item)"
               >
                 <img src="@/assets/images/add-model.svg" alt="add-model" />
                 <p>Add</p>
@@ -69,8 +79,13 @@
             <li
               v-if="!isSetModelNumMax && checkedModelDetailList.length >= 5"
               class="model-li add-model"
+              tabindex="0"
+              role="button"
+              aria-label="Add model to compare"
               :ref="(el) => (buttonRefs[0] = el)"
               @click="showPopover(0)"
+              @keydown.enter.prevent="showPopover(0)"
+              @keydown.space.prevent="showPopover(0)"
             >
               <img src="@/assets/images/add-model.svg" alt="add-model" />
               <p>Add</p>
@@ -181,7 +196,12 @@
                 :formatter="formatter"
               >
                 <template #header>
-                  <span>Average</span>
+                  <button
+                    type="button"
+                    class="sortable-header-button"
+                  >
+                    Average
+                  </button>
                 </template>
               </el-table-column>
               <template
@@ -218,7 +238,12 @@
                 :formatter="formatter"
               >
                 <template #header>
-                  <span>Average</span>
+                  <button
+                    type="button"
+                    class="sortable-header-button"
+                  >
+                    Average
+                  </button>
                 </template>
               </el-table-column>
               <template
@@ -255,7 +280,12 @@
                 :formatter="formatter"
               >
                 <template #header>
-                  <span>Average</span>
+                  <button
+                    type="button"
+                    class="sortable-header-button"
+                  >
+                    Average
+                  </button>
                 </template>
               </el-table-column>
 
@@ -293,7 +323,12 @@
                 :formatter="formatter"
               >
                 <template #header>
-                  <span>Average</span>
+                  <button
+                    type="button"
+                    class="sortable-header-button"
+                  >
+                    Average
+                  </button>
                 </template>
               </el-table-column>
 
@@ -990,17 +1025,45 @@ const handleClickOutside = (event) => {
   }
 }
 
+.sortable-header-button {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:focus-visible {
+    outline: 2px solid #0b70c3;
+    outline-offset: 2px;
+  }
+}
+
+.compare-model-list :focus-visible {
+  outline: 2px solid #47acff;
+  outline-offset: 2px;
+}
+
 .download-box {
   width: 100%;
   position: absolute;
   top: -99999px;
   right: -99999px;
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   &.show {
     position: relative;
     top: 0;
     right: 0;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 }
 

@@ -102,7 +102,6 @@ const setHotChart = (modelNameList) => {
 
       axisLabel: {
         color: "#000",
-
         fontSize: 16,
       },
     },
@@ -116,6 +115,8 @@ const setHotChart = (modelNameList) => {
 
         label: {
           show: true,
+          fontSize: 16,
+          fontWeight: "bold",
         },
         emphasis: {
           itemStyle: {
@@ -174,7 +175,6 @@ onMounted(async () => {
 
       axisLabel: {
         color: "#000",
-
         fontSize: 16,
       },
     },

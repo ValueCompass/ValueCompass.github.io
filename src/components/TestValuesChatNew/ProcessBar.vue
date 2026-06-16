@@ -1,5 +1,8 @@
 <template>
   <div class="process-bar">
+    <div class="sr-only" aria-live="polite" aria-atomic="true">
+      {{ currentStepAnnouncement }}
+    </div>
     <ul class="process-box">
       <li
         v-for="(i, index) in 7"
@@ -10,14 +13,20 @@
         <div
           class="star-icon"
           :class="['star-icon-' + i, i == 7 ? 'star-icon-final' : '']"
+          role="img"
+          :aria-label="getStepAriaLabel(i)"
+          :aria-current="isCurrentStep(i) ? 'step' : undefined"
         >
-          <svgIcon v-if="i < 7" name="Star-Process" :aria-label="chatProcessText[i - 1]"></svgIcon>
-          <svgIcon v-else name="final_star" :aria-label="chatProcessText[i - 1]"></svgIcon>
+          <svgIcon v-if="i < 7" name="Star-Process" aria-hidden="true"></svgIcon>
+          <svgIcon v-else name="final_star" aria-hidden="true"></svgIcon>
 
-          <text>{{ chatProcessText[i - 1] }}</text>
+          <text aria-hidden="true">{{ chatProcessText[i - 1] }}</text>
         </div>
         <div v-if="i > 1" class="line-icon" :class="['line-icon-' + (i - 1)]">
-          <div :style="getLineProgressStyle(i - 1)"></div>
+          <SvgIcon class="line-icon-base" name="Line-solid"></SvgIcon>
+          <div class="line-icon-progress-mask" :style="getLineProgressStyle(i - 1)">
+            <SvgIcon class="line-icon-progress" name="Line-solid"></SvgIcon>
+          </div>
         </div>
       </li>
     </ul>
@@ -169,6 +178,39 @@ const getStarLightClass = (starIndex) => {
   // 星星索引从1开始，当前线段从0开始，所以已经点亮的星星是starIndex <= currentSegment + 1
   return starIndex <= currentSegment + 1 ? "light" : "";
 };
+
+const isCurrentStep = (starIndex) => {
+  return getStarOnClass(starIndex) === "on";
+};
+
+const getStepStatusText = (starIndex) => {
+  if (isCurrentStep(starIndex)) {
+    return "current step";
+  }
+
+  return getStarLightClass(starIndex) === "light"
+    ? "completed step"
+    : "upcoming step";
+};
+
+const getStepAriaLabel = (starIndex) => {
+  const stepName = chatProcessText.value[starIndex - 1] || "";
+  const stepStatus = getStepStatusText(starIndex);
+
+  return `${stepName}. ${stepStatus}`.trim();
+};
+
+const currentStepAnnouncement = computed(() => {
+  const currentStepIndex = Array.from({ length: 7 }, (_, index) => index + 1).find(
+    (stepIndex) => isCurrentStep(stepIndex),
+  );
+
+  if (!currentStepIndex) {
+    return "";
+  }
+
+  return getStepAriaLabel(currentStepIndex);
+});
 </script>
 
 <style scoped lang="scss">
@@ -358,21 +400,43 @@ const getStarLightClass = (starIndex) => {
     }
   }
   .line-icon {
-    // background: #DCDCDC;
-    color: #5F6B7A;
     position: absolute;
     width: 6px;
     height: 16%;
     transform-origin: top center; /* 设置旋转中心为左上角 */
-    background: #5F6B7A;
-    & > div {
+    color: #5F6B7A;
+    overflow: hidden;
+
+    .line-icon-base,
+    .line-icon-progress,
+    .line-icon-progress-mask {
       position: absolute;
       width: 100%;
-      height: 0;
-      background: #f9d672;
+      height: 100%;
       left: 0;
       top: 0;
     }
+
+    :deep(.line-icon-base.svg-icon),
+    :deep(.line-icon-progress.svg-icon) {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    .line-icon-base {
+      color: #5F6B7A;
+    }
+
+    .line-icon-progress-mask {
+      overflow: hidden;
+      height: 0;
+    }
+
+    .line-icon-progress {
+      color: #f9d672;
+    }
+
     &.line-icon-1 {
       left: 13%;
       top: 8%;
@@ -404,6 +468,18 @@ const getStarLightClass = (starIndex) => {
       transform: rotate(-30deg);
     }
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 

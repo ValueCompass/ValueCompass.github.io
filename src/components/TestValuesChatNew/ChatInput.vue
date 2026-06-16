@@ -1,5 +1,13 @@
 <template>
   <div class="speech-to-text">
+    <div
+      class="sr-only"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {{ liveStatusMessage }}
+    </div>
     <div class="box">
       <template v-if="!isListening">
         <el-input
@@ -68,12 +76,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, defineExpose } from "vue";
+import { ref, onMounted, onBeforeUnmount, defineExpose, computed } from "vue";
 import { ElMessage } from "element-plus";
 
 const props = defineProps({
   lang: { type: String, default: "zh-CN" }, //'en-US' "zh-CN"
   isSendLoading: { type: Boolean, default: false }, //
+});
+
+const liveStatusMessage = computed(() => {
+  if (!props.isSendLoading) {
+    return "";
+  }
+
+  return props.lang == "en-US" ? "Generating message" : "正在生成消息";
 });
 
 const textareaText = ref("");
@@ -246,5 +262,17 @@ defineExpose({
     font-size: 1.25em;
     line-height: 1.2;
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>

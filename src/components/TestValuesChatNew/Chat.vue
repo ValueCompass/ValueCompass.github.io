@@ -41,10 +41,27 @@
                       v-for="(item, index) in chatList"
                       :key="index"
                     >
-                      <div>
-                        {{
-                          item.type == "user" ? item.text : displayedText[index]
-                        }}
+                      <div
+                        :id="getChatMessageContentId(index)"
+                        :tabindex="item.type === 'user' ? 0 : undefined"
+                        :aria-describedby="
+                          item.type === 'user'
+                            ? getChatMessageMetaId(index)
+                            : undefined
+                        "
+                      >
+                        <span>
+                          {{
+                            item.type == "user" ? item.text : displayedText[index]
+                          }}
+                        </span>
+                        <span
+                          v-if="item.type === 'user'"
+                          :id="getChatMessageMetaId(index)"
+                          class="sr-only"
+                        >
+                          sent by you
+                        </span>
 
                         <span
                           v-if="
@@ -64,20 +81,22 @@
                         v-if="item.type === 'model' && item.audio_url"
                         class="read-aloud-btn"
                         type="button"
-                        :aria-label="getReadAloudLabel(index)"
+                        :aria-label="getReadAloudLabel(index, displayedText[index] || item.text)"
                         :class="{ playing: currentSpeakingIndex === index }"
                         @click="toggleReadAloud(index, item.audio_url)"
                       >
+                        <span
+                          v-if="currentSpeakingIndex === index"
+                          class="read-aloud-stop-icon"
+                          aria-hidden="true"
+                        ></span>
                         <img
-                          :src="
-                            currentSpeakingIndex === index
-                              ? readAloudIconStop
-                              : readAloudIcon
-                          "
+                          v-else
+                          :src="readAloudIcon"
                           alt=""
                           aria-hidden="true"
                         />
-                        <span>{{ getReadAloudLabel(index) }}</span>
+                         <span>{{ getReadAloudLabel(index) }}</span>
                       </el-button>
                     </li>
 
@@ -150,7 +169,6 @@ import ChatInput from "./ChatInput.vue";
 
 import { getChatItemInfo } from "@/service/api";
 import readAloudIcon from "@/assets/images/ReadAloud_btnE2.png";
-import readAloudIconStop from "@/assets/images/ReadAloud_btnE2_stop.png";
 
 import {
   ref,
@@ -587,7 +605,7 @@ const toggleReadAloud = (index, audioUrl) => {
   }
 };
 
-const getReadAloudLabel = (index) => {
+const getReadAloudLabel = (index, text = "") => {
   const isPlaying = currentSpeakingIndex.value === index;
   const labels = {
     play: choosedLanguage.value === "zh-CN" ? "朗读" : "Read Aloud",
@@ -596,7 +614,20 @@ const getReadAloudLabel = (index) => {
         ? "停止"
         : "\u00a0\u00a0Stop\u00a0\u00a0",
   };
-  return isPlaying ? labels.stop : labels.play;
+  const actionText = isPlaying ? labels.stop : labels.play;
+  const readableText = String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return readableText ? `${actionText}: ${readableText}` : actionText;
+};
+
+const getChatMessageContentId = (index) => {
+  return `chat-message-content-${index}`;
+};
+
+const getChatMessageMetaId = (index) => {
+  return `chat-message-meta-${index}`;
 };
 onDeactivated(() => {
   console.log("onDeactivated");
@@ -765,6 +796,16 @@ defineExpose({
                   height: 1.2em;
                 }
 
+                .read-aloud-stop-icon {
+                  width: 1.2em;
+                  height: 1.2em;
+                  background: rgb(114, 114, 114);
+                  border-radius: 0.1em;
+                  display: inline-block;
+                  flex-shrink: 0;
+                  padding: 0;
+                }
+
                 span {
                   display: inline-block;
                   white-space: nowrap;
@@ -807,6 +848,18 @@ defineExpose({
     left: 50%;
     transform: translateX(-50%);
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 :deep(.my-dialog) {

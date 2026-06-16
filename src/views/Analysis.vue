@@ -167,12 +167,17 @@
     >
       <div class="chart-tab">
         <!-- <div class="chart-tab-title">Evaluation Results</div> -->
-        <ul>
+        <ul role="tablist" aria-label="Evaluation result tabs">
           <li
             :class="{ active: currentTab == tab.index }"
             @click="tabSwitch(tab.index)"
+            @keydown.enter.prevent="tabSwitch(tab.index)"
+            @keydown.space.prevent="tabSwitch(tab.index)"
             v-for="tab in tabList"
             :key="tab.index"
+            tabindex="0"
+            role="tab"
+            :aria-selected="currentTab == tab.index"
           >
             {{ tab.name }}
           </li>
