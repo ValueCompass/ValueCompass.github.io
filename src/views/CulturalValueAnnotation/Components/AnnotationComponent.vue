@@ -47,7 +47,7 @@
           <div v-if="!isAddingNew">
             status: {{ getStatusDisplayText(highlightCuesStatus[currentCueIndex]) }}
             <div class="button-container1" v-if="!isCueEditMode || isAddingNew">
-              <el-button class="keep" @click="handleKeepClick('cue')"
+              <el-button v-if="!hideConceptKeepButton" class="keep" @click="handleKeepClick('cue')"
                 >{{ t("common.keep") }}</el-button
               >
               <el-button class="delete" @click="handleDeleteClick('cue')"
@@ -111,7 +111,10 @@
               class="button-container1"
               v-if="!isConceptEditMode || isAddingNew"
             >
-              <el-button class="keep" @click="handleKeepClick('concept')"
+              <el-button
+                v-if="!hideConceptKeepButton"
+                class="keep"
+                @click="handleKeepClick('concept')"
                 >{{ t("common.keep") }}</el-button
               >
               <el-button class="delete" @click="handleDeleteClick('concept')"
@@ -179,6 +182,20 @@ import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+
+// 读取用户国家：当国家是 Singapore 或 Japan 时，隐藏 concept 区域的 keep 按钮
+const getUserCountry = () => {
+  try {
+    const detail = JSON.parse(localStorage.getItem("userDetail") || "{}");
+    return String(detail.country || "").trim().toLowerCase();
+  } catch (e) {
+    return "";
+  }
+};
+const hideConceptKeepButton = computed(() => {
+  const country = getUserCountry();
+  return country === "singapore" || country === "japan";
+});
 
 const props = defineProps({
   annotationDataOrigin: {
@@ -1113,6 +1130,11 @@ defineExpose({
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        // 如果当前容器内只有两个按钮，则每个按钮各占 50% 宽度
+        :deep(.el-button:first-child:nth-last-child(2)),
+        :deep(.el-button:first-child:nth-last-child(2) ~ .el-button) {
+          width: 50%;
+        }
         :deep(.el-button) {
           height: 3.4em;
           font-size: 1em;
