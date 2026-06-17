@@ -26,15 +26,14 @@
               :key="item"
               :style="{ 'border-color': item.color }"
             >
-              <span
+              <button
+                type="button"
                 class="close"
-                tabindex="0"
-                role="button"
                 :aria-label="`Remove ${item.model_name} from compare`"
                 @click="closeModel(item.model_name, index)"
-                @keydown.enter.prevent="closeModel(item.model_name, index)"
-                @keydown.space.prevent="closeModel(item.model_name, index)"
-              ></span>
+              >
+                <el-icon><Close /></el-icon>
+              </button>
               <p class="name">{{ item.model_name }}</p>
               <!-- <p style="display: none">{{ modelInfo[item] }}</p> -->
               <!-- <p class="point-num">
@@ -389,6 +388,7 @@ import {
   nextTick,
 } from "vue";
 import axios from "axios";
+import { Close } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 import * as echarts from "echarts";
 import VisualizationComponent from "../components/Comparison/Visualization.vue";
@@ -1097,5 +1097,27 @@ const handleClickOutside = (event) => {
 .compare-model-list ul {
   flex-wrap: wrap;
   padding-right: 8em;
+}
+
+.compare-model-list .close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  position: absolute;
+  right: 0.2em;
+  top: 0.2em;
+}
+
+.compare-model-list .close :deep(.el-icon) {
+  font-size: 1.3em;
+  font-weight: 700;
+  stroke-width: 2.4;
 }
 </style>
