@@ -3,7 +3,7 @@
     <div class="nav main-container">
       <router-link to="/">
         <div class="logo-container">
-          <img src="@/assets/images/main-logo.png" alt="Microsoft logo" />
+          <img src="@/assets/images/main-logo.png" alt="Value Compass logo" />
         </div>
       </router-link>
       <ul class="nav-ul">
