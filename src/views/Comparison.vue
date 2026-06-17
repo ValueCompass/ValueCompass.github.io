@@ -131,19 +131,25 @@
       Comparison Direction
     </p> -->
     <div class="chart-box">
-      <div class="chart-tab">
-        <el-tabs v-model="currentTab" @tab-click="tabSwitch">
-          <el-tab-pane
+      <div class="chart-tab segmented-tabs">
+        <ul role="tablist" aria-label="Comparison sections">
+          <li
             v-for="tab in tabList"
             :key="tab.index"
-            :label="
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-              tab.name +
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-            "
-            :name="tab.index"
-          ></el-tab-pane>
-        </el-tabs>
+            :class="{ active: currentTab == tab.index }"
+            tabindex="0"
+            role="tab"
+            :aria-selected="currentTab == tab.index"
+            @click="tabSwitch(tab.index)"
+            @keydown.enter.prevent="tabSwitch(tab.index)"
+            @keydown.space.prevent="tabSwitch(tab.index)"
+            @keydown.left.prevent="handleComparisonTabArrowKey(tab.index, 'left')"
+            @keydown.right.prevent="handleComparisonTabArrowKey(tab.index, 'right')"
+            :data-comparison-tab-index="tab.index"
+          >
+            {{ tab.name }}
+          </li>
+        </ul>
         <!-- <div class="chart-tab-title">Evaluation Results</div>
         <ul>
           <li
@@ -554,8 +560,30 @@ const formatter = (row, column) => {
 
 const currentTab = ref(0);
 const tabSwitch = (index) => {
-  console.log(index);
-  currentTab.value = index.index;
+  currentTab.value = index;
+};
+
+// Comparison 顶部自定义 tabs 使用左右方向键只移动焦点，不直接切换内容。
+const handleComparisonTabArrowKey = (index, direction) => {
+  const currentIndex = tabList.findIndex((tab) => tab.index === index);
+  if (currentIndex === -1 || tabList.length === 0) {
+    return;
+  }
+
+  const nextIndex =
+    direction === "right"
+      ? (currentIndex + 1) % tabList.length
+      : (currentIndex - 1 + tabList.length) % tabList.length;
+  const nextTab = tabList[nextIndex];
+
+  nextTick(() => {
+    const nextTabElement = document.querySelector(
+      `[data-comparison-tab-index="${nextTab.index}"]`,
+    );
+    if (nextTabElement && typeof nextTabElement.focus === "function") {
+      nextTabElement.focus();
+    }
+  });
 };
 
 const updateCheckboxValue = (checkedValue) => {
@@ -955,34 +983,35 @@ const handleClickOutside = (event) => {
       font-size: 1em;
       font-weight: 700;
     }
-    ul {
-      li {
-        font-size: 1em;
-        font-weight: 400;
-        margin-top: 1.5em;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        span {
-          width: 0.6875em;
-          height: 1.125em;
-          display: inline-block;
-          margin-right: 1em;
-        }
-        &.active {
-          font-weight: 700;
-          color: rgba(16, 147, 255, 1);
-          span {
-            background: url(@/assets/images/right-arrow.svg) no-repeat;
-            background-size: contain;
-          }
-        }
-      }
-    }
+    // ul {
+    //   li {
+    //     font-size: 1em;
+    //     font-weight: 400;
+    //     margin-top: 1.5em;
+    //     display: flex;
+    //     align-items: center;
+    //     cursor: pointer;
+    //     span {
+    //       width: 0.6875em;
+    //       height: 1.125em;
+    //       display: inline-block;
+    //       margin-right: 1em;
+    //     }
+    //     &.active {
+    //       font-weight: 700;
+    //       color: rgba(16, 147, 255, 1);
+    //       span {
+    //         background: url(@/assets/images/right-arrow.svg) no-repeat;
+    //         background-size: contain;
+    //       }
+    //     }
+    //   }
+    // }
   }
   .chart-main {
     // flex-grow: 1;
     width: 100%;
+    margin-top: 1em;
     .table-box {
       margin-top: 2em;
       h4 {
@@ -996,31 +1025,6 @@ const handleClickOutside = (event) => {
     .chart-main-chart {
       display: flex;
       align-items: center;
-    }
-  }
-}
-
-:deep(.el-tabs) {
-  --el-tabs-header-height: 2.1em;
-  .el-tabs__active-bar {
-    transition: all 0s;
-  }
-}
-:deep(.el-tabs__header) {
-  --el-font-size-base: 1.25em;
-  --el-color-primary: var(--theme-color);
-  .el-tabs__item {
-    text-transform: capitalize;
-    padding: 0;
-    color: var(--sub-text-color);
-    font-weight: 600;
-    border-bottom: 2px solid transparent;
-    &.is-active {
-      color: var(--theme-color) !important;
-    }
-    &:hover {
-      color: #47acff;
-      border-color: #47acff;
     }
   }
 }

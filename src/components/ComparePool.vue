@@ -19,7 +19,14 @@
           :key="index"
           :style="{ 'border-color': colorList[index] }"
         >
-          <span class="close" @click="closeModel(item)"></span>
+          <button
+            type="button"
+            class="close"
+            :aria-label="`Remove ${item.modelName} from compare`"
+            @click="closeModel(item)"
+          >
+            <el-icon><Close /></el-icon>
+          </button>
           <p class="name">{{ item.modelName }}</p>
           <!-- <p style="display: none">{{ modelInfo[item] }}</p> -->
           <!-- <p class="point-num">
@@ -46,6 +53,9 @@
           :style="{ 'border-color': item.color }"
           :ref="(el) => (buttonRefs[item] = el)"
           @click="showPopover(item)"
+          tabindex="0"
+          role="button"
+          aria-label="Add model to compare"
         >
           <!-- <img src="@/assets/images/add-model.svg" alt="add-model" /> -->
           <SvgIcon class="add-model-svg" name="add-model"></SvgIcon>
@@ -102,6 +112,7 @@ import {
   watchEffect,
 } from "vue";
 import axios from "axios";
+import { Close } from "@element-plus/icons-vue";
 
 import ModelListCheckbox from "../components/ModelListCheckbox.vue";
 import GlobalData from "@/utils/common-data";
@@ -237,6 +248,26 @@ const handleClickOutside = (event) => {
     line-height: 1.3125em;
     padding: 0.2em 0;
   }
+}
+
+.compare-model-list .close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4em;
+  height: 1.4em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  position: absolute;
+  right: 0.2em;
+  top: 0.2em;
+}
+
+.compare-model-list .close :deep(.el-icon) {
+  font-size: 1.1em;
 }
 
 :deep(.el-tabs__header) {

@@ -136,26 +136,42 @@
         </div>
       </div>
     </div>
-    <div>
-      <el-tabs v-model="currentTitleIndex" @tab-click="tabListTitleSwitch">
-        <el-tab-pane
+    <div class="title-tabs segmented-tabs">
+      <ul role="tablist" aria-label="Analysis sections">
+        <li
           v-for="tab in tabListTitle"
           :key="tab.index"
-          :label="
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-            tab.name +
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          "
-          :name="tab.index"
-        ></el-tab-pane>
-      </el-tabs>
+          :class="{ active: currentTitleIndex == tab.index }"
+          tabindex="0"
+          role="tab"
+          :aria-selected="currentTitleIndex == tab.index"
+          @click="tabListTitleSwitch(tab.index)"
+          @keydown.enter.prevent="tabListTitleSwitch(tab.index)"
+          @keydown.space.prevent="tabListTitleSwitch(tab.index)"
+          @keydown.left.prevent="handleTitleTabArrowKey(tab.index, 'left')"
+          @keydown.right.prevent="handleTitleTabArrowKey(tab.index, 'right')"
+          :data-title-tab-index="tab.index"
+        >
+          {{ tab.name }}
+        </li>
+      </ul>
     </div>
     <!-- Value Space -->
-    <div class="download-box" :class="{ show: currentTitleIndex == 2 }">
+    <div
+      class="download-box"
+      :class="{ show: currentTitleIndex == 2 }"
+      :inert="currentTitleIndex != 2"
+      :aria-hidden="currentTitleIndex != 2"
+    >
       <ValueSpaceComponent ref="ValueSpaceComponentProps"></ValueSpaceComponent>
     </div>
     <!-- Cultural Alignment -->
-    <div class="download-box" :class="{ show: currentTitleIndex == 1 }">
+    <div
+      class="download-box"
+      :class="{ show: currentTitleIndex == 1 }"
+      :inert="currentTitleIndex != 1"
+      :aria-hidden="currentTitleIndex != 1"
+    >
       <CulturalAlignmentComponent
         ref="CulturalAlignmentComponentProps"
       ></CulturalAlignmentComponent>
@@ -164,6 +180,8 @@
     <div
       class="chart-box download-box"
       :class="{ show: currentTitleIndex == 0 }"
+      :inert="currentTitleIndex != 0"
+      :aria-hidden="currentTitleIndex != 0"
     >
       <div class="chart-tab">
         <!-- <div class="chart-tab-title">Evaluation Results</div> -->
@@ -203,12 +221,20 @@
               <SvgIcon name="hide-case"></SvgIcon><span>Hide Cases</span>
             </div>
             <div class="chart-menu">
-              <ul>
+              <ul role="tablist" aria-label="Chart case tabs">
                 <li
                   v-for="item in chartMenu"
                   :key="item"
                   @click="changeMenu(item)"
+                  @keydown.enter.prevent="changeMenu(item)"
+                  @keydown.space.prevent="changeMenu(item)"
+                  @keydown.left.prevent="handleChartMenuArrowKey(item, 'left')"
+                  @keydown.right.prevent="handleChartMenuArrowKey(item, 'right')"
                   :class="{ active: currentChartTab == item }"
+                  tabindex="0"
+                  role="tab"
+                  :aria-selected="currentChartTab == item"
+                  :data-chart-menu-item="item"
                 >
                   <template v-if="currentTab == 0">{{
                     item.indexOf("-") > -1
@@ -335,8 +361,32 @@ const tabListTitle = [
 ];
 const currentTitleIndex = ref(0);
 
+// 顶部自定义标题 tabs 的切换入口，点击或键盘激活时更新当前标题索引。
 const tabListTitleSwitch = (index) => {
-  currentTitleIndex.value = index.index;
+  currentTitleIndex.value = index;
+};
+
+// 顶部 title-tabs 使用左右方向键只移动焦点，不直接切换内容。
+const handleTitleTabArrowKey = (index, direction) => {
+  const currentIndex = tabListTitle.findIndex((tab) => tab.index === index);
+  if (currentIndex === -1 || tabListTitle.length === 0) {
+    return;
+  }
+
+  const nextIndex =
+    direction === "right"
+      ? (currentIndex + 1) % tabListTitle.length
+      : (currentIndex - 1 + tabListTitle.length) % tabListTitle.length;
+  const nextTab = tabListTitle[nextIndex];
+
+  nextTick(() => {
+    const nextTabElement = document.querySelector(
+      `[data-title-tab-index="${nextTab.index}"]`,
+    );
+    if (nextTabElement && typeof nextTabElement.focus === "function") {
+      nextTabElement.focus();
+    }
+  });
 };
 
 const chartDom0 = ref(null);
@@ -493,6 +543,29 @@ const changeMenu = (item) => {
   } else if (currentTab.value == 3) {
     chartDom0.value.setRadarHighlight(FULVa_data[currentModel.value], item);
   }
+};
+
+// 在 chart-menu 中使用左右方向键切换相邻选项，并同步移动焦点。
+const handleChartMenuArrowKey = (item, direction) => {
+  const currentIndex = chartMenu.value.indexOf(item);
+  if (currentIndex === -1 || chartMenu.value.length === 0) {
+    return;
+  }
+
+  const nextIndex =
+    direction === "right"
+      ? (currentIndex + 1) % chartMenu.value.length
+      : (currentIndex - 1 + chartMenu.value.length) % chartMenu.value.length;
+  const nextItem = chartMenu.value[nextIndex];
+
+  nextTick(() => {
+    const nextTab = document.querySelector(
+      `[data-chart-menu-item="${CSS.escape(nextItem)}"]`,
+    );
+    if (nextTab && typeof nextTab.focus === "function") {
+      nextTab.focus();
+    }
+  });
 };
 
 const updateCheckboxValue = (checkedValue) => {
@@ -752,7 +825,7 @@ const downloadChartsAsPDF = async (pdf) => {
         white-space: nowrap;
       }
       .prop-content {
-        max-width: 6em;
+        // max-width: 6em;
         white-space: nowrap; /* 不换行 */
         overflow: hidden; /* 超出部分隐藏 */
         text-overflow: ellipsis;
@@ -765,7 +838,7 @@ const downloadChartsAsPDF = async (pdf) => {
   }
 }
 .chart-box {
-  margin-top: 1em;
+  margin-top: 1.5em;
   padding: 0 0 4.5em;
   display: flex;
   .chart-tab {
@@ -1010,43 +1083,19 @@ const downloadChartsAsPDF = async (pdf) => {
   }
 }
 
-:deep(.el-tabs) {
-  --el-tabs-header-height: 2.1em;
-  .el-tabs__active-bar {
-    transition: all 0s;
-  }
-
-  .el-tabs__header {
-    --el-font-size-base: 1.25em;
-    --el-color-primary: var(--theme-color);
-    .el-tabs__item {
-      text-transform: capitalize;
-      padding: 0;
-      color: var(--sub-text-color);
-      font-weight: 600;
-      border-bottom: 2px solid transparent;
-      &.is-active {
-        color: var(--theme-color) !important;
-      }
-      &:hover {
-        color: #47acff;
-        border-color: #47acff;
-      }
-    }
-  }
-}
-
 .download-box {
   width: 100%;
   position: absolute;
   top: -99999px;
   right: -99999px;
   opacity: 0;
+  pointer-events: none;
   &.show {
     position: relative;
     top: 0;
     right: 0;
     opacity: 1;
+    pointer-events: auto;
   }
 }
 </style>

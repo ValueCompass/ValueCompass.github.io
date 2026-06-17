@@ -13,11 +13,14 @@
       :key="item.model + index"
     >
       <div class="swiper-main swiper-no-swiping" tabindex="0">
-        <svgIcon
+        <button
+          type="button"
           class="copy-icon"
-          name="copy-icon"
+          aria-label="Copy case content"
           @click="copyCase($event)"
-        ></svgIcon>
+        >
+          <svgIcon name="copy-icon"></svgIcon>
+        </button>
         <p class="title">
           <span>{{ "Case" + (index + 1) }} Score：</span
           >{{ item.score.toFixed(4) }} &nbsp;(<text
@@ -165,14 +168,22 @@ export default {
     overflow: auto;
     position: relative;
     .copy-icon {
+      padding: 0;
+      border: 0;
+      background: transparent;
       color: #666;
       width: 1.5em;
       height: 1.5em;
       position: absolute;
       right: 2.3em;
       top: 0.5em;
+      cursor: pointer;
       &:active {
         opacity: 0.8;
+      }
+      :deep(.svg-icon) {
+        width: 100%;
+        height: 100%;
       }
     }
   }
