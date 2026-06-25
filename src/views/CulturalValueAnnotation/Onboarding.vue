@@ -231,7 +231,10 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
 import { syncLocaleFromUserDetail } from "@/i18n";
-import { markCulturalValueAnnotationTutorialAutoOpenedThisLogin } from "@/utils/culturalValueAnnotationAuth";
+import {
+  hasAutoOpenedCulturalValueAnnotationTutorialThisLogin,
+  markCulturalValueAnnotationTutorialAutoOpenedThisLogin,
+} from "@/utils/culturalValueAnnotationAuth";
 import {
   onboardingPreview,
   createOnboardingSteps,
@@ -251,6 +254,8 @@ const registeredUserName = ref("hua");
 const registeredUserCountry = ref("");
 const registeredUserLanguage = ref("");
 const surveyLinksExpanded = ref(true);
+const hasTutorialAutoOpenedThisLogin =
+  hasAutoOpenedCulturalValueAnnotationTutorialThisLogin();
 const router = useRouter();
 const handleDownloadSlides = () => {
   downloadOnboardingSlides();
@@ -260,7 +265,9 @@ const handleDownloadGuidelineDocument = () => {
   downloadOnboardingGuidelineDocument();
 };
 
-const steps = ref(createOnboardingSteps());
+const steps = ref(
+  createOnboardingSteps({ completed: hasTutorialAutoOpenedThisLogin }),
+);
 
 const surveys = ref(createOnboardingSurveys());
 
@@ -322,7 +329,8 @@ let isRestoringTime = false;
 
 const resetPlaybackGuards = () => {
   maxPlayedTime = 0;
-  allowSeek = !!currentStepData.value?.completed;
+  allowSeek =
+    hasTutorialAutoOpenedThisLogin || !!currentStepData.value?.completed;
   isRestoringTime = false;
 };
 
@@ -374,6 +382,28 @@ const handlePreviousStep = () => {
 const handleNextStep = () => {
   if (isLastStep.value) {
     if (currentStepData.value?.completed) {
+      StudiedAnnotationGuidance({
+        username: registeredUserName.value,
+        country: registeredUserCountry.value,
+        language: registeredUserLanguage.value,
+      })
+        .then(() => {
+          try {
+            const storedUserDetail = JSON.parse(
+              localStorage.getItem("userDetail") || "{}",
+            );
+            localStorage.setItem(
+              "userDetail",
+              JSON.stringify({
+                ...storedUserDetail,
+                studied_annotation_guidance: true,
+              }),
+            );
+            markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
+            syncLocaleFromUserDetail(storedUserDetail);
+          } catch {}
+        })
+        .catch(() => {});
       player?.pause();
       showSurveyModule.value = true;
     }
@@ -388,35 +418,7 @@ const handleBackToVideoGuide = () => {
 };
 
 const handleSurveyNext = () => {
-  if (!allSurveysCompleted.value) {
-    return;
-  }
-  StudiedAnnotationGuidance({
-    username: registeredUserName.value,
-    country: registeredUserCountry.value,
-    language: registeredUserLanguage.value,
-  })
-    .then((res) => {
-      try {
-        const storedUserDetail = JSON.parse(
-          localStorage.getItem("userDetail") || "{}",
-        );
-        localStorage.setItem(
-          "userDetail",
-          JSON.stringify({
-            ...storedUserDetail,
-            studied_annotation_guidance: true,
-          }),
-        );
-        markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
-        syncLocaleFromUserDetail(storedUserDetail);
-        router.push("/CulturalValueAnnotation/home");
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, 200);
-      } catch {}
-    })
-    .catch((err) => {});
+  router.push("/CulturalValueAnnotation/home");
 };
 
 const handleCopyRegisteredName = async () => {
@@ -466,6 +468,11 @@ onMounted(() => {
   registeredUserName.value = storedUserDetail.username;
   registeredUserCountry.value = storedUserDetail.country;
   registeredUserLanguage.value = storedUserDetail.language;
+
+  // 本次登录里教程已自动打开过时，刷新后默认直接展示 survey 模块。
+  if (hasTutorialAutoOpenedThisLogin) {
+    showSurveyModule.value = true;
+  }
 
   if (!videoElement.value) {
     return;
