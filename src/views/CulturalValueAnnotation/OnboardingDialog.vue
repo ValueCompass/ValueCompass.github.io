@@ -36,10 +36,9 @@
             :key="step.id"
             type="button"
             class="step-tab"
-            :disabled="step.id !== currentStep && !step.completed"
             :class="{
               active: step.id === currentStep,
-              completed: step.completed,
+              completed: true,
             }"
             @click="handleStepChange(step.id)"
           >
@@ -50,7 +49,7 @@
               ></svgIcon>
               <svgIcon
                 v-else
-                :name="step.completed ? 'play-finish-icon' : 'lock-icon'"
+                name="play-finish-icon"
               ></svgIcon>
             </span>
             <span>{{ step.label }}</span>
@@ -165,7 +164,7 @@ const handleDownloadGuidelineDocument = () => {
   downloadOnboardingGuidelineDocument();
 };
 
-const steps = ref(createOnboardingSteps({ completed: true }));
+const steps = ref(createOnboardingSteps());
 
 const surveys = ref(createOnboardingSurveys());
 
@@ -205,18 +204,6 @@ const displaySurveys = computed(() => {
 const toggleSurveyLinks = () => {
   surveyLinksExpanded.value = !surveyLinksExpanded.value;
 };
-
-const completedStepCount = computed(() => {
-  return steps.value.filter((step) => step.completed).length;
-});
-
-const progressStyle = computed(() => {
-  const progress = (completedStepCount.value / steps.value.length) * 100;
-
-  return {
-    width: `${progress}%`,
-  };
-});
 
 const swiperRef = ref(null);
 const videoElements = ref([]);
@@ -288,9 +275,7 @@ const handlePreviousStep = () => {
 
 const handleNextStep = () => {
   if (isLastStep.value) {
-    if (currentStepData.value?.completed) {
-      showSurveyModule.value = true;
-    }
+    showSurveyModule.value = true;
     return;
   }
 
@@ -312,12 +297,6 @@ const handleSurveyNext = () => {
 const handleCopyRegisteredName = async () => {
   await copyTextWithFallback(registeredUserName.value);
   ElMessage.success("Name copied");
-};
-
-const handleEnded = (index) => {
-  if (steps.value[index]) {
-    steps.value[index].completed = true;
-  }
 };
 
 const initializeVideoPlayers = () => {
@@ -350,7 +329,6 @@ const initializeVideoPlayers = () => {
     });
 
     videoPlayers[index] = player;
-    player.on("ended", () => handleEnded(index));
   });
 };
 

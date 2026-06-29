@@ -124,7 +124,7 @@ export const countryLanguageMap = {
   "Republic of Korea": "Korean",
 };
 
-export const createOnboardingSteps = ({ completed = false } = {}) => {
+export const createOnboardingSteps = () => {
   const { language } = getStoredOnboardingUserDetail();
   const resourceSet = getOnboardingResourceSet(language);
 
@@ -136,7 +136,6 @@ export const createOnboardingSteps = ({ completed = false } = {}) => {
       heading: "Get to Know the Task",
       description:
         "Understand the workflow and purpose of the annotation system.",
-      completed,
       videoSrc: resourceSet.videos[0],
       videoType: "video/mp4",
     },
@@ -147,7 +146,6 @@ export const createOnboardingSteps = ({ completed = false } = {}) => {
       heading: "Learn the Annotation Rules",
       description:
         "Learn rules and criteria to ensure consistent, reliable annotations.",
-      completed,
       videoSrc: resourceSet.videos[1],
       videoType: "video/mp4",
     },
@@ -158,7 +156,6 @@ export const createOnboardingSteps = ({ completed = false } = {}) => {
       heading: "Examples & Practical",
       description:
         "See real examples to reinforce understanding and apply in practice.",
-      completed,
       videoSrc: resourceSet.videos[2],
       videoType: "video/mp4",
     },

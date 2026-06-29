@@ -3,215 +3,261 @@
     style="background-color: rgba(247, 249, 252, 1); flex: 1; padding-top: 4em"
   >
     <div class="main-container onboarding-page">
-      <!-- 视频引导 -->
-      <div v-show="!showSurveyModule" class="onboarding-container">
-        <section class="hero-card">
-          <div class="hero-copy">
-            <span class="step-pill">{{ currentStepData.pill }}</span>
-            <h1>{{ currentStepData.heading }}</h1>
-            <p>
-              {{ currentStepData.description }}
-            </p>
+      <div class="onboarding-layout">
+        <aside class="step-side-nav">
+          <div class="onboarding-aside-intro">
+            <p class="welcome-title">Welcome 👋</p>
+            <p class="welcome-desc">Complete onboarding to unlock annotation tasks.</p>
+
+            <div class="overall-progress-header">
+              <span>OVERALL PROGRESS</span>
+              <strong>{{ overallCompletedCount }}/{{ overallTotalCount }}</strong>
+            </div>
+            <div class="overall-progress-track">
+              <span class="overall-progress-value" :style="overallProgressStyle"></span>
+            </div>
           </div>
 
-          <nav class="step-tabs" aria-label="Onboarding steps">
-            <button
-              v-for="step in steps"
-              :key="step.id"
-              type="button"
-              class="step-tab"
-              :disabled="step.id !== currentStep && !step.completed"
-              :class="{
-                active: step.id === currentStep,
-                completed: step.completed,
-              }"
-              @click="handleStepChange(step.id)"
-            >
-              <span class="step-tab-icon">
-                <svgIcon
-                  v-if="step.id === currentStep"
-                  name="play-icon"
-                ></svgIcon>
-                <svgIcon
-                  v-else
-                  :name="step.completed ? 'play-finish-icon' : 'lock-icon'"
-                ></svgIcon>
-              </span>
-              <span>{{ step.label }}</span>
-            </button>
-          </nav>
-        </section>
-
-        <section class="content-grid">
-          <article class="media-panel">
-            <div class="video-shell">
-              <video
-                ref="videoElement"
-                class="video-js vjs-big-play-centered media-stage"
-              ></video>
-            </div>
-          </article>
-
-          <aside class="status-panel">
-            <div class="progress-block">
-              <div class="progress-header">
-                <span>Completion Progress</span>
-                <strong>{{ completedStepCount }}/{{ steps.length }}</strong>
+          <div
+            role="button"
+            tabindex="0"
+            class="flow-step-item"
+            :class="{ active: activeMainStepIndex === 1, completed: trainingVideoStepCompleted }"
+            @click="handleMainStepChange(1)"
+            @keydown.enter.prevent="handleMainStepChange(1)"
+            @keydown.space.prevent="handleMainStepChange(1)"
+          >
+            <div class="step-group-main">
+              <div class="step-group-icon">
+                <el-icon v-if="trainingVideoStepCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-else><VideoPlay /></el-icon>
               </div>
-              <div class="progress-track">
-                <span class="progress-value" :style="progressStyle"></span>
-              </div>
-            </div>
-
-            <div class="warning-box">
-              <el-icon class="warning-icon"><Warning /></el-icon>
-              <p>
-                Skipping or fast-forwarding is disabled for this introductory
-                module.
-              </p>
-            </div>
-
-            <div class="warning-box" style="background: rgba(204, 240, 252, 0.25);color: rgba(10, 17, 31, 1);">
-              <img src="@/assets/images/Annotat-ionResources-icon.png" alt="" style="width:1.5em">
-              <div>
-                <p><b>Annotation Resources</b></p>
-                <p>Download supporting materials before annotation.</p>
-                <p>
-                  <a class="download-a" href="" @click.prevent="handleDownloadSlides"
-                    >[ Download Slides ]</a
-                  >
-                </p>
-                <p>
-                  <a class="download-a" href="" @click.prevent="handleDownloadGuidelineDocument"
-                    >[ Download Guideline Document ]</a
-                  >
-                </p>
-              </div>
-            </div>
-
-            <div class="action-block">
-              <button
-                type="button"
-                class="complete-button"
-                :class="{ completed: currentStepData.completed }"
-                :disabled="!currentStepData.completed"
-                @click="handleNextStep"
-              >
-                {{
-                  currentStepData.id === steps.length
-                    ? `Completed`
-                    : `Complete ${currentStepData.label}`
-                }}
-                <svgIcon
-                  v-if="!currentStepData.completed"
-                  name="lock-icon"
-                ></svgIcon>
-              </button>
-              <p>Finish watching to unlock the next section</p>
-
-              <div style="height: 40px; text-align: center">
-                <div
-                  class="pre-step-button"
-                  v-if="!isFirstStep"
-                  @click="handlePreviousStep"
+              <div class="step-group-content">
+                <h4
+                  class="step-title-toggle"
+                  :class="{ collapsible: trainingVideoStepCompleted }"
+                  @click.stop="handleTrainingVideoTitleClick"
                 >
-                  Return to Previous Step
+                  1.Watch Training Videos
+                </h4>
+                <div
+                  v-show="activeMainStepIndex === 1 && !isTrainingVideoGroupCollapsed"
+                  class="step-group-body"
+                >
+                  <p class="step-group-progress">
+                    {{ completedTrainingVideoStepCount }} / {{ trainingVideoSteps.length }} Completed
+                  </p>
+
+                  <ul class="video-substeps">
+                    <li
+                      v-for="trainingVideoStep in trainingVideoSteps"
+                      :key="trainingVideoStep.id"
+                      :class="{
+                        done: isTrainingVideoStepCompleted(trainingVideoStep.id),
+                        current:
+                          activeMainStepIndex === 1 && trainingVideoStep.id === activeTrainingVideoStepIndex,
+                        locked: !canAccessTrainingVideoStep(trainingVideoStep.id),
+                      }"
+                      @click.stop="handleTrainingVideoStepChange(trainingVideoStep.id)"
+                    >
+                      <el-icon v-if="isTrainingVideoStepCompleted(trainingVideoStep.id)"><CircleCheck /></el-icon>
+                      <span
+                        v-else-if="canAccessTrainingVideoStep(trainingVideoStep.id)"
+                        class="current-circle-icon"
+                      ></span>
+                      <el-icon v-else><Lock /></el-icon>
+                      <span>VIDEO {{ trainingVideoStep.id }}</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
-          </aside>
-        </section>
-      </div>
-      <!-- 调查问卷 -->
-      <div v-show="showSurveyModule" class="survey-container">
-        <div class="content">
-          <div class="survery-intro">
-            <h3>Survey Completion Required</h3>
-            <p>
-              You must complete <b>all 3 surveys</b> before proceeding to the
-              next stage.
-            </p>
-            <p>Estimated time: 20–30 minutes total.</p>
-            <p>
-              Additional language versions are available in the expanded menu
-              below.
-            </p>
-            <p>
-              <b>Important</b>: You must use the registered name
-              <span class="registered-name">“{{ registeredUserName }}”</span>
-              <button
-                type="button"
-                class="copy-name-button"
-                @click="handleCopyRegisteredName"
-              >
-                <el-icon><CopyDocument /></el-icon>
-              </button>
-              exactly as shown.
-            </p>
           </div>
 
-          <div class="survery-ul">
-            <div
-              v-for="surveyItem in displaySurveys"
-              :key="surveyItem.survey.title"
-              class="item"
-            >
-              <span>{{ surveyItem.survey.title }}</span>
-              <div>
-                <div class="survey-links-row">
-                  <p class="survey-version-p">
-                    <a
-                      v-for="version in surveyItem.visibleLinks"
-                      :key="`${surveyItem.survey.title}-${version.label}`"
-                      :href="version.href"
-                      target="_blank"
-                      rel="noreferrer"
-                      ><span
-                        >{{
-                          normalizeLanguageLabel(version.label)
-                        }}
-                        Version</span
-                      >
-                      <SvgIcon class="svg-icon" name="view-more-icon"></SvgIcon>
-                    </a>
+          <div
+            role="button"
+            tabindex="0"
+            class="flow-step-item"
+            :class="{
+              active: activeMainStepIndex === 2,
+              completed: quizCompleted,
+              locked: !trainingVideoStepCompleted,
+            }"
+            :aria-disabled="!trainingVideoStepCompleted"
+            @click="handleMainStepChange(2)"
+            @keydown.enter.prevent="handleMainStepChange(2)"
+            @keydown.space.prevent="handleMainStepChange(2)"
+          >
+            <div class="step-group-main">
+              <div class="step-group-icon">
+                <el-icon v-if="quizCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-else><List /></el-icon>
+              </div>
+              <div class="step-group-content">
+                <h4 class="step-title-text">2.Complete Quiz</h4>
+                <div v-show="activeMainStepIndex === 2" class="step-group-body">
+                  <p class="step-group-progress">
+                    {{ quizCompleted ? "Completed" : "Answer all quiz questions" }}
                   </p>
-                  <!-- <button
-                    v-if="surveyItem.canExpand"
-                    type="button"
-                    class="toggle-links-button"
-                    :aria-expanded="surveyLinksExpanded"
-                    @click="toggleSurveyLinks"
-                  >
-                    <el-icon>
-                      <DArrowLeft v-if="surveyLinksExpanded" />
-                      <DArrowRight v-else />
-                    </el-icon>
-                  </button> -->
-                </div>
-                <div>
-                  <el-checkbox
-                    v-model="surveyItem.survey.completed"
-                    label="Completed"
-                    size="large"
-                  />
+                  <ul class="video-substeps">
+                    <li
+                      v-for="(quizQuestion, quizIndex) in quizQuestions"
+                      :key="quizQuestion.id"
+                      :class="{
+                        done: isQuizQuestionCompleted(quizQuestion.id),
+                        current:
+                          activeMainStepIndex === 2 &&
+                          getQuizQuestionStatus(quizQuestion.id) === 'current',
+                        locked: getQuizQuestionStatus(quizQuestion.id) === 'locked',
+                      }"
+                    >
+                      <el-icon v-if="isQuizQuestionCompleted(quizQuestion.id)"><CircleCheck /></el-icon>
+                      <span
+                        v-else-if="getQuizQuestionStatus(quizQuestion.id) === 'current'"
+                        class="current-circle-icon"
+                      ></span>
+                      <el-icon v-else><Lock /></el-icon>
+                      <span>QUIZ {{ quizIndex + 1 }}</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
-          <div class="button-container">
-            <el-button class="back-button" @click="handleBackToVideoGuide"
-              >Back</el-button
-            >
-            <el-button
-              class="next-button"
-              :class="{ disabled: !allSurveysCompleted }"
-              :disabled="!allSurveysCompleted"
-              @click="handleSurveyNext"
-              type="primary"
-              >Next</el-button
-            >
+
+          <div
+            role="button"
+            tabindex="0"
+            class="flow-step-item"
+            :class="{
+              active: activeMainStepIndex === 3,
+              completed: allSurveysCompleted,
+              locked: !canEnterSurvey,
+            }"
+            :aria-disabled="!canEnterSurvey"
+            @click="handleMainStepChange(3)"
+            @keydown.enter.prevent="handleMainStepChange(3)"
+            @keydown.space.prevent="handleMainStepChange(3)"
+          >
+            <div class="step-group-main">
+              <div class="step-group-icon">
+                <el-icon v-if="allSurveysCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-else><Document /></el-icon>
+              </div>
+              <div class="step-group-content">
+                <h4 class="step-title-text">3.Fill Survey</h4>
+                
+              </div>
+            </div>
           </div>
-        </div>
+        </aside>
+
+        <section class="step-content-area">
+          <TrainingVideo
+            v-show="activeMainStepIndex === 1"
+            v-model:active-video-step-index="activeTrainingVideoStepIndex"
+            :video-steps="trainingVideoSteps"
+            :training-video-completion-status="trainingVideoCompletionStatus"
+            :has-studied-annotation-guidance="hasStudiedTrainingVideoGuidance"
+            :registered-user-name="registeredUserName"
+            :registered-user-country="registeredUserCountry"
+            :registered-user-language="registeredUserLanguage"
+            @complete-video="handleTrainingVideoCompleted"
+            @continue-to-quiz="moveFromTrainingVideoToQuizStep"
+          />
+
+          <QuizCheck
+            v-show="activeMainStepIndex === 2"
+            :questions="quizQuestions"
+            :answers="quizAnswers"
+            :all-answered="allQuizAnswered"
+            @back="handleMainStepChange(1)"
+            @complete="handleCompleteQuiz"
+            @update-answer="handleQuizAnswerChange"
+            @active-question-change="handleActiveQuizQuestionChange"
+            @question-result="handleQuizQuestionResult"
+          />
+
+          <div v-show="activeMainStepIndex === 3" class="survey-container">
+            <div class="content">
+              <div class="survery-intro">
+                <h3>Survey Completion Required</h3>
+                <p>
+                  You must complete <b>all 3 surveys</b> before proceeding to
+                  the next stage.
+                </p>
+                <p>Estimated time: 20-30 minutes total.</p>
+                <p>
+                  Additional language versions are available in the expanded
+                  menu below.
+                </p>
+                <p>
+                  <b>Important</b>: You must use the registered name
+                  <span class="registered-name">"{{ registeredUserName }}"</span>
+                  <button
+                    type="button"
+                    class="copy-name-button"
+                    @click="handleCopyRegisteredName"
+                  >
+                    <el-icon><CopyDocument /></el-icon>
+                  </button>
+                  exactly as shown.
+                </p>
+              </div>
+
+              <div class="survery-ul">
+                <div
+                  v-for="surveyItem in displaySurveys"
+                  :key="surveyItem.survey.title"
+                  class="item"
+                >
+                  <span>{{ surveyItem.survey.title }}</span>
+                  <div>
+                    <div class="survey-links-row">
+                      <p class="survey-version-p">
+                        <a
+                          v-for="version in surveyItem.visibleLinks"
+                          :key="`${surveyItem.survey.title}-${version.label}`"
+                          :href="version.href"
+                          target="_blank"
+                          rel="noreferrer"
+                          ><span
+                            >{{ normalizeLanguageLabel(version.label) }}
+                            Version</span
+                          >
+                          <SvgIcon
+                            class="svg-icon"
+                            name="view-more-icon"
+                          ></SvgIcon>
+                        </a>
+                      </p>
+                    </div>
+                    <div>
+                      <el-checkbox
+                        v-model="surveyItem.survey.completed"
+                        label="Completed"
+                        size="large"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="button-container">
+                <el-button class="back-button" @click="handleMainStepChange(2)"
+                  >Back</el-button
+                >
+                <el-button
+                  class="next-button"
+                  :class="{ disabled: !allSurveysCompleted }"
+                  :disabled="!allSurveysCompleted"
+                  @click="handleSurveyNext"
+                  type="primary"
+                  >Next</el-button
+                >
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -220,23 +266,22 @@
 <script setup>
 import { ElMessage } from "element-plus";
 import {
-  Warning,
   CopyDocument,
-  DArrowLeft,
-  DArrowRight,
+  VideoPlay,
+  CircleCheck,
+  CircleCheckFilled,
+  Lock,
+  List,
+  Document,
 } from "@element-plus/icons-vue";
-import videojs from "video.js";
-import "video.js/dist/video-js.css";
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
-import { syncLocaleFromUserDetail } from "@/i18n";
+import QuizCheck from "./onnborading/Components/QuizCheck.vue";
+import TrainingVideo from "./onnborading/Components/TrainingVideo.vue";
 import {
-  hasAutoOpenedCulturalValueAnnotationTutorialThisLogin,
-  markCulturalValueAnnotationTutorialAutoOpenedThisLogin,
+  hasStudiedCulturalValueAnnotationGuidance,
 } from "@/utils/culturalValueAnnotationAuth";
 import {
-  onboardingPreview,
   createOnboardingSteps,
   createOnboardingSurveys,
   normalizeLanguageLabel,
@@ -244,51 +289,138 @@ import {
   buildDisplaySurveys,
   getStoredOnboardingUserDetail,
   copyTextWithFallback,
-  downloadOnboardingSlides,
-  downloadOnboardingGuidelineDocument,
 } from "@/utils/culturalValueOnboarding";
+import { createOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
 
-const currentStep = ref(1);
-const showSurveyModule = ref(false);
+const SURVEY_COMPLETION_STORAGE_KEY =
+  "culturalValueAnnotationOnboardingSurveyCompletion";
+const TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX =
+  "culturalValueAnnotationTrainingVideoProgress";
+
+// 主流程状态：1=视频引导，2=测验，3=问卷。
+const activeTrainingVideoStepIndex = ref(1);
+const activeMainStepIndex = ref(1);
+
+// Quiz 完成后才允许进入问卷步骤。
+const quizCompleted = ref(false);
+
+// 当前注册用户信息，用于展示问卷填写姓名和提交引导完成状态。
 const registeredUserName = ref("hua");
 const registeredUserCountry = ref("");
 const registeredUserLanguage = ref("");
+
+// 问卷语言链接默认展开，方便用户直接选择对应版本。
 const surveyLinksExpanded = ref(true);
-const hasTutorialAutoOpenedThisLogin =
-  hasAutoOpenedCulturalValueAnnotationTutorialThisLogin();
+
+// 左侧训练视频分组完成后允许折叠。
+const isTrainingVideoGroupCollapsed = ref(false);
+
+// 长期完成态来自 userDetail.studied_annotation_guidance。
+const hasStudiedTrainingVideoGuidance =
+  hasStudiedCulturalValueAnnotationGuidance();
 const router = useRouter();
-const handleDownloadSlides = () => {
-  downloadOnboardingSlides();
-};
 
-const handleDownloadGuidelineDocument = () => {
-  downloadOnboardingGuidelineDocument();
-};
+// 训练视频步骤只保存视频元数据，完成状态单独存在 trainingVideoCompletionStatus。
+const trainingVideoSteps = ref(createOnboardingSteps());
+const trainingVideoCompletionStatus = ref({});
 
-const steps = ref(
-  createOnboardingSteps({ completed: hasTutorialAutoOpenedThisLogin }),
-);
-
+// 三份问卷的展示数据和完成勾选状态。
 const surveys = ref(createOnboardingSurveys());
 
-const currentStepData = computed(() => {
-  return (
-    steps.value.find((step) => step.id === currentStep.value) ?? steps.value[0]
-  );
-});
+// 页面内轻量测验题库按用户国家生成，后续国家差异只维护数据文件。
+const quizQuestions = createOnboardingQuizQuestions();
 
-const isFirstStep = computed(() => {
-  return currentStep.value === steps.value[0]?.id;
-});
+const quizAnswers = ref(
+  quizQuestions.reduce((answers, question) => {
+    answers[question.id] = question.type === "multiple" ? [] : "";
+    return answers;
+  }, {}),
+);
+const activeQuizQuestionId = ref(quizQuestions[0]?.id || "");
+const quizQuestionStatusMap = ref({});
 
-const isLastStep = computed(() => {
-  return currentStep.value === steps.value[steps.value.length - 1]?.id;
-});
-
+// 所有问卷都勾选完成后，才允许点击下一步进入正式任务页。
 const allSurveysCompleted = computed(() => {
   return surveys.value.every((survey) => survey.completed);
 });
 
+// Quiz 所有题都有答案后，组件才可以完成 Quiz 流程。
+const allQuizAnswered = computed(() => {
+  return quizQuestions.every((question) => {
+    return isQuizQuestionCompleted(question.id);
+  });
+});
+
+// 统计已作答 Quiz 数量，用于左侧整体进度。
+const answeredQuizCount = computed(() => {
+  return quizQuestions.filter((question) => isQuizQuestionCompleted(question.id)).length;
+});
+
+// Quiz 子步骤完成态：pass 或 fail 都表示该题流程已结束。
+const isQuizQuestionCompleted = (questionId) => {
+  return ["pass", "fail"].includes(quizQuestionStatusMap.value[questionId]);
+};
+
+// 左侧 Quiz 子步骤状态：pass / fail / current / locked。
+const getQuizQuestionStatus = (questionId) => {
+  const storedStatus = quizQuestionStatusMap.value[questionId];
+
+  if (["pass", "fail"].includes(storedStatus)) {
+    return storedStatus;
+  }
+
+  if (!trainingVideoStepCompleted.value || questionId !== activeQuizQuestionId.value) {
+    return "locked";
+  }
+
+  return "current";
+};
+
+// 统计已勾选完成的问卷数量，用于左侧整体进度。
+const completedSurveyCount = computed(() => {
+  return surveys.value.filter((survey) => survey.completed).length;
+});
+
+// 整体进度总数 = 视频数 + Quiz 题数 + 问卷数。
+const overallTotalCount = computed(() => {
+  return (
+    trainingVideoSteps.value.length + quizQuestions.length + surveys.value.length
+  );
+});
+
+// 整体进度完成数，用于顶部进度文案。
+const overallCompletedCount = computed(() => {
+  return (
+    completedTrainingVideoStepCount.value +
+    answeredQuizCount.value +
+    completedSurveyCount.value
+  );
+});
+
+// 左侧 Overall Progress 进度条宽度。
+const overallProgressStyle = computed(() => {
+  const total = overallTotalCount.value || 1;
+  const progress = (overallCompletedCount.value / total) * 100;
+
+  return {
+    width: `${progress}%`,
+  };
+});
+
+// 训练视频步骤是否完成：老用户看 userDetail，新用户看当前视频完成数。
+const trainingVideoStepCompleted = computed(() => {
+  return (
+    hasStudiedTrainingVideoGuidance ||
+    completedTrainingVideoStepCount.value === trainingVideoSteps.value.length
+  );
+});
+
+// 问卷入口条件：Quiz 完成，或本地已经记录全部问卷完成。
+const canEnterSurvey = computed(() => {
+  return quizCompleted.value || allSurveysCompleted.value;
+});
+
+// 根据注册国家/语言计算优先展示的问卷语言版本。
 const preferredSurveyLanguage = computed(() => {
   return getPreferredSurveyLanguage({
     country: registeredUserCountry.value,
@@ -297,6 +429,7 @@ const preferredSurveyLanguage = computed(() => {
   });
 });
 
+// 根据首选语言和展开状态生成最终展示的问卷链接列表。
 const displaySurveys = computed(() => {
   return buildDisplaySurveys({
     surveys: surveys.value,
@@ -305,526 +438,497 @@ const displaySurveys = computed(() => {
   });
 });
 
-const toggleSurveyLinks = () => {
-  surveyLinksExpanded.value = !surveyLinksExpanded.value;
-};
-
-const completedStepCount = computed(() => {
-  return steps.value.filter((step) => step.completed).length;
+// 统计训练视频完成数量，用于左侧第一步进度和整体进度。
+const completedTrainingVideoStepCount = computed(() => {
+  return trainingVideoSteps.value.filter((trainingVideoStep) => {
+    return isTrainingVideoStepCompleted(trainingVideoStep.id);
+  }).length;
 });
 
-const progressStyle = computed(() => {
-  const progress = (completedStepCount.value / steps.value.length) * 100;
-
-  return {
-    width: `${progress}%`,
-  };
-});
-
-const videoElement = ref(null);
-let player = null;
-let maxPlayedTime = 0;
-let allowSeek = false;
-let isRestoringTime = false;
-
-const resetPlaybackGuards = () => {
-  maxPlayedTime = 0;
-  allowSeek =
-    hasTutorialAutoOpenedThisLogin || !!currentStepData.value?.completed;
-  isRestoringTime = false;
+// 读取问卷完成状态的本地缓存，异常数据直接按空对象处理。
+const getSurveyCompletionStorage = () => {
+  // 容错解析本地存储，避免 localStorage 数据异常导致页面报错。
+  try {
+    return JSON.parse(localStorage.getItem(SURVEY_COMPLETION_STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
 };
 
-const applyProgressControlState = () => {
-  if (!player?.controlBar?.progressControl) {
-    return;
-  }
-
-  if (allowSeek) {
-    player.controlBar.progressControl.enable?.();
-    return;
-  }
-
-  player.controlBar.progressControl.disable?.();
+// 使用注册用户名作为问卷完成状态的本地存储分组 key。
+const getSurveyStorageUserKey = () => {
+  return registeredUserName.value?.trim() || "__anonymous__";
 };
 
-const updatePlayerSource = () => {
-  if (!player || !currentStepData.value) {
+// 训练视频进度按用户单独存储，值保持为 { video1: true, video2: true } 这种简单格式。
+const getTrainingVideoProgressStorageKey = () => {
+  return `${TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX}:${getSurveyStorageUserKey()}`;
+};
+
+// 读取当前用户的训练视频进度，异常数据直接当作未看过。
+const getTrainingVideoProgressStorage = () => {
+  try {
+    return JSON.parse(
+      localStorage.getItem(getTrainingVideoProgressStorageKey()) || "{}",
+    );
+  } catch {
+    return {};
+  }
+};
+
+// 判断某个训练视频是否已完成，统一用于左侧状态、解锁和子组件快进逻辑。
+const isTrainingVideoStepCompleted = (stepId) => {
+  return (
+    hasStudiedTrainingVideoGuidance ||
+    trainingVideoCompletionStatus.value[`video${stepId}`] === true
+  );
+};
+
+// 进入页面时恢复训练视频完成状态；已完成整套引导的用户直接视为全部完成。
+const restoreTrainingVideoProgress = () => {
+  if (hasStudiedTrainingVideoGuidance) {
+    trainingVideoCompletionStatus.value = trainingVideoSteps.value.reduce(
+      (status, trainingVideoStep) => {
+        status[`video${trainingVideoStep.id}`] = true;
+        return status;
+      },
+      {},
+    );
     return;
   }
 
-  resetPlaybackGuards();
-  player.pause();
-  player.src({
-    src: currentStepData.value.videoSrc,
-    type: currentStepData.value.videoType,
+  trainingVideoCompletionStatus.value = getTrainingVideoProgressStorage();
+
+  const firstIncompleteTrainingVideoStep = trainingVideoSteps.value.find(
+    (trainingVideoStep) => !isTrainingVideoStepCompleted(trainingVideoStep.id),
+  );
+  activeTrainingVideoStepIndex.value = firstIncompleteTrainingVideoStep?.id ?? 1;
+};
+
+// 每个视频看完后把 completed 状态落到本地，刷新后从第一个未完成视频继续。
+const persistTrainingVideoProgress = () => {
+  if (hasStudiedTrainingVideoGuidance) {
+    return;
+  }
+
+  localStorage.setItem(
+    getTrainingVideoProgressStorageKey(),
+    JSON.stringify(trainingVideoCompletionStatus.value),
+  );
+};
+
+// 页面初始化时按当前用户恢复问卷勾选状态。
+const restoreSurveyCompletion = () => {
+  // 按用户名恢复对应的问卷勾选状态。
+  const allStorage = getSurveyCompletionStorage();
+  const userStorage = allStorage[getSurveyStorageUserKey()] || {};
+
+  surveys.value.forEach((survey) => {
+    survey.completed = userStorage[survey.title] === true;
   });
-  player.poster(onboardingPreview);
-  player.currentTime(0);
-  applyProgressControlState();
 };
 
-const handleStepChange = (stepId) => {
-  if (stepId === currentStep.value) {
+// 问卷勾选变化后，把当前用户的完成状态写回 localStorage。
+const persistSurveyCompletion = () => {
+  const allStorage = getSurveyCompletionStorage();
+  const userKey = getSurveyStorageUserKey();
+
+  allStorage[userKey] = surveys.value.reduce((acc, survey) => {
+    acc[survey.title] = !!survey.completed;
+    return acc;
+  }, {});
+
+  localStorage.setItem(SURVEY_COMPLETION_STORAGE_KEY, JSON.stringify(allStorage));
+};
+
+// 判断某个训练视频子步骤是否可进入：只能顺序解锁，已完成引导用户除外。
+const canAccessTrainingVideoStep = (stepId) => {
+  // 已完成引导的用户可自由切换任意视频。
+  if (hasStudiedTrainingVideoGuidance) {
+    return true;
+  }
+
+  if (stepId === 1) {
+    return true;
+  }
+
+  return isTrainingVideoStepCompleted(stepId - 1);
+};
+
+// 左侧主流程点击切换：视频、Quiz、Survey 三个阶段按顺序解锁。
+const handleMainStepChange = (stepId) => {
+  // 三个阶段按顺序解锁，防止跳步进入后续流程。
+  if (stepId === 1) {
+    activeMainStepIndex.value = 1;
+    isTrainingVideoGroupCollapsed.value = false;
     return;
   }
 
-  currentStep.value = stepId;
-};
-
-const handlePreviousStep = () => {
-  if (isFirstStep.value) {
-    return;
-  }
-
-  currentStep.value -= 1;
-};
-
-const handleNextStep = () => {
-  if (isLastStep.value) {
-    if (currentStepData.value?.completed) {
-      StudiedAnnotationGuidance({
-        username: registeredUserName.value,
-        country: registeredUserCountry.value,
-        language: registeredUserLanguage.value,
-      })
-        .then(() => {
-          try {
-            const storedUserDetail = JSON.parse(
-              localStorage.getItem("userDetail") || "{}",
-            );
-            localStorage.setItem(
-              "userDetail",
-              JSON.stringify({
-                ...storedUserDetail,
-                studied_annotation_guidance: true,
-              }),
-            );
-            markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
-            syncLocaleFromUserDetail(storedUserDetail);
-          } catch {}
-        })
-        .catch(() => {});
-      player?.pause();
-      showSurveyModule.value = true;
+  if (stepId === 2) {
+    if (!trainingVideoStepCompleted.value) {
+      return;
     }
+
+    activeMainStepIndex.value = 2;
     return;
   }
 
-  currentStep.value += 1;
+  if (!canEnterSurvey.value) {
+    return;
+  }
+
+  activeMainStepIndex.value = 3;
 };
 
-const handleBackToVideoGuide = () => {
-  showSurveyModule.value = false;
+// 左侧视频子步骤点击：先切回训练视频主步骤，再按解锁规则切换视频。
+const handleTrainingVideoStepChange = (stepId) => {
+  activeMainStepIndex.value = 1;
+  isTrainingVideoGroupCollapsed.value = false;
+
+  if (
+    !canAccessTrainingVideoStep(stepId) ||
+    stepId === activeTrainingVideoStepIndex.value
+  ) {
+    return;
+  }
+
+  activeTrainingVideoStepIndex.value = stepId;
 };
 
+// 点击训练视频标题时，先选中 TrainingVideo 步骤；已完成后才允许再次折叠。
+const handleTrainingVideoTitleClick = () => {
+  if (activeMainStepIndex.value !== 1) {
+    activeMainStepIndex.value = 1;
+    isTrainingVideoGroupCollapsed.value = false;
+    return;
+  }
+
+  handleToggleTrainingVideoGroup();
+};
+
+// TrainingVideo 播放结束后回传当前视频 id，父页面更新独立完成状态。
+const handleTrainingVideoCompleted = (stepId) => {
+  trainingVideoCompletionStatus.value = {
+    ...trainingVideoCompletionStatus.value,
+    [`video${stepId}`]: true,
+  };
+};
+
+// 训练视频全部完成后，允许收起/展开左侧视频子步骤列表。
+const handleToggleTrainingVideoGroup = () => {
+  if (!trainingVideoStepCompleted.value) {
+    return;
+  }
+
+  isTrainingVideoGroupCollapsed.value = !isTrainingVideoGroupCollapsed.value;
+};
+
+// TrainingVideo 组件完成最后一个视频后，通知父页面切到 Quiz 步骤。
+const moveFromTrainingVideoToQuizStep = () => {
+  activeMainStepIndex.value = 2;
+};
+
+// Quiz 组件完成所有题目后，进入 Survey 步骤。
+const handleCompleteQuiz = () => {
+  if (!allQuizAnswered.value) {
+    return;
+  }
+
+  quizCompleted.value = true;
+  activeMainStepIndex.value = 3;
+};
+
+// 接收 QuizCheck 内部答案变化，父页面只保存答案用于整体进度和完成判断。
+const handleQuizAnswerChange = (questionId, answer) => {
+  quizAnswers.value[questionId] = answer;
+};
+
+// 记录 QuizCheck 当前展示的题目，用于左侧 current 状态。
+const handleActiveQuizQuestionChange = (questionId) => {
+  activeQuizQuestionId.value = questionId;
+};
+
+// 记录每道 Quiz 的最终结果：答对为 pass，两次答错为 fail。
+const handleQuizQuestionResult = (questionId, status) => {
+  quizQuestionStatusMap.value = {
+    ...quizQuestionStatusMap.value,
+    [questionId]: status,
+  };
+};
+
+// 问卷完成后进入正式 Cultural Value Annotation 首页。
 const handleSurveyNext = () => {
   router.push("/CulturalValueAnnotation/home");
 };
 
+// 复制注册用户名，方便用户粘贴到问卷中保持姓名一致。
 const handleCopyRegisteredName = async () => {
   await copyTextWithFallback(registeredUserName.value);
   ElMessage.success("Name copied");
 };
 
-const handleTimeUpdate = () => {
-  if (!player || allowSeek || isRestoringTime || player.seeking()) {
-    return;
-  }
-
-  maxPlayedTime = Math.max(maxPlayedTime, player.currentTime());
-};
-
-const handleSeeking = () => {
-  if (!player || allowSeek || isRestoringTime) {
-    return;
-  }
-
-  if (player.currentTime() <= maxPlayedTime + 0.2) {
-    return;
-  }
-
-  isRestoringTime = true;
-  player.currentTime(maxPlayedTime);
-  requestAnimationFrame(() => {
-    isRestoringTime = false;
-  });
-};
-
-const handleEnded = () => {
-  allowSeek = true;
-  if (currentStepData.value) {
-    currentStepData.value.completed = true;
-  }
-  applyProgressControlState();
-};
-
-const handleLoadedMetadata = () => {
-  resetPlaybackGuards();
-  applyProgressControlState();
-};
-
+// 页面挂载后恢复用户信息、问卷状态，并根据是否完成视频引导决定默认步骤。
 onMounted(() => {
   const storedUserDetail = getStoredOnboardingUserDetail();
   registeredUserName.value = storedUserDetail.username;
   registeredUserCountry.value = storedUserDetail.country;
   registeredUserLanguage.value = storedUserDetail.language;
 
-  // 本次登录里教程已自动打开过时，刷新后默认直接展示 survey 模块。
-  if (hasTutorialAutoOpenedThisLogin) {
-    showSurveyModule.value = true;
+  // 先恢复训练视频进度，避免未完成引导的用户刷新后又从第一个视频开始。
+  restoreTrainingVideoProgress();
+
+  // 从本地存储恢复当前用户的问卷勾选状态。
+  restoreSurveyCompletion();
+
+  if (hasStudiedTrainingVideoGuidance) {
+    // 已完成引导的用户进入页面后默认落在测验步骤。
+    activeMainStepIndex.value = 2;
+    isTrainingVideoGroupCollapsed.value = true;
   }
-
-  if (!videoElement.value) {
-    return;
-  }
-
-  player = videojs(videoElement.value, {
-    autoplay: false,
-    controls: true,
-    preload: "auto",
-    poster: onboardingPreview,
-    fluid: false,
-    responsive: true,
-    userActions: {
-      hotkeys: false,
-    },
-    controlBar: {
-      pictureInPictureToggle: false,
-      playbackRateMenuButton: false,
-    },
-    sources: [
-      {
-        src: currentStepData.value.videoSrc,
-        type: currentStepData.value.videoType,
-      },
-    ],
-  });
-
-  handleLoadedMetadata();
-  player.on("loadedmetadata", handleLoadedMetadata);
-  player.on("timeupdate", handleTimeUpdate);
-  player.on("seeking", handleSeeking);
-  player.on("ended", handleEnded);
 });
 
-watch(currentStep, () => {
-  updatePlayerSource();
-});
+// 监听问卷勾选状态，任何变化都立即持久化。
+watch(
+  surveys,
+  () => {
+    // 问卷勾选变化后立即持久化到本地存储。
+    persistSurveyCompletion();
+  },
+  { deep: true },
+);
 
-onBeforeUnmount(() => {
-  if (!player) {
-    return;
-  }
-
-  player.off("loadedmetadata", handleLoadedMetadata);
-  player.off("timeupdate", handleTimeUpdate);
-  player.off("seeking", handleSeeking);
-  player.off("ended", handleEnded);
-  player.dispose();
-  player = null;
-});
+// TrainingVideo 完成状态变化后持久化，刷新后可继续未完成的视频。
+watch(
+  trainingVideoCompletionStatus,
+  () => {
+    persistTrainingVideoProgress();
+  },
+  { deep: true },
+);
 </script>
 
 <style lang="scss" scoped>
 .onboarding-page {
   min-height: 100%;
 
-  .onboarding-container {
-    max-width: 1380px;
+  .onboarding-layout {
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 3.125em 6em;
+    padding: 2.5em 3em 3.125em;
+    display: grid;
+    grid-template-columns: 340px minmax(0, 1fr);
+    gap: 2em;
   }
 
-  .hero-card {
+  .step-side-nav {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 3em;
-    overflow: hidden;
+    flex-direction: column;
+    gap: 2px;
+    padding: 1.25em 0.75em;
+    border-radius: 8px;
+    background: rgba(231, 239, 248, 1);
+    color: rgba(65, 71, 84, 1);
 
-    .hero-copy {
+    .onboarding-aside-intro {
+      padding: 0.2em 0.25em 0.9em;
+
+      .welcome-title {
+        margin: 0;
+        color: rgba(11, 112, 195, 1);
+        font-size: 0.9em;
+        font-weight: 600;
+      }
+
+      .welcome-desc {
+        margin: 0.3em 0 1.2em;
+        color: rgba(11, 112, 195, 1);
+        font-size: 1.35em;
+        line-height: 1.3;
+      }
+
+      .overall-progress-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.86em;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+
+        span {
+          color: rgba(65, 71, 84, 1);
+        }
+
+        strong {
+          color: rgba(11, 112, 195, 1);
+        }
+      }
+
+      .overall-progress-track {
+        margin-top: 0.45em;
+        width: 100%;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(195, 204, 216, 1);
+        overflow: hidden;
+
+        .overall-progress-value {
+          display: block;
+          width: 0;
+          height: 100%;
+          background: rgba(11, 112, 195, 1);
+        }
+      }
+    }
+  }
+
+  .flow-step-item {
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    padding: 14px;
+    background: transparent;
+    border-radius: 4px;
+    color: rgba(65, 71, 84, 1);
+    font-size: 1em;
+    font-weight: 600;
+
+    .step-group-main {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75em;
+    }
+
+    .step-group-icon {
+      font-size: 14px;
+      line-height: 1;
+
+      .main-step-complete-icon {
+        color: rgba(72, 190, 128, 1);
+        // font-size: 1.45em;
+      }
+    }
+
+    .step-group-content {
+      min-width: 0;
       flex: 1;
 
-      h1 {
-        margin: 0.33em 0;
-        font-size: 3em;
-        line-height: 1.02;
-        color: #101828;
-        letter-spacing: -0.04em;
-      }
-
-      p {
+      .step-title-toggle,
+      .step-title-text {
         margin: 0;
-        color: #475467;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.3;
+        color: inherit;
       }
 
-      .step-pill {
-        display: inline-flex;
-        align-items: center;
-        height: 28px;
-        padding: 0 0.875em;
-        border-radius: 999px;
-        background: rgba(195, 232, 255, 1);
-        color: rgba(0, 30, 44, 1);
-        font-size: 0.82rem;
-        font-weight: 600;
+      .step-title-toggle.collapsible {
+        cursor: pointer;
+      }
 
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
+      .step-group-body {
+        margin-top: 0.5em;
+      }
+
+      .step-group-progress {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 700;
+        color: inherit;
+        opacity: 0.85;
+        color: rgba(80, 80, 80, 1);
       }
     }
 
-    .step-tabs {
+    .video-substeps {
+      list-style: none;
+      margin: .8em 0 0;
+      padding: 0;
       display: flex;
-      align-items: end;
-      justify-content: flex-end;
+      flex-direction: column;
+      gap: 1em;
 
-      .step-tab {
+      li {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        border: 0;
-        padding: 0 20px;
-        color: rgba(64, 71, 81, 0.4);
-        background-color: rgba(242, 244, 247, 1);
+        gap: 0.45em;
         font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        font-family: "Inter", sans-serif;
-        height: 36px;
-        text-transform: uppercase;
-        &.active {
-          color: rgba(0, 73, 124, 1);
-          background: rgba(230, 232, 235, 1);
-        }
-        &.completed {
-          background: rgba(230, 232, 235, 1);
+        letter-spacing: 0.08em;
+        font-weight: 600;
+        &.done {
+          color: rgba(3, 45, 113, 1);
         }
 
-        .step-tab-icon {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.5rem;
-          text-transform: uppercase;
-          .svg-icon {
-            width: 1.75em;
-            height: 1.75em;
-          }
+        &.current {
+          color: rgba(11, 112, 195, 1);
+          font-weight: 600;
+        }
+
+        &.locked {
+          color: rgba(64, 71, 81, 0.4);
+        }
+
+        .current-circle-icon {
+          width: 1em;
+          height: 1em;
+          box-sizing: border-box;
+          border: 1.5px solid currentColor;
+          border-radius: 50%;
+          flex: 0 0 auto;
         }
       }
+    }
+
+    &.active {
+      background: rgba(175, 217, 254, 1);
+      color: rgba(12, 50, 98, 1);
+    }
+
+    &.completed {
+      color: rgba(3, 45, 113, 1);
+    }
+
+    &.locked,
+    &[aria-disabled="true"] {
+      color: rgba(96, 104, 115, 0.42);
+      cursor: not-allowed;
+    }
+
+    .el-icon {
+      font-size: 1.1em;
     }
   }
 
-  .content-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 2.2fr) minmax(300px, 1fr);
-    gap: 32px;
-    margin-top: 24px;
+  .step-content-area {
+    min-width: 0;
+  }
 
-    .media-panel,
-    .status-panel {
-      min-width: 0;
-    }
+  .survey-container {
+    padding: 0;
+  }
 
-    .media-panel {
-      .video-shell {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        border-radius: 20px;
-        overflow: hidden;
-        background: #101828;
-        box-shadow: 0 28px 60px rgba(15, 23, 42, 0.16);
-
-        :deep(.video-js) {
-          width: 100%;
-          height: 100%;
-          border-radius: 20px;
-          background: #101828;
-        }
-
-        :deep(.vjs-poster) {
-          position: relative;
-          background-size: cover;
-          width: 100%;
-
-          &::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.28);
-            pointer-events: none;
-          }
-          img {
-            display: none;
-          }
-        }
-        :deep(.vjs-big-play-button) {
-          width: 4rem;
-          height: 4rem;
-          border: none;
-          margin-top: -2rem;
-          margin-left: -2rem;
-          background: rgba(255, 255, 255, 1);
-          color: #0b70c3;
-          border-radius: 50%;
-          .vjs-icon-placeholder:before {
-            top: 0.2em;
-          }
-        }
-      }
-    }
-
-    .status-panel {
-      font-size: 1em;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      gap: 1.5em;
-      padding: 1.875em;
+  .survey-container {
+    .content {
+      background-color: #fff;
+      box-sizing: border-box;
+      padding: 2.5em;
       border-radius: 12px;
-      background: rgba(242, 244, 247, 1);
-
-      .progress-block {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-
-        .progress-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          color: #344054;
-          font-weight: 700;
-          text-transform: uppercase;
-          font-size: 12px;
-          strong {
-            color: #0b70c3;
-            letter-spacing: 0;
-          }
-        }
-
-        .progress-track {
-          height: 8px;
-          border-radius: 999px;
-          background: #d0d5dd;
-          overflow: hidden;
-
-          .progress-value {
-            display: block;
-            width: 0%;
-            height: 100%;
-            background: rgba(5, 64, 140, 1);
-          }
-        }
-      }
-
-      .warning-box {
-        display: flex;
-        align-items: flex-start;
-        gap: 1em;
-        padding: 1.25em;
-        border-radius: 16px;
-        background: #fff1f1;
-        color: #b42318;
-        font-weight: 500;
-        font-size: 12px;
-        p {
-          margin: 0;
-          line-height: 1.55;
-        }
-
-        .warning-icon {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.25em;
-          margin-top: 0.1em;
-        }
-
-        .download-a{
-            color: rgba(11, 112, 195, 1);
-            text-decoration: underline;
-        }
-      }
-
-      .action-block {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 1em;
-
-        p {
-          margin: 0;
-          color: #98a2b3;
-          font-style: italic;
-          text-align: center;
-          font-size: 0.875em;
-        }
-
-        .complete-button {
-          font-size: 1rem;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          width: 100%;
-          height: 3em;
-          border: 0;
-          border-radius: 8px;
-          background: #dfe3ea;
-          color: #667085;
-          font-weight: 500;
-
-          &.completed {
-            background: #0b70c3;
-            color: #fff;
-          }
-
-          .button-lock {
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-          }
-          .svg-icon {
-            width: 1.15em;
-            height: 1.15em;
-          }
-        }
-
-        .pre-step-button {
-          height: 20px;
-          color: rgba(11, 112, 195, 1);
-          text-decoration: underline;
-          font-size: 0.875em;
-          margin: 0 auto;
-          margin-top: 2em;
-          cursor: pointer;
-        }
-      }
+      box-shadow: 0 15px 50px rgba(17, 24, 39, 0.06);
     }
   }
 
   .survey-container {
-    padding: 3.125em 6em;
-    display: flex;
-    justify-content: center;
-    .content {
-      background-color: #fff;
-      width: 1000px;
-      box-sizing: border-box;
-      padding: 2.5em;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      border-radius: 12px;
-    }
     .survery-intro {
       font-size: 0.875em;
       text-align: center;
       display: flex;
       flex-direction: column;
       gap: 12px 0;
+
       h3 {
         font-size: 1.875em;
         font-weight: 600;
@@ -834,6 +938,7 @@ onBeforeUnmount(() => {
         line-height: 1.2;
         margin-bottom: 12px;
       }
+
       p {
         line-height: 1.2;
 
@@ -856,9 +961,11 @@ onBeforeUnmount(() => {
         }
       }
     }
+
     .survery-ul {
       font-size: 1em;
       margin-top: 3em;
+
       .item {
         display: flex;
         flex-direction: row;
@@ -886,12 +993,12 @@ onBeforeUnmount(() => {
               line-height: 40px;
               padding: 0 0.8em;
               box-sizing: border-box;
-              box-sizing: border-box;
               border: 1px solid rgba(11, 112, 195, 1);
               border-radius: 6px;
               color: rgba(11, 112, 195, 1);
               display: inline-flex;
               align-items: center;
+
               .svg-icon {
                 width: 1em;
                 height: 1em;
@@ -900,50 +1007,68 @@ onBeforeUnmount(() => {
               }
             }
           }
-
-          .toggle-links-button {
-            padding: 0;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(153, 153, 153, 1);
-            border-radius: 6px;
-            background: #fff;
-            color: rgba(153, 153, 153, 1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-
-            .el-icon {
-              font-size: 1em;
-            }
-          }
         }
       }
     }
+  }
 
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 2em;
-      .el-button {
-        font-size: 1.25em;
-        height: 2.8em;
-        padding: 0 1em;
-        border-radius: 6px;
-        &.back-button {
-          border: 2px solid rgba(11, 112, 195, 1);
-          color: rgba(11, 112, 195, 1);
-        }
-        &.next-button {
-          background-color: rgba(11, 112, 195, 1);
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    margin-top: 2em;
+
+    .el-button {
+      font-size: 1.1em;
+      height: 2.8em;
+      padding: 0 1.2em;
+      border-radius: 6px;
+
+      &.back-button {
+        border: 2px solid rgba(11, 112, 195, 1);
+        color: rgba(11, 112, 195, 1);
+      }
+
+      &.next-button {
+        background-color: rgba(11, 112, 195, 1);
+        color: #fff;
+        border: none;
+
+        &.disabled {
+          background: rgba(194, 194, 194, 1);
           color: #fff;
-          border: none;
-          &.disabled {
-            background: rgba(194, 194, 194, 1);
-            color: #fff;
-            cursor: not-allowed;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .onboarding-page {
+    .onboarding-layout {
+      grid-template-columns: 1fr;
+      padding: 1.5em;
+    }
+
+    .flow-step-item {
+      font-size: 0.95em;
+    }
+
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .survey-container {
+      .survery-ul {
+        .item {
+          flex-direction: column;
+          gap: 0.8em;
+
+          & > span {
+            width: auto;
+            text-align: left;
+            margin-top: 0;
           }
         }
       }
