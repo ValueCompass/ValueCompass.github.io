@@ -2,7 +2,7 @@
   <div
     style="background-color: rgba(247, 249, 252, 1); flex: 1; padding-top: 4em"
   >
-    <div class="main-container onboarding-page">
+    <div class="onboarding-page">
       <div class="onboarding-layout">
         <aside class="step-side-nav">
           <div class="onboarding-aside-intro">
@@ -102,18 +102,18 @@
                   <ul class="video-substeps">
                     <li
                       v-for="(quizQuestion, quizIndex) in quizQuestions"
-                      :key="quizQuestion.id"
+                      :key="quizQuestion.qid"
                       :class="{
-                        done: isQuizQuestionCompleted(quizQuestion.id),
+                        done: isQuizQuestionCompleted(quizQuestion.qid),
                         current:
                           activeMainStepIndex === 2 &&
-                          getQuizQuestionStatus(quizQuestion.id) === 'current',
-                        locked: getQuizQuestionStatus(quizQuestion.id) === 'locked',
+                          getQuizQuestionStatus(quizQuestion.qid) === 'current',
+                        locked: getQuizQuestionStatus(quizQuestion.qid) === 'locked',
                       }"
                     >
-                      <el-icon v-if="isQuizQuestionCompleted(quizQuestion.id)"><CircleCheck /></el-icon>
+                      <el-icon v-if="isQuizQuestionCompleted(quizQuestion.qid)"><CircleCheck /></el-icon>
                       <span
-                        v-else-if="getQuizQuestionStatus(quizQuestion.id) === 'current'"
+                        v-else-if="getQuizQuestionStatus(quizQuestion.qid) === 'current'"
                         class="current-circle-icon"
                       ></span>
                       <el-icon v-else><Lock /></el-icon>
@@ -332,11 +332,11 @@ const quizQuestions = createOnboardingQuizQuestions();
 
 const quizAnswers = ref(
   quizQuestions.reduce((answers, question) => {
-    answers[question.id] = question.type === "multiple" ? [] : "";
+    answers[question.qid] = question.question_type === "multiple_choice" ? [] : "";
     return answers;
   }, {}),
 );
-const activeQuizQuestionId = ref(quizQuestions[0]?.id || "");
+const activeQuizQuestionId = ref(quizQuestions[0]?.qid || "");
 const quizQuestionStatusMap = ref({});
 
 // 所有问卷都勾选完成后，才允许点击下一步进入正式任务页。
@@ -347,13 +347,13 @@ const allSurveysCompleted = computed(() => {
 // Quiz 所有题都有答案后，组件才可以完成 Quiz 流程。
 const allQuizAnswered = computed(() => {
   return quizQuestions.every((question) => {
-    return isQuizQuestionCompleted(question.id);
+    return isQuizQuestionCompleted(question.qid);
   });
 });
 
 // 统计已作答 Quiz 数量，用于左侧整体进度。
 const answeredQuizCount = computed(() => {
-  return quizQuestions.filter((question) => isQuizQuestionCompleted(question.id)).length;
+  return quizQuestions.filter((question) => isQuizQuestionCompleted(question.qid)).length;
 });
 
 // Quiz 子步骤完成态：pass 或 fail 都表示该题流程已结束。
@@ -629,10 +629,55 @@ const moveFromTrainingVideoToQuizStep = () => {
 };
 
 // Quiz 组件完成所有题目后，进入 Survey 步骤。
-const handleCompleteQuiz = () => {
+const handleCompleteQuiz = (records = []) => {
   if (!allQuizAnswered.value) {
     return;
   }
+
+  // 打印每道题的作答详情：题目原文、第一次/第二次选项、对错。
+  console.log("Quiz question records", records);
+  records.forEach((record) => {
+    console.log("Quiz question result", {
+      qid: record.qid,
+      module: record.module,
+      question: record.question,
+      firstAttempt: record.attempts[0] ?? null,
+      secondAttempt: record.attempts[1] ?? null,
+      result: record.result,
+    });
+  });
+
+  // 按 module 字段分组，统计每个模块的错误题数。
+  const moduleStats = records.reduce((stats, record) => {
+    const moduleKey = record.module;
+    if (!stats[moduleKey]) {
+      stats[moduleKey] = { total: 0, wrong: 0 };
+    }
+    stats[moduleKey].total += 1;
+    if (record.result === "wrong") {
+      stats[moduleKey].wrong += 1;
+    }
+    return stats;
+  }, {});
+
+  // 每个模块错误题数 <=1 视为通过，否则不通过。
+  const moduleResults = Object.entries(moduleStats).map(([moduleKey, stat]) => ({
+    module: moduleKey,
+    wrong: stat.wrong,
+    total: stat.total,
+    passed: stat.wrong <= 1,
+  }));
+
+  console.log("Quiz module results", moduleResults);
+
+  const allPassed = moduleResults.every((item) => item.passed);
+  const summaryText = moduleResults
+    .map(
+      (item) =>
+        `Module ${item.module}：${item.passed ? "通过" : "未通过"}（错误 ${item.wrong} 题）`,
+    )
+    .join("\n");
+  alert(`${allPassed ? "测验通过" : "测验未通过"}\n${summaryText}`);
 
   quizCompleted.value = true;
   activeMainStepIndex.value = 3;
@@ -712,11 +757,13 @@ watch(
   min-height: 100%;
 
   .onboarding-layout {
-    max-width: 1440px;
+    height: calc(100vh - 16em);
+    max-width: 1920px;
     margin: 0 auto;
-    padding: 2.5em 3em 3.125em;
+    padding: 2.5em 6em 0em 0;
     display: grid;
-    grid-template-columns: 340px minmax(0, 1fr);
+    grid-template-columns: 264px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     gap: 2em;
   }
 
@@ -728,6 +775,7 @@ watch(
     border-radius: 8px;
     background: rgba(231, 239, 248, 1);
     color: rgba(65, 71, 84, 1);
+    overflow-y: auto;
 
     .onboarding-aside-intro {
       padding: 0.2em 0.25em 0.9em;
@@ -905,6 +953,9 @@ watch(
 
   .step-content-area {
     min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto;
   }
 
   .survey-container {
