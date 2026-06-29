@@ -18,21 +18,38 @@
         </div>
 
         <div class="answer-options">
-          <button
-            v-for="option in currentQuestion.options"
-            :key="`${currentQuestion.id}-${option.value}`"
-            type="button"
-            class="answer-option"
-            :class="{
-              selected: isOptionSelected(option.value),
-              multiple: isMultipleQuestion,
-            }"
+          <el-checkbox-group
+            v-if="isMultipleQuestion"
+            v-model="selectedAnswer"
             :disabled="isCurrentQuestionChecked"
-            @click="handleOptionSelect(option.value)"
+            @change="handleAnswerChange"
           >
-            <span class="option-mark"></span>
-            <span>{{ option.label }}</span>
-          </button>
+            <el-checkbox
+              v-for="option in currentQuestion.options"
+              :key="`${currentQuestion.id}-${option.value}`"
+              class="answer-option"
+              border
+              :label="option.value"
+            >
+              {{ option.label }}
+            </el-checkbox>
+          </el-checkbox-group>
+          <el-radio-group
+            v-else
+            v-model="selectedAnswer"
+            :disabled="isCurrentQuestionChecked"
+            @change="handleAnswerChange"
+          >
+            <el-radio
+              v-for="option in currentQuestion.options"
+              :key="`${currentQuestion.id}-${option.value}`"
+              class="answer-option"
+              border
+              :label="option.value"
+            >
+              {{ option.label }}
+            </el-radio>
+          </el-radio-group>
         </div>
 
         <div class="quiz-actions">
@@ -198,32 +215,7 @@ const syncSelectedAnswer = () => {
   selectedAnswer.value = getInitialAnswer();
 };
 
-const isOptionSelected = (value) => {
-  if (isMultipleQuestion.value) {
-    return Array.isArray(selectedAnswer.value) && selectedAnswer.value.includes(value);
-  }
-
-  return selectedAnswer.value === value;
-};
-
-const handleOptionSelect = (value) => {
-  if (isMultipleQuestion.value) {
-    const nextAnswer = Array.isArray(selectedAnswer.value)
-      ? [...selectedAnswer.value]
-      : [];
-    const optionIndex = nextAnswer.indexOf(value);
-
-    if (optionIndex >= 0) {
-      nextAnswer.splice(optionIndex, 1);
-    } else {
-      nextAnswer.push(value);
-    }
-
-    selectedAnswer.value = nextAnswer;
-  } else {
-    selectedAnswer.value = value;
-  }
-
+const handleAnswerChange = () => {
   emit("update-answer", currentQuestion.value.id, selectedAnswer.value);
 };
 
@@ -384,71 +376,65 @@ watch(
     flex-direction: column;
     gap: 1em;
     margin-top: 2em;
+
+    :deep(.el-radio-group),
+    :deep(.el-checkbox-group) {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
   }
 
   .answer-option {
     display: flex;
     align-items: center;
-    gap: 1em;
-    font-size: 1em;
+    width: 100%;
+    height: auto;
     min-height: 3em;
+    margin: 0 0 1em;
     padding: 0 1.25em;
     border: 1px solid rgba(208, 213, 221, 1);
+    border-radius: 0;
     background: transparent;
     color: #101828;
     font-weight: 600;
-    text-align: left;
-    cursor: pointer;
 
-    &.selected {
-      border-color: rgba(11, 112, 195, 1);
-      color: rgba(11, 112, 195, 1);
+    :deep(.el-radio__label),
+    :deep(.el-checkbox__label) {
+      font-size: 1em;
+      white-space: normal;
     }
 
-    &.multiple {
-      .option-mark {
-        border-radius: 3px;
+    &.is-checked {
+      border-color: rgba(11, 112, 195, 1);
+
+      :deep(.el-radio__label),
+      :deep(.el-checkbox__label) {
+        color: rgba(11, 112, 195, 1);
       }
     }
 
-    &.multiple.selected {
-      .option-mark {
-        position: relative;
-        background: rgba(11, 112, 195, 1);
-        box-shadow: none;
+    &.is-disabled {
+      opacity: 0.6;
 
-        &::after {
-          content: "";
-          position: absolute;
-          left: 0.28em;
-          top: 0.1em;
-          width: 0.28em;
-          height: 0.55em;
-          border: solid #fff;
-          border-width: 0 2px 2px 0;
-          transform: rotate(45deg);
+      :deep(.el-radio__label),
+      :deep(.el-checkbox__label) {
+        color: #101828;
+      }
+
+      &.is-checked {
+        :deep(.el-radio__label),
+        :deep(.el-checkbox__label) {
+          color: rgba(11, 112, 195, 1);
+        }
+
+        :deep(.el-radio__inner),
+        :deep(.el-checkbox__inner) {
+          background: rgba(11, 112, 195, 1);
+          border-color: rgba(11, 112, 195, 1);
         }
       }
     }
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.72;
-    }
-  }
-
-  .option-mark {
-    width: 1em;
-    height: 1em;
-    box-sizing: border-box;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    flex: 0 0 auto;
-  }
-
-  .answer-option.selected .option-mark {
-    box-shadow: inset 0 0 0 3px #fff;
-    background: rgba(11, 112, 195, 1);
   }
 
   .quiz-actions {
