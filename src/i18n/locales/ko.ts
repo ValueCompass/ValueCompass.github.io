@@ -175,5 +175,10 @@ export default {
       note1: '가치와 텍스트가 당신 자신의 개인적 가치관과 행동 관행에 부합하는지.',
       note2: '당신 문화의 주류 가치관이 아니라는 점.'
     }
+  },
+  onboarding: {
+    quizFailedTitle: '캘리브레이션 퀴즈 미통과',
+    quizFailedMessage: '캘리브레이션 퀴즈를 통과하지 못했습니다. 교육 영상을 다시 시청한 후 퀴즈를 다시 도전해 주세요.',
+    quizFailedConfirm: '확인',
   }
 }

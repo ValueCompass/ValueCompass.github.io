@@ -101,7 +101,7 @@ import "video.js/dist/video-js.css";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { StudiedAnnotationGuidance } from "@/service/CulturalValueAnnotationApi.ts";
 import { syncLocaleFromUserDetail } from "@/i18n";
-import { markCulturalValueAnnotationTutorialAutoOpenedThisLogin } from "@/utils/culturalValueAnnotationAuth";
+import { markCulturalValueAnnotationTutorialAutoOpenedThisLogin, updateUserDetailFields } from "@/utils/culturalValueAnnotationAuth";
 import {
   onboardingPreview,
   downloadOnboardingSlides,
@@ -288,18 +288,9 @@ const markGuidanceStudied = () => {
     language: props.registeredUserLanguage,
   })
     .then(() => {
-      try {
-        const storedUserDetail = JSON.parse(
-          localStorage.getItem("userDetail") || "{}",
-        );
-        const nextUserDetail = {
-          ...storedUserDetail,
-          studied_annotation_guidance: true,
-        };
-        localStorage.setItem("userDetail", JSON.stringify(nextUserDetail));
-        markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
-        syncLocaleFromUserDetail(nextUserDetail);
-      } catch {}
+      updateUserDetailFields({ studied_annotation_guidance: true });
+      markCulturalValueAnnotationTutorialAutoOpenedThisLogin();
+      syncLocaleFromUserDetail();
     })
     .catch(() => {});
 };

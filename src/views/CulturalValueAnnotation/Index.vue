@@ -60,7 +60,7 @@ import { useRoute } from "vue-router";
 import {
   hasAutoOpenedCulturalValueAnnotationTutorialThisLogin,
   hasCulturalValueAnnotationAnnotatorLogin,
-  hasStudiedCulturalValueAnnotationGuidance,
+  hasStudiedCulturalValueAnnotationVideoGuidance,
   markCulturalValueAnnotationTutorialAutoOpenedThisLogin,
 } from "../../utils/culturalValueAnnotationAuth";
 
@@ -152,7 +152,7 @@ onMounted(async () => {
     !isOnboardingPage.value &&
     !isAdminPage.value &&
     hasCulturalValueAnnotationAnnotatorLogin() &&
-    hasStudiedCulturalValueAnnotationGuidance() &&
+    hasStudiedCulturalValueAnnotationVideoGuidance() &&
     !hasAutoOpenedCulturalValueAnnotationTutorialThisLogin()
   ) {
     // 满足条件后立刻写入“本次登录已自动弹过”的标记，防止用户在本轮登录里

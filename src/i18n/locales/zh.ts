@@ -175,5 +175,10 @@ export default {
       note1: '这些价值观和文本是否符合你自己的个人价值观和行为实践。',
       note2: '而不是你所属文化中的主流价值观。'
     }
+  },
+  onboarding: {
+    quizFailedTitle: '校准测验未通过',
+    quizFailedMessage: '你未通过校准测验。请返回学习培训视频并重新参加测验。',
+    quizFailedConfirm: '确定',
   }
 }

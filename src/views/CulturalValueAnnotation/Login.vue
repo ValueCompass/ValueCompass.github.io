@@ -191,6 +191,9 @@ import { syncLocaleFromUserDetail } from "@/i18n";
 import {
   saveCulturalValueAnnotationAdminDetail,
   saveCulturalValueAnnotationUserDetail,
+  hasStudiedCulturalValueAnnotationVideoGuidance,
+  hasPassedCalibrationQuiz,
+  hasCompletedOnboardingSurveys,
 } from "../../utils/culturalValueAnnotationAuth";
 
 const isLoading = ref(false);
@@ -285,6 +288,9 @@ const handleAnnotatorLogin = () => {
     };
   }
 
+  // 是否首次注册，决定路由行为：首次注册无需判断服务端字段，直接进 Onboarding Step 1。
+  const isFirstTime = isFirstLogin.value;
+
   return UserRegisterLogin(sendData).then((res) => {
     if (!res.data.ok) {
       annotatorLoginErrorTip.value = res.data.message || "Login failed";
@@ -293,26 +299,63 @@ const handleAnnotatorLogin = () => {
 
     annotatorLoginErrorTip.value = "";
 
+    // 持久化用户详情到 localStorage，供 Onboarding 页面读取。
+    // 首次注册：服务端字段必定都是 false，直接保存即可。
+    // 回访登录：使用服务端返回的实际值。
     saveCulturalValueAnnotationUserDetail({
       username: res.data.username,
       country: res.data.country,
       language: res.data.language,
-      studied_annotation_guidance:
-        res.data.studied_annotation_guidance === true,
+      studied_annotation_guidance: isFirstTime ? false : res.data.studied_annotation_guidance === true,
+      passed_calibration_quiz: isFirstTime ? false : res.data.passed_calibration_quiz === true,
     });
 
-    if (res.data.studied_annotation_guidance === false) {
+    // 登录成功后立即同步 i18n 语言设置，确保后续页面使用正确的语言。
+    syncLocaleFromUserDetail();
+
+    // ---------- 路由判断逻辑（详细注释） ----------
+    //
+    // Onboarding 分三个阶段，每个阶段有独立的完成标志：
+    //   Step 1 — 培训视频（studied_annotation_guidance，来自服务端）
+    //   Step 2 — 校准测验（passed_calibration_quiz，来自服务端）
+    //   Step 3 — 问卷（survey，仅保存在本地 localStorage）
+    //
+    // 完整决策矩阵：
+    //   Step 1 视频 │ Step 2 测验 │ Step 3 问卷 │ 行为
+    //   ────────────┼─────────────┼─────────────┼──────────────────────────
+    //   false       │ false       │  —          │ 进 Onboarding Step 1
+    //   true        │ false       │  —          │ 进 Onboarding Step 2
+    //   true        │ true        │ false       │ 进 Onboarding Step 3
+    //   true        │ true        │ true        │ 全部完成，直接进首页
+    //   false       │ true        │  —          │ 防御性：不应出现，进 Step 1
+    //
+    // 首次注册的用户必定从 Step 1 开始，无需调用判断函数。
+
+    if (isFirstTime) {
+      // 首次注册：三项都未完成，直接进 Onboarding Step 1。
       router.push({
         name: "CulturalValueAnnotationOnboarding",
       });
-    } else {
-      syncLocaleFromUserDetail({
-        username: res.data.username,
-        country: res.data.country,
-        language: res.data.language,
-      });
+      return;
+    }
+
+    // 回访登录：根据 localStorage 中的完成状态决定起始步骤。
+    // （saveCulturalValueAnnotationUserDetail 已将服务端字段写入 localStorage）
+    const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance();
+    const quizDone = hasPassedCalibrationQuiz();
+    const surveyDone = hasCompletedOnboardingSurveys();
+
+    if (guidanceDone && quizDone && surveyDone) {
+      // 三个阶段全部完成，直接进入正式标注首页。
       router.push({
         name: "CulturalValueAnnotationHome",
+      });
+    } else {
+      // 任意一项未完成，进入 Onboarding 补全。
+      // Onboarding.vue 的 onMounted 会根据三个阶段的完成状态
+      // 自动决定从 Step 1 / Step 2 / Step 3 开始，无需额外传参。
+      router.push({
+        name: "CulturalValueAnnotationOnboarding",
       });
     }
   });

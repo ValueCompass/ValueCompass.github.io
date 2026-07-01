@@ -90,13 +90,9 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  answers: {
-    type: Object,
-    required: true,
-  },
-  allAnswered: {
-    type: Boolean,
-    default: false,
+  resetKey: {
+    type: Number,
+    default: 0,
   },
   title: {
     type: String,
@@ -112,9 +108,7 @@ const props = defineProps({
 const emit = defineEmits([
   "back",
   "complete",
-  "update-answer",
-  "active-question-change",
-  "question-result",
+  "update:quizState",
 ]);
 
 const currentQuestionIndex = ref(0);
@@ -122,8 +116,16 @@ const selectedAnswer = ref(null);
 const attemptCounts = ref({});
 const answerFeedback = ref(null);
 const lastCheckedAnswerByQuestion = ref({});
-// 记录每道题的作答情况：题目原文、各次选项、最终对错。
 const questionRecords = ref({});
+const questionStatusMap = ref({});
+
+// 内部维护的答案，用于切换题目时恢复选择。
+const quizAnswers = ref(
+  props.questions.reduce((answers, question) => {
+    answers[question.qid] = question.question_type === "multiple_choice" ? [] : "";
+    return answers;
+  }, {}),
+);
 
 const defaultHint =
   "Review the guideline and compare the answer with the criteria before trying again.";
@@ -200,22 +202,38 @@ const isAnswerCorrect = () => {
   return normalizeAnswer(selectedAnswer.value) === normalizeAnswer(correctAnswer);
 };
 
-const getInitialAnswer = () => {
-  const savedAnswer = props.answers[currentQuestion.value.qid];
-
+const syncSelectedAnswer = () => {
+  const savedAnswer = quizAnswers.value[currentQuestion.value.qid];
   if (savedAnswer !== undefined) {
-    return Array.isArray(savedAnswer) ? [...savedAnswer] : savedAnswer;
+    selectedAnswer.value = Array.isArray(savedAnswer) ? [...savedAnswer] : savedAnswer;
+  } else {
+    selectedAnswer.value = isMultipleQuestion.value ? [] : "";
   }
-
-  return isMultipleQuestion.value ? [] : "";
 };
 
-const syncSelectedAnswer = () => {
-  selectedAnswer.value = getInitialAnswer();
+// 是否所有题目都已完成（pass 或 fail）。
+const allQuizAnswered = computed(() => {
+  return props.questions.every((question) => {
+    return ["pass", "fail"].includes(questionStatusMap.value[question.qid]);
+  });
+});
+
+// 计算进度状态并通过 emit 上报给父组件。
+const emitQuizState = () => {
+  const state = {
+    questionStatusMap: { ...questionStatusMap.value },
+    currentQuestionId: currentQuestion.value.qid,
+    answeredCount: props.questions.filter((q) =>
+      ["pass", "fail"].includes(questionStatusMap.value[q.qid]),
+    ).length,
+    totalCount: props.questions.length,
+    allAnswered: allQuizAnswered.value,
+  };
+  emit("update:quizState", state);
 };
 
 const handleAnswerChange = () => {
-  emit("update-answer", currentQuestion.value.qid, selectedAnswer.value);
+  quizAnswers.value[currentQuestion.value.qid] = selectedAnswer.value;
 };
 
 const moveToNextQuestion = () => {
@@ -306,13 +324,21 @@ const handleCheckAnswer = () => {
   };
 
   if (correct) {
-    emit("question-result", questionId, "pass");
+    questionStatusMap.value = {
+      ...questionStatusMap.value,
+      [questionId]: "pass",
+    };
+    emitQuizState();
     showCorrectFeedback();
     return;
   }
 
   if (nextAttemptCount >= 2) {
-    emit("question-result", questionId, "fail");
+    questionStatusMap.value = {
+      ...questionStatusMap.value,
+      [questionId]: "fail",
+    };
+    emitQuizState();
     showIncorrectFeedback(true);
     return;
   }
@@ -320,13 +346,30 @@ const handleCheckAnswer = () => {
   showIncorrectFeedback();
 };
 
+// 父组件递增 resetKey 时，重置全部内部答题状态，回到第一题。
+watch(
+  () => props.resetKey,
+  () => {
+    currentQuestionIndex.value = 0;
+    selectedAnswer.value = null;
+    attemptCounts.value = {};
+    answerFeedback.value = null;
+    lastCheckedAnswerByQuestion.value = {};
+    questionRecords.value = {};
+    questionStatusMap.value = {};
+    quizAnswers.value = props.questions.reduce((answers, question) => {
+      answers[question.qid] = question.question_type === "multiple_choice" ? [] : "";
+      return answers;
+    }, {});
+    emitQuizState();
+  },
+);
+
 watch(
   () => currentQuestion.value.qid,
-  (questionId) => {
+  () => {
     syncSelectedAnswer();
-    if (questionId) {
-      emit("active-question-change", questionId);
-    }
+    emitQuizState();
   },
   { immediate: true },
 );

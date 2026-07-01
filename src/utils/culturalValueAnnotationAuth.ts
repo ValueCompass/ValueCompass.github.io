@@ -45,10 +45,69 @@ export const hasCulturalValueAnnotationAdminLogin = () => {
   return !!adminDetail?.username;
 };
 
-// 判断 annotator 是否已经完成过 onboarding，用于决定后续进入首页时的引导行为。
-export const hasStudiedCulturalValueAnnotationGuidance = () => {
+// ==================== Onboarding 三阶段完成状态 ====================
+//
+// Onboarding 分三个独立阶段，每个阶段有自己的完成标志：
+//   Step 1 — 培训视频（studied_annotation_guidance） → hasStudiedCulturalValueAnnotationVideoGuidance()
+//   Step 2 — 校准测验（passed_calibration_quiz）    → hasPassedCalibrationQuiz()
+//   Step 3 — 问卷（survey，本地存储）               → hasCompletedOnboardingSurveys() / markOnboardingSurveysCompleted()
+//
+// 三个函数彼此独立，分别判断对应阶段是否完成。
+// =================================================================
+
+// 判断 Step 1 是否完成：是否已学习完 video guidance（培训视频）。
+// 注意：这仅代表培训视频已看完，不代表整个 onboarding 流程已完成。
+export const hasStudiedCulturalValueAnnotationVideoGuidance = () => {
   const userDetail = getCulturalValueAnnotationUserDetail();
   return userDetail?.studied_annotation_guidance === true;
+};
+
+// 判断 Step 2 是否完成：是否已通过校准测验（calibration quiz）。
+// 这仅代表测验已通过，不代表整个 onboarding 流程已完成。
+export const hasPassedCalibrationQuiz = () => {
+  const userDetail = getCulturalValueAnnotationUserDetail();
+  return userDetail?.passed_calibration_quiz === true;
+};
+
+// ==================== Step 3 问卷完成状态 ====================
+//
+// 问卷完成状态仅保存在本地 localStorage，不经过服务端。
+// 格式：{ username: true }，每个用户只有一个布尔值。
+// 用户点击 "start annotation" 按钮时调用 markOnboardingSurveysCompleted()。
+// =================================================================
+
+const SURVEY_COMPLETION_STORAGE_KEY =
+  "culturalValueAnnotationOnboardingSurveyCompletion";
+
+// 判断 Step 3 是否完成：当前用户的问卷是否已全部完成。
+// 这仅代表问卷已完成，不代表整个 onboarding 流程已完成。
+export const hasCompletedOnboardingSurveys = () => {
+  const userDetail = getCulturalValueAnnotationUserDetail();
+  const username = userDetail?.username?.trim() || "__anonymous__";
+  try {
+    const allStorage = JSON.parse(
+      localStorage.getItem(SURVEY_COMPLETION_STORAGE_KEY) || "{}",
+    );
+    return allStorage[username] === true;
+  } catch {
+    return false;
+  }
+};
+
+// 标记当前用户的问卷已完成（点击 "start annotation" 按钮时调用）。
+export const markOnboardingSurveysCompleted = () => {
+  const userDetail = getCulturalValueAnnotationUserDetail();
+  const username = userDetail?.username?.trim() || "__anonymous__";
+  let allStorage: Record<string, boolean> = {};
+  try {
+    allStorage = JSON.parse(
+      localStorage.getItem(SURVEY_COMPLETION_STORAGE_KEY) || "{}",
+    );
+  } catch {
+    allStorage = {};
+  }
+  allStorage[username] = true;
+  localStorage.setItem(SURVEY_COMPLETION_STORAGE_KEY, JSON.stringify(allStorage));
 };
 
 // 判断当前这次 annotator 登录里，教程视频是否已经自动弹出过一次。
@@ -96,6 +155,20 @@ export const saveCulturalValueAnnotationUserDetail = (detail: any) => {
     CULTURAL_VALUE_ANNOTATION_USER_STORAGE_KEY,
     JSON.stringify({
       ...detail,
+      account_type: "annotator",
+    }),
+  );
+};
+
+// 局部更新 annotator localStorage 中的指定字段，不覆盖已有字段。
+// 用于 Onboarding 各阶段完成后单独更新对应的完成标志。
+export const updateUserDetailFields = (fields: Record<string, any>) => {
+  const stored = getCulturalValueAnnotationUserDetail() || {};
+  localStorage.setItem(
+    CULTURAL_VALUE_ANNOTATION_USER_STORAGE_KEY,
+    JSON.stringify({
+      ...stored,
+      ...fields,
       account_type: "annotator",
     }),
   );

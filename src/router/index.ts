@@ -2,7 +2,9 @@ import { createRouter, RouteRecordRaw, createWebHashHistory } from 'vue-router'
 import {
   hasCulturalValueAnnotationAnnotatorLogin,
   hasCulturalValueAnnotationAdminLogin,
-  hasStudiedCulturalValueAnnotationGuidance,
+  hasStudiedCulturalValueAnnotationVideoGuidance,
+  hasPassedCalibrationQuiz,
+  hasCompletedOnboardingSurveys,
 } from '../utils/culturalValueAnnotationAuth'
 
 const routes: Array<RouteRecordRaw> = [
@@ -305,8 +307,14 @@ router.beforeEach((to, from, next) => {
     }
 
     if (hasCulturalValueAnnotationAnnotatorLogin()) {
+      // 三个阶段任一未完成都应进入 Onboarding 补全，否则进首页。
+      const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance()
+      const quizDone = hasPassedCalibrationQuiz()
+      const surveyDone = hasCompletedOnboardingSurveys()
+      const onboardingDone = guidanceDone && quizDone && surveyDone
+
       next({
-        path: hasStudiedCulturalValueAnnotationGuidance()
+        path: onboardingDone
           ? '/CulturalValueAnnotation/home'
           : '/CulturalValueAnnotation/onboarding'
       })
@@ -328,11 +336,18 @@ router.beforeEach((to, from, next) => {
       return
     }
 
-    if (!hasAdminAccessToTaskHistory && to.name !== 'CulturalValueAnnotationOnboarding' && !hasStudiedCulturalValueAnnotationGuidance()) {
-      next({
-        path: '/CulturalValueAnnotation/onboarding'
-      })
-      return
+    if (!hasAdminAccessToTaskHistory && to.name !== 'CulturalValueAnnotationOnboarding') {
+      // 只要三个阶段中有任意一项未完成，都强制跳回 Onboarding 补全。
+      const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance()
+      const quizDone = hasPassedCalibrationQuiz()
+      const surveyDone = hasCompletedOnboardingSurveys()
+
+      if (!guidanceDone || !quizDone || !surveyDone) {
+        next({
+          path: '/CulturalValueAnnotation/onboarding'
+        })
+        return
+      }
     }
   }
 

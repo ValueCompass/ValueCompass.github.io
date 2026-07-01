@@ -175,5 +175,10 @@ export default {
       note1: 'Whether the values and texts align with your own personal values and behavior practices.',
       note2: 'Not the mainstream values in your culture.'
     }
+  },
+  onboarding: {
+    quizFailedTitle: 'Calibration Quiz Not Passed',
+    quizFailedMessage: 'You did not pass the calibration quiz. Please go back to review the training videos and retake the quiz.',
+    quizFailedConfirm: 'OK',
   }
 }

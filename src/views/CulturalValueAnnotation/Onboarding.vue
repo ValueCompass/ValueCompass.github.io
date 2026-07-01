@@ -97,23 +97,21 @@
                 <h4 class="step-title-text">2.Complete Quiz</h4>
                 <div v-show="activeMainStepIndex === 2" class="step-group-body">
                   <p class="step-group-progress">
-                    {{ quizCompleted ? "Completed" : "Answer all quiz questions" }}
+                    {{ quizCompleted ? "Completed" : quizCheckState.answeredCount + " / " + quizCheckState.totalCount + " Completed" }}
                   </p>
                   <ul class="video-substeps">
                     <li
                       v-for="(quizQuestion, quizIndex) in quizQuestions"
                       :key="quizQuestion.qid"
                       :class="{
-                        done: isQuizQuestionCompleted(quizQuestion.qid),
-                        current:
-                          activeMainStepIndex === 2 &&
-                          getQuizQuestionStatus(quizQuestion.qid) === 'current',
-                        locked: getQuizQuestionStatus(quizQuestion.qid) === 'locked',
+                        done: ['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid]),
+                        current: isQuizQuestionCurrent(quizQuestion.qid),
+                        locked: !isQuizQuestionCurrent(quizQuestion.qid) && !['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid]),
                       }"
                     >
-                      <el-icon v-if="isQuizQuestionCompleted(quizQuestion.qid)"><CircleCheck /></el-icon>
+                      <el-icon v-if="['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid])"><CircleCheck /></el-icon>
                       <span
-                        v-else-if="getQuizQuestionStatus(quizQuestion.qid) === 'current'"
+                        v-else-if="isQuizQuestionCurrent(quizQuestion.qid)"
                         class="current-circle-icon"
                       ></span>
                       <el-icon v-else><Lock /></el-icon>
@@ -130,10 +128,10 @@
             tabindex="0"
             class="flow-step-item"
             :class="{
-              active: activeMainStepIndex === 3,
-              completed: allSurveysCompleted,
-              locked: !canEnterSurvey,
-            }"
+                active: activeMainStepIndex === 3,
+                completed: hasCompletedOnboardingSurveys(),
+                locked: !canEnterSurvey,
+              }"
             :aria-disabled="!canEnterSurvey"
             @click="handleMainStepChange(3)"
             @keydown.enter.prevent="handleMainStepChange(3)"
@@ -141,7 +139,7 @@
           >
             <div class="step-group-main">
               <div class="step-group-icon">
-                <el-icon v-if="allSurveysCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-if="hasCompletedOnboardingSurveys()" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
                 <el-icon v-else><Document /></el-icon>
               </div>
               <div class="step-group-content">
@@ -168,14 +166,11 @@
 
           <QuizCheck
             v-show="activeMainStepIndex === 2"
+            :reset-key="quizResetKey"
             :questions="quizQuestions"
-            :answers="quizAnswers"
-            :all-answered="allQuizAnswered"
+            v-model:quiz-state="quizCheckState"
             @back="handleMainStepChange(1)"
             @complete="handleCompleteQuiz"
-            @update-answer="handleQuizAnswerChange"
-            @active-question-change="handleActiveQuizQuestionChange"
-            @question-result="handleQuizQuestionResult"
           />
 
           <div v-show="activeMainStepIndex === 3" class="survey-container">
@@ -243,16 +238,14 @@
                 </div>
               </div>
               <div class="button-container">
-                <el-button class="back-button" @click="handleMainStepChange(2)"
-                  >Back</el-button
-                >
+               
                 <el-button
                   class="next-button"
-                  :class="{ disabled: !allSurveysCompleted }"
-                  :disabled="!allSurveysCompleted"
+                  :class="{ disabled: !allSurveysChecked }"
+                  :disabled="!allSurveysChecked"
                   @click="handleSurveyNext"
                   type="primary"
-                  >Next</el-button
+                  >start annotation</el-button
                 >
               </div>
             </div>
@@ -264,7 +257,8 @@
 </template>
 
 <script setup>
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useI18n } from "vue-i18n";
 import {
   CopyDocument,
   VideoPlay,
@@ -279,7 +273,11 @@ import { useRouter } from "vue-router";
 import QuizCheck from "./onnborading/Components/QuizCheck.vue";
 import TrainingVideo from "./onnborading/Components/TrainingVideo.vue";
 import {
-  hasStudiedCulturalValueAnnotationGuidance,
+  hasStudiedCulturalValueAnnotationVideoGuidance,
+  hasPassedCalibrationQuiz,
+  hasCompletedOnboardingSurveys,
+  updateUserDetailFields,
+  markOnboardingSurveysCompleted,
 } from "@/utils/culturalValueAnnotationAuth";
 import {
   createOnboardingSteps,
@@ -291,9 +289,8 @@ import {
   copyTextWithFallback,
 } from "@/utils/culturalValueOnboarding";
 import { createOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
+import { passedCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
 
-const SURVEY_COMPLETION_STORAGE_KEY =
-  "culturalValueAnnotationOnboardingSurveyCompletion";
 const TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX =
   "culturalValueAnnotationTrainingVideoProgress";
 
@@ -317,8 +314,9 @@ const isTrainingVideoGroupCollapsed = ref(false);
 
 // 长期完成态来自 userDetail.studied_annotation_guidance。
 const hasStudiedTrainingVideoGuidance =
-  hasStudiedCulturalValueAnnotationGuidance();
+  hasStudiedCulturalValueAnnotationVideoGuidance();
 const router = useRouter();
+const { t } = useI18n();
 
 // 训练视频步骤只保存视频元数据，完成状态单独存在 trainingVideoCompletionStatus。
 const trainingVideoSteps = ref(createOnboardingSteps());
@@ -330,61 +328,40 @@ const surveys = ref(createOnboardingSurveys());
 // 页面内轻量测验题库按用户国家生成，后续国家差异只维护数据文件。
 const quizQuestions = createOnboardingQuizQuestions();
 
-const quizAnswers = ref(
-  quizQuestions.reduce((answers, question) => {
-    answers[question.qid] = question.question_type === "multiple_choice" ? [] : "";
-    return answers;
-  }, {}),
-);
-const activeQuizQuestionId = ref(quizQuestions[0]?.qid || "");
-const quizQuestionStatusMap = ref({});
+const quizResetKey = ref(0);
+const quizCheckState = ref({
+  questionStatusMap: {},
+  currentQuestionId: "",
+  answeredCount: 0,
+  totalCount: quizQuestions.length,
+  allAnswered: false,
+});
 
-// 所有问卷都勾选完成后，才允许点击下一步进入正式任务页。
-const allSurveysCompleted = computed(() => {
+// 三个问卷 checkbox 是否都已勾选，用于控制 start annotation 按钮的 disabled 状态。
+const allSurveysChecked = computed(() => {
   return surveys.value.every((survey) => survey.completed);
 });
 
-// Quiz 所有题都有答案后，组件才可以完成 Quiz 流程。
-const allQuizAnswered = computed(() => {
-  return quizQuestions.every((question) => {
-    return isQuizQuestionCompleted(question.qid);
-  });
-});
-
-// 统计已作答 Quiz 数量，用于左侧整体进度。
-const answeredQuizCount = computed(() => {
-  return quizQuestions.filter((question) => isQuizQuestionCompleted(question.qid)).length;
-});
-
-// Quiz 子步骤完成态：pass 或 fail 都表示该题流程已结束。
-const isQuizQuestionCompleted = (questionId) => {
-  return ["pass", "fail"].includes(quizQuestionStatusMap.value[questionId]);
+// Quiz 子步骤 current 状态：当前活跃题且未完成。
+const isQuizQuestionCurrent = (questionId) => {
+  if (activeMainStepIndex.value !== 2) {
+    return false;
+  }
+  return (
+    quizCheckState.value.currentQuestionId === questionId &&
+    !["pass", "fail"].includes(quizCheckState.value.questionStatusMap[questionId])
+  );
 };
 
-// 左侧 Quiz 子步骤状态：pass / fail / current / locked。
-const getQuizQuestionStatus = (questionId) => {
-  const storedStatus = quizQuestionStatusMap.value[questionId];
-
-  if (["pass", "fail"].includes(storedStatus)) {
-    return storedStatus;
-  }
-
-  if (!trainingVideoStepCompleted.value || questionId !== activeQuizQuestionId.value) {
-    return "locked";
-  }
-
-  return "current";
-};
-
-// 统计已勾选完成的问卷数量，用于左侧整体进度。
+// 问卷完成数量：点击 start annotation 后整体算 1，否则为 0。
 const completedSurveyCount = computed(() => {
-  return surveys.value.filter((survey) => survey.completed).length;
+  return hasCompletedOnboardingSurveys() ? 1 : 0;
 });
 
-// 整体进度总数 = 视频数 + Quiz 题数 + 问卷数。
+// 整体进度总数 = 视频数 + Quiz 题数 + 问卷（整体算 1 项）。
 const overallTotalCount = computed(() => {
   return (
-    trainingVideoSteps.value.length + quizQuestions.length + surveys.value.length
+    trainingVideoSteps.value.length + quizQuestions.length + 1
   );
 });
 
@@ -392,7 +369,7 @@ const overallTotalCount = computed(() => {
 const overallCompletedCount = computed(() => {
   return (
     completedTrainingVideoStepCount.value +
-    answeredQuizCount.value +
+    quizCheckState.value.answeredCount +
     completedSurveyCount.value
   );
 });
@@ -415,9 +392,9 @@ const trainingVideoStepCompleted = computed(() => {
   );
 });
 
-// 问卷入口条件：Quiz 完成，或本地已经记录全部问卷完成。
+// 问卷入口条件：Quiz 完成，或本地已经记录问卷完成。
 const canEnterSurvey = computed(() => {
-  return quizCompleted.value || allSurveysCompleted.value;
+  return quizCompleted.value || hasCompletedOnboardingSurveys();
 });
 
 // 根据注册国家/语言计算优先展示的问卷语言版本。
@@ -445,24 +422,10 @@ const completedTrainingVideoStepCount = computed(() => {
   }).length;
 });
 
-// 读取问卷完成状态的本地缓存，异常数据直接按空对象处理。
-const getSurveyCompletionStorage = () => {
-  // 容错解析本地存储，避免 localStorage 数据异常导致页面报错。
-  try {
-    return JSON.parse(localStorage.getItem(SURVEY_COMPLETION_STORAGE_KEY) || "{}");
-  } catch {
-    return {};
-  }
-};
-
-// 使用注册用户名作为问卷完成状态的本地存储分组 key。
-const getSurveyStorageUserKey = () => {
-  return registeredUserName.value?.trim() || "__anonymous__";
-};
-
 // 训练视频进度按用户单独存储，值保持为 { video1: true, video2: true } 这种简单格式。
 const getTrainingVideoProgressStorageKey = () => {
-  return `${TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX}:${getSurveyStorageUserKey()}`;
+  const username = registeredUserName.value?.trim() || "__anonymous__";
+  return `${TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX}:${username}`;
 };
 
 // 读取当前用户的训练视频进度，异常数据直接当作未看过。
@@ -515,30 +478,6 @@ const persistTrainingVideoProgress = () => {
     getTrainingVideoProgressStorageKey(),
     JSON.stringify(trainingVideoCompletionStatus.value),
   );
-};
-
-// 页面初始化时按当前用户恢复问卷勾选状态。
-const restoreSurveyCompletion = () => {
-  // 按用户名恢复对应的问卷勾选状态。
-  const allStorage = getSurveyCompletionStorage();
-  const userStorage = allStorage[getSurveyStorageUserKey()] || {};
-
-  surveys.value.forEach((survey) => {
-    survey.completed = userStorage[survey.title] === true;
-  });
-};
-
-// 问卷勾选变化后，把当前用户的完成状态写回 localStorage。
-const persistSurveyCompletion = () => {
-  const allStorage = getSurveyCompletionStorage();
-  const userKey = getSurveyStorageUserKey();
-
-  allStorage[userKey] = surveys.value.reduce((acc, survey) => {
-    acc[survey.title] = !!survey.completed;
-    return acc;
-  }, {});
-
-  localStorage.setItem(SURVEY_COMPLETION_STORAGE_KEY, JSON.stringify(allStorage));
 };
 
 // 判断某个训练视频子步骤是否可进入：只能顺序解锁，已完成引导用户除外。
@@ -630,7 +569,7 @@ const moveFromTrainingVideoToQuizStep = () => {
 
 // Quiz 组件完成所有题目后，进入 Survey 步骤。
 const handleCompleteQuiz = (records = []) => {
-  if (!allQuizAnswered.value) {
+  if (!quizCheckState.value.allAnswered) {
     return;
   }
 
@@ -647,7 +586,7 @@ const handleCompleteQuiz = (records = []) => {
     });
   });
 
-  // 按 module 字段分组，统计每个模块的错误题数。
+  // 按 module 字段分组，统计每个模块的总题数和错误题数。
   const moduleStats = records.reduce((stats, record) => {
     const moduleKey = record.module;
     if (!stats[moduleKey]) {
@@ -660,49 +599,63 @@ const handleCompleteQuiz = (records = []) => {
     return stats;
   }, {});
 
-  // 每个模块错误题数 <=1 视为通过，否则不通过。
-  const moduleResults = Object.entries(moduleStats).map(([moduleKey, stat]) => ({
-    module: moduleKey,
-    wrong: stat.wrong,
-    total: stat.total,
-    passed: stat.wrong <= 1,
-  }));
+  // 构造 quiz_answers：按 module 分组，每题的多次尝试用逗号拼接。
+  const quizAnswersPayload = {};
+  const moduleOrder = [...new Set(records.map((r) => r.module))].sort();
+  moduleOrder.forEach((moduleKey) => {
+    const moduleRecords = records.filter((r) => r.module === moduleKey);
+    quizAnswersPayload[`module_${moduleKey}`] = moduleRecords.map((record) => {
+      return record.attempts.map((a) => (Array.isArray(a) ? a.join("") : a)).join(",");
+    });
+  });
 
-  console.log("Quiz module results", moduleResults);
+  // 构造 correct_ratio：每个 module 的正确率（float）。
+  const correctRatio = Object.entries(moduleStats).map(([, stat]) => {
+    return stat.total > 0 ? (stat.total - stat.wrong) / stat.total : 0;
+  });
 
-  const allPassed = moduleResults.every((item) => item.passed);
-  const summaryText = moduleResults
-    .map(
-      (item) =>
-        `Module ${item.module}：${item.passed ? "通过" : "未通过"}（错误 ${item.wrong} 题）`,
-    )
-    .join("\n");
-  alert(`${allPassed ? "测验通过" : "测验未通过"}\n${summaryText}`);
-
-  quizCompleted.value = true;
-  activeMainStepIndex.value = 3;
+  passedCalibrationQuiz({
+    username: registeredUserName.value,
+    country: registeredUserCountry.value,
+    language: registeredUserLanguage.value,
+    quiz_answers: quizAnswersPayload,
+    correct_ratio: correctRatio,
+  }).then((res) => {
+    console.log("passedCalibrationQuiz response", res);
+    const passed = res?.data?.passed_calibration_quiz;
+    if (passed) {
+      // quiz 通过后，更新 localStorage 中的完成标志。
+      // 同时更新 studied_annotation_guidance 和 passed_calibration_quiz，
+      // 确保后续路由判断和 Onboarding 重入时能正确读取状态。
+      updateUserDetailFields({
+        studied_annotation_guidance: true,
+        passed_calibration_quiz: true,
+      });
+      quizCompleted.value = true;
+      activeMainStepIndex.value = 3;
+    } else {
+      ElMessageBox.alert(
+        t("onboarding.quizFailedMessage"),
+        t("onboarding.quizFailedTitle"),
+        {
+          confirmButtonText: t("onboarding.quizFailedConfirm"),
+          showClose: false,
+          type: "error",
+        },
+      ).then(() => {
+        // 递增 resetKey 通知 QuizCheck 重置内部状态，回到训练视频步骤。
+        quizResetKey.value += 1;
+        activeMainStepIndex.value = 1;
+      });
+    }
+  }).catch((err) => {
+    console.error("passedCalibrationQuiz failed", err);
+  });
 };
 
-// 接收 QuizCheck 内部答案变化，父页面只保存答案用于整体进度和完成判断。
-const handleQuizAnswerChange = (questionId, answer) => {
-  quizAnswers.value[questionId] = answer;
-};
-
-// 记录 QuizCheck 当前展示的题目，用于左侧 current 状态。
-const handleActiveQuizQuestionChange = (questionId) => {
-  activeQuizQuestionId.value = questionId;
-};
-
-// 记录每道 Quiz 的最终结果：答对为 pass，两次答错为 fail。
-const handleQuizQuestionResult = (questionId, status) => {
-  quizQuestionStatusMap.value = {
-    ...quizQuestionStatusMap.value,
-    [questionId]: status,
-  };
-};
-
-// 问卷完成后进入正式 Cultural Value Annotation 首页。
+// 问卷完成后标记 survey 完成状态，进入正式 Cultural Value Annotation 首页。
 const handleSurveyNext = () => {
+  markOnboardingSurveysCompleted();
   router.push("/CulturalValueAnnotation/home");
 };
 
@@ -712,35 +665,57 @@ const handleCopyRegisteredName = async () => {
   ElMessage.success("Name copied");
 };
 
-// 页面挂载后恢复用户信息、问卷状态，并根据是否完成视频引导决定默认步骤。
+// ---------- 页面初始化：决定 Onboarding 的起始步骤 ----------
+//
+// Onboarding 分三个阶段，每个阶段有独立的完成标志：
+//   Step 1 — 培训视频（studied_annotation_guidance，来自服务端）
+//   Step 2 — 校准测验（passed_calibration_quiz，来自服务端）
+//   Step 3 — 问卷（survey，仅保存在本地 localStorage）
+//
+// 完整决策矩阵：
+//   Step 1 视频 │ Step 2 测验 │ Step 3 问卷 │ 起始步骤
+//   ────────────┼─────────────┼─────────────┼──────────────────
+//   false       │ false       │  —          │ Step 1 培训
+//   true        │ false       │  —          │ Step 2 测验
+//   true        │ true        │ false       │ Step 3 问卷
+//   true        │ true        │ true        │ 全部完成 → 首页
+//   false       │ true        │  —          │ 防御性 → Step 1
 onMounted(() => {
   const storedUserDetail = getStoredOnboardingUserDetail();
   registeredUserName.value = storedUserDetail.username;
   registeredUserCountry.value = storedUserDetail.country;
   registeredUserLanguage.value = storedUserDetail.language;
 
+  // 读取 Step 1 完成标志（studied_annotation_guidance）。
+  const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance();
+
+  // 读取 Step 2 完成标志（passed_calibration_quiz），来自 localStorage。
+  const quizDone = hasPassedCalibrationQuiz();
+  quizCompleted.value = quizDone; // 同步左侧侧边栏的 quiz 完成状态
+
+  // 读取 Step 3 完成标志（问卷），所有问卷都勾选完成才视为完成。
+  const surveyDone = hasCompletedOnboardingSurveys();
+
   // 先恢复训练视频进度，避免未完成引导的用户刷新后又从第一个视频开始。
   restoreTrainingVideoProgress();
 
-  // 从本地存储恢复当前用户的问卷勾选状态。
-  restoreSurveyCompletion();
-
-  if (hasStudiedTrainingVideoGuidance) {
-    // 已完成引导的用户进入页面后默认落在测验步骤。
+  if (guidanceDone && quizDone && surveyDone) {
+    // 三个阶段全部完成，直接跳到首页。
+    router.push({ name: "CulturalValueAnnotationHome" });
+  } else if (guidanceDone && quizDone) {
+    // Step 1 和 Step 2 完成，但问卷未完成 → 跳到 Step 3。
+    activeMainStepIndex.value = 3;
+    isTrainingVideoGroupCollapsed.value = true;
+  } else if (guidanceDone) {
+    // Step 1 完成但 Step 2 未通过 → 跳到 Step 2。
     activeMainStepIndex.value = 2;
     isTrainingVideoGroupCollapsed.value = true;
+  } else{
+    // 其余情况（培训未完成），默认停留在 Step 1。
+    activeMainStepIndex.value = 1;
   }
+  
 });
-
-// 监听问卷勾选状态，任何变化都立即持久化。
-watch(
-  surveys,
-  () => {
-    // 问卷勾选变化后立即持久化到本地存储。
-    persistSurveyCompletion();
-  },
-  { deep: true },
-);
 
 // TrainingVideo 完成状态变化后持久化，刷新后可继续未完成的视频。
 watch(
@@ -1065,7 +1040,7 @@ watch(
 
   .button-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 2em;
     margin-top: 2em;
 

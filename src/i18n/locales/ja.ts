@@ -175,5 +175,10 @@ export default {
       note1: '価値観とテキストが、あなた自身の個人的価値観や行動実践に一致しているか。',
       note2: 'あなたの文化における主流の価値観ではないこと。'
     }
+  },
+  onboarding: {
+    quizFailedTitle: 'カリブレーションクイズに不合格',
+    quizFailedMessage: 'カリブレーションクイズに合格しませんでした。トレーニング動画を確認してから、もう一度クイズに挑戦してください。',
+    quizFailedConfirm: 'OK',
   }
 }

@@ -96,6 +96,10 @@ export const getAdminAnnotationUsers = (data: any, token = ""): any => {
     });
 }
 
+export const passedCalibrationQuiz = (data: any): any => {
+    return request.post("/annotations_test_2/passed_calibration_quiz/", data)
+}
+
 export const StudiedAnnotationGuidance = (data: any): any => {
     return request.post("/annotations_test_2/studied_annotation_guidance/", data)
 
