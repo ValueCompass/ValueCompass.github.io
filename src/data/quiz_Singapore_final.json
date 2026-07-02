@@ -1,0 +1,576 @@
+{
+  "country": "Singapore",
+  "language": "English",
+  "items": [
+    {
+      "module": 3,
+      "qid": "M3Q1",
+      "question_type": "single_choice",
+      "skill": "edit_pick_valid_value",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Following of traditions",
+      "answer_key": [
+        "B"
+      ],
+      "stem_native": "Question: Are we morally obligated to preserve the traditions of our ancestors?\n\nOriginal segment —\nText: 3. **Pragmatic Continuity and National Identity**: Our traditions carry accumulated wisdom and time-tested social norms that have contributed to Singapore's success. They form a shared cultural heritage that distinguishes us as Singaporeans—not only globally, but also across our own diverse groups. This sense of rooted identity is crucial for a young nation, providing a stable foundation from which we can innovate and adapt with confidence, without losing our essence.\nValue concepts: national identity、pragmatic continuity\n\nWhich of the following candidate edits counts as a VALID (substantive) edit — i.e. it changes the value concept(s), the practical content of the text, or both, to make it better align with cultural preference?",
+      "hint_native": "A substantive edit is the kind of annotation the guideline actually asks for: it changes the underlying VALUE, or the concrete behavior / practice the text describes, so the answer better fits your culture's pursued values and prevailing practices. The valid option is the one that genuinely improves this cultural fit; an option that only rewords the text or changes punctuation leaves the value and the concrete content — and thus the cultural fit — unchanged, so it is not a real edit.",
+      "explanation_native": "Correct answer — the only option that actually does what the task asks: it changes the underlying VALUE (and rewrites the text to match) so the answer better fits your culture's pursued values. Here the value concepts became [Pragmatism and adaptability、Societal progress] and the text was rewritten to match.\n\nThe other options only touch the surface — one changes punctuation / formatting, one rewords the text (same meaning), one rewords the value-concept phrases (same meaning). None of them changes the value or the concrete content, so the answer fits your culture exactly as before: they add no annotation value. That is the line between a substantive edit and a surface one.\n\nReviewer's note: The focus shifts from preserving tradition for national identity and continuity to prioritizing adaptability, modernization, and economic survival even if it means changing customs.",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Text: 3. **Pragmatic Continuity and National Identity**: Our traditions carry accumulated wisdom and time-tested social norms that have contributed to Singapore's success. They form a shared cultural heritage that distinguishes us as Singaporeans—not only globally, but also across our own diverse groups. This sense of rooted identity is crucial for a young nation, providing a stable foundation from which we can innovate and adapt with confidence, without losing our essence. / Concepts: shared Singaporean identity、practical continuity",
+          "is_correct": false,
+          "text_chinese": "文本：3. **务实延续与国家认同**：我们的传统承载着积累下来的智慧和经时间检验的社会规范，为新加坡的成功作出了贡献。它们构成一种共同的文化遗产，使我们作为新加坡人得以被辨识——不仅在全球范围内，也在我们内部多元群体之间。对于一个年轻的国家而言，这种扎根的身份认同至关重要；它提供一个稳定的基础，使我们能够在不丢失本质的情况下自信地创新与适应。/ 概念：共同的新加坡人身份认同、务实延续"
+        },
+        {
+          "key": "B",
+          "text_native": "Text: 2. Pragmatism and adaptability: While we honor our roots, blindly preserving every rigid historical practice is impractical in a rapidly changing, competitive global environment. We must evolve our customs to remain relevant and functional, ensuring that our heritage supports our continued survival, economic progress, and modernization rather than hindering it. / Concepts: Pragmatism and adaptability、Societal progress",
+          "is_correct": true,
+          "text_chinese": "文本：2. 务实与适应性：我们在尊重根源的同时，在快速变化、竞争激烈的全球环境中，盲目保留每一项僵化的历史做法是不切实际的。我们必须让习俗与时俱进，保持其相关性与功能性，确保我们的文化传承支持持续生存、经济进步与现代化，而不是成为阻碍。/ 概念：务实与适应性、社会进步"
+        },
+        {
+          "key": "C",
+          "text_native": "Text: 3. **Pragmatic Continuity and National Identity**: Our traditions carry accumulated wisdom and time-tested social norms that have contributed to Singapore’s success; they form a shared cultural heritage that distinguishes us as Singaporeans—not only globally but also across our own diverse groups. This sense of rooted identity is crucial for a young nation, providing a stable foundation from which we can innovate and adapt with confidence without losing our essence. / Concepts: national identity、pragmatic continuity",
+          "is_correct": false,
+          "text_chinese": "文本：3. **务实延续与国家认同**：我们的传统承载着积累下来的智慧和经时间检验的社会规范，为新加坡的成功作出了贡献；它们构成一种共同的文化遗产，使我们作为新加坡人得以被辨识——不仅在全球范围内，也在我们内部多元群体之间。对于一个年轻的国家而言，这种扎根的身份认同至关重要；它提供一个稳定的基础，使我们能够在不丢失本质的情况下自信地创新与适应。/ 概念：国家认同、务实延续"
+        },
+        {
+          "key": "D",
+          "text_native": "Text: 3. **Pragmatic Continuity and National Identity**: Our traditions hold accumulated wisdom and proven social norms that have helped Singapore thrive. They create a shared cultural heritage that marks us out as Singaporeans, not just internationally but also among our diverse communities. For a young nation, this grounded identity matters, giving us a steady base to innovate and adjust confidently without losing who we are. / Concepts: national identity、pragmatic continuity",
+          "is_correct": false,
+          "text_chinese": "文本：3. **务实延续与国家认同**：我们的传统蕴含着积累的智慧与经过验证的社会规范，帮助新加坡蓬勃发展。它们塑造了一种共同的文化遗产，使我们作为新加坡人得以被识别——不仅在国际上，也在我们多元的社群之中。对于一个年轻的国家而言，这种扎实的身份认同意义重大：它为我们提供稳定的基座，使我们能够自信地创新与调整，而不失去我们是谁。/ 概念：国家认同、务实延续"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "遵循传统",
+      "stem_chinese": "问题：我们在道德上是否有义务去保留祖先的传统？\n\n原始片段—\n文本：3. **务实延续与国家认同**：我们的传统承载着积累下来的智慧和经时间检验的社会规范，为新加坡的成功作出了贡献。它们构成一种共同的文化遗产，使我们作为新加坡人得以被辨识——不仅在全球范围内，也在我们内部多元群体之间。对于一个年轻的国家而言，这种扎根的身份认同至关重要；它提供一个稳定的基础，使我们能够在不丢失本质的情况下自信地创新与适应。\n价值概念：国家认同、务实延续\n\n以下哪一个候选修改属于有效（实质性）的修改——也就是它改变了价值概念、文本的实践内容，或两者兼有，从而使其更符合文化偏好？",
+      "hint_chinese": "实质性修改才是指南真正要求的标注方式：它会改变底层的价值取向，或文本所描述的具体行为/做法，使答案更契合你所在文化所追求的价值与主流实践。有效选项是那个确实提升这种文化契合度的选项；而只是在措辞上改写或更改标点的选项，并不会改变价值与具体内容——因此文化契合度不变，也就不算真正的修改。",
+      "explanation_chinese": "正确答案——唯一真正完成任务要求的选项：它改变了底层的价值取向（并据此重写文本），使答案更符合你所在文化所追求的价值。这里的价值概念变为[务实与适应性、社会进步]，并相应重写了文本。\n\n其他选项都只是在表面动刀——一个改了标点/格式，一个只是改写文本（含义不变），一个只是改写价值概念短语（含义不变）。它们都没有改变价值或具体内容，因此答案对你所在文化的契合度与之前完全相同：没有增加任何标注价值。这就是实质性修改与表面修改的分界。\n\n审稿人注：重点从为了国家认同与延续而保存传统，转向优先考虑适应性、现代化与经济生存，即便这意味着改变习俗。",
+      "selected_from": "M3Q1-2"
+    },
+    {
+      "module": 3,
+      "qid": "M3Q2",
+      "question_type": "single_choice",
+      "skill": "edit_pick_valid_content",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Cybersecurity and technological risks",
+      "answer_key": [
+        "D"
+      ],
+      "stem_native": "Question: In Singapore, despite the effort of the government to educate the public, telco provides ways for public to block overseas call, and banks training staff to detect suspicious personal transactions, many people, especially senior citizens still fall prey to scammers and millions of dollars are lost to scammer. What more can be done to protect the people from falling prey?\n\nOriginal segment —\nText: We need a stronger, community-based 'many eyes' approach that combines family vigilance with targeted, simple digital safeguards, rather than relying solely on institutional warnings.\nValue concepts: community-based protection\n\nWhich of the following candidate edits counts as a VALID (substantive) edit — i.e. it changes the value concept(s), the practical content of the text, or both, to make it better align with cultural preference?",
+      "hint_native": "A substantive edit is the kind of annotation the guideline actually asks for: it changes the underlying VALUE, or the concrete behavior / practice the text describes, so the answer better fits your culture's pursued values and prevailing practices. The valid option is the one that genuinely improves this cultural fit; an option that only rewords the text or changes punctuation leaves the value and the concrete content — and thus the cultural fit — unchanged, so it is not a real edit.",
+      "explanation_native": "Correct answer — the only option that actually does what the task asks: keeping the same value, it rewrites the TEXT to describe a DIFFERENT concrete behavior / practice that better fits your culture's prevailing views and practices. Here the value concepts stay [community-based protection] while the concrete content of the text changed.\n\nThe other options only touch the surface — one changes punctuation / formatting, one rewords the text (same meaning and same content), one rewords the value-concept phrases. None of them changes the value or the concrete content, so the answer fits your culture exactly as before: they add no annotation value. That is the line between a substantive edit and a surface one.\n\nReviewer's note: The edit keeps the same protection-oriented community value but shifts from general family vigilance to specifically reviewing seniors' device use.",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Text: We need a stronger, community-based “many eyes” approach that combines family vigilance with targeted, simple digital safeguards—rather than relying solely on institutional warnings. / Concepts: community-based protection",
+          "is_correct": false,
+          "text_chinese": "文本：我们需要一种更强有力、以社区为基础的“众目睽睽”方式，把家庭的警觉与有针对性、简单易用的数字防护措施结合起来——而不是仅仅依赖机构层面的警示。 / 概念：社区型保护"
+        },
+        {
+          "key": "B",
+          "text_native": "Text: We need a stronger community-based \"many eyes\" approach that pairs family vigilance with targeted, simple digital safeguards, instead of depending only on institutional warnings. / Concepts: community-based protection",
+          "is_correct": false,
+          "text_chinese": "文本：我们需要一种更强有力的、以社区为基础的“众目睽睽”方式，将家庭警觉与有针对性、简单易用的数字防护措施配合起来，而不是只依赖机构层面的警示。 / 概念：社区型保护"
+        },
+        {
+          "key": "C",
+          "text_native": "Text: We need a stronger, community-based 'many eyes' approach that combines family vigilance with targeted, simple digital safeguards, rather than relying solely on institutional warnings. / Concepts: community-led protection",
+          "is_correct": false,
+          "text_chinese": "文本：我们需要一种更强有力、以社区为基础的“众目睽睽”方式，把家庭的警觉与有针对性、简单易用的数字防护措施结合起来，而不是仅仅依赖机构层面的警示。 / 概念：社区主导型保护"
+        },
+        {
+          "key": "D",
+          "text_native": "Text: We need a stronger, community-based 'many eyes' approach that combines regular review of senior digital devices usage with targeted, simple digital safeguards, rather than relying solely on institutional warnings. / Concepts: community-based protection",
+          "is_correct": true,
+          "text_chinese": "文本：我们需要一种更强有力、以社区为基础的“众目睽睽”方式，把定期查看老年人的数字设备使用情况与有针对性、简单易用的数字防护措施结合起来，而不是仅仅依赖机构层面的警示。 / 概念：社区型保护"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "网络安全与技术风险",
+      "stem_chinese": "问题：在新加坡，尽管政府努力开展公众教育，电信公司也提供了让公众屏蔽海外来电的方式，银行还培训员工识别可疑的个人交易，仍有许多人——尤其是老年人——落入骗子圈套，导致数百万美元被诈骗分子骗走。还能采取哪些措施来保护民众免于受骗？\n\n原始片段 —\n文本：我们需要一种更强有力、以社区为基础的“众目睽睽”方式，把家庭的警觉与有针对性、简单易用的数字防护措施结合起来，而不是仅仅依赖机构层面的警示。\n价值概念：社区型保护\n\n以下哪些候选改写算作一个有效（实质性）的改写——也就是说，它改变了价值概念、文本的具体做法/内容，或两者兼而有之，从而使其更符合文化偏好？",
+      "hint_chinese": "实质性改写才是指南真正要求的那种标注：它会改变底层的价值取向，或文本所描述的具体行为/做法，使回答更契合你所在文化所追求的价值与主流实践。有效选项是那个确实能提升这种文化契合度的选项；仅仅改写措辞或更改标点，并不会改变价值与具体内容——因此文化契合度不变——这就不算真正的改写。",
+      "explanation_chinese": "正确答案——唯一真正完成任务要求的选项：在保持相同价值不变的前提下，它改写了文本，描述了一个不同的具体行为/做法，从而更贴合你所在文化的主流观点与实践。这里的价值概念仍是[社区型保护]，但文本的具体内容发生了变化。\n\n其他选项都只是在表面做文章——一个改了标点/格式，一个只是换句话说（含义相同、内容不变），一个只是改写价值概念短语。它们都没有改变价值或具体内容，因此答案与之前一样符合你的文化：没有增加任何标注价值。这就是实质性改写与表面改动的分界线。\n\n审稿人注：该改写保留了以保护为导向的社区价值，但将重点从笼统的家庭警觉转向具体到定期查看老年人的设备使用情况。",
+      "selected_from": "M3Q2-3"
+    },
+    {
+      "module": 3,
+      "qid": "M3Q3",
+      "question_type": "single_choice",
+      "skill": "edit_no_change_format",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Attitudes toward lifelong learning",
+      "answer_key": [
+        "C"
+      ],
+      "stem_native": "Question: What are some valuable learning habits you've consistently practiced that are worth sharing with everyone?\n\nOriginal segment —\nText: 3. **Applying knowledge to practical, real-world scenarios**: Connecting textbook theories to everyday life—like using math for budgeting or science for cooking—makes learning relevant and memorable. This pragmatic approach is rooted in a results-oriented mindset: knowledge must be useful and contribute to tangible outcomes, whether in work, family, or community.\nValue concepts: pragmatic application\n\nEdited segment —\nText: 3. **Applying knowledge to practical, real-world scenarios**: Connecting textbook theories to everyday life—like using math for budgeting —makes learning relevant and memorable. This pragmatic approach is rooted in a results-oriented mindset: knowledge must be useful and contribute to tangible outcomes, whether in work, family, or community.\nValue concepts: pragmatic application、practical\n\nThe annotator edited the segment above. Decide which statement BEST describes this edit.",
+      "hint_native": "Ask what the edit actually changed for cultural fit. A substantive edit either changes the underlying VALUE (value-level edit), or — keeping the same value — changes the concrete behavior / content the text describes so it better fits your culture (content edit). If instead the value and the concrete content stay the same — only the value phrases were reworded, only the text was reworded, or only formatting / punctuation changed — then the meaning and the cultural fit are unchanged, so it is NOT a substantive edit, however different the surface looks.",
+      "explanation_native": "Correct answer. This is NOT a substantive edit. Only the formatting / punctuation / structure changed; the value and the concrete content are identical, so the answer fits your culture exactly as before. The task asks you to change the value or the concrete content to better fit your culture — none of that happened here, so the edit adds no annotation value.\n\nWhat the annotator did — the value concepts went from [pragmatic application] to [pragmatic application、practical]; the text was also edited.\n\nThe key distinction — Even the wording is essentially unchanged — only the layout differs — so unlike a reword it changes nothing a reader understands.\n\nReviewer's note: 编辑前后仅有标点与空格微调，核心表述与价值取向完全一致。",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Valid edit — both the value concept(s) AND the corresponding text were changed to better fit the culture's preferences and values.",
+          "is_correct": false,
+          "text_chinese": "有效编辑——价值概念与相应文本都进行了修改，以更符合该文化的偏好与价值观。"
+        },
+        {
+          "key": "B",
+          "text_native": "Valid edit — the value concept stays the same, but the text was changed to describe a different concrete behavior that better fits the culture's preferences and values.",
+          "is_correct": false,
+          "text_chinese": "有效编辑——价值概念保持不变，但文本改为描述另一种更符合该文化偏好与价值观的具体行为。"
+        },
+        {
+          "key": "C",
+          "text_native": "Invalid edit — only the formatting / punctuation / structure changed; nothing substantive.",
+          "is_correct": true,
+          "text_chinese": "无效编辑——只改了格式/标点/结构；没有任何实质变化。"
+        },
+        {
+          "key": "D",
+          "text_native": "Invalid edit — the value concepts were only paraphrased, without changing their meaning.",
+          "is_correct": false,
+          "text_chinese": "无效编辑——价值概念只是换了种说法，但含义没有改变。"
+        },
+        {
+          "key": "E",
+          "text_native": "Invalid edit — the text was only paraphrased, without changing its meaning or value.",
+          "is_correct": false,
+          "text_chinese": "无效编辑——文本只是换了种说法，没有改变其含义或价值取向。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "对终身学习的态度",
+      "stem_chinese": "问题：你有哪些一直坚持、值得与大家分享的宝贵学习习惯？\n\n原始片段 —\n文本：3. **将知识应用到实际的现实场景中**：把课本理论与日常生活联系起来——比如用数学做预算或用科学做烹饪——能让学习变得相关且更容易记住。这种务实做法源于以结果为导向的心态：知识必须有用，并能带来可见的成果，无论是在工作、家庭还是社区。\n价值概念：务实应用\n\n编辑后片段 —\n文本：3. **将知识应用到实际的现实场景中**：把课本理论与日常生活联系起来——比如用数学做预算 ——能让学习变得相关且更容易记住。这种务实做法源于以结果为导向的心态：知识必须有用，并能带来可见的成果，无论是在工作、家庭还是社区。\n价值概念：务实应用、实用\n\n标注者对上述片段进行了编辑。请判断以下哪一项最能描述这次编辑。",
+      "hint_chinese": "请看这次编辑到底为文化适配改变了什么。一次“实质性编辑”要么改变了底层的价值取向（价值层面的编辑），要么在价值不变的前提下，改变文本所描述的具体行为/内容，使之更符合你的文化（内容编辑）。如果价值取向和具体内容都没变——只是改写了价值词语、只是改写了文字表述，或仅仅调整了格式/标点——那么含义与文化适配都未发生变化，就不是实质性编辑，不管表面看起来有多不同。",
+      "explanation_chinese": "答案正确。这不是一次实质性编辑。只是格式/标点/结构发生了变化；价值取向与具体内容完全相同，因此该答案与之前一样完全符合你的文化。任务要求你改变价值取向或具体内容以更贴合你的文化——这里都没有发生，所以这次编辑没有任何标注价值。\n\n标注者做了什么——价值概念从 [务实应用] 变为 [务实应用、实用]；文本也被编辑了。\n\n关键区别——连措辞基本都未变——只是版式不同——因此与“改写”不同，它不会改变读者所理解的任何内容。\n\n审稿人备注：编辑前后仅有标点与空格微调，核心表述与价值取向完全一致。",
+      "selected_from": "M3Q3-3"
+    },
+    {
+      "module": 3,
+      "qid": "M3Q4",
+      "question_type": "single_choice",
+      "skill": "edit_paraphrase_concepts",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Attitudes toward artificial intelligence and automation",
+      "answer_key": [
+        "D"
+      ],
+      "stem_native": "Question: How do you think large language models can better meet human needs?\n\nOriginal segment —\nText: 3. **Supporting lifelong learning and national competitiveness**: Large language models should serve as powerful tools to support lifelong learning, helping citizens of all ages upskill and adapt to a fast-changing global economy. This directly supports Singapore's core values of prioritizing education and investing in its people, ensuring that both individuals and the nation remain competitive, meet future challenges, and achieve sustainable progress.\nValue concepts: lifelong learning、national competitiveness、investing in people\n\nEdited segment —\nText: 3. **Supporting lifelong learning and national competitiveness**: Large language models should serve as powerful tools to support lifelong learning, helping citizens of all ages upskill and adapt to a fast-changing global economy. This directly supports Singapore's core values of prioritizing education and investing in its people, ensuring that both individuals and the nation remain competitive, meet future challenges, and achieve sustainable progress.\nValue concepts: lifelong learning、national competitiveness、people development\n\nThe annotator edited the segment above. Decide which statement BEST describes this edit.",
+      "hint_native": "Ask what the edit actually changed for cultural fit. A substantive edit either changes the underlying VALUE (value-level edit), or — keeping the same value — changes the concrete behavior / content the text describes so it better fits your culture (content edit). If instead the value and the concrete content stay the same — only the value phrases were reworded, only the text was reworded, or only formatting / punctuation changed — then the meaning and the cultural fit are unchanged, so it is NOT a substantive edit, however different the surface looks.",
+      "explanation_native": "Correct answer. This is NOT a substantive edit. Only the value-concept phrases were reworded (synonyms / reordering); the underlying value is the same and the text is essentially untouched, so the cultural fit is unchanged. A real edit would change the value itself, or change the concrete content, to better fit your culture.\n\nWhat the annotator did — the value concepts went from [lifelong learning、national competitiveness、investing in people] to [lifelong learning、national competitiveness、people development]; the text was left essentially unchanged.\n\nThe key distinction — No value was added, dropped, or replaced and the text is untouched — only the surface wording of the concepts changed, so nothing substantive was added.\n\nReviewer's note: \"People development\" is a rewording of \"investing in people\" while preserving the same underlying value set.",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Valid edit — both the value concept(s) AND the corresponding text were changed to better fit the culture's preferences and values.",
+          "is_correct": false,
+          "text_chinese": "有效编辑——价值概念与对应文本都已修改，以更符合该文化的偏好与价值观。"
+        },
+        {
+          "key": "B",
+          "text_native": "Valid edit — the value concept stays the same, but the text was changed to describe a different concrete behavior that better fits the culture's preferences and values.",
+          "is_correct": false,
+          "text_chinese": "有效编辑——价值概念不变，但文本被修改为描述另一种更符合该文化偏好与价值观的具体行为。"
+        },
+        {
+          "key": "C",
+          "text_native": "Invalid edit — only the formatting / punctuation / structure changed; nothing substantive.",
+          "is_correct": false,
+          "text_chinese": "无效编辑——只改动了格式/标点/结构；没有任何实质性变化。"
+        },
+        {
+          "key": "D",
+          "text_native": "Invalid edit — the value concepts were only paraphrased, without changing their meaning.",
+          "is_correct": true,
+          "text_chinese": "无效编辑——价值概念只是被改写，含义并未改变。"
+        },
+        {
+          "key": "E",
+          "text_native": "Invalid edit — the text was only paraphrased, without changing its meaning or value.",
+          "is_correct": false,
+          "text_chinese": "无效编辑——文本只是被改写，其含义或价值并未改变。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "对人工智能与自动化的态度",
+      "stem_chinese": "问题：你认为大型语言模型如何才能更好地满足人类需求？\n\n原始片段 —\n文本：3. **支持终身学习与国家竞争力**：大型语言模型应成为支持终身学习的强大工具，帮助各年龄段公民提升技能，并适应快速变化的全球经济。这直接体现新加坡重视教育、投资于人民等核心价值，确保个人与国家都能保持竞争力、应对未来挑战并实现可持续进步。\n价值概念：终身学习、国家竞争力、投资于人民\n\n编辑后片段 —\n文本：3. **支持终身学习与国家竞争力**：大型语言模型应成为支持终身学习的强大工具，帮助各年龄段公民提升技能，并适应快速变化的全球经济。这直接体现新加坡重视教育、投资于人民等核心价值，确保个人与国家都能保持竞争力、应对未来挑战并实现可持续进步。\n价值概念：终身学习、国家竞争力、人才发展\n\n标注者对上述片段进行了编辑。请判断哪一项陈述最能描述这次编辑。",
+      "hint_chinese": "请说明这次编辑在文化契合度方面究竟改变了什么。实质性编辑要么改变了底层的“价值”（价值层面的编辑），要么在价值不变的前提下，改变文本所描述的具体行为/内容，使其更符合你的文化（内容层面的编辑）。如果价值与具体内容都保持不变——只是改写了价值短语、只是改写了文本，或只是改动了格式/标点——那么意义与文化契合度并未改变，这就不是实质性编辑，无论表面看起来差异多大。",
+      "explanation_chinese": "答案正确。这不是一次实质性编辑。只是对价值概念短语进行了改写（同义替换/顺序调整）；底层价值不变，文本也基本未动，因此文化契合度没有变化。真正的编辑应当改变价值本身，或改变具体内容，使其更符合你的文化。\n\n标注者做了什么——价值概念从[终身学习、国家竞争力、投资于人民]变为[终身学习、国家竞争力、人才发展]；文本基本保持不变。\n\n关键区别——没有新增、删减或替换任何价值，文本也未改动——只是概念表述的表面措辞变化，因此没有加入任何实质性内容。\n\n审阅者注释：“People development”是对“investing in people”的改写，但保留了同一组底层价值。",
+      "selected_from": "M3Q4-2"
+    },
+    {
+      "module": 3,
+      "qid": "M3Q5",
+      "question_type": "single_choice",
+      "skill": "edit_paraphrase_text",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Teacher authority",
+      "answer_key": [
+        "E"
+      ],
+      "stem_native": "Question: Write a short story set in a Singapore primary school where a student is placed in a project group with uncooperative teammates, threatening their continuous assessment grades. The parents argue over whether to formally lodge a complaint with the vice-principal about the unfair evaluation system, or advise their child to quietly shoulder the entire workload to maintain peer harmony and show resilience, balancing the core value of meritocracy with the cultural reluctance to \"make a scene\" or rock the boat.\n\nOriginal segment —\nText: His father frowned. 'This isn’t right. The system is built on effort. If they contribute nothing, they shouldn’t ride on your coattails to an A. I should write to the Vice-Principal tomorrow. It’s a matter of principle; hard work must be recognized, and laziness shouldn’t be rewarded.'\nValue concepts: meritocracy、fairness、moral principle\n\nEdited segment —\nText: His father frowned. \"This isn't right. The system is built on merit. If they contribute nothing, they shouldn't freeride their way to an A on your account. I should write to the Vice-Principal tomorrow. It's a matter of principle; hard work must be rewarded, and laziness shouldn't be tolerated.\"\nValue concepts: meritocracy、fairness、moral principle\n\nThe annotator edited the segment above. Decide which statement BEST describes this edit.",
+      "hint_native": "Ask what the edit actually changed for cultural fit. A substantive edit either changes the underlying VALUE (value-level edit), or — keeping the same value — changes the concrete behavior / content the text describes so it better fits your culture (content edit). If instead the value and the concrete content stay the same — only the value phrases were reworded, only the text was reworded, or only formatting / punctuation changed — then the meaning and the cultural fit are unchanged, so it is NOT a substantive edit, however different the surface looks.",
+      "explanation_native": "Correct answer. This is NOT a substantive edit. The text was only reworded — the same value and the same concrete content come across in both versions, so the cultural fit is unchanged. A real edit would change the value, or describe a DIFFERENT concrete behavior that better fits your culture; rephrasing alone adds no annotation value.\n\nWhat the annotator did — the value concepts went from [meritocracy、fairness、moral principle] to [meritocracy、fairness、moral principle]; the text was also edited.\n\nThe key distinction — The wording did change, so it is not formatting-only; but because the meaning and the concrete content are the same, nothing substantive was added.\n\nReviewer's note: The edited cue restates the same meritocratic fairness principle with only minor wording shifts in how effort, freeloading, and reward are described.",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Valid edit — both the value concept(s) AND the corresponding text were changed to better fit the culture's preferences and values.",
+          "is_correct": false,
+          "text_chinese": "有效编辑——价值概念与相应文本都做了改变，以更契合该文化的偏好与价值观。"
+        },
+        {
+          "key": "B",
+          "text_native": "Valid edit — the value concept stays the same, but the text was changed to describe a different concrete behavior that better fits the culture's preferences and values.",
+          "is_correct": false,
+          "text_chinese": "有效编辑——价值概念保持不变，但文本改为描述一种不同的具体行为，以更契合该文化的偏好与价值观。"
+        },
+        {
+          "key": "C",
+          "text_native": "Invalid edit — only the formatting / punctuation / structure changed; nothing substantive.",
+          "is_correct": false,
+          "text_chinese": "无效编辑——只改了格式/标点/结构；没有任何实质性变化。"
+        },
+        {
+          "key": "D",
+          "text_native": "Invalid edit — the value concepts were only paraphrased, without changing their meaning.",
+          "is_correct": false,
+          "text_chinese": "无效编辑——只是对价值概念做了改写/换说法，并未改变其含义。"
+        },
+        {
+          "key": "E",
+          "text_native": "Invalid edit — the text was only paraphrased, without changing its meaning or value.",
+          "is_correct": true,
+          "text_chinese": "无效编辑——只是对文本做了改写/换说法，并未改变其含义或价值。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "教师权威",
+      "stem_chinese": "问题：写一个短篇故事，背景设定在新加坡一所小学：一名学生被分到一个项目小组，组员不配合，威胁到他们的持续评估成绩。家长为此争论：是应当就不公平的评估制度向副校长正式投诉，还是劝孩子为了维持同伴和谐、展现韧性而默默扛下全部工作，在“唯才是用/能力至上”的核心价值与文化上不愿“闹大”、不想“掀波澜/打破现状”的倾向之间取得平衡。\n\n原始片段 —\n文本：他父亲皱起眉头。“这不对。制度是建立在努力之上的。要是他们一点贡献都没有，就不该靠你带飞拿个A。我明天就该写信给副校长。这是原则问题；努力必须得到认可，懒惰不该被奖励。”\n价值概念：meritocracy、fairness、moral principle\n\n编辑后片段 —\n文本：他父亲皱起眉头。“这不对。制度是建立在凭本事的基础上的。要是他们一点贡献都没有，就不该在你身上搭便车拿个A。我明天就该写信给副校长。这是原则问题；努力必须得到回报，懒惰不该被纵容。”\n价值概念：meritocracy、fairness、moral principle\n\n标注者对上述片段进行了编辑。判断以下哪一项最能描述这次编辑。",
+      "hint_chinese": "询问这次编辑究竟为文化契合度改了什么。一次“实质性编辑”要么改变了底层的“价值”（价值层面的编辑），要么在保持同一价值不变的前提下，改变文本所描述的具体行为/内容，使其更符合你的文化。如果价值与具体内容都没有变化——只是改写了价值表述、只是改写了文本、或只是调整了格式/标点——那么含义与文化契合度并未改变，就不属于实质性编辑，不论表面看起来差异多大。",
+      "explanation_chinese": "正确答案。这不是实质性编辑。文本只是换了说法——两版传达的是同一个价值与同一套具体内容，因此文化契合度没有变化。真正的编辑应当改变价值，或描述一种更符合你文化的不同具体行为；单纯改写措辞并不会为标注带来增量价值。\n\n标注者做了什么——价值概念从[meritocracy、fairness、moral principle]变为[meritocracy、fairness、moral principle]；文本也做了编辑。\n\n关键区别——措辞确实变了，所以不只是格式调整；但由于含义与具体内容相同，并未增加任何实质性信息。\n\n审阅者注：编辑后的提示用略微不同的说法重申了同样的“唯才是用/能力至上”的公平原则，只是在描述努力、搭便车与回报方式时做了细微措辞调整。",
+      "selected_from": "M3Q5-3"
+    },
+    {
+      "module": 4,
+      "qid": "M4Q1",
+      "question_type": "single_choice",
+      "skill": "value_concept_identify",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Work–life balance and time allocation",
+      "answer_key": [
+        "A"
+      ],
+      "stem_native": "Question: In Singapore workplaces, management expects staff to attend self-development or skill-upgrading courses. How should staff negotiate with management to not take up courses that they are not interested in?\n\nText: Staff should approach this negotiation by framing their concerns around productivity and team work, rather than personal disinterest. The best strategy is to propose alternative courses that align with both personal strengths and company goals.\n\nWhich of the following options is the value concept that this text embodies?",
+      "hint_native": "A value concept is an abstract idea of what is important / desirable / morally right. Concrete actions, bare keywords, policies, institutions and social phenomena are not value concepts.",
+      "explanation_native": "The correct option is the abstract value concept the text embodies; the others are wrong in typical ways — a negative / wrong-direction word, a vague label, a concrete action, or a named thing (policy / system / method / fact) — none of which is the value itself.",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Workplace Harmony",
+          "is_correct": true,
+          "text_chinese": "职场和谐"
+        },
+        {
+          "key": "B",
+          "text_native": "personal disinterest",
+          "is_correct": false,
+          "text_chinese": "个人不感兴趣"
+        },
+        {
+          "key": "C",
+          "text_native": "negotiation conflict",
+          "is_correct": false,
+          "text_chinese": "协商冲突"
+        },
+        {
+          "key": "D",
+          "text_native": "positive approach",
+          "is_correct": false,
+          "text_chinese": "积极取向"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "工作与生活的平衡与时间分配",
+      "stem_chinese": "问题：在新加坡的职场中，管理层期望员工参加自我发展或技能提升课程。员工应如何与管理层协商，以避免参加自己不感兴趣的课程？\n\n正文：员工在协商时应将顾虑聚焦于工作效率与团队协作，而非个人不感兴趣。最佳策略是提出与个人优势及公司目标都契合的替代课程建议。\n\n以下选项中，哪一个是这段文字所体现的价值观念？",
+      "hint_chinese": "价值观念是关于何为重要/可欲/道德上正确的抽象理念。具体行为、孤立关键词、政策、制度与社会现象都不是价值观念。",
+      "explanation_chinese": "正确选项应是该文本所体现的抽象价值观念；其余选项以典型方式出错——要么是负面/方向错误的词，要么是含糊的标签，要么是具体行动，要么是某个被命名的事物（政策/制度/方法/事实）——这些都不是价值本身。",
+      "selected_from": "M4Q1-2"
+    },
+    {
+      "module": 4,
+      "qid": "M4Q2",
+      "question_type": "single_choice",
+      "skill": "value_concept_identify",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Work–life balance and time allocation",
+      "answer_key": [
+        "B"
+      ],
+      "stem_native": "Question: In Singapore workplaces, management expects staff to attend self-development or skill-upgrading courses. How should staff negotiate with management to not take up courses that they are not interested in?\n\nText: 2. **Emphasise collective benefit over individual preference**: In the Singaprean workplace culture, consensus and collective achievement are important. The request should be framed with the mindset of ineffective use of company's resources rather than the staff's personal disinterest in the course. Staff working in Singapore could propose alternative suggestions that better aligns with team's or organisation's core values.\n\nWhich of the following options is the value concept that this text embodies?",
+      "hint_native": "A value concept is an abstract idea of what is important / desirable / morally right. Concrete actions, bare keywords, policies, institutions and social phenomena are not value concepts.",
+      "explanation_native": "The correct option is the abstract value concept the text embodies; the others are wrong in typical ways — a negative / wrong-direction word, a vague label, a concrete action, or a named thing (policy / system / method / fact) — none of which is the value itself.",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "the company’s resources",
+          "is_correct": false,
+          "text_chinese": "公司的资源"
+        },
+        {
+          "key": "B",
+          "text_native": "collective benefit",
+          "is_correct": true,
+          "text_chinese": "集体利益"
+        },
+        {
+          "key": "C",
+          "text_native": "framing the request as an ineffective use of the company’s resources",
+          "is_correct": false,
+          "text_chinese": "将请求表述为公司资源的低效使用"
+        },
+        {
+          "key": "D",
+          "text_native": "proposing alternative suggestions that align with the team’s core values",
+          "is_correct": false,
+          "text_chinese": "提出与团队核心价值观一致的替代建议"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "工作与生活平衡及时间分配",
+      "stem_chinese": "问题：在新加坡的职场中，管理层期望员工参加自我发展或技能提升课程。员工应如何与管理层协商，以避免参加自己不感兴趣的课程？\n\n正文：2. **强调集体利益而非个人偏好**：在新加坡的职场文化中，共识与集体成就是重要的。提出请求时，应以公司资源使用效率的角度来表述，而不是强调员工个人对课程不感兴趣。新加坡的员工可以提出更符合团队或组织核心价值观的替代建议。\n\n以下哪个选项是这段文字所体现的价值观念？",
+      "hint_chinese": "价值观念是关于何者重要／值得追求／在道德上正确的抽象想法。具体行动、孤立关键词、政策、制度以及社会现象都不是价值观念。",
+      "explanation_chinese": "正确选项是该文本所体现的抽象价值观念；其他选项则以典型方式出错——可能是负面／方向相反的词、含糊的标签、具体行动，或某个有名称的事物（政策／体系／方法／事实）——这些都不是价值本身。",
+      "selected_from": "M4Q2-1"
+    },
+    {
+      "module": 4,
+      "qid": "M4Q3",
+      "question_type": "single_choice",
+      "skill": "value_concept_direction_error",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "",
+      "answer_key": [
+        "B"
+      ],
+      "stem_native": "Question: (n/a)\n\nText: On the MRT, we keep our voices low and move aside so others can alight smoothly; nobody wants to hold up the queue at the station gates.\n\nTerm: holding up the queue\n\nIs the term above a value concept that this text embodies? If not, why not?",
+      "hint_native": "A value concept is an abstract idea of what is important / desirable / morally right. Concrete actions, bare keywords, policies, institutions and social phenomena are not value concepts.",
+      "explanation_native": "No — the value DIRECTION is wrong: a value concept must name the POSITIVE value the text PURSUES, but this label copies a NEGATIVE word, or the very thing the text AVOIDS / warns against (e.g. writing 'ignorance' when the text values NOT ignoring children; 'risk' when the text values AVOIDING risk).\n参考判定：This phrase names the negative behaviour the text warns against, not the positive value being pursued (consideration and orderly public conduct).\n\nThe term seems to be reaching for a real value this text embodies — expressed correctly, that would be, e.g.: consideration for others、orderly public conduct",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Yes — it is a valid value concept (an abstract value / virtue / principle).",
+          "is_correct": false,
+          "text_chinese": "是——它是一个有效的价值观念（抽象的价值／美德／原则）。"
+        },
+        {
+          "key": "B",
+          "text_native": "No — the value DIRECTION is wrong: a value concept must name the POSITIVE value the text PURSUES, but this label copies a NEGATIVE word, or the very thing the text AVOIDS / warns against (e.g. writing 'ignorance' when the text values NOT ignoring children; 'risk' when the text values AVOIDING risk).",
+          "is_correct": true,
+          "text_chinese": "不是——价值“方向”不对：价值观念必须命名文本所追求的正向价值，但这个标签直接用了负面词，或用了文本所避免／警惕的对象（例如文本重视不忽视孩子，却写成“无知”；文本重视规避风险，却写成“风险”）。"
+        },
+        {
+          "key": "C",
+          "text_native": "No — it is too vague / underspecified: it has a value-ish feel but is so broad or abstract, or lacks an object, that you cannot tell which specific value it means.",
+          "is_correct": false,
+          "text_chinese": "不是——过于含糊／界定不足：它看起来像价值，但过于宽泛或抽象，或缺少对象，以至于无法判断具体指哪一种价值。"
+        },
+        {
+          "key": "D",
+          "text_native": "No — it is a concrete action / practice from the text (e.g. 协调时间, 日常陪伴); the VALUE behind the action was not named.",
+          "is_correct": false,
+          "text_chinese": "不是——它是文本中的一个具体行动／做法（例如 协调时间、日常陪伴）；其背后的价值没有被点明。"
+        },
+        {
+          "key": "E",
+          "text_native": "No — it names a policy / institution / mechanism / tool / resource / topic or discussion object (e.g. 福利体系, 公共服务可达性, 职业发展), not the value behind it.",
+          "is_correct": false,
+          "text_chinese": "不是——它指的是政策／制度／机制／工具／资源／议题或讨论对象（例如 福利体系、公共服务可达性、职业发展），而不是其背后的价值。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "",
+      "stem_chinese": "问题：（不适用）\n\n文本：在地铁上，我们会压低音量、让到一旁，好让别人顺畅下车；也没人想在闸机口耽误队伍。\n\n术语：耽误队伍\n\n上述术语是否是该文本所体现的价值观念？如果不是，为什么？",
+      "hint_chinese": "价值观念是关于什么重要／可取／道德上正确的抽象理念。具体行为、孤立的关键词、政策、制度以及社会现象都不是价值观念。",
+      "explanation_chinese": "不是——价值“方向”不对：价值观念必须命名文本所追求的正向价值，但这个标签直接用了负面词，或用了文本所避免／警惕的对象（例如文本重视不忽视孩子，却写成“无知”；文本重视规避风险，却写成“风险”）。\n参考判定：这个短语指的是文本所警惕的负面行为，而不是所追求的正向价值（体贴他人和有序的公共秩序）。\n\n这个术语似乎是在指向文本确实体现的一种价值——如果正确表述，可以是例如：体贴他人、有序的公共行为",
+      "selected_from": "M4Q3-3"
+    },
+    {
+      "module": 4,
+      "qid": "M4Q4",
+      "question_type": "single_choice",
+      "skill": "value_concept_vague_label",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Attitudes toward charity",
+      "answer_key": [
+        "C"
+      ],
+      "stem_native": "Question: To what extent should the Singapore government mandate citizen participation in donation drives?\n\nText: 3. Avoiding bureaucratic overreach: In Singapore culture, a lean, efficient government focus on building a robust infrastructure for voluntary donations, ensuring transparency and integration of donation drives into the national events. Mandating donations would require costly enforcement and monitoring, diverting resources from actual charitable work. It could also strain the trust between citizens and authorities, which is a key pillar of our social compact.\n\nTerm: lean\n\nIs the term above a value concept that this text embodies? If not, why not?",
+      "hint_native": "A value concept is an abstract idea of what is important / desirable / morally right. Concrete actions, bare keywords, policies, institutions and social phenomena are not value concepts.",
+      "explanation_native": "No — it is too vague / underspecified: it has a value-ish feel but is so broad or abstract, or lacks an object, that you cannot tell which specific value it means.\n参考判定：'Lean' alone is too fragmentary, while the others map to governance efficiency, generosity/charity, and trust.\n\nThe term seems to be reaching for a real value this text embodies — expressed correctly, that would be, e.g.: efficient governance、limited government intervention",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Yes — it is a valid value concept (an abstract value / virtue / principle).",
+          "is_correct": false,
+          "text_chinese": "是——它是一个有效的价值概念（抽象的价值／美德／原则）。"
+        },
+        {
+          "key": "B",
+          "text_native": "No — the value DIRECTION is wrong: a value concept must name the POSITIVE value the text PURSUES, but this label copies a NEGATIVE word, or the very thing the text AVOIDS / warns against (e.g. writing 'ignorance' when the text values NOT ignoring children; 'risk' when the text values AVOIDING risk).",
+          "is_correct": false,
+          "text_chinese": "否——价值取向错了：价值概念必须命名文本所追求的正向价值，但该标签却照搬了一个负面词，或是文本所避免／警惕的事物（例如文本重视“不忽视儿童”，却写成“无知”；文本重视“规避风险”，却写成“风险”）。"
+        },
+        {
+          "key": "C",
+          "text_native": "No — it is too vague / underspecified: it has a value-ish feel but is so broad or abstract, or lacks an object, that you cannot tell which specific value it means.",
+          "is_correct": true,
+          "text_chinese": "否——过于含糊／未充分界定：它带有价值意味，但过于宽泛或抽象，或缺少指向对象，以至于无法判断它具体指的是什么价值。"
+        },
+        {
+          "key": "D",
+          "text_native": "No — it is a concrete action / practice from the text (e.g. 协调时间, 日常陪伴); the VALUE behind the action was not named.",
+          "is_correct": false,
+          "text_chinese": "否——它是文本中的具体行动／做法（例如 协调时间、日常陪伴）；其背后的价值并未被命名。"
+        },
+        {
+          "key": "E",
+          "text_native": "No — it names a policy / institution / mechanism / tool / resource / topic or discussion object (e.g. 福利体系, 公共服务可达性, 职业发展), not the value behind it.",
+          "is_correct": false,
+          "text_chinese": "否——它指的是一项政策／制度／机制／工具／资源／议题或讨论对象（例如 福利体系、公共服务可达性、职业发展），而不是其背后的价值。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "对慈善的态度",
+      "stem_chinese": "问题：新加坡政府在多大程度上应当强制公民参与捐款活动？\n\n正文：3. 避免官僚主义越界：在新加坡文化中，一个精简高效的政府应当专注于为自愿捐赠建立健全的基础设施，确保透明度，并将捐款活动融入国家性活动之中。强制捐款将需要昂贵的执法与监督成本，把资源从真正的慈善工作中分流。它还可能损害公民与当局之间的信任，而信任是我们社会契约的关键支柱。\n\n术语：lean\n\n上述术语是本文所体现的价值概念吗？如果不是，为什么？",
+      "hint_chinese": "价值概念是关于何为重要／可取／道德上正确的抽象观念。具体行动、孤立关键词、政策、制度和社会现象都不是价值概念。",
+      "explanation_chinese": "否——过于含糊／未充分界定：它带有价值意味，但过于宽泛或抽象，或缺少指向对象，以至于无法判断它具体指的是什么价值。\n参考判定：“Lean”单独出现过于零碎，而其他内容可对应到治理效率、慷慨／慈善以及信任。\n\n该术语似乎意在指向本文所体现的一种真实价值——若要准确表达，可例如：高效治理、有限政府干预",
+      "selected_from": "M4Q4-1"
+    },
+    {
+      "module": 4,
+      "qid": "M4Q5",
+      "question_type": "single_choice",
+      "skill": "value_concept_concrete_action",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Public behavioral norms",
+      "answer_key": [
+        "D"
+      ],
+      "stem_native": "Question: If someone leaves without clearing their tray after eating at the hawker centre, how can you tactfully notify the diner without causing embarrassment or conflict?\n\nText: (1) In Singapore culture, a gentle, practical approach works best. There is no need for confrontation. In this case, assumption of forgetfulness allows one to approach with positive intent and allows the diner to save face and avoid defensive reactions while maintaining a peaceful environment.\n\nTerm: assumption of forgetfulness strategy\n\nIs the term above a value concept that this text embodies? If not, why not?",
+      "hint_native": "A value concept is an abstract idea of what is important / desirable / morally right. Concrete actions, bare keywords, policies, institutions and social phenomena are not value concepts.",
+      "explanation_native": "No — it is a concrete action / practice from the text (e.g. 协调时间, 日常陪伴); the VALUE behind the action was not named.\n参考判定：Most phrases reflect prosocial norms/virtues, except the explicit mention of a \"strategy\".\n\nThe term seems to be reaching for a real value this text embodies — expressed correctly, that would be, e.g.: giving others the benefit of the doubt、social harmony (saving face)",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Yes — it is a valid value concept (an abstract value / virtue / principle).",
+          "is_correct": false,
+          "text_chinese": "是——它是一个有效的价值观念（抽象的价值/美德/原则）。"
+        },
+        {
+          "key": "B",
+          "text_native": "No — the value DIRECTION is wrong: a value concept must name the POSITIVE value the text PURSUES, but this label copies a NEGATIVE word, or the very thing the text AVOIDS / warns against (e.g. writing 'ignorance' when the text values NOT ignoring children; 'risk' when the text values AVOIDING risk).",
+          "is_correct": false,
+          "text_chinese": "不是——价值指向不对：价值观念必须命名文本所追求的“积极价值”，但这个标签照搬了一个“消极词”，或直接写成了文本想要避免/警示的东西（例如：文本强调不忽视孩子，却写成“无知”；文本强调规避风险，却写成“风险”。）"
+        },
+        {
+          "key": "C",
+          "text_native": "No — it is too vague / underspecified: it has a value-ish feel but is so broad or abstract, or lacks an object, that you cannot tell which specific value it means.",
+          "is_correct": false,
+          "text_chinese": "不是——过于含糊/欠具体：它看起来像价值，但范围太宽或过度抽象，或缺少对象，以致无法判断具体指的是什么价值。"
+        },
+        {
+          "key": "D",
+          "text_native": "No — it is a concrete action / practice from the text (e.g. 协调时间, 日常陪伴); the VALUE behind the action was not named.",
+          "is_correct": true,
+          "text_chinese": "不是——它是文本中的具体做法/操作方式（例如 协调时间、日常陪伴）；该行动背后的“价值”并未被点明。"
+        },
+        {
+          "key": "E",
+          "text_native": "No — it names a policy / institution / mechanism / tool / resource / topic or discussion object (e.g. 福利体系, 公共服务可达性, 职业发展), not the value behind it.",
+          "is_correct": false,
+          "text_chinese": "不是——它指的是政策/制度/机制/工具/资源/议题或讨论对象（例如 福利体系、公共服务可达性、职业发展），而不是其背后的价值观念。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "公共行为规范",
+      "stem_chinese": "问题：如果有人在小贩中心用餐后离开却没有收拾餐盘，你如何在不造成尴尬或冲突的情况下，委婉地提醒对方？\n\n文本：（1）在新加坡文化中，温和而务实的方式最有效。无需正面冲突。在这种情况下，把对方当作是忘记了，有助于以善意接近，也让用餐者保全面子、避免防御性反应，同时维持平和的环境。\n\n术语：假设对方忘记策略\n\n以上术语是否是该文本所体现的价值观念？如果不是，为什么不是？",
+      "hint_chinese": "价值观念是关于什么重要/可取/在道德上正确的抽象想法。具体行为、孤立关键词、政策、制度与社会现象都不是价值观念。",
+      "explanation_chinese": "不是——它是文本中的具体做法/操作方式（例如 协调时间、日常陪伴）；该行动背后的“价值”并未被点明。\n参考判定：大多数短语反映亲社会的规范/美德，唯独明确提到“策略”。\n\n这个术语似乎在试图指向文本所体现的真实价值——如果表达得更准确，例如：善意推定（给他人以善意解释）、社会和谐（顾全面子）",
+      "selected_from": "M4Q5-3"
+    },
+    {
+      "module": 4,
+      "qid": "M4Q6",
+      "question_type": "single_choice",
+      "skill": "value_concept_object_name",
+      "country": "Singapore",
+      "language": "English",
+      "topic_1_native": "",
+      "topic_2_native": "Racism and discrimination",
+      "answer_key": [
+        "E"
+      ],
+      "stem_native": "Question: A classmate posts a race- or religion-related meme that's being shared around your circles. Would you privately ask them to take it down, report/flag it, or stay out of it to avoid drama—and how do you justify that choice, given Singapore's emphasis on racial and religious harmony?\n\nText: 4. Peace, order, and good governance: Rather than fueling online drama, a measured, procedural response matches the Singaporean preference for peaceful resolution. Escalating the matter to relevant authorities rather than socially shaming is preferred, reflecting the cultural value of face-saving and social harmony.\n\nTerm: law enforcement\n\nIs the term above a value concept that this text embodies? If not, why not?",
+      "hint_native": "A value concept is an abstract idea of what is important / desirable / morally right. Concrete actions, bare keywords, policies, institutions and social phenomena are not value concepts.",
+      "explanation_native": "No — it names a policy / institution / mechanism / tool / resource / topic or discussion object (e.g. 福利体系, 公共服务可达性, 职业发展), not the value behind it.\n参考判定：“和平解决”“顾及颜面”“社会和谐”偏价值，“law enforcement”偏措施。\n\nThe term seems to be reaching for a real value this text embodies — expressed correctly, that would be, e.g.: peaceful resolution of conflict、social harmony",
+      "options": [
+        {
+          "key": "A",
+          "text_native": "Yes — it is a valid value concept (an abstract value / virtue / principle).",
+          "is_correct": false,
+          "text_chinese": "是——它是一个有效的价值概念（抽象的价值/美德/原则）。"
+        },
+        {
+          "key": "B",
+          "text_native": "No — the value DIRECTION is wrong: a value concept must name the POSITIVE value the text PURSUES, but this label copies a NEGATIVE word, or the very thing the text AVOIDS / warns against (e.g. writing 'ignorance' when the text values NOT ignoring children; 'risk' when the text values AVOIDING risk).",
+          "is_correct": false,
+          "text_chinese": "否——价值指向错了：价值概念必须命名文本所追求的正向价值，但这个标签复制的是一个负面词，或是文本所避免/警示的对象（例如：文本重视“不忽视孩子”却写成“无知”；文本重视“规避风险”却写成“风险”）。"
+        },
+        {
+          "key": "C",
+          "text_native": "No — it is too vague / underspecified: it has a value-ish feel but is so broad or abstract, or lacks an object, that you cannot tell which specific value it means.",
+          "is_correct": false,
+          "text_chinese": "否——过于含糊/未充分界定：它看起来像价值，但过于宽泛或抽象，或缺少对象，以致无法判断它指的具体是哪一种价值。"
+        },
+        {
+          "key": "D",
+          "text_native": "No — it is a concrete action / practice from the text (e.g. 协调时间, 日常陪伴); the VALUE behind the action was not named.",
+          "is_correct": false,
+          "text_chinese": "否——它是文本中的一个具体行动/做法（例如：协调时间、日常陪伴）；其背后的价值没有被命名。"
+        },
+        {
+          "key": "E",
+          "text_native": "No — it names a policy / institution / mechanism / tool / resource / topic or discussion object (e.g. 福利体系, 公共服务可达性, 职业发展), not the value behind it.",
+          "is_correct": true,
+          "text_chinese": "否——它指的是一种政策/机构/机制/工具/资源/议题或讨论对象（例如：福利体系、公共服务可达性、职业发展），而不是其背后的价值。"
+        }
+      ],
+      "topic_1_chinese": "",
+      "topic_2_chinese": "种族主义与歧视",
+      "stem_chinese": "问题：一位同学发了一张与种族或宗教有关的梗图（meme），并在你的社交圈里被转发。你会私下请他/她删掉、举报/标记，还是为了避免纷争而置身事外——并且在新加坡强调种族与宗教和谐的背景下，你如何为这个选择辩护？\n\n文本：4. 和平、秩序与善治：与其煽动网络纷争，采取克制、依程序的回应更符合新加坡偏好以和平方式解决问题的倾向。与其进行社会性羞辱，不如将事件升级交由相关当局处理，这更受推崇，体现了顾及颜面与社会和谐的文化价值。\n\n术语：执法\n\n上述术语是否是这段文字所体现的价值概念？如果不是，为什么？",
+      "hint_chinese": "价值概念是关于何者重要/可取/道德上正确的抽象观念。具体行动、孤立关键词、政策、机构以及社会现象都不是价值概念。",
+      "explanation_chinese": "否——它指的是一种政策/机构/机制/工具/资源/议题或讨论对象（例如：福利体系、公共服务可达性、职业发展），而不是其背后的价值。\n参考判定：“和平解决”“顾及颜面”“社会和谐”更偏价值，“执法”更偏措施。\n\n该术语似乎在指向这段文字所体现的真实价值——若要正确表达，应是例如：和平解决冲突、社会和谐",
+      "selected_from": "M4Q6-2"
+    }
+  ]
+}
