@@ -1,13 +1,15 @@
 <template>
   <div class="quiz-check-page">
-    <div class="quiz-hero">
-      <span class="quiz-pill">Quiz {{ currentQuestionIndex + 1 }}</span>
-      <h1>{{ title }}</h1>
-      <p>{{ description }}</p>
-    </div>
+    <section class="hero-card">
+      <div class="hero-copy">
+        <span class="step-pill">Quiz {{ currentQuestionIndex + 1 }}</span>
+        <h1>{{ title }}</h1>
+        <p>{{ description }}</p>
+      </div>
+    </section>
 
-    <div class="quiz-workspace">
-      <section class="quiz-main-panel" style="padding-right: 1em;">
+    <div class="content-grid">
+      <section class="left" style="padding-right: 1em;">
         <div class="quiz-main-scroll">
           <p class="question-title">
             {{ currentQuestionIndex + 1 }}. {{ currentQuestion.topic_2_native }}
@@ -68,14 +70,16 @@
 
       <aside
         v-if="answerFeedback"
-        class="feedback-panel"
+        class="right"
         :class="answerFeedback.type"
       >
-        <span class="feedback-icon">{{ answerFeedback.type === "correct" ? "✓" : "✕" }}</span>
         <div>
-          <h4>{{ answerFeedback.title }}</h4>
-          <p>{{ answerFeedback.message }}</p>
-          <p class="hint-note">{{ answerFeedback.note }}</p>
+          <span class="feedback-icon">{{ answerFeedback.type === "correct" ? "✓" : "✕" }}</span>
+          <div>
+            <h4>{{ answerFeedback.title }}</h4>
+            <p>{{ answerFeedback.message }}</p>
+            <p class="hint-note">{{ answerFeedback.note }}</p>
+          </div>
         </div>
       </aside>
     </div>
@@ -381,58 +385,30 @@ watch(
   height: 100%;
   display: flex;
   flex-direction: column;
-  .quiz-hero {
-    .quiz-pill {
-      display: inline-flex;
-      align-items: center;
-      height: 28px;
-      padding: 0 0.875em;
-      border-radius: 999px;
-      background: rgba(195, 232, 255, 1);
-      color: rgba(0, 30, 44, 1);
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
 
-    h1 {
-      margin: 0.33em 0;
-      font-size: 3em;
-      line-height: 1.02;
-      color: #101828;
-    }
-
-    p {
-      margin: 0;
-      color: #475467;
-    }
-  }
-
-  .quiz-workspace {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(280px, 0.95fr);
-    gap: 3em;
+  .content-grid {
     margin-top: 3em;
     flex: 1 1 auto;
     min-height: 0;
-    align-items: stretch;
-    & > section {
+    & > section,
+    & > .left {
       position: relative;
       display: flex;
       flex-direction: column;
       min-height: 0;
-      padding-bottom: 5.5em;
     }
-    & > aside {
-      align-self: start;
+    & > aside,
+    & > .right {
+      align-self: flex-start;
       max-height: 100%;
       overflow-y: auto;
     }
   }
 
   .quiz-main-scroll {
-    flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
+    max-height: calc(100% - 6em);
   }
 
   .question-title {
@@ -530,13 +506,9 @@ watch(
   }
 
   .quiz-actions {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
     display: flex;
     justify-content: flex-end;
-    padding: 1em 0;
+    margin-top: 2em;
   }
 
   .check-button {
@@ -558,7 +530,7 @@ watch(
     }
   }
 
-  .feedback-panel {
+  .right > div {
     display: flex;
     align-items: flex-start;
     gap: 1em;
@@ -618,8 +590,13 @@ watch(
 
 @media (max-width: 1200px) {
   .quiz-check-page {
-    .quiz-workspace {
-      grid-template-columns: 1fr;
+    .content-grid {
+      flex-direction: column;
+
+      .right {
+        width: 100%;
+        max-width: none;
+      }
     }
   }
 }

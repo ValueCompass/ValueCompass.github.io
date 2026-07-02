@@ -9,7 +9,7 @@
     </section>
 
     <section class="content-grid">
-      <article class="media-panel">
+      <article class="left">
         <div class="video-shell">
           <video
             ref="videoElement"
@@ -18,7 +18,7 @@
         </div>
       </article>
 
-      <aside class="status-panel">
+      <aside class="right">
         <div class="progress-block">
           <div class="progress-header">
             <span>Completion Progress</span>
@@ -370,49 +370,6 @@ onBeforeUnmount(() => {
   padding: 0;
 }
 
-.hero-card {
-  .hero-copy {
-    h1 {
-      margin: 0.33em 0;
-      font-size: 3em;
-      line-height: 1.02;
-      color: #101828;
-      letter-spacing: -0.04em;
-    }
-
-    p {
-      margin: 0;
-      color: #475467;
-    }
-
-    .step-pill {
-      display: inline-flex;
-      align-items: center;
-      height: 28px;
-      padding: 0 0.875em;
-      border-radius: 999px;
-      background: rgba(195, 232, 255, 1);
-      color: rgba(0, 30, 44, 1);
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-  }
-}
-
-.content-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2.2fr) minmax(300px, 1fr);
-  gap: 32px;
-  margin-top: 24px;
-
-  .media-panel,
-  .status-panel {
-    min-width: 0;
-  }
-}
-
 .video-shell {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -462,7 +419,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.status-panel {
+.right {
   font-size: 1em;
   display: flex;
   flex-direction: column;
@@ -600,11 +557,5 @@ onBeforeUnmount(() => {
   margin: 0 auto;
   margin-top: 2em;
   cursor: pointer;
-}
-
-@media (max-width: 1200px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

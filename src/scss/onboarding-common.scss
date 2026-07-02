@@ -1,0 +1,61 @@
+// ============================================================
+// Onboarding 三阶段共享样式
+// TrainingVideo / QuizCheck / Survey 统一使用的布局和组件样式
+// ============================================================
+
+.hero-card {
+  .hero-copy {
+    h1 {
+      margin: 0.33em 0;
+      font-size: 3em;
+      line-height: 1.02;
+      color: #101828;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      margin: 0;
+      color: #475467;
+    }
+
+    .step-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 0.875em;
+      border-radius: 999px;
+      background: rgba(195, 232, 255, 1);
+      color: rgba(0, 30, 44, 1);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.content-grid {
+  display: flex;
+  gap: 2rem;
+  margin-top: 24px;
+
+  .left {
+    width: 67%;
+    box-sizing: border-box;
+  }
+
+  .right {
+    flex: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .content-grid {
+    flex-direction: column;
+
+    .right {
+      width: 100%;
+      max-width: none;
+    }
+  }
+}

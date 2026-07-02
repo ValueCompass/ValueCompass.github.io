@@ -173,82 +173,14 @@
             @complete="handleCompleteQuiz"
           />
 
-          <div v-show="activeMainStepIndex === 3" class="survey-container">
-            <div class="content">
-              <div class="survery-intro">
-                <h3>Survey Completion Required</h3>
-                <p>
-                  You must complete <b>all 3 surveys</b> before proceeding to
-                  the next stage.
-                </p>
-                <p>Estimated time: 20-30 minutes total.</p>
-                <p>
-                  Additional language versions are available in the expanded
-                  menu below.
-                </p>
-                <p>
-                  <b>Important</b>: You must use the registered name
-                  <span class="registered-name">"{{ registeredUserName }}"</span>
-                  <button
-                    type="button"
-                    class="copy-name-button"
-                    @click="handleCopyRegisteredName"
-                  >
-                    <el-icon><CopyDocument /></el-icon>
-                  </button>
-                  exactly as shown.
-                </p>
-              </div>
-
-              <div class="survery-ul">
-                <div
-                  v-for="surveyItem in displaySurveys"
-                  :key="surveyItem.survey.title"
-                  class="item"
-                >
-                  <span>{{ surveyItem.survey.title }}</span>
-                  <div>
-                    <div class="survey-links-row">
-                      <p class="survey-version-p">
-                        <a
-                          v-for="version in surveyItem.visibleLinks"
-                          :key="`${surveyItem.survey.title}-${version.label}`"
-                          :href="version.href"
-                          target="_blank"
-                          rel="noreferrer"
-                          ><span
-                            >{{ normalizeLanguageLabel(version.label) }}
-                            Version</span
-                          >
-                          <SvgIcon
-                            class="svg-icon"
-                            name="view-more-icon"
-                          ></SvgIcon>
-                        </a>
-                      </p>
-                    </div>
-                    <div>
-                      <el-checkbox
-                        v-model="surveyItem.survey.completed"
-                        label="Completed"
-                        size="large"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="button-container">
-               
-                <el-button
-                  class="next-button"
-                  :class="{ disabled: !allSurveysChecked }"
-                  :disabled="!allSurveysChecked"
-                  @click="handleSurveyNext"
-                  type="primary"
-                  >start annotation</el-button
-                >
-              </div>
-            </div>
+          <div v-show="activeMainStepIndex === 3">
+            <Survey
+              ref="surveyRef"
+              :registered-user-name="registeredUserName"
+              :registered-user-country="registeredUserCountry"
+              :registered-user-language="registeredUserLanguage"
+              @survey-next="handleSurveyNext"
+            />
           </div>
         </section>
       </div>
@@ -260,7 +192,6 @@
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 import {
-  CopyDocument,
   VideoPlay,
   CircleCheck,
   CircleCheckFilled,
@@ -272,6 +203,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import QuizCheck from "./onnborading/Components/QuizCheck.vue";
 import TrainingVideo from "./onnborading/Components/TrainingVideo.vue";
+import Survey from "./onnborading/Components/Survey.vue";
 import {
   hasStudiedCulturalValueAnnotationVideoGuidance,
   hasPassedCalibrationQuiz,
@@ -281,12 +213,7 @@ import {
 } from "@/utils/culturalValueAnnotationAuth";
 import {
   createOnboardingSteps,
-  createOnboardingSurveys,
-  normalizeLanguageLabel,
-  getPreferredSurveyLanguage,
-  buildDisplaySurveys,
   getStoredOnboardingUserDetail,
-  copyTextWithFallback,
 } from "@/utils/culturalValueOnboarding";
 import { createOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
 import { passedCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
@@ -306,8 +233,8 @@ const registeredUserName = ref("hua");
 const registeredUserCountry = ref("");
 const registeredUserLanguage = ref("");
 
-// 问卷语言链接默认展开，方便用户直接选择对应版本。
-const surveyLinksExpanded = ref(true);
+// Survey 组件引用，用于读取 allSurveysChecked。
+const surveyRef = ref(null);
 
 // 左侧训练视频分组完成后允许折叠。
 const isTrainingVideoGroupCollapsed = ref(false);
@@ -322,9 +249,6 @@ const { t } = useI18n();
 const trainingVideoSteps = ref(createOnboardingSteps());
 const trainingVideoCompletionStatus = ref({});
 
-// 三份问卷的展示数据和完成勾选状态。
-const surveys = ref(createOnboardingSurveys());
-
 // 页面内轻量测验题库按用户国家生成，后续国家差异只维护数据文件。
 const quizQuestions = createOnboardingQuizQuestions();
 
@@ -335,11 +259,6 @@ const quizCheckState = ref({
   answeredCount: 0,
   totalCount: quizQuestions.length,
   allAnswered: false,
-});
-
-// 三个问卷 checkbox 是否都已勾选，用于控制 start annotation 按钮的 disabled 状态。
-const allSurveysChecked = computed(() => {
-  return surveys.value.every((survey) => survey.completed);
 });
 
 // Quiz 子步骤 current 状态：当前活跃题且未完成。
@@ -395,24 +314,6 @@ const trainingVideoStepCompleted = computed(() => {
 // 问卷入口条件：Quiz 完成，或本地已经记录问卷完成。
 const canEnterSurvey = computed(() => {
   return quizCompleted.value || hasCompletedOnboardingSurveys();
-});
-
-// 根据注册国家/语言计算优先展示的问卷语言版本。
-const preferredSurveyLanguage = computed(() => {
-  return getPreferredSurveyLanguage({
-    country: registeredUserCountry.value,
-    language: registeredUserLanguage.value,
-    preferRegisteredLanguage: true,
-  });
-});
-
-// 根据首选语言和展开状态生成最终展示的问卷链接列表。
-const displaySurveys = computed(() => {
-  return buildDisplaySurveys({
-    surveys: surveys.value,
-    preferredLanguage: preferredSurveyLanguage.value,
-    surveyLinksExpanded: surveyLinksExpanded.value,
-  });
 });
 
 // 统计训练视频完成数量，用于左侧第一步进度和整体进度。
@@ -660,10 +561,6 @@ const handleSurveyNext = () => {
 };
 
 // 复制注册用户名，方便用户粘贴到问卷中保持姓名一致。
-const handleCopyRegisteredName = async () => {
-  await copyTextWithFallback(registeredUserName.value);
-  ElMessage.success("Name copied");
-};
 
 // ---------- 页面初始化：决定 Onboarding 的起始步骤 ----------
 //
@@ -932,142 +829,6 @@ watch(
     height: 100%;
     overflow-y: auto;
   }
-
-  .survey-container {
-    padding: 0;
-  }
-
-  .survey-container {
-    .content {
-      background-color: #fff;
-      box-sizing: border-box;
-      padding: 2.5em;
-      border-radius: 12px;
-      box-shadow: 0 15px 50px rgba(17, 24, 39, 0.06);
-    }
-  }
-
-  .survey-container {
-    .survery-intro {
-      font-size: 0.875em;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 12px 0;
-
-      h3 {
-        font-size: 1.875em;
-        font-weight: 600;
-        color: rgba(5, 64, 140, 1);
-        font-style: italic;
-        letter-spacing: -0.75px;
-        line-height: 1.2;
-        margin-bottom: 12px;
-      }
-
-      p {
-        line-height: 1.2;
-
-        .registered-name {
-          margin: 0 0.4em;
-          font-weight: 700;
-        }
-
-        .copy-name-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 0.2em;
-          padding: 0;
-          border: 0;
-          background: transparent;
-          color: rgba(153, 153, 153, 1);
-          cursor: pointer;
-          vertical-align: middle;
-        }
-      }
-    }
-
-    .survery-ul {
-      font-size: 1em;
-      margin-top: 3em;
-
-      .item {
-        display: flex;
-        flex-direction: row;
-        gap: 2.5em;
-        margin-bottom: 1.5em;
-
-        & > span {
-          width: 11.5em;
-          text-align: right;
-          margin-top: 0.5em;
-        }
-
-        .survey-links-row {
-          display: flex;
-          align-items: flex-start;
-          gap: 1em;
-
-          .survey-version-p {
-            display: inline-flex;
-            flex-wrap: wrap;
-            gap: 0.875em;
-
-            a {
-              font-size: 0.875em;
-              line-height: 40px;
-              padding: 0 0.8em;
-              box-sizing: border-box;
-              border: 1px solid rgba(11, 112, 195, 1);
-              border-radius: 6px;
-              color: rgba(11, 112, 195, 1);
-              display: inline-flex;
-              align-items: center;
-
-              .svg-icon {
-                width: 1em;
-                height: 1em;
-                margin-left: 0.1em;
-                transform: rotate(-45deg);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .button-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 2em;
-    margin-top: 2em;
-
-    .el-button {
-      font-size: 1.1em;
-      height: 2.8em;
-      padding: 0 1.2em;
-      border-radius: 6px;
-
-      &.back-button {
-        border: 2px solid rgba(11, 112, 195, 1);
-        color: rgba(11, 112, 195, 1);
-      }
-
-      &.next-button {
-        background-color: rgba(11, 112, 195, 1);
-        color: #fff;
-        border: none;
-
-        &.disabled {
-          background: rgba(194, 194, 194, 1);
-          color: #fff;
-          cursor: not-allowed;
-        }
-      }
-    }
-  }
 }
 
 @media (max-width: 1200px) {
@@ -1079,25 +840,6 @@ watch(
 
     .flow-step-item {
       font-size: 0.95em;
-    }
-
-    .content-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .survey-container {
-      .survery-ul {
-        .item {
-          flex-direction: column;
-          gap: 0.8em;
-
-          & > span {
-            width: auto;
-            text-align: left;
-            margin-top: 0;
-          }
-        }
-      }
     }
   }
 }

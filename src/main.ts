@@ -5,6 +5,7 @@ import 'element-plus/dist/index.css'
 import './scss/reset.css'
 import './scss/style.css'
 import './scss/common.scss'
+import './scss/onboarding-common.scss'
 
 import App from './App.vue'
 import router from './router/index'
