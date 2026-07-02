@@ -90,7 +90,8 @@
           >
             <div class="step-group-main">
               <div class="step-group-icon">
-                <el-icon v-if="quizCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-if="quizCompleted && !quizHasFailedQuestion" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-else-if="quizCompleted && quizHasFailedQuestion" class="main-step-fail-icon"><CircleClose /></el-icon>
                 <el-icon v-else><List /></el-icon>
               </div>
               <div class="step-group-content">
@@ -109,7 +110,8 @@
                         locked: !isQuizQuestionCurrent(quizQuestion.qid) && !['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid]),
                       }"
                     >
-                      <el-icon v-if="['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid])"><CircleCheck /></el-icon>
+                      <el-icon v-if="quizCheckState.questionStatusMap[quizQuestion.qid] === 'pass'" class="sub-step-pass"><CircleCheck /></el-icon>
+                      <el-icon v-else-if="quizCheckState.questionStatusMap[quizQuestion.qid] === 'fail'" class="sub-step-fail"><CircleClose /></el-icon>
                       <span
                         v-else-if="isQuizQuestionCurrent(quizQuestion.qid)"
                         class="current-circle-icon"
@@ -195,6 +197,7 @@ import {
   VideoPlay,
   CircleCheck,
   CircleCheckFilled,
+  CircleClose,
   Lock,
   List,
   Document,
@@ -227,6 +230,11 @@ const activeMainStepIndex = ref(1);
 
 // Quiz 完成后才允许进入问卷步骤。
 const quizCompleted = ref(false);
+
+// Quiz 是否有任意一题 fail。
+const quizHasFailedQuestion = computed(() => {
+  return Object.values(quizCheckState.value.questionStatusMap).some((s) => s === "fail");
+});
 
 // 当前注册用户信息，用于展示问卷填写姓名和提交引导完成状态。
 const registeredUserName = ref("hua");
@@ -535,6 +543,10 @@ const handleCompleteQuiz = (records = []) => {
       quizCompleted.value = true;
       activeMainStepIndex.value = 3;
     } else {
+      updateUserDetailFields({
+        studied_annotation_guidance: true,
+        passed_calibration_quiz: false,
+      });
       ElMessageBox.alert(
         t("onboarding.quizFailedMessage"),
         t("onboarding.quizFailedTitle"),
@@ -729,7 +741,10 @@ watch(
 
       .main-step-complete-icon {
         color: rgba(72, 190, 128, 1);
-        // font-size: 1.45em;
+      }
+
+      .main-step-fail-icon {
+        color: rgba(220, 53, 69, 1);
       }
     }
 
@@ -790,6 +805,10 @@ watch(
 
         &.locked {
           color: rgba(64, 71, 81, 0.4);
+        }
+
+        .sub-step-fail {
+          color: rgba(220, 53, 69, 1);
         }
 
         .current-circle-icon {

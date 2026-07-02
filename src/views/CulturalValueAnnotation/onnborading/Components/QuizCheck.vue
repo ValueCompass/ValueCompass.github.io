@@ -11,75 +11,113 @@
     <div class="content-grid">
       <section class="left" style="padding-right: 1em;">
         <div class="quiz-main-scroll">
-          <p class="question-title">
+          <!-- <p class="question-title">
             {{ currentQuestionIndex + 1 }}. {{ currentQuestion.topic_2_native }}
             <span>{{ isMultipleQuestion ? "(Multiple)" : "(Single)" }}</span>
-          </p>
+          </p> -->
 
           <div v-if="currentQuestion.stem_native" class="question-prompt">
-            {{ currentQuestion.stem_native }}
+           {{ currentQuestionIndex + 1 }}. {{ currentQuestion.stem_native }}
           </div>
 
           <div class="answer-options">
+            <!-- 多选 -->
             <el-checkbox-group
               v-if="isMultipleQuestion"
               v-model="selectedAnswer"
-              :disabled="isCurrentQuestionChecked"
+              :disabled="isGroupDisabled"
               @change="handleAnswerChange"
             >
               <el-checkbox
                 v-for="option in currentQuestion.options"
                 :key="`${currentQuestion.qid}-${option.key}`"
                 class="answer-option"
+                :class="getOptionClass(option.key)"
                 border
                 :label="option.key"
               >
                 {{ option.text_native }}
+                <span v-if="getOptionIcon(option.key)" :class="getOptionIconClass(option.key)">
+                  {{ getOptionIcon(option.key) }}
+                </span>
               </el-checkbox>
             </el-checkbox-group>
+
+            <!-- 单选 -->
             <el-radio-group
               v-else
               v-model="selectedAnswer"
-              :disabled="isCurrentQuestionChecked"
+              :disabled="isGroupDisabled"
               @change="handleAnswerChange"
             >
               <el-radio
                 v-for="option in currentQuestion.options"
                 :key="`${currentQuestion.qid}-${option.key}`"
                 class="answer-option"
+                :class="getOptionClass(option.key)"
                 border
                 :label="option.key"
               >
                 {{ option.text_native }}
+                <span v-if="getOptionIcon(option.key)" :class="getOptionIconClass(option.key)">
+                  {{ getOptionIcon(option.key) }}
+                </span>
               </el-radio>
             </el-radio-group>
           </div>
         </div>
 
         <div class="quiz-actions">
+          <!-- Try Again 按钮（红色，仅首次答错时显示） -->
           <el-button
+            v-if="isTryAgain"
+            class="check-button try-again-button"
+            type="primary"
+            @click="handleTryAgain"
+          >Try Again</el-button>
+
+          <!-- 常规按钮 -->
+          <el-button
+            v-else
             class="check-button"
             :class="{ disabled: isPrimaryActionDisabled }"
             :disabled="isPrimaryActionDisabled"
             type="primary"
             @click="handlePrimaryAction"
-            >{{ primaryActionText }}</el-button
-          >
+          >{{ primaryActionText }}</el-button>
         </div>
       </section>
 
-      <aside
-        v-if="answerFeedback"
-        class="right"
-        :class="answerFeedback.type"
-      >
-        <div>
+      <aside class="right">
+        <div class="right-wrapper">
+          <!-- 固定信息 -->
+          <div class="right-info-card">
+          <ul>
+            <li>
+             
+              <span>This is a {{ isMultipleQuestion ? "multiple" : "single" }}-choice question.</span>
+            </li>
+            <li>
+             
+              <span>You have 2 attempts.</span>
+            </li>
+            <li>
+             
+              <span>Please think carefully before submitting your answer.</span>
+            </li>
+          </ul>
+          <p class="attempts-remaining"><b>Attempts remaining:</b> <b>{{ attemptsRemaining }}</b></p>
+        </div>
+
+        <!-- 反馈信息（hint / correct 解析） -->
+        <div v-if="answerFeedback" class="right-feedback-card" :class="answerFeedback.type">
           <span class="feedback-icon">{{ answerFeedback.type === "correct" ? "✓" : "✕" }}</span>
           <div>
             <h4>{{ answerFeedback.title }}</h4>
             <p>{{ answerFeedback.message }}</p>
-            <p class="hint-note">{{ answerFeedback.note }}</p>
+            <!-- <p class="hint-note">{{ answerFeedback.note }}</p> -->
           </div>
+        </div>
         </div>
       </aside>
     </div>
@@ -87,6 +125,7 @@
 </template>
 
 <script setup>
+import { CircleCheckFilled } from "@element-plus/icons-vue";
 import { computed, ref, watch } from "vue";
 
 const props = defineProps({
@@ -115,15 +154,20 @@ const emit = defineEmits([
   "update:quizState",
 ]);
 
+// ---- 核心状态 ----
 const currentQuestionIndex = ref(0);
 const selectedAnswer = ref(null);
-const attemptCounts = ref({});
-const answerFeedback = ref(null);
+const answerFeedback = ref(null);       // { type, result, title, message, note }
+const attemptCounts = ref({});          // 每题已尝试次数
 const lastCheckedAnswerByQuestion = ref({});
 const questionRecords = ref({});
 const questionStatusMap = ref({});
 
-// 内部维护的答案，用于切换题目时恢复选择。
+// "wrong_retry" = 首次答错待 Try Again；null = 非 Try Again 状态。
+const retryState = ref(null);
+// check 后锁定选项，Try Again 或下一题时解锁。
+const isLocked = ref(false);
+
 const quizAnswers = ref(
   props.questions.reduce((answers, question) => {
     answers[question.qid] = question.question_type === "multiple_choice" ? [] : "";
@@ -131,8 +175,7 @@ const quizAnswers = ref(
   }, {}),
 );
 
-const defaultHint =
-  "Review the guideline and compare the answer with the criteria before trying again.";
+// ---- 计算属性 ----
 
 const currentQuestion = computed(() => {
   return props.questions[currentQuestionIndex.value] || props.questions[0] || {};
@@ -146,64 +189,106 @@ const hasSelectedAnswer = computed(() => {
   if (isMultipleQuestion.value) {
     return Array.isArray(selectedAnswer.value) && selectedAnswer.value.length > 0;
   }
-
   return !!selectedAnswer.value;
-});
-
-const isCurrentQuestionChecked = computed(() => {
-  return ["pass", "fail"].includes(answerFeedback.value?.result);
 });
 
 const isLastQuestion = computed(() => {
   return currentQuestionIndex.value >= props.questions.length - 1;
 });
 
+const attemptsRemaining = computed(() => {
+  const used = attemptCounts.value[currentQuestion.value.qid] || 0;
+  return Math.max(0, 2 - used);
+});
+
+// 是否处于"首次错误 Try Again"模式。
+const isTryAgain = computed(() => retryState.value === "wrong_retry");
+
+// 选项组：check 后锁定，Try Again 或下一题时解锁。
+const isGroupDisabled = computed(() => {
+  return isLocked.value;
+});
+
 const primaryActionText = computed(() => {
-  if (!isCurrentQuestionChecked.value) {
+  if (!["pass", "fail"].includes(answerFeedback.value?.result)) {
     return "Check Answer";
   }
-
   return isLastQuestion.value ? "Complete" : "Next Quiz";
 });
 
-const hasSelectedAnswerChangedAfterCheck = computed(() => {
-  const questionId = currentQuestion.value.qid;
-  const lastCheckedAnswer = lastCheckedAnswerByQuestion.value[questionId];
-
-  if (lastCheckedAnswer === undefined) {
-    return true;
-  }
-
-  return normalizeAnswer(selectedAnswer.value) !== lastCheckedAnswer;
-});
-
 const isPrimaryActionDisabled = computed(() => {
-  return (
-    !isCurrentQuestionChecked.value &&
-    (!hasSelectedAnswer.value || !hasSelectedAnswerChangedAfterCheck.value)
-  );
+  if (["pass", "fail"].includes(answerFeedback.value?.result)) {
+    return false;
+  }
+  return !hasSelectedAnswer.value;
 });
 
-const normalizeAnswer = (answer) => {
-  if (Array.isArray(answer)) {
-    return [...answer].sort().join("|");
-  }
+// ---- 正确答案集合 ----
 
-  return answer ?? "";
-};
+const correctAnswerKeys = computed(() => {
+  const answer = currentQuestion.value.answer_key;
+  if (Array.isArray(answer)) return new Set(answer);
+  return answer != null ? new Set([answer]) : new Set();
+});
 
-const getCorrectAnswer = () => {
-  return currentQuestion.value.answer_key ?? null;
-};
+// ---- 选项视觉逻辑 ----
 
 const isAnswerCorrect = () => {
-  const correctAnswer = getCorrectAnswer();
-
-  if (correctAnswer === null) {
-    return hasSelectedAnswer.value;
-  }
-
+  const correctAnswer = currentQuestion.value.answer_key ?? null;
+  if (correctAnswer === null) return hasSelectedAnswer.value;
   return normalizeAnswer(selectedAnswer.value) === normalizeAnswer(correctAnswer);
+};
+
+// 已 check 且答案没变时 → 显示反馈视觉；首次答错 retry 状态也显示。
+const showingFeedback = computed(() => {
+  return ["pass", "fail"].includes(answerFeedback.value?.result) || isTryAgain.value;
+});
+
+const getOptionClass = (optionKey) => {
+  if (!showingFeedback.value) return {};
+  const isSelected = isMultipleQuestion.value
+    ? Array.isArray(selectedAnswer.value) && selectedAnswer.value.includes(optionKey)
+    : selectedAnswer.value === optionKey;
+  const isCorrect = correctAnswerKeys.value.has(optionKey);
+
+  if (isSelected && isCorrect && answerFeedback.value?.result === "pass") {
+    return { "correct-option": true };
+  }
+  if (isSelected && !isCorrect) {
+    return { "wrong-option": true };
+  }
+  return {};
+};
+
+const getOptionIcon = (optionKey) => {
+  if (!showingFeedback.value) return null;
+  const isSelected = isMultipleQuestion.value
+    ? Array.isArray(selectedAnswer.value) && selectedAnswer.value.includes(optionKey)
+    : selectedAnswer.value === optionKey;
+  const isCorrect = correctAnswerKeys.value.has(optionKey);
+
+  if (isSelected && isCorrect && answerFeedback.value?.result === "pass") return "✓";
+  if (isSelected && !isCorrect) return "✕";
+  return null;
+};
+
+const getOptionIconClass = (optionKey) => {
+  if (!showingFeedback.value) return "";
+  const isSelected = isMultipleQuestion.value
+    ? Array.isArray(selectedAnswer.value) && selectedAnswer.value.includes(optionKey)
+    : selectedAnswer.value === optionKey;
+  const isCorrect = correctAnswerKeys.value.has(optionKey);
+
+  if (isSelected && isCorrect && answerFeedback.value?.result === "pass") return "correct-check-icon";
+  if (isSelected && !isCorrect) return "wrong-cross-icon";
+  return "";
+};
+
+// ---- 工具函数 ----
+
+const normalizeAnswer = (answer) => {
+  if (Array.isArray(answer)) return [...answer].sort().join("|");
+  return answer ?? "";
 };
 
 const syncSelectedAnswer = () => {
@@ -215,44 +300,7 @@ const syncSelectedAnswer = () => {
   }
 };
 
-// 是否所有题目都已完成（pass 或 fail）。
-const allQuizAnswered = computed(() => {
-  return props.questions.every((question) => {
-    return ["pass", "fail"].includes(questionStatusMap.value[question.qid]);
-  });
-});
-
-// 计算进度状态并通过 emit 上报给父组件。
-const emitQuizState = () => {
-  const state = {
-    questionStatusMap: { ...questionStatusMap.value },
-    currentQuestionId: currentQuestion.value.qid,
-    answeredCount: props.questions.filter((q) =>
-      ["pass", "fail"].includes(questionStatusMap.value[q.qid]),
-    ).length,
-    totalCount: props.questions.length,
-    allAnswered: allQuizAnswered.value,
-  };
-  emit("update:quizState", state);
-};
-
-const handleAnswerChange = () => {
-  quizAnswers.value[currentQuestion.value.qid] = selectedAnswer.value;
-};
-
-const moveToNextQuestion = () => {
-  answerFeedback.value = null;
-
-  if (currentQuestionIndex.value >= props.questions.length - 1) {
-    const records = props.questions
-      .map((question) => questionRecords.value[question.qid])
-      .filter(Boolean);
-    emit("complete", records);
-    return;
-  }
-
-  currentQuestionIndex.value += 1;
-};
+// ---- 反馈面板 ----
 
 const showCorrectFeedback = () => {
   answerFeedback.value = {
@@ -276,40 +324,90 @@ const showIncorrectFeedback = (isFinalAttempt = false) => {
       ? isLastQuestion.value
         ? "Click Complete to continue."
         : "Click Next Quiz to continue."
-      : "You have one more chance for this question.",
+      : "Click Try Again to re-attempt this question.",
   };
 };
 
-const handlePrimaryAction = () => {
-  if (isCurrentQuestionChecked.value) {
-    moveToNextQuestion();
+// ---- 进度上报 ----
+
+const allQuizAnswered = computed(() => {
+  return props.questions.every((question) => {
+    return ["pass", "fail"].includes(questionStatusMap.value[question.qid]);
+  });
+});
+
+const emitQuizState = () => {
+  emit("update:quizState", {
+    questionStatusMap: { ...questionStatusMap.value },
+    currentQuestionId: currentQuestion.value.qid,
+    answeredCount: props.questions.filter((q) =>
+      ["pass", "fail"].includes(questionStatusMap.value[q.qid]),
+    ).length,
+    totalCount: props.questions.length,
+    allAnswered: allQuizAnswered.value,
+  });
+};
+
+const handleAnswerChange = () => {
+  quizAnswers.value[currentQuestion.value.qid] = selectedAnswer.value;
+};
+
+// ---- 按钮操作 ----
+
+const moveToNextQuestion = () => {
+  answerFeedback.value = null;
+  retryState.value = null;
+  isLocked.value = false;
+
+  if (currentQuestionIndex.value >= props.questions.length - 1) {
+    const records = props.questions
+      .map((question) => questionRecords.value[question.qid])
+      .filter(Boolean);
+    emit("complete", records);
     return;
   }
 
+  currentQuestionIndex.value += 1;
+};
+
+const handleTryAgain = () => {
+  // 重置选择和视觉反馈，进入第 2 次答题，解锁选项。
+  isLocked.value = false;
+  selectedAnswer.value = isMultipleQuestion.value ? [] : "";
+  answerFeedback.value = null;
+  retryState.value = null;
+};
+
+const handlePrimaryAction = () => {
+  if (["pass", "fail"].includes(answerFeedback.value?.result)) {
+    moveToNextQuestion();
+    return;
+  }
   handleCheckAnswer();
 };
 
 const handleCheckAnswer = () => {
-  if (!hasSelectedAnswer.value) {
-    return;
-  }
+  if (!hasSelectedAnswer.value) return;
+
+  isLocked.value = true;
 
   const question = currentQuestion.value;
   const questionId = question.qid;
-  lastCheckedAnswerByQuestion.value = {
-    ...lastCheckedAnswerByQuestion.value,
-    [questionId]: normalizeAnswer(selectedAnswer.value),
-  };
+  const submittedAnswer = Array.isArray(selectedAnswer.value)
+    ? [...selectedAnswer.value]
+    : selectedAnswer.value;
+  const correct = isAnswerCorrect();
   const nextAttemptCount = (attemptCounts.value[questionId] || 0) + 1;
   attemptCounts.value = {
     ...attemptCounts.value,
     [questionId]: nextAttemptCount,
   };
 
-  const submittedAnswer = Array.isArray(selectedAnswer.value)
-    ? [...selectedAnswer.value]
-    : selectedAnswer.value;
-  const correct = isAnswerCorrect();
+  lastCheckedAnswerByQuestion.value = {
+    ...lastCheckedAnswerByQuestion.value,
+    [questionId]: normalizeAnswer(selectedAnswer.value),
+  };
+
   const existingRecord = questionRecords.value[questionId] || {
     qid: questionId,
     module: question.module,
@@ -317,40 +415,39 @@ const handleCheckAnswer = () => {
     attempts: [],
     result: "wrong",
   };
-  const recordPatch = {
-    ...existingRecord,
-    attempts: [...existingRecord.attempts, submittedAnswer],
-    result: correct ? "correct" : "wrong",
-  };
   questionRecords.value = {
     ...questionRecords.value,
-    [questionId]: recordPatch,
+    [questionId]: {
+      ...existingRecord,
+      attempts: [...existingRecord.attempts, submittedAnswer],
+      result: correct ? "correct" : "wrong",
+    },
   };
 
   if (correct) {
-    questionStatusMap.value = {
-      ...questionStatusMap.value,
-      [questionId]: "pass",
-    };
+    questionStatusMap.value = { ...questionStatusMap.value, [questionId]: "pass" };
+    retryState.value = null;
     emitQuizState();
     showCorrectFeedback();
     return;
   }
 
-  if (nextAttemptCount >= 2) {
-    questionStatusMap.value = {
-      ...questionStatusMap.value,
-      [questionId]: "fail",
-    };
-    emitQuizState();
-    showIncorrectFeedback(true);
+  // 首次答错 → 选项红色+✕ + 显示 Hint + Try Again 按钮。
+  if (nextAttemptCount < 2) {
+    retryState.value = "wrong_retry";
+    showIncorrectFeedback(false);
     return;
   }
 
-  showIncorrectFeedback();
+  // 第二次答错 → 标记 fail，显示 hint。
+  retryState.value = null;
+  questionStatusMap.value = { ...questionStatusMap.value, [questionId]: "fail" };
+  emitQuizState();
+  showIncorrectFeedback(true);
 };
 
-// 父组件递增 resetKey 时，重置全部内部答题状态，回到第一题。
+// ---- 监听 ----
+
 watch(
   () => props.resetKey,
   () => {
@@ -361,6 +458,8 @@ watch(
     lastCheckedAnswerByQuestion.value = {};
     questionRecords.value = {};
     questionStatusMap.value = {};
+    retryState.value = null;
+    isLocked.value = false;
     quizAnswers.value = props.questions.reduce((answers, question) => {
       answers[question.qid] = question.question_type === "multiple_choice" ? [] : "";
       return answers;
@@ -378,6 +477,8 @@ watch(
   { immediate: true },
 );
 
+const defaultHint =
+  "Review the guideline and compare the answer with the criteria before trying again.";
 </script>
 
 <style lang="scss" scoped>
@@ -387,7 +488,7 @@ watch(
   flex-direction: column;
 
   .content-grid {
-    margin-top: 3em;
+    margin-top: 2em;
     flex: 1 1 auto;
     min-height: 0;
     & > section,
@@ -426,7 +527,7 @@ watch(
   }
 
   .question-prompt {
-    margin-top: 1.25em;
+    // margin-top: 1.25em;
     padding: .5em 1.5em;
     border-left: 4px solid rgba(11, 112, 195, 1);
     background: rgba(231, 244, 255, 1);
@@ -465,6 +566,7 @@ watch(
     background: transparent;
     color: #101828;
     font-weight: 600;
+    cursor: pointer;
 
     :deep(.el-radio__label),
     :deep(.el-checkbox__label) {
@@ -482,26 +584,63 @@ watch(
       }
     }
 
-    &.is-disabled {
-      opacity: 0.6;
+    &.correct-option {
+      border-color: rgba(34, 197, 94, 1) !important;
+      background: rgba(220, 252, 231, 0.3);
 
       :deep(.el-radio__label),
       :deep(.el-checkbox__label) {
-        color: #101828;
+        
+      }
+
+      :deep(.el-radio__inner),
+      :deep(.el-checkbox__inner) {
+        border-color: rgba(34, 197, 94, 1);
       }
 
       &.is-checked {
-        :deep(.el-radio__label),
-        :deep(.el-checkbox__label) {
-          color: rgba(11, 112, 195, 1);
-        }
-
         :deep(.el-radio__inner),
         :deep(.el-checkbox__inner) {
-          background: rgba(11, 112, 195, 1);
-          border-color: rgba(11, 112, 195, 1);
+          background: rgba(34, 197, 94, 1);
+          border-color: rgba(34, 197, 94, 1);
         }
       }
+    }
+
+    &.wrong-option {
+      border-color: rgba(220, 53, 69, 1) !important;
+      background: rgba(248, 215, 218, 0.3);
+
+      :deep(.el-radio__label),
+      :deep(.el-checkbox__label) {
+      }
+
+      :deep(.el-radio__inner),
+      :deep(.el-checkbox__inner) {
+        border-color: rgba(220, 53, 69, 1);
+      }
+
+      &.is-checked {
+        :deep(.el-radio__inner),
+        :deep(.el-checkbox__inner) {
+          background: rgba(220, 53, 69, 1);
+          border-color: rgba(220, 53, 69, 1);
+        }
+      }
+    }
+
+    .wrong-cross-icon {
+      margin-left: auto;
+      color: rgba(220, 53, 69, 1);
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+
+    .correct-check-icon {
+      margin-left: auto;
+      color: rgba(34, 197, 94, 1);
+      font-weight: 700;
+      font-size: 1.1em;
     }
   }
 
@@ -516,9 +655,6 @@ watch(
     height: 3.5em;
     border-radius: 6px;
     font-weight: 700;
-  }
-
-  .check-button {
     background: rgba(11, 112, 195, 1);
     color: #fff;
     border: none;
@@ -528,62 +664,115 @@ watch(
       color: rgba(102, 112, 133, 1);
       cursor: not-allowed;
     }
+
+    &.try-again-button {
+      background: rgb(11, 112, 195);
+      color: #fff;
+    }
   }
 
-  .right > div {
+  .right {
     display: flex;
-    align-items: flex-start;
-    gap: 1em;
-    padding: 2em;
-    border-radius: 8px;
-    background: rgba(242, 244, 247, 1);
-    color: rgba(65, 71, 84, 1);
-    line-height: 1.55;
+    flex-direction: column;
+    gap: 1.2em;
 
-    &.correct {
-      .feedback-icon,
-      .hint-note {
-        color: rgba(18, 126, 68, 1);
+    .right-wrapper {
+      background: rgb(242, 244, 247);
+      border-radius: 10px;
+      padding: 1.8em;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2em;
+    }
+
+    .right-info-card {
+      padding: 0;
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2em;
+
+        li {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.6em;
+          font-size: 1em;
+          line-height: 1.5;
+          color: rgba(55, 65, 81, 1);
+        }
+
+        .info-icon {
+          margin-top: 0.15em;
+          flex-shrink: 0;
+          color: rgba(11, 112, 195, 1);
+        }
+      }
+
+      .attempts-remaining {
+        margin-top: 1em;
+        font-size:1em;
+       
       }
     }
 
-    &.incorrect {
-      .feedback-icon,
-      .hint-note {
-        color: rgba(180, 35, 24, 1);
-      }
-    }
-
-    .feedback-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 1.25em;
-      height: 1.25em;
-      margin-top: 0.1em;
-      border: 2px solid currentColor;
-      border-radius: 50%;
-      font-size: 1em;
-      font-weight: 800;
-      line-height: 1;
-      flex: 0 0 auto;
-    }
-
-    h4 {
-      margin: 0 0 0.5em;
+    .right-feedback-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1em;
+      padding: 1.5em;
+      border-radius: 8px;
       color: rgba(65, 71, 84, 1);
-      font-size: 1em;
-    }
+      line-height: 1.55;
 
-    p {
-      margin: 0;
-      white-space: pre-line;
-    }
+      &.correct {
+        .feedback-icon,
+        .hint-note {
+          color: rgba(18, 126, 68, 1);
+        }
+      }
 
-    .hint-note {
-      margin-top: 1em;
-      color: rgba(11, 112, 195, 1);
-      font-weight: 700;
+      &.incorrect {
+        .feedback-icon,
+        .hint-note {
+          color: rgba(180, 35, 24, 1);
+        }
+      }
+
+      .feedback-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.25em;
+        height: 1.25em;
+        margin-top: 0.1em;
+        border: 2px solid currentColor;
+        border-radius: 50%;
+        font-size: 1em;
+        font-weight: 800;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+
+      h4 {
+        margin: 0 0 0.5em;
+        color: rgba(65, 71, 84, 1);
+        font-size: 1em;
+      }
+
+      p {
+        margin: 0;
+        white-space: pre-line;
+      }
+
+      .hint-note {
+        margin-top: 1em;
+        color: rgba(11, 112, 195, 1);
+        font-weight: 700;
+      }
     }
   }
 }
