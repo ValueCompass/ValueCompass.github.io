@@ -132,6 +132,7 @@ import { ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 import { computed, ref, watch } from "vue";
 import { passedCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
+import { updateUserDetailFields } from "@/utils/culturalValueAnnotationAuth";
 
 const { t } = useI18n();
 
@@ -399,14 +400,41 @@ const submitQuiz = () => {
     isSubmitting.value = false;
     const passed = res?.data?.passed_calibration_quiz;
     if (passed) {
+      updateUserDetailFields({
+        studied_annotation_guidance: true,
+        passed_calibration_quiz: true,
+      });
       isQuizComplete.value = true;
       emit("quiz-passed");
     } else {
-      emit("quiz-failed");
+      updateUserDetailFields({ passed_calibration_quiz: false });
+      ElMessageBox.alert(
+        t("onboarding.quizFailedMessage"),
+        t("onboarding.quizFailedTitle"),
+        {
+          confirmButtonText: t("onboarding.quizFailedConfirm"),
+          showClose: false,
+          type: "error",
+        },
+      ).then(() => {
+        emit("quiz-failed");
+      });
     }
   }).catch((err) => {
     console.error("passedCalibrationQuiz failed", err);
     isSubmitting.value = false;
+    updateUserDetailFields({ passed_calibration_quiz: false });
+    ElMessageBox.alert(
+      t("onboarding.quizFailedMessage"),
+      t("onboarding.quizFailedTitle"),
+      {
+        confirmButtonText: t("onboarding.quizFailedConfirm"),
+        showClose: false,
+        type: "error",
+      },
+    ).then(() => {
+      emit("quiz-failed");
+    });
   });
 };
 

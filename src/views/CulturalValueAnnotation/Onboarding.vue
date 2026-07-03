@@ -89,8 +89,7 @@
           >
             <div class="step-group-main">
               <div class="step-group-icon">
-                <el-icon v-if="quizCompleted && !quizHasFailedQuestion" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
-                <el-icon v-else-if="quizCompleted && quizHasFailedQuestion" class="main-step-fail-icon"><CircleClose /></el-icon>
+                <el-icon v-if="quizCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
                 <el-icon v-else><List /></el-icon>
               </div>
               <div class="step-group-content">
@@ -199,7 +198,7 @@
 </template>
 
 <script setup>
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
 import {
   VideoPlay,
@@ -503,31 +502,17 @@ const moveFromTrainingVideoToQuizStep = () => {
   activeMainStepIndex.value = 2;
 };
 
-// Quiz 通过后：更新 localStorage，进入问卷步骤。
+// Quiz 通过后：进入问卷步骤。
 const handleQuizPassed = () => {
-  updateUserDetailFields({
-    studied_annotation_guidance: true,
-    passed_calibration_quiz: true,
-  });
   quizCompleted.value = true;
   activeMainStepIndex.value = 3;
 };
 
-// Quiz 未通过：重置本地状态，弹窗提示后回到训练视频步骤。
+// Quiz 未通过：重置本地状态，回到训练视频步骤。
 const handleQuizFailed = () => {
-  updateUserDetailFields({ passed_calibration_quiz: false });
-  ElMessageBox.alert(
-    t("onboarding.quizFailedMessage"),
-    t("onboarding.quizFailedTitle"),
-    {
-      confirmButtonText: t("onboarding.quizFailedConfirm"),
-      showClose: false,
-      type: "error",
-    },
-  ).then(() => {
-    quizResetKey.value += 1;
-    activeMainStepIndex.value = 1;
-  });
+  quizResetKey.value += 1;
+  quizCompleted.value = false;
+  activeMainStepIndex.value = 1;
 };
 
 // 问卷完成后标记 survey 完成状态，进入正式 Cultural Value Annotation 首页。
