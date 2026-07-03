@@ -1,6 +1,6 @@
 <template>
   <div
-    style="background-color: rgba(247, 249, 252, 1); flex: 1; padding-top: 4em"
+    style="background-color: rgba(247, 249, 252, 1); flex: 1; padding-top: 0em"
   >
     <div class="onboarding-page">
       <div class="onboarding-layout">
@@ -43,9 +43,9 @@
                 <div
                   class="step-group-body"
                 >
-                  <p class="step-group-progress">
+                  <!-- <p class="step-group-progress">
                     {{ completedTrainingVideoStepCount }} / {{ trainingVideoSteps.length }} Completed
-                  </p>
+                  </p> -->
 
                   <ul class="video-substeps">
                     <li
@@ -76,7 +76,7 @@
           <div
             role="button"
             tabindex="0"
-            class="flow-step-item"
+            class="flow-step-item quiz-step"
             :class="{
               active: activeMainStepIndex === 2,
               completed: quizCompleted,
@@ -96,17 +96,20 @@
               <div class="step-group-content">
                 <h4 class="step-title-text">2.Complete Quiz</h4>
                 <div class="step-group-body">
-                  <p class="step-group-progress">
+                  <!-- <p class="step-group-progress">
                     {{ quizCompleted ? "Completed" : quizCheckState.answeredCount + " / " + quizCheckState.totalCount + " Completed" }}
-                  </p>
+                  </p> -->
                   <ul class="video-substeps" v-for="mod in quizModules" :key="mod.module">
-                    <li class="module-header">Module {{ mod.module }}</li>
+                    <li class="module-header" :class="{ 'module-active': isQuizModuleActive(mod.items) }">
+                      <p>Module {{ mod.module }}</p>
+                      <p>module name</p>
+                    </li>
                     <li
                       v-for="q in mod.items"
                       :key="q.qid"
                       :class="{
                         done: ['pass', 'fail'].includes(quizCheckState.questionStatusMap[q.qid]),
-                        current: isQuizQuestionCurrent(q.qid),
+                        current: isQuizQuestionCurrent(q.qid) && activeMainStepIndex == 2,
                         locked: !isQuizQuestionCurrent(q.qid) && !['pass', 'fail'].includes(quizCheckState.questionStatusMap[q.qid]),
                       }"
                     >
@@ -128,7 +131,8 @@
           <div
             role="button"
             tabindex="0"
-            class="flow-step-item"
+            class="flow-step-item survey-step"
+            
             :class="{
                 active: activeMainStepIndex === 3,
                 completed: hasCompletedOnboardingSurveys(),
@@ -274,9 +278,9 @@ const quizCheckState = ref({
 
 // Quiz 子步骤 current 状态：当前活跃题且未完成。
 const isQuizQuestionCurrent = (questionId) => {
-  if (activeMainStepIndex.value !== 2) {
-    return false;
-  }
+  // if (activeMainStepIndex.value !== 2) {
+  //   return false;
+  // }
   return (
     quizCheckState.value.currentQuestionId === questionId &&
     !["pass", "fail"].includes(quizCheckState.value.questionStatusMap[questionId])
@@ -293,6 +297,15 @@ const quizModules = computed(() => {
   });
   return Object.entries(map).map(([module, items]) => ({ module, items }));
 });
+
+// 判断某个 module 是否已经开始（有 current 或已完成的题目）
+const isQuizModuleActive = (moduleItems) => {
+  return moduleItems.some(
+    (q) =>
+      ["pass", "fail"].includes(quizCheckState.value.questionStatusMap[q.qid]) ||
+      isQuizQuestionCurrent(q.qid)
+  );
+};
 
 // 问卷完成数量：点击 start annotation 后整体算 1，否则为 0。
 const completedSurveyCount = computed(() => {
@@ -592,10 +605,10 @@ watch(
   min-height: 100%;
 
   .onboarding-layout {
-    height: calc(100vh - 16em);
+    height: calc(100vh - 12em);
     max-width: 1920px;
     margin: 0 auto;
-    padding: 2.5em 6em 0em 0;
+    padding: 1em 6em 0em 0;
     display: grid;
     grid-template-columns: 264px minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
@@ -614,7 +627,7 @@ watch(
 
     .onboarding-aside-intro {
       padding: 0.2em 0.25em 0.9em;
-
+      font-size: 14px;
       .welcome-title {
         margin: 0;
         color: rgba(11, 112, 195, 1);
@@ -625,7 +638,6 @@ watch(
       .welcome-desc {
         margin: 0.3em 0 1.2em;
         color: rgba(11, 112, 195, 1);
-        font-size: 1.35em;
         line-height: 1.3;
       }
 
@@ -673,17 +685,24 @@ watch(
     box-sizing: border-box;
     display: flex;
     align-items: flex-start;
-    padding: 14px;
+    padding: 10px 14px;
     background: transparent;
     border-radius: 4px;
     color: rgba(65, 71, 84, 1);
     font-size: 1em;
     font-weight: 600;
 
+    &.quiz-step {
+      .video-substeps li.done{
+        cursor: default;
+      }
+    }
+
     .step-group-main {
       display: flex;
       align-items: flex-start;
       gap: 0.75em;
+      width: 100%;
     }
 
     .step-group-icon {
@@ -717,7 +736,7 @@ watch(
       }
 
       .step-group-body {
-        margin-top: 0.5em;
+        margin-top: 1em;
       }
 
       .step-group-progress {
@@ -736,7 +755,7 @@ watch(
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 1em;
+      gap: 0em;
 
       li {
         display: inline-flex;
@@ -745,18 +764,38 @@ watch(
         font-size: 10px;
         letter-spacing: 0.08em;
         font-weight: 600;
+        padding: 0.6em .8em;
         &.done {
           color: rgba(3, 45, 113, 1);
         }
 
         &.current {
-          color: rgba(11, 112, 195, 1);
+          color: #032D71;
           font-weight: 600;
+          background: #AFD9FE;
+          border-radius: 4px;
+          position: relative;
+          // padding-left: 1.8em;
+
+          &::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 0.6em solid transparent;
+            border-bottom: 0.6em solid transparent;
+            border-left: 1em solid #032D71;
+          }
         }
 
         &.locked {
           color: rgba(64, 71, 81, 0.4);
+          cursor: default;
         }
+        
 
         .sub-step-fail {
           color: rgba(220, 53, 69, 1);
@@ -772,20 +811,36 @@ watch(
         }
 
         &.module-header {
-          font-size: 11px;
-          font-weight: 700;
-          color: rgba(3, 45, 113, 1);
+          font-size: 10px;
+          
+          color: rgba(64, 71, 81, 0.4);
           letter-spacing: 0.05em;
           border-top: 1px solid rgba(0, 0, 0, 0.06);
-          padding-top: 0.6em;
-          margin-top: 0.2em;
+          cursor: default;
+
+          &.module-active {
+            color: rgba(3, 45, 113, 1);
+            cursor: pointer;
+          }
+          margin-bottom: .4em;
+          padding-left: 0;
+          flex-direction: column;
+          align-items: flex-start;
+          &>p:nth-child(1){
+            font-size: 12px;
+            font-weight: 600;
+          }
+
         }
       }
     }
 
     &.active {
-      background: rgba(175, 217, 254, 1);
+      // background: rgba(175, 217, 254, 1);
       color: rgba(12, 50, 98, 1);
+    }
+    &.survey-step.active{
+      background: rgba(175, 217, 254, 1);
     }
 
     &.completed {
@@ -808,6 +863,8 @@ watch(
     min-height: 0;
     height: 100%;
     overflow-y: auto;
+    padding-top: 4em;
+    box-sizing: border-box;
   }
 }
 

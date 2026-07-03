@@ -13,70 +13,71 @@
 
     <div class="content-grid">
       <!-- 左栏：问卷列表 -->
-      <div class="left">
-        <div class="survey-list">
-          <div
-            v-for="surveyItem in displaySurveys"
-            :key="surveyItem.survey.title"
-            class="survey-item"
-          >
-            <span class="survey-item-label">{{ surveyItem.survey.title }}</span>
-            <div class="survey-item-content">
-              <div class="survey-links-row">
-                <p class="survey-version-p">
-                  <a
-                    v-for="version in surveyItem.visibleLinks"
-                    :key="`${surveyItem.survey.title}-${version.label}`"
-                    :href="version.href"
-                    target="_blank"
-                    rel="noreferrer"
-                    ><span
-                      >{{ normalizeLanguageLabel(version.label) }}
-                      Version</span
-                    >
-                    <SvgIcon
-                      class="svg-icon"
-                      name="view-more-icon"
-                    ></SvgIcon>
-                  </a>
-                </p>
-              </div>
-              <div class="survey-item-check">
-                <el-checkbox
-                  v-model="surveyItem.survey.completed"
-                  label="Completed"
-                  size="large"
-                />
+      <div class="left" style="display: flex">
+        <div >
+          <div class="survey-list">
+            <div
+              v-for="surveyItem in displaySurveys"
+              :key="surveyItem.survey.title"
+              class="survey-item"
+            >
+              <span class="survey-item-label">{{ surveyItem.survey.title }}</span>
+              <div class="survey-item-content">
+                <div class="survey-links-row">
+                  <p class="survey-version-p">
+                    <a
+                      v-for="version in surveyItem.visibleLinks"
+                      :key="`${surveyItem.survey.title}-${version.label}`"
+                      :href="version.href"
+                      target="_blank"
+                      rel="noreferrer"
+                      ><span
+                        >{{ normalizeLanguageLabel(version.label) }}
+                        Version</span
+                      >
+                      <SvgIcon
+                        class="svg-icon"
+                        name="view-more-icon"
+                      ></SvgIcon>
+                    </a>
+                  </p>
+                </div>
+                <div class="survey-item-check">
+                  <el-checkbox
+                    v-model="surveyItem.survey.completed"
+                    label="Completed"
+                    size="large"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="survey-actions">
-          <el-button
-            class="start-annotation-button"
-            :class="{ disabled: !allSurveysChecked }"
-            :disabled="!allSurveysChecked"
-            @click="$emit('survey-next')"
-            type="primary"
-            >Start Annotation</el-button
-          >
+          <div class="survey-actions">
+            <el-button
+              class="start-annotation-button"
+              :class="{ disabled: !allSurveysChecked }"
+              :disabled="!allSurveysChecked"
+              @click="$emit('survey-next')"
+              type="primary"
+              >Start Annotation</el-button
+            >
+          </div>
         </div>
       </div>
-
       <!-- 右栏：提示信息卡片 -->
       <div class="right">
         <ul class="survey-info-list">
           <li>
-            <el-icon class="info-icon info-icon--time"><CircleCheckFilled /></el-icon>
+            <el-icon class="info-icon info-icon--time"><Clock /></el-icon>
             <span>Estimated time: 20-30 minutes total.</span>
           </li>
           <li>
-            <el-icon class="info-icon info-icon--lang"><CircleCheckFilled /></el-icon>
+            <svg-icon class="info-icon info-icon--lang" name="world-icon"></svg-icon>
             <span>Additional language versions are available in the expanded menu below.</span>
           </li>
           <li>
-            <el-icon class="info-icon info-icon--important"><CircleCheckFilled /></el-icon>
+            <el-icon class="info-icon info-icon--important"><Warning /></el-icon>
             <span><b>Important:</b> You must use the registered name <span class="registered-name">"{{ registeredUserName }}"</span>
               <button
                 type="button"
@@ -95,7 +96,7 @@
 </template>
 
 <script setup>
-import { CircleCheckFilled, CopyDocument } from "@element-plus/icons-vue";
+import { Warning, Clock, CircleCheckFilled, CopyDocument } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { computed, ref } from "vue";
 import {
@@ -234,7 +235,7 @@ defineExpose({ allSurveysChecked });
 
 .survey-actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   margin-top: 2.5em;
 
   .start-annotation-button {
@@ -278,8 +279,11 @@ defineExpose({ allSurveysChecked });
       .info-icon {
         margin-top: 0.15em;
         flex-shrink: 0;
-        font-size: 1em;
-        color: rgba(11, 112, 195, 1);
+        font-size: 1.5em;
+        &.info-icon--lang{
+          width: .9em;
+          height: .9em;
+        }
       }
     }
   }

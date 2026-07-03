@@ -90,7 +90,7 @@
     </div>
 
 
-     <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;margin-top: 2em;">
+     <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;margin-top: 2em; font-size: .875em;">
       <p>{{ t('onboarding.quizQuestionInfo', { type: t('onboarding.' + (isMultipleQuestion ? 'quizMultipleChoice' : 'quizSingleChoice')), remaining: attemptsRemaining }) }}</p>
       <div class="quiz-actions">
           <!-- Try Again 按钮（红色，仅首次答错时显示） -->
