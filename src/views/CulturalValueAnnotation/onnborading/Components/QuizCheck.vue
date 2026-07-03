@@ -67,36 +67,7 @@
           </div>
         </div>
 
-        <div class="quiz-actions">
-          <!-- Try Again 按钮（红色，仅首次答错时显示） -->
-          <el-button
-            v-if="isTryAgain"
-            class="check-button try-again-button"
-            type="primary"
-            @click="handleTryAgain"
-          >Try Again</el-button>
-
-          <!-- Check Answer 按钮（未 check 时显示） -->
-          <el-button
-            v-else-if="!hasChecked"
-            class="check-button"
-            :disabled="!hasSelectedAnswer || isSubmitting"
-            :loading="isSubmitting"
-            type="primary"
-            @click="handleCheckAnswer"
-          >Check Answer</el-button>
-
-          <!-- Next Quiz / Complete / Completed 按钮（check 后显示） -->
-          <el-button
-            v-else
-            class="check-button"
-            :class="{ 'is-complete': isQuizComplete }"
-            :disabled="isQuizComplete || isSubmitting"
-            :loading="isSubmitting"
-            type="primary"
-            @click="handleMoveToNext"
-          >{{ isQuizComplete ? "Completed" : (isLastQuestion ? "Complete" : "Next Quiz") }}</el-button>
-        </div>
+       
       </section>
 
       <aside class="right">
@@ -132,6 +103,38 @@
         </div>
       </aside>
     </div>
+
+
+     <div class="quiz-actions">
+          <!-- Try Again 按钮（红色，仅首次答错时显示） -->
+          <el-button
+            v-if="isTryAgain"
+            class="check-button try-again-button"
+            type="primary"
+            @click="handleTryAgain"
+          >Try Again</el-button>
+
+          <!-- Check Answer 按钮（未 check 时显示） -->
+          <el-button
+            v-else-if="!hasChecked"
+            class="check-button"
+            :disabled="!hasSelectedAnswer || isSubmitting"
+            :loading="isSubmitting"
+            type="primary"
+            @click="handleCheckAnswer"
+          >Check Answer</el-button>
+
+          <!-- Next Quiz / Complete / Completed 按钮（check 后显示） -->
+          <el-button
+            v-else
+            class="check-button"
+            :class="{ 'is-complete': isQuizComplete }"
+            :disabled="isQuizComplete || isSubmitting"
+            :loading="isSubmitting"
+            type="primary"
+            @click="handleMoveToNext"
+          >{{ isQuizComplete ? "Completed" : (isLastQuestion ? "Complete" : "Next Quiz") }}</el-button>
+        </div>
   </div>
 </template>
 
@@ -555,20 +558,23 @@ const defaultHint =
   flex-direction: column;
 
   .content-grid {
+    display: flex;
+    gap: 2rem;
     margin-top: 2em;
-    flex: 1 1 auto;
     min-height: 0;
     & > section,
     & > .left {
       position: relative;
       display: flex;
       flex-direction: column;
+      flex: 1 1 0%;
       min-height: 0;
     }
     & > aside,
     & > .right {
-      align-self: flex-start;
-      max-height: 100%;
+      flex: 0 0 auto;
+      width: 33%;
+      max-width: 496px;
       overflow-y: auto;
     }
   }
@@ -576,7 +582,6 @@ const defaultHint =
   .quiz-main-scroll {
     min-height: 0;
     overflow-y: auto;
-    max-height: calc(100% - 6em);
   }
 
   .question-title {
@@ -750,6 +755,7 @@ const defaultHint =
       display: flex;
       flex-direction: column;
       gap: 1.2em;
+      flex: 1;
     }
 
     .right-info-card {
