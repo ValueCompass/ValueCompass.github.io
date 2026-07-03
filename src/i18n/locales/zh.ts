@@ -180,5 +180,15 @@ export default {
     quizFailedTitle: '校准测验未通过',
     quizFailedMessage: '你未通过校准测验。请返回学习培训视频并重新参加测验。',
     quizFailedConfirm: '确定',
+    quizFeedbackCorrect: '正确',
+    quizFeedbackIncorrect: '错误，请再试一次。（剩余作答次数：{remaining}）',
+    quizSingleChoice: '单选',
+    quizMultipleChoice: '多选',
+    quizQuestionInfo: '这是一道{type}选题，共有 2 次作答机会，请认真作答。（剩余：{remaining} 次）',
+    quizBtnTryAgain: '再试一次',
+    quizBtnCheckAnswer: '检查答案',
+    quizBtnNextQuiz: '下一题',
+    quizBtnComplete: '完成',
+    quizBtnCompleted: '已完成',
   }
 }

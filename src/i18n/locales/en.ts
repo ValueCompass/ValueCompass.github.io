@@ -180,5 +180,15 @@ export default {
     quizFailedTitle: 'Calibration Quiz Not Passed',
     quizFailedMessage: 'You did not pass the calibration quiz. Please go back to review the training videos and retake the quiz.',
     quizFailedConfirm: 'OK',
+    quizFeedbackCorrect: 'Correct',
+    quizFeedbackIncorrect: 'Incorrect, please try again. (Remaining attempts: {remaining})',
+    quizSingleChoice: 'single',
+    quizMultipleChoice: 'multiple',
+    quizQuestionInfo: 'This is a {type}-choice question. You have 2 attempts. Please answer carefully. (Remaining: {remaining})',
+    quizBtnTryAgain: 'Try Again',
+    quizBtnCheckAnswer: 'Check Answer',
+    quizBtnNextQuiz: 'Next Quiz',
+    quizBtnComplete: 'Complete',
+    quizBtnCompleted: 'Completed',
   }
 }

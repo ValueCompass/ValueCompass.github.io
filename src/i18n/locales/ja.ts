@@ -180,5 +180,15 @@ export default {
     quizFailedTitle: 'カリブレーションクイズに不合格',
     quizFailedMessage: 'カリブレーションクイズに合格しませんでした。トレーニング動画を確認してから、もう一度クイズに挑戦してください。',
     quizFailedConfirm: 'OK',
+    quizFeedbackCorrect: '正解',
+    quizFeedbackIncorrect: '不正解です。もう一度お試しください。（残り回答回数：{remaining}回）',
+    quizSingleChoice: '単一選択',
+    quizMultipleChoice: '複数選択',
+    quizQuestionInfo: 'これは{type}択一問題です。回答は2回までです。慎重にお答えください。（残り：{remaining}回）',
+    quizBtnTryAgain: 'もう一度やり直す',
+    quizBtnCheckAnswer: '回答を確認',
+    quizBtnNextQuiz: '次の問題',
+    quizBtnComplete: '完了',
+    quizBtnCompleted: '完了済み',
   }
 }

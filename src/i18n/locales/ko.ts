@@ -180,5 +180,15 @@ export default {
     quizFailedTitle: '캘리브레이션 퀴즈 미통과',
     quizFailedMessage: '캘리브레이션 퀴즈를 통과하지 못했습니다. 교육 영상을 다시 시청한 후 퀴즈를 다시 도전해 주세요.',
     quizFailedConfirm: '확인',
+    quizFeedbackCorrect: '정답',
+    quizFeedbackIncorrect: '오답입니다. 다시 시도해 주세요. (남은 답변 횟수: {remaining}회)',
+    quizSingleChoice: '단일 선택',
+    quizMultipleChoice: '복수 선택',
+    quizQuestionInfo: '이것은 {type} 선택 문제입니다. 답변 기회는 2회입니다. 신중하게 답변해 주세요. (남은 횟수: {remaining}회)',
+    quizBtnTryAgain: '다시 시도',
+    quizBtnCheckAnswer: '답변 확인',
+    quizBtnNextQuiz: '다음 문제',
+    quizBtnComplete: '완료',
+    quizBtnCompleted: '완료됨',
   }
 }

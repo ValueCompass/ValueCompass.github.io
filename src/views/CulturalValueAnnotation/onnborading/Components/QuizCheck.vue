@@ -3,8 +3,8 @@
     <section class="hero-card">
       <div class="hero-copy">
         <span class="step-pill">Quiz {{ currentQuestionIndex + 1 }}</span>
-        <h1>{{ title }}</h1>
-        <p>{{ description }}</p>
+        <!-- <h1>{{ title }}</h1> -->
+        <p style="margin-top: 1.2em;">Complete the following quiz to verify your understanding before proceeding to the survey.</p>
       </div>
     </section>
 
@@ -36,7 +36,7 @@
                 border
                 :label="option.key"
               >
-                {{ option.text_native }}
+                {{option.key}}. {{ option.text_native }}
                 <span v-if="getOptionIcon(option.key)" :class="getOptionIconClass(option.key)">
                   {{ getOptionIcon(option.key) }}
                 </span>
@@ -58,7 +58,7 @@
                 border
                 :label="option.key"
               >
-                {{ option.text_native }}
+                {{option.key}}. {{ option.text_native }}
                 <span v-if="getOptionIcon(option.key)" :class="getOptionIconClass(option.key)">
                   {{ getOptionIcon(option.key) }}
                 </span>
@@ -71,31 +71,16 @@
       </section>
 
       <aside class="right">
-        <div class="right-wrapper">
+        <div class="right-wrapper" :class="answerFeedback ? 'right-wrapper-' + answerFeedback.type : ''" >
           <!-- 固定信息 -->
-          <div class="right-info-card">
-          <ul>
-            <li>
-             
-              <span>This is a {{ isMultipleQuestion ? "multiple" : "single" }}-choice question.</span>
-            </li>
-            <li>
-             
-              <span>You have 2 attempts.</span>
-            </li>
-            <li>
-             
-              <span>Please think carefully before submitting your answer.</span>
-            </li>
-          </ul>
-          <p class="attempts-remaining"><b>Attempts remaining:</b> <b>{{ attemptsRemaining }}</b></p>
-        </div>
+          
 
         <!-- 反馈信息（hint / correct 解析） -->
         <div v-if="answerFeedback" class="right-feedback-card" :class="answerFeedback.type">
-          <span class="feedback-icon">{{ answerFeedback.type === "correct" ? "✓" : "✕" }}</span>
+          <el-icon class="feedback-icon"><Warning /></el-icon>
           <div>
-            <h4>{{ answerFeedback.title }}</h4>
+            <h4 v-if="answerFeedback.type === 'correct'">正确</h4>
+            <h4 v-else>错误，请再试一次。（剩余作答次数：{{ attemptsRemaining }}）</h4>
             <p>{{ answerFeedback.message }}</p>
             <!-- <p class="hint-note">{{ answerFeedback.note }}</p> -->
           </div>
@@ -105,14 +90,16 @@
     </div>
 
 
-     <div class="quiz-actions">
+     <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;margin-top: 2em;">
+      <p>{{ t('onboarding.quizQuestionInfo', { type: t('onboarding.' + (isMultipleQuestion ? 'quizMultipleChoice' : 'quizSingleChoice')), remaining: attemptsRemaining }) }}</p>
+      <div class="quiz-actions">
           <!-- Try Again 按钮（红色，仅首次答错时显示） -->
           <el-button
             v-if="isTryAgain"
             class="check-button try-again-button"
             type="primary"
             @click="handleTryAgain"
-          >Try Again</el-button>
+          >{{ t('onboarding.quizBtnTryAgain') }}</el-button>
 
           <!-- Check Answer 按钮（未 check 时显示） -->
           <el-button
@@ -122,7 +109,7 @@
             :loading="isSubmitting"
             type="primary"
             @click="handleCheckAnswer"
-          >Check Answer</el-button>
+          >{{ t('onboarding.quizBtnCheckAnswer') }}</el-button>
 
           <!-- Next Quiz / Complete / Completed 按钮（check 后显示） -->
           <el-button
@@ -133,13 +120,14 @@
             :loading="isSubmitting"
             type="primary"
             @click="handleMoveToNext"
-          >{{ isQuizComplete ? "Completed" : (isLastQuestion ? "Complete" : "Next Quiz") }}</el-button>
+          >{{ isQuizComplete ? t('onboarding.quizBtnCompleted') : (isLastQuestion ? t('onboarding.quizBtnComplete') : t('onboarding.quizBtnNextQuiz')) }}</el-button>
         </div>
+     </div>
   </div>
 </template>
 
 <script setup>
-import { CircleCheckFilled } from "@element-plus/icons-vue";
+import { CircleCheckFilled, Warning } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 import { computed, ref, watch } from "vue";
@@ -167,15 +155,6 @@ const props = defineProps({
   language: {
     type: String,
     default: "",
-  },
-  title: {
-    type: String,
-    default: "Annotation Quality Check Quiz",
-  },
-  description: {
-    type: String,
-    default:
-      "Complete the following quiz to verify your understanding before proceeding to the survey.",
   },
 });
 
@@ -626,13 +605,14 @@ const defaultHint =
   }
 
   .answer-option {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
     height: auto;
     min-height: 3em;
     margin: 0 0 1em;
-    padding: 0.9em 1.25em;
+    padding: 0.9em 2.5em 0.9em 1.25em;
     border: 1px solid rgba(208, 213, 221, 1);
     border-radius: 0;
     background: transparent;
@@ -645,6 +625,7 @@ const defaultHint =
       font-size: 1em;
       line-height: 1.7;
       white-space: normal;
+      font-weight: 400;
     }
 
     &.is-checked {
@@ -657,60 +638,33 @@ const defaultHint =
     }
 
     &.correct-option {
-      border-color: rgba(34, 197, 94, 1) !important;
-      background: rgba(220, 252, 231, 0.3);
-
-      :deep(.el-radio__label),
-      :deep(.el-checkbox__label) {
-        
-      }
-
-      :deep(.el-radio__inner),
-      :deep(.el-checkbox__inner) {
-        border-color: rgba(34, 197, 94, 1);
-      }
-
-      &.is-checked {
-        :deep(.el-radio__inner),
-        :deep(.el-checkbox__inner) {
-          background: rgba(34, 197, 94, 1);
-          border-color: rgba(34, 197, 94, 1);
-        }
-      }
+      border-color: #097282 !important;
+      background: rgba(96, 217, 214, 0.1);
+      
     }
 
     &.wrong-option {
-      border-color: rgba(220, 53, 69, 1) !important;
-      background: rgba(248, 215, 218, 0.3);
-
-      :deep(.el-radio__label),
-      :deep(.el-checkbox__label) {
-      }
-
-      :deep(.el-radio__inner),
-      :deep(.el-checkbox__inner) {
-        border-color: rgba(220, 53, 69, 1);
-      }
-
-      &.is-checked {
-        :deep(.el-radio__inner),
-        :deep(.el-checkbox__inner) {
-          background: rgba(220, 53, 69, 1);
-          border-color: rgba(220, 53, 69, 1);
-        }
-      }
+      border-color:  #800000 !important;
+      background: rgba(255, 218, 214, 0.3);
     }
+    
 
     .wrong-cross-icon {
-      margin-left: auto;
-      color: rgba(220, 53, 69, 1);
+      position: absolute;
+      right: 1.25em;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #800000;
       font-weight: 700;
       font-size: 1.1em;
     }
 
     .correct-check-icon {
-      margin-left: auto;
-      color: rgba(34, 197, 94, 1);
+      position: absolute;
+      right: 1.25em;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #097282;
       font-weight: 700;
       font-size: 1.1em;
     }
@@ -719,7 +673,6 @@ const defaultHint =
   .quiz-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 2em;
   }
 
   .check-button {
@@ -731,9 +684,9 @@ const defaultHint =
     color: #fff;
     border: none;
 
-    &.disabled {
-      background: rgba(223, 227, 234, 1);
-      color: rgba(102, 112, 133, 1);
+    &.is-disabled {
+      background: #E0E3E6;
+      color: #717882;
       cursor: not-allowed;
     }
 
@@ -756,47 +709,29 @@ const defaultHint =
       flex-direction: column;
       gap: 1.2em;
       flex: 1;
-    }
-
-    .right-info-card {
-      padding: 0;
-
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.2em;
-
-        li {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.6em;
-          font-size: 1em;
-          line-height: 1.5;
-          color: rgba(55, 65, 81, 1);
-        }
-
-        .info-icon {
-          margin-top: 0.15em;
-          flex-shrink: 0;
-          color: rgba(11, 112, 195, 1);
+      overflow: auto;
+      &.right-wrapper-correct{
+        border: 1px solid #097282;
+        background: rgba(96, 217, 214, 0.1);
+        h4{
+          color: #097282;
         }
       }
-
-      .attempts-remaining {
-        margin-top: 1em;
-        font-size:1em;
-       
+      &.right-wrapper-incorrect{
+        border: 1px solid #800000;
+        background: rgba(255, 218, 214, 0.3);
+        h4{
+          color: #800000;
+        }
       }
     }
+
+  
 
     .right-feedback-card {
       display: flex;
       align-items: flex-start;
-      gap: 1em;
-      padding: 1.5em;
+      gap: .3em;
       border-radius: 8px;
       color: rgba(65, 71, 84, 1);
       line-height: 1.55;
@@ -804,14 +739,14 @@ const defaultHint =
       &.correct {
         .feedback-icon,
         .hint-note {
-          color: rgba(18, 126, 68, 1);
+          color: #097282;
         }
       }
 
       &.incorrect {
         .feedback-icon,
         .hint-note {
-          color: rgba(180, 35, 24, 1);
+          color: #800000;
         }
       }
 
@@ -819,14 +754,10 @@ const defaultHint =
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 1.25em;
-        height: 1.25em;
-        margin-top: 0.1em;
-        border: 2px solid currentColor;
-        border-radius: 50%;
-        font-size: 1em;
-        font-weight: 800;
-        line-height: 1;
+        width: 1.4em;
+        height: 1.4em;
+        margin-top: -0.1em;
+        font-size: 1.4em;
         flex: 0 0 auto;
       }
 
