@@ -76,15 +76,26 @@
             @click="handleTryAgain"
           >Try Again</el-button>
 
-          <!-- 常规按钮 -->
+          <!-- Check Answer 按钮（未 check 时显示） -->
+          <el-button
+            v-else-if="!hasChecked"
+            class="check-button"
+            :disabled="!hasSelectedAnswer || isSubmitting"
+            :loading="isSubmitting"
+            type="primary"
+            @click="handleCheckAnswer"
+          >Check Answer</el-button>
+
+          <!-- Next Quiz / Complete / Completed 按钮（check 后显示） -->
           <el-button
             v-else
             class="check-button"
-            :class="{ disabled: isPrimaryActionDisabled }"
-            :disabled="isPrimaryActionDisabled"
+            :class="{ 'is-complete': isQuizComplete }"
+            :disabled="isQuizComplete || isSubmitting"
+            :loading="isSubmitting"
             type="primary"
-            @click="handlePrimaryAction"
-          >{{ primaryActionText }}</el-button>
+            @click="handleMoveToNext"
+          >{{ isQuizComplete ? "Completed" : (isLastQuestion ? "Complete" : "Next Quiz") }}</el-button>
         </div>
       </section>
 
@@ -126,7 +137,12 @@
 
 <script setup>
 import { CircleCheckFilled } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
+import { useI18n } from "vue-i18n";
 import { computed, ref, watch } from "vue";
+import { passedCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
+
+const { t } = useI18n();
 
 const props = defineProps({
   questions: {
@@ -136,6 +152,18 @@ const props = defineProps({
   resetKey: {
     type: Number,
     default: 0,
+  },
+  username: {
+    type: String,
+    default: "",
+  },
+  country: {
+    type: String,
+    default: "",
+  },
+  language: {
+    type: String,
+    default: "",
   },
   title: {
     type: String,
@@ -150,8 +178,9 @@ const props = defineProps({
 
 const emit = defineEmits([
   "back",
-  "complete",
   "update:quizState",
+  "quiz-passed",
+  "quiz-failed",
 ]);
 
 // ---- 核心状态 ----
@@ -167,6 +196,10 @@ const questionStatusMap = ref({});
 const retryState = ref(null);
 // check 后锁定选项，Try Again 或下一题时解锁。
 const isLocked = ref(false);
+// 提交接口 loading 状态。
+const isSubmitting = ref(false);
+// quiz 是否已通过（控制按钮显示 Completed）。
+const isQuizComplete = ref(false);
 
 const quizAnswers = ref(
   props.questions.reduce((answers, question) => {
@@ -209,18 +242,9 @@ const isGroupDisabled = computed(() => {
   return isLocked.value;
 });
 
-const primaryActionText = computed(() => {
-  if (!["pass", "fail"].includes(answerFeedback.value?.result)) {
-    return "Check Answer";
-  }
-  return isLastQuestion.value ? "Complete" : "Next Quiz";
-});
-
-const isPrimaryActionDisabled = computed(() => {
-  if (["pass", "fail"].includes(answerFeedback.value?.result)) {
-    return false;
-  }
-  return !hasSelectedAnswer.value;
+// 是否已 check（当前题有 feedback 结果）。
+const hasChecked = computed(() => {
+  return ["pass", "fail"].includes(answerFeedback.value?.result);
 });
 
 // ---- 正确答案集合 ----
@@ -354,19 +378,66 @@ const handleAnswerChange = () => {
 
 // ---- 按钮操作 ----
 
-const moveToNextQuestion = () => {
-  answerFeedback.value = null;
-  retryState.value = null;
-  isLocked.value = false;
+const submitQuiz = () => {
+  const records = props.questions
+    .map((question) => questionRecords.value[question.qid])
+    .filter(Boolean);
 
+  isSubmitting.value = true;
+
+  // 按 module 分组统计。
+  const moduleStats = records.reduce((stats, record) => {
+    const moduleKey = record.module;
+    if (!stats[moduleKey]) stats[moduleKey] = { total: 0, wrong: 0 };
+    stats[moduleKey].total += 1;
+    if (record.result === "wrong") stats[moduleKey].wrong += 1;
+    return stats;
+  }, {});
+
+  const quizAnswersPayload = {};
+  const moduleOrder = [...new Set(records.map((r) => r.module))].sort();
+  moduleOrder.forEach((moduleKey) => {
+    const moduleRecords = records.filter((r) => r.module === moduleKey);
+    quizAnswersPayload[`module_${moduleKey}`] = moduleRecords.map((record) => {
+      return record.attempts.map((a) => (Array.isArray(a) ? a.join("") : a)).join(",");
+    });
+  });
+
+  const correctRatio = Object.entries(moduleStats).map(([, stat]) => {
+    return stat.total > 0 ? (stat.total - stat.wrong) / stat.total : 0;
+  });
+
+  passedCalibrationQuiz({
+    username: props.username,
+    country: props.country,
+    language: props.language,
+    quiz_answers: quizAnswersPayload,
+    correct_ratio: correctRatio,
+  }).then((res) => {
+    isSubmitting.value = false;
+    const passed = res?.data?.passed_calibration_quiz;
+    if (passed) {
+      isQuizComplete.value = true;
+      emit("quiz-passed");
+    } else {
+      emit("quiz-failed");
+    }
+  }).catch((err) => {
+    console.error("passedCalibrationQuiz failed", err);
+    isSubmitting.value = false;
+  });
+};
+
+const moveToNextQuestion = () => {
+  // 最后一题点击 Complete → 调用接口，不重置 feedback（按钮保持 Completed 状态）。
   if (currentQuestionIndex.value >= props.questions.length - 1) {
-    const records = props.questions
-      .map((question) => questionRecords.value[question.qid])
-      .filter(Boolean);
-    emit("complete", records);
+    submitQuiz();
     return;
   }
 
+  answerFeedback.value = null;
+  retryState.value = null;
+  isLocked.value = false;
   currentQuestionIndex.value += 1;
 };
 
@@ -378,12 +449,8 @@ const handleTryAgain = () => {
   retryState.value = null;
 };
 
-const handlePrimaryAction = () => {
-  if (["pass", "fail"].includes(answerFeedback.value?.result)) {
-    moveToNextQuestion();
-    return;
-  }
-  handleCheckAnswer();
+const handleMoveToNext = () => {
+  moveToNextQuestion();
 };
 
 const handleCheckAnswer = () => {

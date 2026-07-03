@@ -41,7 +41,6 @@
                   1.Watch Training Videos
                 </h4>
                 <div
-                  v-show="activeMainStepIndex === 1 && !isTrainingVideoGroupCollapsed"
                   class="step-group-body"
                 >
                   <p class="step-group-progress">
@@ -96,28 +95,29 @@
               </div>
               <div class="step-group-content">
                 <h4 class="step-title-text">2.Complete Quiz</h4>
-                <div v-show="activeMainStepIndex === 2" class="step-group-body">
+                <div class="step-group-body">
                   <p class="step-group-progress">
                     {{ quizCompleted ? "Completed" : quizCheckState.answeredCount + " / " + quizCheckState.totalCount + " Completed" }}
                   </p>
-                  <ul class="video-substeps">
+                  <ul class="video-substeps" v-for="mod in quizModules" :key="mod.module">
+                    <li class="module-header">Module {{ mod.module }}</li>
                     <li
-                      v-for="(quizQuestion, quizIndex) in quizQuestions"
-                      :key="quizQuestion.qid"
+                      v-for="q in mod.items"
+                      :key="q.qid"
                       :class="{
-                        done: ['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid]),
-                        current: isQuizQuestionCurrent(quizQuestion.qid),
-                        locked: !isQuizQuestionCurrent(quizQuestion.qid) && !['pass', 'fail'].includes(quizCheckState.questionStatusMap[quizQuestion.qid]),
+                        done: ['pass', 'fail'].includes(quizCheckState.questionStatusMap[q.qid]),
+                        current: isQuizQuestionCurrent(q.qid),
+                        locked: !isQuizQuestionCurrent(q.qid) && !['pass', 'fail'].includes(quizCheckState.questionStatusMap[q.qid]),
                       }"
                     >
-                      <el-icon v-if="quizCheckState.questionStatusMap[quizQuestion.qid] === 'pass'" class="sub-step-pass"><CircleCheck /></el-icon>
-                      <el-icon v-else-if="quizCheckState.questionStatusMap[quizQuestion.qid] === 'fail'" class="sub-step-fail"><CircleClose /></el-icon>
+                      <el-icon v-if="quizCheckState.questionStatusMap[q.qid] === 'pass'" class="sub-step-pass"><CircleCheck /></el-icon>
+                      <el-icon v-else-if="quizCheckState.questionStatusMap[q.qid] === 'fail'" class="sub-step-fail"><CircleClose /></el-icon>
                       <span
-                        v-else-if="isQuizQuestionCurrent(quizQuestion.qid)"
+                        v-else-if="isQuizQuestionCurrent(q.qid)"
                         class="current-circle-icon"
                       ></span>
                       <el-icon v-else><Lock /></el-icon>
-                      <span>QUIZ {{ quizIndex + 1 }}</span>
+                      <span>QUIZ {{ q.quizIndex + 1 }}</span>
                     </li>
                   </ul>
                 </div>
@@ -170,9 +170,13 @@
             v-show="activeMainStepIndex === 2"
             :reset-key="quizResetKey"
             :questions="quizQuestions"
+            :username="registeredUserName"
+            :country="registeredUserCountry"
+            :language="registeredUserLanguage"
             v-model:quiz-state="quizCheckState"
             @back="handleMainStepChange(1)"
-            @complete="handleCompleteQuiz"
+            @quiz-passed="handleQuizPassed"
+            @quiz-failed="handleQuizFailed"
           />
 
           <div v-show="activeMainStepIndex === 3">
@@ -219,7 +223,6 @@ import {
   getStoredOnboardingUserDetail,
 } from "@/utils/culturalValueOnboarding";
 import { createOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
-import { passedCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
 
 const TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX =
   "culturalValueAnnotationTrainingVideoProgress";
@@ -279,6 +282,17 @@ const isQuizQuestionCurrent = (questionId) => {
     !["pass", "fail"].includes(quizCheckState.value.questionStatusMap[questionId])
   );
 };
+
+// 按 module 分组 quiz 题目，供左侧栏展示。
+const quizModules = computed(() => {
+  const map = {};
+  quizQuestions.forEach((q, idx) => {
+    const mod = q.module || "Other";
+    if (!map[mod]) map[mod] = [];
+    map[mod].push({ ...q, quizIndex: idx });
+  });
+  return Object.entries(map).map(([module, items]) => ({ module, items }));
+});
 
 // 问卷完成数量：点击 start annotation 后整体算 1，否则为 0。
 const completedSurveyCount = computed(() => {
@@ -476,93 +490,30 @@ const moveFromTrainingVideoToQuizStep = () => {
   activeMainStepIndex.value = 2;
 };
 
-// Quiz 组件完成所有题目后，进入 Survey 步骤。
-const handleCompleteQuiz = (records = []) => {
-  if (!quizCheckState.value.allAnswered) {
-    return;
-  }
-
-  // 打印每道题的作答详情：题目原文、第一次/第二次选项、对错。
-  console.log("Quiz question records", records);
-  records.forEach((record) => {
-    console.log("Quiz question result", {
-      qid: record.qid,
-      module: record.module,
-      question: record.question,
-      firstAttempt: record.attempts[0] ?? null,
-      secondAttempt: record.attempts[1] ?? null,
-      result: record.result,
-    });
+// Quiz 通过后：更新 localStorage，进入问卷步骤。
+const handleQuizPassed = () => {
+  updateUserDetailFields({
+    studied_annotation_guidance: true,
+    passed_calibration_quiz: true,
   });
+  quizCompleted.value = true;
+  activeMainStepIndex.value = 3;
+};
 
-  // 按 module 字段分组，统计每个模块的总题数和错误题数。
-  const moduleStats = records.reduce((stats, record) => {
-    const moduleKey = record.module;
-    if (!stats[moduleKey]) {
-      stats[moduleKey] = { total: 0, wrong: 0 };
-    }
-    stats[moduleKey].total += 1;
-    if (record.result === "wrong") {
-      stats[moduleKey].wrong += 1;
-    }
-    return stats;
-  }, {});
-
-  // 构造 quiz_answers：按 module 分组，每题的多次尝试用逗号拼接。
-  const quizAnswersPayload = {};
-  const moduleOrder = [...new Set(records.map((r) => r.module))].sort();
-  moduleOrder.forEach((moduleKey) => {
-    const moduleRecords = records.filter((r) => r.module === moduleKey);
-    quizAnswersPayload[`module_${moduleKey}`] = moduleRecords.map((record) => {
-      return record.attempts.map((a) => (Array.isArray(a) ? a.join("") : a)).join(",");
-    });
-  });
-
-  // 构造 correct_ratio：每个 module 的正确率（float）。
-  const correctRatio = Object.entries(moduleStats).map(([, stat]) => {
-    return stat.total > 0 ? (stat.total - stat.wrong) / stat.total : 0;
-  });
-
-  passedCalibrationQuiz({
-    username: registeredUserName.value,
-    country: registeredUserCountry.value,
-    language: registeredUserLanguage.value,
-    quiz_answers: quizAnswersPayload,
-    correct_ratio: correctRatio,
-  }).then((res) => {
-    console.log("passedCalibrationQuiz response", res);
-    const passed = res?.data?.passed_calibration_quiz;
-    if (passed) {
-      // quiz 通过后，更新 localStorage 中的完成标志。
-      // 同时更新 studied_annotation_guidance 和 passed_calibration_quiz，
-      // 确保后续路由判断和 Onboarding 重入时能正确读取状态。
-      updateUserDetailFields({
-        studied_annotation_guidance: true,
-        passed_calibration_quiz: true,
-      });
-      quizCompleted.value = true;
-      activeMainStepIndex.value = 3;
-    } else {
-      updateUserDetailFields({
-        studied_annotation_guidance: true,
-        passed_calibration_quiz: false,
-      });
-      ElMessageBox.alert(
-        t("onboarding.quizFailedMessage"),
-        t("onboarding.quizFailedTitle"),
-        {
-          confirmButtonText: t("onboarding.quizFailedConfirm"),
-          showClose: false,
-          type: "error",
-        },
-      ).then(() => {
-        // 递增 resetKey 通知 QuizCheck 重置内部状态，回到训练视频步骤。
-        quizResetKey.value += 1;
-        activeMainStepIndex.value = 1;
-      });
-    }
-  }).catch((err) => {
-    console.error("passedCalibrationQuiz failed", err);
+// Quiz 未通过：重置本地状态，弹窗提示后回到训练视频步骤。
+const handleQuizFailed = () => {
+  updateUserDetailFields({ passed_calibration_quiz: false });
+  ElMessageBox.alert(
+    t("onboarding.quizFailedMessage"),
+    t("onboarding.quizFailedTitle"),
+    {
+      confirmButtonText: t("onboarding.quizFailedConfirm"),
+      showClose: false,
+      type: "error",
+    },
+  ).then(() => {
+    quizResetKey.value += 1;
+    activeMainStepIndex.value = 1;
   });
 };
 
@@ -818,6 +769,16 @@ watch(
           border: 1.5px solid currentColor;
           border-radius: 50%;
           flex: 0 0 auto;
+        }
+
+        &.module-header {
+          font-size: 11px;
+          font-weight: 700;
+          color: rgba(3, 45, 113, 1);
+          letter-spacing: 0.05em;
+          border-top: 1px solid rgba(0, 0, 0, 0.06);
+          padding-top: 0.6em;
+          margin-top: 0.2em;
         }
       }
     }
