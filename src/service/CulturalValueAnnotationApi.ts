@@ -100,6 +100,10 @@ export const passedCalibrationQuiz = (data: any): any => {
     return request.post("/annotations_test_2/passed_calibration_quiz/", data)
 }
 
+export const getCalibrationQuiz = (data: any): any => {
+    return request.post("/annotations_test_2/get_calibration_quiz/", data)
+}
+
 export const StudiedAnnotationGuidance = (data: any): any => {
     return request.post("/annotations_test_2/studied_annotation_guidance/", data)
 

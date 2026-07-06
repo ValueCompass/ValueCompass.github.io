@@ -1,19 +1,12 @@
-import { getStoredOnboardingUserDetail } from "@/utils/culturalValueOnboarding";
-import chinaQuiz from "@/data/quiz_China.json";
-import japanQuiz from "@/data/quiz_Japan_final.json";
-import singaporeQuiz from "@/data/quiz_Singapore_final.json";
+import { getCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
 
-const countryQuizDataMap = {
-  default: chinaQuiz,
-  China: chinaQuiz,
-  Japan: japanQuiz,
-  Singapore: singaporeQuiz,
-};
-
-export const createOnboardingQuizQuestions = (country) => {
-  const storedCountry = getStoredOnboardingUserDetail().country;
-  const quizCountry = country || storedCountry || "default";
-  const quizData = countryQuizDataMap[quizCountry] || countryQuizDataMap.default;
-
-  return quizData.items || [];
+/**
+ * 从 API 获取 calibration quiz 数据。
+ * @param {string} country - 国家
+ * @param {string} language - 语言
+ * @returns {Promise<Array>} quiz 题目列表
+ */
+export const fetchOnboardingQuizQuestions = async (country, language) => {
+  const res = await getCalibrationQuiz({ country, language });
+  return res?.data?.calibration_quiz?.items || [];
 };

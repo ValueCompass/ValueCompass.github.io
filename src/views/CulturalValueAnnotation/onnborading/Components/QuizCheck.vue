@@ -141,6 +141,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
   resetKey: {
     type: Number,
     default: 0,

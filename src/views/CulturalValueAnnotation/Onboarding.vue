@@ -173,6 +173,7 @@
             v-show="activeMainStepIndex === 2"
             :reset-key="quizResetKey"
             :questions="quizQuestions"
+            :loading="quizLoading"
             :username="registeredUserName"
             :country="registeredUserCountry"
             :language="registeredUserLanguage"
@@ -225,7 +226,7 @@ import {
   createOnboardingSteps,
   getStoredOnboardingUserDetail,
 } from "@/utils/culturalValueOnboarding";
-import { createOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
+import { fetchOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
 
 const TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX =
   "culturalValueAnnotationTrainingVideoProgress";
@@ -263,15 +264,16 @@ const { t } = useI18n();
 const trainingVideoSteps = ref(createOnboardingSteps());
 const trainingVideoCompletionStatus = ref({});
 
-// 页面内轻量测验题库按用户国家生成，后续国家差异只维护数据文件。
-const quizQuestions = createOnboardingQuizQuestions();
+// 页面内轻量测验题库，从 API 异步加载。
+const quizQuestions = ref([]);
+const quizLoading = ref(true);
 
 const quizResetKey = ref(0);
 const quizCheckState = ref({
   questionStatusMap: {},
   currentQuestionId: "",
   answeredCount: 0,
-  totalCount: quizQuestions.length,
+  totalCount: 0,
   allAnswered: false,
 });
 
@@ -289,7 +291,7 @@ const isQuizQuestionCurrent = (questionId) => {
 // 按 module 分组 quiz 题目，供左侧栏展示。
 const quizModules = computed(() => {
   const map = {};
-  quizQuestions.forEach((q, idx) => {
+  quizQuestions.value.forEach((q, idx) => {
     const mod = q.module || "Other";
     if (!map[mod]) map[mod] = [];
     map[mod].push({ ...q, quizIndex: idx });
@@ -314,7 +316,7 @@ const completedSurveyCount = computed(() => {
 // 整体进度总数 = 视频数 + Quiz 题数 + 问卷（整体算 1 项）。
 const overallTotalCount = computed(() => {
   return (
-    trainingVideoSteps.value.length + quizQuestions.length + 1
+    trainingVideoSteps.value.length + quizQuestions.value.length + 1
   );
 });
 
@@ -538,11 +540,25 @@ const handleSurveyNext = () => {
 //   true        │ true        │ false       │ Step 3 问卷
 //   true        │ true        │ true        │ 全部完成 → 首页
 //   false       │ true        │  —          │ 防御性 → Step 1
-onMounted(() => {
+onMounted(async () => {
   const storedUserDetail = getStoredOnboardingUserDetail();
   registeredUserName.value = storedUserDetail.username;
   registeredUserCountry.value = storedUserDetail.country;
   registeredUserLanguage.value = storedUserDetail.language;
+
+  // 从 API 获取 quiz 题目。
+  try {
+    const items = await fetchOnboardingQuizQuestions(
+      storedUserDetail.country,
+      storedUserDetail.language,
+    );
+    quizQuestions.value = items;
+    quizCheckState.value.totalCount = items.length;
+  } catch (err) {
+    console.error("Failed to fetch calibration quiz", err);
+  } finally {
+    quizLoading.value = false;
+  }
 
   // 读取 Step 1 完成标志（studied_annotation_guidance）。
   const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance();
