@@ -8,5 +8,23 @@ import { getCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
  */
 export const fetchOnboardingQuizQuestions = async (country, language) => {
   const res = await getCalibrationQuiz({ country, language });
-  return res?.data?.calibration_quiz?.items || [];
+  const quiz = res?.data?.calibration_quiz;
+  const items = quiz?.items || [];
+  const moduleTitles = {};
+  for (const key of Object.keys(quiz || {})) {
+    const titleMatch = key.match(/^module(\d+)_title$/);
+    if (titleMatch) {
+      const modNum = titleMatch[1];
+      if (!moduleTitles[modNum]) moduleTitles[modNum] = {};
+      moduleTitles[modNum].title = quiz[key];
+    }
+    const descMatch = key.match(/^module(\d+)_description$/);
+    if (descMatch) {
+      const modNum = descMatch[1];
+      if (!moduleTitles[modNum]) moduleTitles[modNum] = {};
+      moduleTitles[modNum].description = quiz[key];
+    }
+  }
+  console.log(items, moduleTitles);
+  return { items, moduleTitles };
 };

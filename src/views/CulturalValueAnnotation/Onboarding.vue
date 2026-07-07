@@ -98,10 +98,11 @@
                   <!-- <p class="step-group-progress">
                     {{ quizCompleted ? "Completed" : quizCheckState.answeredCount + " / " + quizCheckState.totalCount + " Completed" }}
                   </p> -->
-                  <ul class="video-substeps" v-for="mod in quizModules" :key="mod.module">
+                  <ul class="video-substeps" v-for="(mod, index) in quizModules" :key="mod.module">
                     <li class="module-header" :class="{ 'module-active': isQuizModuleActive(mod.items) }">
-                      <p>Module {{ mod.module }}</p>
-                      <p>module name</p>
+                      <!-- <p>Module {{ mod.module }}</p> -->
+                       <p>Module {{ index + 1 }}</p>
+                      <p>{{ quizModuleTitles[mod.module]?.title || '' }}</p>
                     </li>
                     <li
                       v-for="q in mod.items"
@@ -266,6 +267,7 @@ const trainingVideoCompletionStatus = ref({});
 
 // 页面内轻量测验题库，从 API 异步加载。
 const quizQuestions = ref([]);
+const quizModuleTitles = ref({});
 const quizLoading = ref(true);
 
 const quizResetKey = ref(0);
@@ -548,11 +550,12 @@ onMounted(async () => {
 
   // 从 API 获取 quiz 题目。
   try {
-    const items = await fetchOnboardingQuizQuestions(
+    const { items, moduleTitles } = await fetchOnboardingQuizQuestions(
       storedUserDetail.country,
       storedUserDetail.language,
     );
     quizQuestions.value = items;
+    quizModuleTitles.value = moduleTitles;
     quizCheckState.value.totalCount = items.length;
   } catch (err) {
     console.error("Failed to fetch calibration quiz", err);
@@ -813,6 +816,7 @@ watch(
 
         &.module-header {
           font-size: 10px;
+          font-weight: 400;
           
           color: rgba(64, 71, 81, 0.4);
           letter-spacing: 0.05em;
@@ -830,6 +834,7 @@ watch(
           &>p:nth-child(1){
             font-size: 12px;
             font-weight: 600;
+            margin-bottom: 2px;
           }
 
         }
