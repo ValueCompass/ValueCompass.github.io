@@ -51,6 +51,16 @@ export default {
       validationSourceText: 'text fragment',
       validationSourceConcept: 'value concept',
     },
+    similarity: {
+      banner: 'Your personal answer is <strong>highly similar</strong> to the cultural answer.',
+      prompt: 'Please reflect on whether your personal view is truly the same as the cultural perspective.',
+      optionAgree: 'I agree with the mainstream cultural view',
+      optionLittleDivergence: 'This topic has little divergence of views',
+      optionOther: 'Other reasons',
+      reasonLabel: 'My personal view is similar to the cultural answer because',
+      reasonPlaceholder: 'Please explain...',
+      reviseBtn: 'Need To Revise Personal Response',
+    },
   },
   culturalValueAnnotation: {
     step1: {

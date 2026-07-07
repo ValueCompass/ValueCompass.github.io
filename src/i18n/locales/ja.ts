@@ -51,6 +51,16 @@ export default {
       validationSourceText: 'テキストフラグメント',
       validationSourceConcept: '価値観コンセプト',
     },
+    similarity: {
+      banner: 'あなたの個人的な回答は文化的回答と<strong>非常に似ています</strong>。',
+      prompt: 'あなたの個人的な見解が文化的な視点と本当に同じか振り返ってください。',
+      optionAgree: '主流の文化的見解に同意します',
+      optionLittleDivergence: 'このトピックは意見の差異が少ないです',
+      optionOther: 'その他の理由',
+      reasonLabel: '個人的な見解が文化的回答と似ている理由',
+      reasonPlaceholder: '説明してください...',
+      reviseBtn: '個人回答の修正が必要',
+    },
   },
   culturalValueAnnotation: {
     step1: {

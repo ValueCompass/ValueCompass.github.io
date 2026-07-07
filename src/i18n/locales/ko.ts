@@ -51,6 +51,16 @@ export default {
       validationSourceText: '텍스트 조각',
       validationSourceConcept: '가치관 개념',
     },
+    similarity: {
+      banner: '개인 답변이 문화적 답변과 <strong>매우 유사합니다</strong>.',
+      prompt: '개인 관점이 문화적 관점과 정말 같은지 생각해 보세요.',
+      optionAgree: '주류 문화 관점에 동의합니다',
+      optionLittleDivergence: '이 주제는 의견 차이가 거의 없습니다',
+      optionOther: '기타 사유',
+      reasonLabel: '개인 관점이 문화적 답변과 유사한 이유는',
+      reasonPlaceholder: '설명해 주세요...',
+      reviseBtn: '개인 답변 수정 필요',
+    },
   },
   culturalValueAnnotation: {
     step1: {

@@ -902,6 +902,12 @@
     </div>
 
     <!-- <UserDetail @hideUsrerContainer="hideUsrerContainer"></UserDetail> -->
+
+    <SimilarityDialog
+      v-model:visible="similarityDialogVisible"
+      @revise="handleSimilarityRevise"
+      @confirm="handleSimilarityConfirm"
+    />
   </div>
 </template>
 
@@ -920,6 +926,8 @@ const isAdminView = computed(() => {
 });
 import UserDetail from "./UserDetail.vue";
 import AnnotationComponent from "./Components/AnnotationComponent.vue";
+import SimilarityDialog from "./Components/SimilarityDialog.vue";
+import { isHighlySimilar } from "@/utils/CulturalAnnotationUtil";
 import {
   Warning
 } from "@element-plus/icons-vue";
@@ -1717,6 +1725,32 @@ const shouldPromptAllKeepDoubleCheck = (culturalData, personalData) => {
 };
 
 const isLoadingSubmitHighlightAndConcepts = ref(false);
+
+// 相似度弹窗状态
+const similarityDialogVisible = ref(false);
+const pendingComponent1Data = ref(null);
+const pendingComponent2Data = ref(null);
+
+// 相似度弹窗：用户选择"需要修改个人回答"
+const handleSimilarityRevise = () => {
+  similarityDialogVisible.value = false;
+  pendingComponent1Data.value = null;
+  pendingComponent2Data.value = null;
+  isLoadingSubmitHighlightAndConcepts.value = false;
+};
+
+// 相似度弹窗：用户确认提交，附带相似度说明后调用 sendSubmitAPI
+const handleSimilarityConfirm = (similarityData) => {
+  similarityDialogVisible.value = false;
+  const c1 = pendingComponent1Data.value;
+  const c2 = pendingComponent2Data.value;
+  pendingComponent1Data.value = null;
+  pendingComponent2Data.value = null;
+  if (c1 && c2) {
+    sendSubmitAPI(c1, c2, similarityData);
+  }
+};
+
 const submitHighlightAndConcepts = () => {
   // 最终提交前也要走同一套 principle 校验，避免跳过 Get Question List 后直接提交脏数据。
   if (!validatePrinciplesBeforeContinue()) {
@@ -1757,6 +1791,29 @@ const submitHighlightAndConcepts = () => {
       return;
     }
 
+    // 判断 response/key_concepts 是否高度一致，任一相似则弹窗
+    const conceptsStr1 = (component1Data.key_concepts || []).join(" ");
+    const conceptsStr2 = (component2Data.key_concepts || []).join(" ");
+    const responseSimilar = isHighlySimilar(component1Data.response, component2Data.response);
+    const conceptsSimilar = isHighlySimilar(conceptsStr1, conceptsStr2);
+
+    if (responseSimilar || conceptsSimilar) {
+      // 高度一致，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
+      pendingComponent1Data.value = component1Data;
+      pendingComponent2Data.value = component2Data;
+      similarityDialogVisible.value = true;
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
+    }
+
+    sendSubmitAPI(component1Data, component2Data)
+
+    
+  });
+};
+
+
+const sendSubmitAPI = (component1Data, component2Data, similarityData = null) => {
     const proceedSubmit = () => {
       console.log("Component 1 data:", component1Data);
       console.log("Component 2 data:", component2Data);
@@ -1836,6 +1893,9 @@ const submitHighlightAndConcepts = () => {
         submit_type: submit_type.value,
         timestamp: new Date().toISOString(),
       };
+      if (similarityData) {
+        sendData.personal_answer_similar_to_cultural_answer = similarityData;
+      }
       console.log(sendData);
       if (editCurrentQuestionDetail.value) {
         sendData.data_index = editCurrentQuestionDetail.value.index;
@@ -1879,9 +1939,9 @@ const submitHighlightAndConcepts = () => {
       return;
     }
 
+    console.log("proceedSubmit");
     proceedSubmit();
-  });
-};
+}
 
 const topicTaxonomy = ref([]);
 const taskTaxonomy = ref([]);

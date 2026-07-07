@@ -51,6 +51,16 @@ export default {
       validationSourceText: '文本片段',
       validationSourceConcept: '价值观概念',
     },
+    similarity: {
+      banner: '您的个人回答与文化回答<strong>高度相似</strong>。',
+      prompt: '请反思您的个人观点是否真的与文化视角相同。',
+      optionAgree: '我同意主流文化观点',
+      optionLittleDivergence: '该话题的观点分歧较小',
+      optionOther: '其他原因',
+      reasonLabel: '我的个人观点与文化回答相似是因为',
+      reasonPlaceholder: '请解释...',
+      reviseBtn: '需要修改个人回答',
+    },
   },
   culturalValueAnnotation: {
     step1: {
