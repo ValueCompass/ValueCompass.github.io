@@ -1,6 +1,15 @@
 <template>
   <div class="answer-content">
     <div class="left">
+      <div>
+        highlightCuesStatus：{{ highlightCuesStatus }}
+      </div>
+      <div>
+        keyConceptsStatus: {{ keyConceptsStatus }}
+      </div>
+      <div>
+        mismatchExplanations: {{ mismatchExplanations }}
+      </div>
       <div
         class="response-text"
         style="white-space: pre-line"
@@ -170,6 +179,17 @@
         }}</el-button>
       </div>
     </div>
+
+    <!-- Mismatch 弹窗：cue=edit & concept=keep 或 cue=keep & concept=edit -->
+    <MismatchDialog
+      v-model:visible="mismatchDialogVisible"
+      :type="mismatchDialogType"
+      :text-fragment="currentCue"
+      :value-concepts="currentConcept"
+      :initial-explanation="currentMismatchExplanation"
+      @confirm="handleMismatchConfirm"
+      @return-to-edit="handleMismatchReturn"
+    />
   </div>
 </template>
 
@@ -177,6 +197,7 @@
 import { reactive, ref, computed, onMounted } from "vue";
 import { defineProps, watch, defineExpose } from "vue";
 import ShowHighlight from "./ShowHighlight.vue";
+import MismatchDialog from "./MismatchDialog.vue";
 
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
@@ -274,6 +295,31 @@ const keyConceptsStatus = ref([]);
 const originalHighlightCues = ref([]);
 const originalKeyConcepts = ref([]);
 
+// Mismatch 弹窗状态
+const mismatchDialogVisible = ref(false);
+const mismatchDialogType = ref(""); // "concept-edit-text-keep" | "text-edit-concept-keep"
+
+// 存储 mismatch 弹窗用户输入的 explain 信息，与 highlightCuesStatus 等长数组
+const mismatchExplanations = ref([]);
+
+// 自动清空：当 status 数组变化时，不再满足 keep+edit 组合的项自动清空 explanation
+watch(
+  [highlightCuesStatus, keyConceptsStatus],
+  ([cueStatuses, conceptStatuses]) => {
+    const len = Math.min(cueStatuses.length, conceptStatuses.length, mismatchExplanations.value.length);
+    for (let i = 0; i < len; i++) {
+      if (!mismatchExplanations.value[i]) continue;
+      const isStillMismatch =
+        (cueStatuses[i] === "edit" && conceptStatuses[i] === "keep") ||
+        (cueStatuses[i] === "keep" && conceptStatuses[i] === "edit");
+      if (!isStillMismatch) {
+        mismatchExplanations.value[i] = null;
+      }
+    }
+  },
+  { deep: true }
+);
+
 // 检查并移除不存在于response中的highlight_cues
 const validateHighlightCues = () => {
   const validCues = [];
@@ -313,6 +359,9 @@ const validateHighlightCues = () => {
     null
   );
   keyConceptsStatus.value = Array(annotationData.key_concepts.length).fill(
+    null
+  );
+  mismatchExplanations.value = Array(annotationData.highlight_cues.length).fill(
     null
   );
   updateCurrentCuePosition();
@@ -712,6 +761,69 @@ const handleKeepClick = (type) => {
 
     console.log("keyConceptsStatus:", keyConceptsStatus.value);
   }
+
+  // status 变化后，watch 会自动清空不再匹配的 explanation
+  // 检查是否触发 mismatch 弹窗
+  checkMismatchDialog();
+};
+
+// 检测当前项是否出现 edit + keep 的不一致状态，是则弹窗。
+const currentMismatchExplanation = computed(() => {
+  const idx = currentCueIndex.value;
+  if (idx < 0 || !mismatchExplanations.value[idx]) return "";
+  return mismatchExplanations.value[idx].value || "";
+});
+
+const checkMismatchDialog = () => {
+  const idx = currentCueIndex.value;
+  if (idx < 0) return;
+
+  const cueStatus = highlightCuesStatus.value[idx];
+  const conceptStatus = keyConceptsStatus.value[idx];
+
+  if (cueStatus === "edit" && conceptStatus === "keep") {
+    mismatchDialogType.value = "text-edit-concept-keep";
+    mismatchDialogVisible.value = true;
+  } else if (cueStatus === "keep" && conceptStatus === "edit") {
+    mismatchDialogType.value = "concept-edit-text-keep";
+    mismatchDialogVisible.value = true;
+  }
+};
+
+// 弹窗：用户确认"匹配"，存储 explain 信息。
+const handleMismatchConfirm = ({ explanation }) => {
+  const idx = currentCueIndex.value;
+  if (idx < 0) return;
+
+  mismatchExplanations.value[idx] = {
+    highlight_cue: annotationData.highlight_cues[idx] || "",
+    key_concept: annotationData.key_concepts[idx] || "",
+    value: explanation,
+    type: mismatchDialogType.value,
+  };
+
+  console.log("mismatchExplanations:", mismatchExplanations.value);
+};
+
+// 弹窗：用户选择"不匹配"，需要回到编辑状态。
+const handleMismatchReturn = () => {
+  const idx = currentCueIndex.value;
+  if (idx < 0) return;
+
+  // 用户选择不匹配，清空该条 explanation
+  mismatchExplanations.value[idx] = null;
+
+  if (mismatchDialogType.value === "text-edit-concept-keep") {
+    // cue=edit, concept=keep → 取消 concept 的 keep，让用户也编辑 concept
+    keyConceptsStatus.value[idx] = null;
+    isConceptEditMode.value = true;
+    editConcept.value = annotationData.key_concepts[idx];
+  } else {
+    // cue=keep, concept=edit → 取消 cue 的 keep，让用户也编辑 cue
+    highlightCuesStatus.value[idx] = null;
+    isCueEditMode.value = true;
+    editCue.value = annotationData.highlight_cues[idx];
+  }
 };
 
 const handleDeleteClick = (type) => {
@@ -742,9 +854,10 @@ const handleDeleteClick = (type) => {
     // 4. 从value_concepts_justification数组中删除
     annotationData.value_concepts_justification.splice(currentCueIndex.value, 1);
 
-    // 5. 从highlightCuesStatus和keyConceptsStatus数组中删除
+    // 5. 从highlightCuesStatus、keyConceptsStatus和mismatchExplanations数组中删除
     highlightCuesStatus.value.splice(currentCueIndex.value, 1);
     keyConceptsStatus.value.splice(currentCueIndex.value, 1);
+    mismatchExplanations.value.splice(currentCueIndex.value, 1);
 
     // 6. 从response文本中删除对应的cue
     if (deletedCue) {
@@ -777,6 +890,8 @@ const handleDeleteClick = (type) => {
     // 对于不是新加的项，同时设置两个状态为delete
     highlightCuesStatus.value[currentCueIndex.value] = "delete";
     keyConceptsStatus.value[currentCueIndex.value] = "delete";
+    // 删除时清空该条 explanation
+    mismatchExplanations.value[currentCueIndex.value] = null;
     console.log("highlightCuesStatus:", highlightCuesStatus.value);
     console.log("keyConceptsStatus:", keyConceptsStatus.value);
   }
@@ -906,6 +1021,11 @@ const handleSubmitEdit = (type) => {
   } else if (type === "concept") {
     isConceptEditMode.value = false;
   }
+
+  // 提交编辑后，内容变化导致之前的 explanation 失效，清空
+  mismatchExplanations.value[currentCueIndex.value] = null;
+  // 提交编辑后检查是否触发 mismatch 弹窗
+  checkMismatchDialog();
 };
 
 const handleAddNew = () => {
@@ -980,6 +1100,7 @@ const handleSubmitAddNew = () => {
   // 为新添加的cue和concept设置状态为add
   highlightCuesStatus.value.push("add");
   keyConceptsStatus.value.push("add");
+  mismatchExplanations.value.push(null);
 
   // 更新currentCueIndex为新添加的索引
   currentCueIndex.value = annotationData.highlight_cues.length - 1;
@@ -1078,6 +1199,7 @@ const processAnnotationData = () => {
     concepts_actions: keyConceptsStatus.value,
     value_concepts_evidence: processedCorrespondence,
     value_concepts_justification: processedEvidence,
+    textAndConceptMatch: mismatchExplanations.value,
   };
 };
 

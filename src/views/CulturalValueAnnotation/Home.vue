@@ -1815,6 +1815,8 @@ const submitHighlightAndConcepts = () => {
           component1Data.value_concepts_evidence,
         value_concepts_justification:
           component1Data.value_concepts_justification,
+        textAndConceptMatch:
+          component1Data.textAndConceptMatch || [],
 
         // 第二个注释组件的数据 personal 部分的标注
         response_person: component2Data.response,
@@ -1827,6 +1829,8 @@ const submitHighlightAndConcepts = () => {
           component2Data.value_concepts_evidence,
         value_concepts_justification_person:
           component2Data.value_concepts_justification,
+        textAndConceptMatch_person:
+          component2Data.textAndConceptMatch || [],
 
         duration_time: Math.floor(duration_time.value / 1000),
         submit_type: submit_type.value,
