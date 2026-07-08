@@ -17,7 +17,7 @@
           </p> -->
 
           <div v-if="currentQuestion.stem_native" class="question-prompt">
-           {{ currentQuestionIndex + 1 }}. {{ currentQuestion.stem_native }}
+           <span v-html="`${currentQuestionIndex + 1}. ${renderMarkdown(currentQuestion.stem_native)}`"></span>
           </div>
 
           <div class="answer-options">
@@ -36,7 +36,7 @@
                 border
                 :label="option.key"
               >
-                {{option.key}}. {{ option.text_native }}
+                <p v-html="`${option.key}. ${renderMarkdown(option.text_native)}`"></p>
                 <span v-if="getOptionIcon(option.key)" :class="getOptionIconClass(option.key)">
                   {{ getOptionIcon(option.key) }}
                 </span>
@@ -58,7 +58,7 @@
                 border
                 :label="option.key"
               >
-                {{option.key}}. {{ option.text_native }}
+                <p style="white-space: pre-line;" v-html="`${option.key}. ${renderMarkdown(option.text_native)}`"></p>
                 <span v-if="getOptionIcon(option.key)" :class="getOptionIconClass(option.key)">
                   {{ getOptionIcon(option.key) }}
                 </span>
@@ -81,7 +81,7 @@
           <div>
             <h4 v-if="answerFeedback.type === 'correct'">正确</h4>
             <h4 v-else>错误，请再试一次。（剩余作答次数：{{ attemptsRemaining }}）</h4>
-            <p>{{ answerFeedback.message }}</p>
+            <p v-html="renderMarkdown(answerFeedback.message)"></p>
             <!-- <p class="hint-note">{{ answerFeedback.note }}</p> -->
           </div>
         </div>
@@ -129,10 +129,14 @@
 <script setup>
 import { CircleCheckFilled, Warning } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";
+import MarkdownIt from "markdown-it";
 import { useI18n } from "vue-i18n";
 import { computed, ref, watch } from "vue";
 import { passedCalibrationQuiz } from "@/service/CulturalValueAnnotationApi";
 import { updateUserDetailFields } from "@/utils/culturalValueAnnotationAuth";
+
+const md = new MarkdownIt({ html: false, linkify: true, typographer: true });
+const renderMarkdown = (text) => md.renderInline(text || "");
 
 const { t } = useI18n();
 
@@ -616,8 +620,8 @@ const defaultHint =
     background: rgba(231, 244, 255, 1);
     color: rgba(3, 45, 113, 1);
     font-size: 1em;
-    font-style: italic;
-    font-weight: 700;
+    // font-style: italic;
+    font-weight: 400;
     line-height: 1.55;
     white-space: pre-line;
   }

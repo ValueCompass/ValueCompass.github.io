@@ -610,7 +610,7 @@ watch(
 
   .onboarding-layout {
     height: calc(100vh - 12em);
-    max-width: 1920px;
+    max-width: 2300px;
     margin: 0 auto;
     padding: 1em 6em 0em 0;
     display: grid;
