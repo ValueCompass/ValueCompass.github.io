@@ -40,6 +40,9 @@
           :rows="3"
           :placeholder="t('common.similarity.reasonPlaceholder')"
         />
+        <div v-if="reasonError" style="color: #d93025; font-size: 12px; margin-top: 4px;">
+          {{ reasonError }}
+        </div>
       </div>
 
       <!-- 按钮 -->
@@ -60,8 +63,9 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { isReasonLongEnough } from "@/utils/common";
 
 const { t } = useI18n();
 
@@ -73,6 +77,7 @@ const emit = defineEmits(["update:visible", "revise", "confirm"]);
 
 const selectedOption = ref("");
 const reasonText = ref("");
+const reasonError = ref("");
 
 watch(
   () => props.visible,
@@ -80,6 +85,7 @@ watch(
     if (val) {
       selectedOption.value = "";
       reasonText.value = "";
+      reasonError.value = "";
     }
   }
 );
@@ -96,6 +102,11 @@ const handleRevise = () => {
 };
 
 const handleSubmit = () => {
+  if (!isReasonLongEnough(reasonText.value)) {
+    reasonError.value = t("common.similarity.reasonTooShort");
+    return;
+  }
+  reasonError.value = "";
   emit("confirm", {
     value: optionMap[selectedOption.value] || selectedOption.value,
     reason: reasonText.value || "",
@@ -137,8 +148,10 @@ const handleSubmit = () => {
 
     .similarity-reason-label {
       font-size: 14px;
-      font-weight: 600;
+      // font-weight: 600;
       margin-bottom: 8px;
+      white-space: pre-wrap;
+      line-height: 1.6;
     }
   }
 

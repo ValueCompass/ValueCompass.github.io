@@ -110,6 +110,19 @@ export const isPrincipleLongEnough = (text = "") => {
   );
 };
 
+// similarity reason 最小长度规则：中日韩字符 ≥ 50 或 英文单词 ≥ 30，满足任意一个即算合格。
+export const MIN_SIMILARITY_REASON_CJK_CHARACTER_COUNT = 50;
+export const MIN_SIMILARITY_REASON_ENGLISH_WORD_COUNT = 30;
+
+export const isReasonLongEnough = (text = "") => {
+  const trimmedText = String(text).trim();
+  if (!trimmedText) return false;
+  return (
+    getCjkCharacterCount(trimmedText) >= MIN_SIMILARITY_REASON_CJK_CHARACTER_COUNT ||
+    getEnglishWordCount(trimmedText) >= MIN_SIMILARITY_REASON_ENGLISH_WORD_COUNT
+  );
+};
+
 // 标准化问题文本：统一大小写、去掉标点/符号并合并空格，避免格式差异影响相似度判断。
 export const normalizeQuestion = (question = "") => {
   return String(question)
