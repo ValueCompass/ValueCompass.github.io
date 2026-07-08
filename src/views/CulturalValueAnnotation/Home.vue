@@ -1797,8 +1797,8 @@ const submitHighlightAndConcepts = () => {
     const responseSimilar = isHighlySimilar(component1Data.response, component2Data.response);
     const conceptsSimilar = isHighlySimilar(conceptsStr1, conceptsStr2);
 
-    if (responseSimilar || conceptsSimilar) {
-      // 高度一致，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
+    if (responseSimilar && conceptsSimilar) {
+      // 两部分都大于 >= 0.85，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
       pendingComponent1Data.value = component1Data;
       pendingComponent2Data.value = component2Data;
       similarityDialogVisible.value = true;

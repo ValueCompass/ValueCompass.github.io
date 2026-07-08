@@ -5,7 +5,7 @@
  * @param {number} threshold - 相似度阈值，默认 0.8
  * @returns {boolean}
  */
-export const isHighlySimilar = (str1, str2, threshold = 0.8) => {
+export const isHighlySimilar = (str1, str2, threshold = 0.85) => {
   const s1 = (str1 || "").trim().toLowerCase();
   const s2 = (str2 || "").trim().toLowerCase();
   if (!s1 && !s2) return true;

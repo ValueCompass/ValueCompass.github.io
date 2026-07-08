@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :model-value="visible"
-    width="700px"
+    width="1000px"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :show-close="false"
@@ -24,6 +24,7 @@
         <el-radio-group v-model="selectedOption" class="similarity-radio-group">
           <el-radio value="agree">{{ t("common.similarity.optionAgree") }}</el-radio>
           <el-radio value="little-divergence">{{ t("common.similarity.optionLittleDivergence") }}</el-radio>
+          <el-radio value="already-revised">{{ t("common.similarity.optionAlreadyRevised") }}</el-radio>
           <el-radio value="other">{{ t("common.similarity.optionOther") }}</el-radio>
         </el-radio-group>
       </div>
@@ -90,11 +91,19 @@ watch(
   }
 );
 
-const optionMap = {
-  agree: "I agree with the mainstream cultural view",
-  "little-divergence": "This topic has little divergence of views",
-  other: "Other reasons",
-};
+// const optionMap = computed(() => ({
+//   agree: t("common.similarity.optionAgree"),
+//   "little-divergence": t("common.similarity.optionLittleDivergence"),
+//   "already-revised": t("common.similarity.optionAlreadyRevised"),
+//   other: t("common.similarity.optionOther"),
+// }));
+
+const optionMap = computed(() => ({
+  agree: 'agree',
+  "little-divergence": 'little-divergence',
+  "already-revised": 'already-revised',
+  other: 'other',
+}));
 
 const handleRevise = () => {
   emit("revise");
@@ -108,7 +117,7 @@ const handleSubmit = () => {
   }
   reasonError.value = "";
   emit("confirm", {
-    value: optionMap[selectedOption.value] || selectedOption.value,
+    value: optionMap.value[selectedOption.value] || selectedOption.value,
     reason: reasonText.value || "",
   });
   emit("update:visible", false);
@@ -141,6 +150,20 @@ const handleSubmit = () => {
     flex-direction: column;
     gap: 10px;
     align-items: flex-start;
+  }
+
+  :deep(.el-radio__label) {
+    white-space: normal !important;
+    line-height: 1.6;
+  }
+
+  :deep(.el-radio) {
+    height: auto;
+    align-items: flex-start;
+  }
+
+  :deep(.el-radio__input){
+    margin-top: 4px;
   }
 
   .similarity-reason {
