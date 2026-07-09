@@ -28,7 +28,28 @@
       <SurveyDialog></SurveyDialog>
     </el-dialog>
 
+    <QuizDialog
+      v-model="quizDialogVisible"
+      :questions="quizQuestions"
+      :moduleTitles="quizModuleTitles"
+      :loading="quizLoading"
+      :resetKey="quizResetKey"
+      :username="userDetail.username"
+      :country="userDetail.country"
+      :language="userDetail.language"
+      @quiz-passed="handleQuizPassed"
+    />
+
     <div v-if="!isOnboardingPage && !isAdminPage" class="side-action-group">
+      <div
+        ref="tutorialButtonRef"
+        class="side-action-btn View-tutorial-btn"
+        @click="openTutorialDialog"
+      ><svgIcon
+                
+                  name="play-icon"
+                ></svgIcon><span>View tutorial</span></div>
+
       <div
         class="side-action-btn View-survey-btn"
         @click="openSurveyDialog"
@@ -39,13 +60,13 @@
                 /><span>Survey</span></div>
 
       <div
-        ref="tutorialButtonRef"
-        class="side-action-btn View-tutorial-btn"
-        @click="openTutorialDialog"
-      ><svgIcon
-                
-                  name="play-icon"
-                ></svgIcon><span>View tutorial</span></div>
+        class="side-action-btn View-quiz-btn"
+        @click="openQuizDialog"
+      ><img
+                  class="side-action-image-icon"
+                  src="@/assets/images/survery-icon.png"
+                  alt=""
+                /><span>Quiz Check</span></div>
     </div>
   </div>
 </template>
@@ -54,6 +75,9 @@
 import UserHeader from "./Components/UserHeader.vue";
 import OnboardingDialog from "./OnboardingDialog.vue";
 import SurveyDialog from "./SurveyDialog.vue";
+import QuizDialog from "./QuizDialog.vue";
+import { fetchOnboardingQuizQuestions } from "../../utils/culturalValueOnboardingQuiz";
+import { getStoredOnboardingUserDetail } from "../../utils/culturalValueOnboarding";
 
 import { computed, nextTick, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -67,6 +91,12 @@ import {
 const route = useRoute();
 const dialogTableVisible = ref(false)
 const surveyDialogVisible = ref(false)
+const quizDialogVisible = ref(false)
+const quizQuestions = ref([]);
+const quizModuleTitles = ref({});
+const quizLoading = ref(false);
+const quizResetKey = ref(0);
+const userDetail = getStoredOnboardingUserDetail() || {};
 // 标记弹窗当前是否处于关闭动画阶段，用来切换退场样式。
 const isDialogClosing = ref(false);
 // 记录右侧 View tutorial 按钮的 DOM，用于计算弹窗收缩的目标位置。
@@ -91,6 +121,33 @@ const openTutorialDialog = async () => {
 
 const openSurveyDialog = () => {
   surveyDialogVisible.value = true;
+};
+
+const openQuizDialog = async () => {
+  quizLoading.value = true;
+  quizDialogVisible.value = true;
+  try {
+    const { items, moduleTitles } = await fetchOnboardingQuizQuestions(
+      userDetail.country,
+      userDetail.language
+    );
+    quizQuestions.value = items;
+    quizModuleTitles.value = moduleTitles || {};
+  } catch (e) {
+    console.error("Failed to fetch quiz questions", e);
+  } finally {
+    quizLoading.value = false;
+  }
+};
+
+const handleQuizPassed = () => {
+  // quizDialogVisible.value = false;
+  // quizResetKey.value += 1;
+};
+
+const handleTutorialDialogClosed = () => {
+  isDialogClosing.value = false;
+  dialogAnimationStyle.value = {};
 };
 
 const updateDialogCloseAnimationStyle = () => {
@@ -135,11 +192,6 @@ const handleTutorialDialogBeforeClose = (done) => {
   window.setTimeout(() => {
     done();
   }, TUTORIAL_CLOSE_ANIMATION_MS);
-};
-
-const handleTutorialDialogClosed = () => {
-  isDialogClosing.value = false;
-  dialogAnimationStyle.value = {};
 };
 
 onMounted(async () => {
@@ -207,7 +259,7 @@ transform:
 .side-action-group {
   position: fixed;
   z-index: 5;
-  right: -8.8em;
+  right: -14.8em;
   top: 45%;
   transform: rotate(90deg);
   display: flex;
@@ -255,5 +307,13 @@ transform:
 
 .View-tutorial-btn {
   background-color: rgba(245, 195, 68, 1);
+}
+
+.View-quiz-btn {
+  background-color: rgba(100, 180, 246, 1);
+  width: 11em;
+  .side-action-image-icon {
+    transform: rotate(-90deg);
+  }
 }
 </style>

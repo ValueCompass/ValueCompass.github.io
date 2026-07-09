@@ -111,16 +111,33 @@
             @click="handleCheckAnswer"
           >{{ t('onboarding.quizBtnCheckAnswer') }}</el-button>
 
-          <!-- Next Quiz / Complete / Completed 按钮（check 后显示） -->
+          <!-- Next Quiz 按钮（check 后，非最后一题） -->
           <el-button
-            v-else
+            v-else-if="hasChecked && !isQuizComplete && !isLastQuestion"
             class="check-button"
-            :class="{ 'is-complete': isQuizComplete }"
-            :disabled="isQuizComplete || isSubmitting"
+            :disabled="isSubmitting"
             :loading="isSubmitting"
             type="primary"
             @click="handleMoveToNext"
-          >{{ isQuizComplete ? t('onboarding.quizBtnCompleted') : (isLastQuestion ? t('onboarding.quizBtnComplete') : t('onboarding.quizBtnNextQuiz')) }}</el-button>
+          >{{ t('onboarding.quizBtnNextQuiz') }}</el-button>
+
+          <!-- Complete 按钮（check 后，最后一题，所有题答完） -->
+          <el-button
+            v-else-if="hasChecked && !isQuizComplete && isLastQuestion"
+            class="check-button"
+            :disabled="isSubmitting || !allQuizAnswered"
+            :loading="isSubmitting"
+            type="primary"
+            @click="handleMoveToNext"
+          >{{ t('onboarding.quizBtnComplete') }}</el-button>
+
+          <!-- Completed 按钮（已提交通过） -->
+          <el-button
+            v-else-if="isQuizComplete"
+            class="check-button is-complete"
+            :disabled="true"
+            type="primary"
+          >{{ t('onboarding.quizBtnCompleted') }}</el-button>
         </div>
      </div>
   </div>
@@ -182,6 +199,9 @@ const attemptCounts = ref({});          // 每题已尝试次数
 const lastCheckedAnswerByQuestion = ref({});
 const questionRecords = ref({});
 const questionStatusMap = ref({});
+
+// 按 qid 保存每题的 feedback / retryState / isLocked，切换时存取。
+const questionFeedbackMap = ref({});
 
 // "wrong_retry" = 首次答错待 Try Again；null = 非 Try Again 状态。
 const retryState = ref(null);
@@ -315,6 +335,30 @@ const syncSelectedAnswer = () => {
   }
 };
 
+// ---- 每题状态保存 / 恢复 ----
+
+const saveCurrentQuestionState = () => {
+  const qid = currentQuestion.value.qid;
+  questionFeedbackMap.value[qid] = {
+    answerFeedback: answerFeedback.value ? { ...answerFeedback.value } : null,
+    retryState: retryState.value,
+    isLocked: isLocked.value,
+  };
+};
+
+const restoreQuestionState = (qid) => {
+  const saved = questionFeedbackMap.value[qid];
+  if (saved) {
+    answerFeedback.value = saved.answerFeedback;
+    retryState.value = saved.retryState;
+    isLocked.value = saved.isLocked;
+  } else {
+    answerFeedback.value = null;
+    retryState.value = null;
+    isLocked.value = false;
+  }
+};
+
 // ---- 反馈面板 ----
 
 const showCorrectFeedback = () => {
@@ -370,32 +414,40 @@ const handleAnswerChange = () => {
 // ---- 按钮操作 ----
 
 const submitQuiz = () => {
-  const records = props.questions
-    .map((question) => questionRecords.value[question.qid])
-    .filter(Boolean);
-
   isSubmitting.value = true;
 
-  // 按 module 分组统计。
-  const moduleStats = records.reduce((stats, record) => {
-    const moduleKey = record.module;
-    if (!stats[moduleKey]) stats[moduleKey] = { total: 0, wrong: 0 };
-    stats[moduleKey].total += 1;
-    if (record.result === "wrong") stats[moduleKey].wrong += 1;
-    return stats;
-  }, {});
+  // 按 module 分组，包含所有题目（未作答的也统计）。
+  const groupedByModule = {};
+  props.questions.forEach((question) => {
+    const mod = question.module;
+    if (!groupedByModule[mod]) groupedByModule[mod] = [];
+    groupedByModule[mod].push(question);
+  });
 
+  // 构建 quiz_answers：未作答的传 "null"。
   const quizAnswersPayload = {};
-  const moduleOrder = [...new Set(records.map((r) => r.module))].sort();
+  const moduleOrder = [...new Set(props.questions.map((q) => q.module))].sort();
   moduleOrder.forEach((moduleKey) => {
-    const moduleRecords = records.filter((r) => r.module === moduleKey);
-    quizAnswersPayload[`module_${moduleKey}`] = moduleRecords.map((record) => {
-      return record.attempts.map((a) => (Array.isArray(a) ? a.join("") : a)).join(",");
+    const moduleQuestions = groupedByModule[moduleKey];
+    quizAnswersPayload[`module_${moduleKey}`] = moduleQuestions.map((question) => {
+      const record = questionRecords.value[question.qid];
+      if (record) {
+        return record.attempts.map((a) => (Array.isArray(a) ? a.join("") : a)).join(",");
+      }
+      return "null";
     });
   });
 
-  const correctRatio = Object.entries(moduleStats).map(([, stat]) => {
-    return stat.total > 0 ? (stat.total - stat.wrong) / stat.total : 0;
+  // 正确率：分母为所有题目数，未作答视为错误。
+  const correctRatio = moduleOrder.map((moduleKey) => {
+    const moduleQuestions = groupedByModule[moduleKey];
+    const total = moduleQuestions.length;
+    if (total === 0) return 0;
+    const wrongCount = moduleQuestions.filter((q) => {
+      const record = questionRecords.value[q.qid];
+      return !record || record.result === "wrong";
+    }).length;
+    return (total - wrongCount) / total;
   });
 
   passedCalibrationQuiz({
@@ -453,10 +505,9 @@ const moveToNextQuestion = () => {
     return;
   }
 
-  answerFeedback.value = null;
-  retryState.value = null;
-  isLocked.value = false;
+  saveCurrentQuestionState();
   currentQuestionIndex.value += 1;
+  restoreQuestionState(currentQuestion.value.qid);
 };
 
 const handleTryAgain = () => {
@@ -543,6 +594,7 @@ watch(
     lastCheckedAnswerByQuestion.value = {};
     questionRecords.value = {};
     questionStatusMap.value = {};
+    questionFeedbackMap.value = {};
     retryState.value = null;
     isLocked.value = false;
     quizAnswers.value = props.questions.reduce((answers, question) => {
@@ -564,6 +616,21 @@ watch(
 
 const defaultHint =
   "Review the guideline and compare the answer with the criteria before trying again.";
+
+defineExpose({
+  currentQuestionIndex,
+  questionStatusMap,
+  attemptsRemaining,
+  attemptCounts,
+  isQuizComplete,
+  jumpToQuestion: (index) => {
+    if (index < 0 || index >= props.questions.length) return;
+    saveCurrentQuestionState();
+    currentQuestionIndex.value = index;
+    syncSelectedAnswer();
+    restoreQuestionState(currentQuestion.value.qid);
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -829,4 +896,12 @@ const defaultHint =
     }
   }
 }
+</style>
+
+<!-- 全局样式：强制 ElMessageBox 在 quiz 弹窗之上 -->
+<style>
+.el-overlay.is-message-box {
+  z-index: 10000 !important;
+}
+
 </style>
