@@ -378,7 +378,9 @@ const showIncorrectFeedback = (isFinalAttempt = false) => {
     type: "incorrect",
     result: isFinalAttempt ? "fail" : "retry",
     title: "Review The Hint",
-    message: currentQuestion.value.hint_native || defaultHint,
+    message: isFinalAttempt
+      ? (currentQuestion.value.explanation_native || currentQuestion.value.hint_native || defaultHint)
+      : (currentQuestion.value.hint_native || defaultHint),
     note: isFinalAttempt
       ? isLastQuestion.value
         ? "Click Complete to continue."

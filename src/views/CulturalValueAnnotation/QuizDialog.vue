@@ -46,7 +46,7 @@
                   <el-icon v-else-if="questionStatus[q.qid] === 'fail'" class="q-fail-icon"><Warning /></el-icon>
                   <span v-else class="q-pending-dot"></span>
                 </span>
-                <span class="quiz-q-label">Q{{ globalIndex(q) + 1 }}</span>
+                <span class="quiz-q-label">QUIZ{{ globalIndex(q) + 1 }}</span>
               </li>
             </ul>
           </div>
