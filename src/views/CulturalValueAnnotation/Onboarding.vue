@@ -74,6 +74,7 @@
           </div>
 
           <div
+            v-if="isNeedPassQuizCheck"
             role="button"
             tabindex="0"
             class="flow-step-item quiz-step"
@@ -149,7 +150,7 @@
                 <el-icon v-else><Document /></el-icon>
               </div>
               <div class="step-group-content">
-                <h4 class="step-title-text">3.Fill Survey</h4>
+                <h4 class="step-title-text">{{ isNeedPassQuizCheck ? '3.Fill Survey' : '2.Fill Survey' }}</h4>
                 
               </div>
             </div>
@@ -190,6 +191,7 @@
               :registered-user-name="registeredUserName"
               :registered-user-country="registeredUserCountry"
               :registered-user-language="registeredUserLanguage"
+              :surveys-completed="hasCompletedOnboardingSurveys()"
               @survey-next="handleSurveyNext"
             />
           </div>
@@ -235,6 +237,11 @@ const TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX =
 // 主流程状态：1=视频引导，2=测验，3=问卷。
 const activeTrainingVideoStepIndex = ref(1);
 const activeMainStepIndex = ref(1);
+
+// 是否需要通过 quiz（中国用户需要）。
+const isNeedPassQuizCheck = computed(() => {
+  return registeredUserCountry.value?.toLowerCase() === "china";
+});
 
 // Quiz 完成后才允许进入问卷步骤。
 const quizCompleted = ref(false);
@@ -303,6 +310,7 @@ const quizModules = computed(() => {
 
 // 判断某个 module 是否已经开始（有 current 或已完成的题目）
 const isQuizModuleActive = (moduleItems) => {
+  if( !trainingVideoStepCompleted.value) return false;
   return moduleItems.some(
     (q) =>
       ["pass", "fail"].includes(quizCheckState.value.questionStatusMap[q.qid]) ||
@@ -317,16 +325,16 @@ const completedSurveyCount = computed(() => {
 
 // 整体进度总数 = 视频数 + Quiz 题数 + 问卷（整体算 1 项）。
 const overallTotalCount = computed(() => {
-  return (
-    trainingVideoSteps.value.length + quizQuestions.value.length + 1
-  );
+  const quizCount = isNeedPassQuizCheck.value ? quizQuestions.value.length : 0;
+  return trainingVideoSteps.value.length + quizCount + 1;
 });
 
 // 整体进度完成数，用于顶部进度文案。
 const overallCompletedCount = computed(() => {
+  const quizCount = isNeedPassQuizCheck.value ? quizCheckState.value.answeredCount : 0;
   return (
     completedTrainingVideoStepCount.value +
-    quizCheckState.value.answeredCount +
+    quizCount +
     completedSurveyCount.value
   );
 });
@@ -349,9 +357,10 @@ const trainingVideoStepCompleted = computed(() => {
   );
 });
 
-// 问卷入口条件：Quiz 完成，或本地已经记录问卷完成。
+// 问卷入口条件：视频完成 + (Quiz 完成或已完成问卷)，或本地已经记录问卷完成。
 const canEnterSurvey = computed(() => {
-  return quizCompleted.value || hasCompletedOnboardingSurveys();
+  if (hasCompletedOnboardingSurveys()) return true;
+  return trainingVideoStepCompleted.value && quizCompleted.value;
 });
 
 // 统计训练视频完成数量，用于左侧第一步进度和整体进度。
@@ -437,6 +446,7 @@ const canAccessTrainingVideoStep = (stepId) => {
 const handleMainStepChange = (stepId) => {
   // 三个阶段按顺序解锁，防止跳步进入后续流程。
   if (stepId === 1) {
+    // 视频步骤始终是 step 1。
     activeMainStepIndex.value = 1;
     isTrainingVideoGroupCollapsed.value = false;
     return;
@@ -451,11 +461,12 @@ const handleMainStepChange = (stepId) => {
     return;
   }
 
-  if (!canEnterSurvey.value) {
+  if (stepId === 3) {
+    // survey 对所有用户都是 activeMainStepIndex 3。
+    if (!canEnterSurvey.value) return;
+    activeMainStepIndex.value = 3;
     return;
   }
-
-  activeMainStepIndex.value = 3;
 };
 
 // 左侧视频子步骤点击：先切回训练视频主步骤，再按解锁规则切换视频。
@@ -501,8 +512,13 @@ const handleToggleTrainingVideoGroup = () => {
   isTrainingVideoGroupCollapsed.value = !isTrainingVideoGroupCollapsed.value;
 };
 
-// TrainingVideo 组件完成最后一个视频后，通知父页面切到 Quiz 步骤。
+// TrainingVideo 组件完成最后一个视频后，通知父页面切到下一步。
 const moveFromTrainingVideoToQuizStep = () => {
+  // 非中国用户跳过 quiz，直接进入问卷。
+  if (!isNeedPassQuizCheck.value) {
+    activeMainStepIndex.value = 3;
+    return;
+  }
   activeMainStepIndex.value = 2;
 };
 

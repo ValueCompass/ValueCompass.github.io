@@ -120,12 +120,21 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  surveysCompleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 defineEmits(["survey-next"]);
 
 // 三份问卷的展示数据和完成勾选状态。
-const surveys = ref(createOnboardingSurveys());
+const surveys = ref(
+  createOnboardingSurveys().map((item) => ({
+    ...item,
+    completed: props.surveysCompleted,
+  })),
+);
 
 // 问卷语言链接默认展开，方便用户直接选择对应版本。
 const surveyLinksExpanded = ref(true);

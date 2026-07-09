@@ -302,12 +302,14 @@ const handleAnnotatorLogin = () => {
     // 持久化用户详情到 localStorage，供 Onboarding 页面读取。
     // 首次注册：服务端字段必定都是 false，直接保存即可。
     // 回访登录：使用服务端返回的实际值。
+    // 非中国用户不需要 quiz，自动标记 passed_calibration_quiz 为 true。
+    const isNeedPassQuizCheck = res.data.country?.toLowerCase() === "china";
     saveCulturalValueAnnotationUserDetail({
       username: res.data.username,
       country: res.data.country,
       language: res.data.language,
       studied_annotation_guidance: isFirstTime ? false : res.data.studied_annotation_guidance === true,
-      passed_calibration_quiz: isFirstTime ? false : res.data.passed_calibration_quiz === true,
+      passed_calibration_quiz: isFirstTime ? !isNeedPassQuizCheck : (res.data.passed_calibration_quiz === true || !isNeedPassQuizCheck),
     });
 
     // 登录成功后立即同步 i18n 语言设置，确保后续页面使用正确的语言。

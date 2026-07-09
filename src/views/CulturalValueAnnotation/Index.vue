@@ -40,7 +40,7 @@
       @quiz-passed="handleQuizPassed"
     />
 
-    <div v-if="!isOnboardingPage && !isAdminPage" class="side-action-group">
+    <div v-if="!isOnboardingPage && !isAdminPage" class="side-action-group" :style="{'right': isNeedPassQuizCheck ? '-14.8em' : '-9em'}">
       <div
         ref="tutorialButtonRef"
         class="side-action-btn View-tutorial-btn"
@@ -62,6 +62,7 @@
       <div
         class="side-action-btn View-quiz-btn"
         @click="openQuizDialog"
+        v-if="isNeedPassQuizCheck"
       ><img
                   class="side-action-image-icon"
                   src="@/assets/images/survery-icon.png"
@@ -193,6 +194,11 @@ const handleTutorialDialogBeforeClose = (done) => {
     done();
   }, TUTORIAL_CLOSE_ANIMATION_MS);
 };
+
+// 是否需要通过 quiz（中国用户需要）。
+const isNeedPassQuizCheck = computed(() => {
+  return userDetail.country?.toLowerCase() === "china";
+});
 
 onMounted(async () => {
   await nextTick();

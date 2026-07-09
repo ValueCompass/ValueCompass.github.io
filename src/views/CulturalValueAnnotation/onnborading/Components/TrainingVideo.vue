@@ -69,7 +69,7 @@
           >
             {{
               isLastVideoStep
-                ? "Continue to Quiz"
+                ? "Continue"
                 : `Complete ${currentVideoStepData.label}`
             }}
             <svgIcon
