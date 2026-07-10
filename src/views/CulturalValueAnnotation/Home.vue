@@ -843,6 +843,7 @@
             </div>
             <AnnotationComponent
               :annotationDataOrigin="annotationDataOrigin"
+              :use_new_logic="use_new_logic"
               ref="annotationComponentRef"
             ></AnnotationComponent>
           </div>
@@ -880,6 +881,7 @@
           </div>
           <AnnotationComponent
             :annotationDataOrigin="annotationDataOrigin_person"
+            :use_new_logic="use_new_logic"
             ref="annotationComponentRef2"
           ></AnnotationComponent>
         </div>
@@ -1017,6 +1019,7 @@ const distinctivenessScoreOptions = computed(() => [
   },
 ]);
 
+const use_new_logic = ref(true);
 const submit_type = ref("create new"); // "create new" or "revise"
 const duration_time = ref(0);
 const candidateQuestionsReceivedAt = ref(null);
@@ -1892,6 +1895,7 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         duration_time: Math.floor(duration_time.value / 1000),
         submit_type: submit_type.value,
         timestamp: new Date().toISOString(),
+        use_new_logic: use_new_logic.value,
       };
       if (similarityData) {
         sendData.personal_answer_similar_to_cultural_answer = similarityData;
@@ -2036,6 +2040,8 @@ onMounted(async () => {
     hasClickedGetAnswerBtn.value = true;
     hasClickedSaveAndGetQuestionListBtn.value = true;
     console.log("要编辑的question信息", question);
+
+    use_new_logic.value = question.use_new_logic;
     // 填充表单数据
     questionValue.value = question.question;
     rawQuestionValue.value = question.raw_question;
@@ -2085,15 +2091,21 @@ onMounted(async () => {
     answer_model.value = question.answer_model;
     original_answer_country.value = question.original_answer_country || "";
     annotationDataOrigin = {
-      originalResponse: question.response,
+      originalResponse: question.original_response,
       response: question.response,
       highlight_cues: question.highlight_cues,
       key_concepts: question.key_concepts,
       value_concepts_evidence: question.value_concepts_evidence || [],
       value_concepts_justification: question.value_concepts_justification || [],
+      initialCuesActions: question.cues_actions || null,
+      initialConceptsActions: question.concepts_actions || null,
+      initialMismatchExplanations: question.textAndConceptMatch || null, 
+      
+      original_highlight_cues: question.original_highlight_cues || [],
+      original_key_concepts: question.original_key_concepts || [],
     };
     annotationDataOrigin_person = {
-      originalResponse: question.response_person,
+      originalResponse: question.original_response_person,
       response: question.response_person,
       highlight_cues: question.highlight_cues_person,
       key_concepts: question.key_concepts_person,
@@ -2101,6 +2113,12 @@ onMounted(async () => {
         question.value_concepts_evidence_person || [],
       value_concepts_justification:
         question.value_concepts_justification_person || [],
+      initialCuesActions: question.cues_actions_person || null,
+      initialConceptsActions: question.concepts_actions_person || null,
+      initialMismatchExplanations: question.textAndConceptMatch_person || null, 
+      
+      original_highlight_cues: question.original_highlight_cues_person || [],
+      original_key_concepts: question.original_key_concepts_person || [],
     };
 
     original_response.value = question.response;

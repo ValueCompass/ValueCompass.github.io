@@ -10,6 +10,12 @@
       <div>
         mismatchExplanations: {{ mismatchExplanations }}
       </div>
+      <div>
+        originalHighlightCues: {{ originalHighlightCues }}
+      </div>
+      <div>
+        originalKeyConcepts: {{ originalKeyConcepts }}
+      </div>
       <div
         class="response-text"
         style="white-space: pre-line"
@@ -222,12 +228,22 @@ const props = defineProps({
   annotationDataOrigin: {
     type: Object,
     default: () => ({
+      originalResponse: "",
       response: "",
       highlight_cues: [],
       key_concepts: [],
       value_concepts_evidence: [],
       value_concepts_justification: [],
+      initialCuesActions: null,
+      initialConceptsActions: null,
+      initialMismatchExplanations: null,  
+      original_highlight_cues: [],
+      original_key_concepts: [],
     }),
+  },
+  use_new_logic: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -265,20 +281,100 @@ const shouldClearCueConceptRelation = (cueStatus, conceptStatus) => {
 watch(
   () => props.annotationDataOrigin,
   (newVal) => {
-    annotationData.originalResponse = newVal.response;
-    annotationData.response = newVal.response;
-    // 创建副本而不是直接引用，确保两个组件实例的数据独立
-    annotationData.highlight_cues = [...newVal.highlight_cues];
-    annotationData.key_concepts = [...newVal.key_concepts];
-    annotationData.value_concepts_evidence =
-      cloneCueConceptsCorrespondence(newVal.value_concepts_evidence);
-    annotationData.value_concepts_justification = cloneCueConceptsEvidence(
-      newVal.value_concepts_justification || []
-    );
-    // 验证highlight_cues是否都存在于response中
-    validateHighlightCues();
+    resetDataFunction(newVal);
   }
 );
+
+// 初始进入页面 重置数据
+const resetDataFunction = (annotationNewVal) => {
+  annotationData.originalResponse = annotationNewVal.originalResponse;
+  annotationData.response = annotationNewVal.response;
+  // 创建副本而不是直接引用，确保两个组件实例的数据独立
+  annotationData.highlight_cues = [...annotationNewVal.highlight_cues];
+  annotationData.key_concepts = [...annotationNewVal.key_concepts];
+  annotationData.value_concepts_evidence =
+    cloneCueConceptsCorrespondence(annotationNewVal.value_concepts_evidence);
+  annotationData.value_concepts_justification = cloneCueConceptsEvidence(
+    annotationNewVal.value_concepts_justification || []
+  );
+  if( !props.use_new_logic){
+    // 验证highlight_cues是否都存在于response中
+    validateHighlightCues();
+  }else{
+    console.log("use_new_logic is true",annotationNewVal)
+    // 新数据，不用处理delete状态，根据originalResponse，highlightCuesStatus。keyConceptsStatus
+    
+
+    if(annotationNewVal.originalResponse) {
+      originalHighlightCues.value = Array.isArray(annotationNewVal.original_highlight_cues) ? [...annotationNewVal.original_highlight_cues]
+      : Array(annotationNewVal.highlight_cues.length).fill(null);;
+      originalKeyConcepts.value = Array.isArray(annotationNewVal.original_key_concepts) ? [...annotationNewVal.original_key_concepts]
+      : Array(annotationNewVal.key_concepts.length).fill(null);;
+      annotationData.response = rebuildResponseFromOriginal(
+          annotationNewVal.originalResponse,
+          annotationNewVal.original_highlight_cues,
+          annotationNewVal.highlight_cues
+      );
+    }else{
+      annotationData.response = annotationNewVal.response;
+      originalHighlightCues.value = annotationNewVal.highlight_cues;
+      originalKeyConcepts.value = annotationNewVal.key_concepts;
+    }
+    
+
+    highlightCuesStatus.value = Array.isArray(annotationNewVal.initialCuesActions) ? [...annotationNewVal.initialCuesActions]
+    : Array(annotationNewVal.highlight_cues.length).fill(null);
+    keyConceptsStatus.value = Array.isArray(annotationNewVal.initialConceptsActions) ? [...annotationNewVal.initialConceptsActions]
+    : Array(annotationNewVal.key_concepts.length).fill(null);
+    mismatchExplanations.value = Array.isArray(annotationNewVal.initialMismatchExplanations) ? [...annotationNewVal.initialMismatchExplanations]
+    : Array(annotationNewVal.highlight_cues.length).fill(null);
+    console.log("#####", annotationNewVal, annotationNewVal.initialCuesActions, highlightCuesStatus.value)
+  }
+} 
+
+
+
+const rebuildResponseFromOriginal = (originalResponse, originalCues, currentCues) => {
+  if (!originalResponse) return "";
+  if (!Array.isArray(originalCues) || originalCues.length === 0) return originalResponse;
+
+  let response = originalResponse;
+
+  // 逐项替换：将 originalCues[i] 替换为 currentCues[i]
+  for (let i = 0; i < originalCues.length; i++) {
+    const oldCue = originalCues[i];
+    const newCue = currentCues[i];
+
+    if (!oldCue) continue;
+
+    if (!newCue) {
+      // delete：从 response 中移除原文本
+      response = response.replace(
+        new RegExp(oldCue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+        ""
+      );
+    } else if (oldCue !== newCue) {
+      // edit：将旧文本替换为新文本
+      response = response.replace(
+        new RegExp(oldCue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+        newCue
+      );
+    }
+    // keep：不做处理
+  }
+
+  // 如果 highlight_cues 比 originalCues 长，多余项拼接到末尾
+  if (currentCues.length > originalCues.length) {
+    for (let i = originalCues.length; i < currentCues.length; i++) {
+      if (currentCues[i]) {
+        response += "\n" + currentCues[i];
+      }
+    }
+  }
+
+  return response;
+};
+
 // 处理response 并标注
 const annotationData = reactive({
   originalResponse: "",
@@ -373,24 +469,8 @@ onMounted(() => {
     annotationData.highlight_cues.length === 0 &&
     props.annotationDataOrigin
   ) {
-    annotationData.originalResponse = props.annotationDataOrigin.response;
-    annotationData.response = props.annotationDataOrigin.response;
-    // 创建副本而不是直接引用，确保两个组件实例的数据独立
-    annotationData.highlight_cues = [
-      ...props.annotationDataOrigin.highlight_cues,
-    ];
-    annotationData.key_concepts = [...props.annotationDataOrigin.key_concepts];
-    annotationData.value_concepts_evidence =
-      cloneCueConceptsCorrespondence(
-        props.annotationDataOrigin.value_concepts_evidence
-      );
-    annotationData.value_concepts_justification = cloneCueConceptsEvidence(
-      props.annotationDataOrigin.value_concepts_justification || []
-    );
+    resetDataFunction(props.annotationDataOrigin);
   }
-
-  // 验证highlight_cues是否都存在于response中
-  validateHighlightCues();
 });
 
 const currentCueIndex = ref(0); //
