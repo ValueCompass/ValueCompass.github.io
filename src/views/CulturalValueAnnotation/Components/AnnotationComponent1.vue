@@ -1,7 +1,7 @@
 <template>
   <div class="answer-content">
     <div class="left">
-      <!-- <div>
+      <div>
         highlightCuesStatus：{{ highlightCuesStatus }}
       </div>
       <div>
@@ -10,22 +10,7 @@
       <div>
         mismatchExplanations: {{ mismatchExplanations }}
       </div>
-      <div>
-        originalHighlightCues: {{ originalHighlightCues }}
-      </div>
-      <div>
-        highlightCues: {{ annotationDataOrigin.highlight_cues }}
-      </div>
-      <div>
-        originalKeyConcepts: {{ originalKeyConcepts }}
-      </div>
-      <div>
-        response: 
-        <div  style="white-space: pre-wrap;"> {{ annotationDataOrigin.response }}</div>
-      </div>
-      <div  style="white-space: pre-wrap;">
-        originalResponse: {{ annotationDataOrigin.originalResponse }}
-      </div> -->
+      <div>annotationDataOrigin:{{ props.annotationDataOrigin }}</div>
       <div
         class="response-text"
         style="white-space: pre-line"
@@ -214,7 +199,6 @@ import { reactive, ref, computed, onMounted } from "vue";
 import { defineProps, watch, defineExpose } from "vue";
 import ShowHighlight from "./ShowHighlight.vue";
 import MismatchDialog from "./MismatchDialog.vue";
-import { buildProcessedAnnotationDataResponse as buildProcessedAnnotationDataResponseUtil } from "@/utils/processedAnnotationResponse";
 
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
@@ -239,7 +223,7 @@ const props = defineProps({
   annotationDataOrigin: {
     type: Object,
     default: () => ({
-      originalResponse: "",
+      originalResponse:"",
       response: "",
       highlight_cues: [],
       key_concepts: [],
@@ -247,14 +231,8 @@ const props = defineProps({
       value_concepts_justification: [],
       initialCuesActions: null,
       initialConceptsActions: null,
-      initialMismatchExplanations: null,  
-      original_highlight_cues: [],
-      original_key_concepts: [],
+      initialMismatchExplanations: null, 
     }),
-  },
-  use_new_logic: {
-    type: Boolean,
-    default: false,
   },
 });
 
@@ -292,100 +270,9 @@ const shouldClearCueConceptRelation = (cueStatus, conceptStatus) => {
 watch(
   () => props.annotationDataOrigin,
   (newVal) => {
-    resetDataFunction(newVal);
+    setAnnotationData(newVal);
   }
 );
-
-// 初始进入页面 重置数据
-const resetDataFunction = (annotationNewVal) => {
-  annotationData.originalResponse = annotationNewVal.originalResponse;
-  annotationData.response = annotationNewVal.response;
-  // 创建副本而不是直接引用，确保两个组件实例的数据独立
-  annotationData.highlight_cues = [...annotationNewVal.highlight_cues];
-  annotationData.key_concepts = [...annotationNewVal.key_concepts];
-  annotationData.value_concepts_evidence =
-    cloneCueConceptsCorrespondence(annotationNewVal.value_concepts_evidence);
-  annotationData.value_concepts_justification = cloneCueConceptsEvidence(
-    annotationNewVal.value_concepts_justification || []
-  );
-  if( !props.use_new_logic){
-    // 验证highlight_cues是否都存在于response中
-    validateHighlightCues();
-  }else{
-    console.log("use_new_logic is true",annotationNewVal)
-    // 新数据，不用处理delete状态，根据originalResponse，highlightCuesStatus。keyConceptsStatus
-    
-
-    if(annotationNewVal.originalResponse) {
-      originalHighlightCues.value = Array.isArray(annotationNewVal.original_highlight_cues) ? [...annotationNewVal.original_highlight_cues]
-      : Array(annotationNewVal.highlight_cues.length).fill(null);;
-      originalKeyConcepts.value = Array.isArray(annotationNewVal.original_key_concepts) ? [...annotationNewVal.original_key_concepts]
-      : Array(annotationNewVal.key_concepts.length).fill(null);;
-      annotationData.response = rebuildResponseFromOriginal(
-          annotationNewVal.originalResponse,
-          annotationNewVal.original_highlight_cues,
-          annotationNewVal.highlight_cues
-      );
-    }else{
-      annotationData.response = annotationNewVal.response;
-      originalHighlightCues.value = annotationNewVal.highlight_cues;
-      originalKeyConcepts.value = annotationNewVal.key_concepts;
-    }
-    
-
-    highlightCuesStatus.value = Array.isArray(annotationNewVal.initialCuesActions) ? [...annotationNewVal.initialCuesActions]
-    : Array(annotationNewVal.highlight_cues.length).fill(null);
-    keyConceptsStatus.value = Array.isArray(annotationNewVal.initialConceptsActions) ? [...annotationNewVal.initialConceptsActions]
-    : Array(annotationNewVal.key_concepts.length).fill(null);
-    mismatchExplanations.value = Array.isArray(annotationNewVal.initialMismatchExplanations) ? [...annotationNewVal.initialMismatchExplanations]
-    : Array(annotationNewVal.highlight_cues.length).fill(null);
-    console.log("#####", annotationNewVal, annotationNewVal.initialCuesActions, highlightCuesStatus.value)
-  }
-} 
-
-
-
-const rebuildResponseFromOriginal = (originalResponse, originalCues, currentCues) => {
-  if (!originalResponse) return "";
-  if (!Array.isArray(originalCues) || originalCues.length === 0) return originalResponse;
-
-  let response = originalResponse;
-
-  // 逐项替换：将 originalCues[i] 替换为 currentCues[i]
-  for (let i = 0; i < originalCues.length; i++) {
-    const oldCue = originalCues[i];
-    const newCue = currentCues[i];
-
-    if (!oldCue) continue;
-
-    if (!newCue) {
-      // delete：从 response 中移除原文本
-      response = response.replace(
-        new RegExp(oldCue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-        ""
-      );
-    } else if (oldCue !== newCue) {
-      // edit：将旧文本替换为新文本
-      response = response.replace(
-        new RegExp(oldCue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-        newCue
-      );
-    }
-    // keep：不做处理
-  }
-
-  // 如果 highlight_cues 比 originalCues 长，多余项拼接到末尾
-  if (currentCues.length > originalCues.length) {
-    for (let i = originalCues.length; i < currentCues.length; i++) {
-      if (currentCues[i]) {
-        response += "\n" + currentCues[i];
-      }
-    }
-  }
-
-  return response;
-};
-
 // 处理response 并标注
 const annotationData = reactive({
   originalResponse: "",
@@ -471,19 +358,57 @@ const validateHighlightCues = () => {
   mismatchExplanations.value = Array(annotationData.highlight_cues.length).fill(
     null
   );
+  updateCurrentCuePosition();
 };
 
 onMounted(() => {
   // 如果annotationData还没有数据，从props.annotationDataOrigin初始化
-  if (
-    annotationData.highlight_cues.length === 0 &&
-    props.annotationDataOrigin
-  ) {
-    resetDataFunction(props.annotationDataOrigin);
-  }
+  setAnnotationData(props.annotationDataOrigin);
 });
 
+const setAnnotationData = (annotationNewVal) => {
+ if (
+    annotationNewVal
+  ) {
+    annotationData.originalResponse = annotationNewVal.originalResponse;
+    annotationData.response = annotationNewVal.response;
+    // 创建副本而不是直接引用，确保两个组件实例的数据独立
+    annotationData.highlight_cues = [
+      ...annotationNewVal.highlight_cues,
+    ];
+    annotationData.key_concepts = [...annotationNewVal.key_concepts];
+    annotationData.value_concepts_evidence =
+      cloneCueConceptsCorrespondence(
+        annotationNewVal.value_concepts_evidence
+      );
+    annotationData.value_concepts_justification = cloneCueConceptsEvidence(
+      annotationNewVal.value_concepts_justification || []
+    );
+    
+
+    originalHighlightCues.value = [...annotationNewVal.highlight_cues];
+    originalKeyConcepts.value = [...annotationNewVal.key_concepts];
+
+
+    highlightCuesStatus.value = Array.isArray(annotationNewVal.initialCuesActions) ? [...annotationNewVal.initialCuesActions]
+    : Array(annotationNewVal.highlight_cues.length).fill(null);
+    keyConceptsStatus.value = Array.isArray(annotationNewVal.initialConceptsActions) ? [...annotationNewVal.initialConceptsActions]
+    : Array(annotationNewVal.key_concepts.length).fill(null);
+    mismatchExplanations.value = Array.isArray(annotationNewVal.initialMismatchplanations) ? [...annotationNewVal.initialMismatchplanations]
+    : Array(annotationNewVal.highlight_cues.length).fill(null);
+  }
+
+  // 验证highlight_cues是否都存在于response中
+  // validateHighlightCues();
+}
+
 const currentCueIndex = ref(0); //
+
+// 存储当前选中关键词的位置信息
+const currentCuePosition = ref({
+  start: 0,
+  end: 0,
+});
 
 const isCueEditMode = ref(false);
 const isConceptEditMode = ref(false);
@@ -534,14 +459,95 @@ const getKeepResultStatus = (type) => {
 const editCue = ref("");
 const editConcept = ref("");
 
+// 统一计算可用的cue位置，保证渲染和编辑替换使用同一套坐标
+const getFilteredCuePositions = () => {
+  const originalText = annotationData.response;
+  const cuesWithIndex = annotationData.highlight_cues.map((cue, index) => ({
+    cue,
+    index,
+  }));
+
+  const positions = [];
+  const lastPositions = new Map();
+
+  cuesWithIndex.forEach(({ cue, index }) => {
+    let start = lastPositions.get(cue) || 0;
+    const foundIndex = originalText.indexOf(cue, start);
+
+    if (foundIndex !== -1) {
+      positions.push({
+        start: foundIndex,
+        end: foundIndex + cue.length,
+        cue,
+        index,
+      });
+
+      lastPositions.set(cue, foundIndex + 1);
+    }
+  });
+
+  positions.sort((a, b) => {
+    if (b.cue.length !== a.cue.length) {
+      return b.cue.length - a.cue.length;
+    }
+    return a.start - b.start;
+  });
+
+  const filteredPositions = [];
+  const usedRanges = [];
+  positions.forEach((pos) => {
+    const isOverlapping = usedRanges.some((range) => {
+      return pos.start < range.end && pos.end > range.start;
+    });
+
+    if (!isOverlapping) {
+      filteredPositions.push(pos);
+      usedRanges.push({ start: pos.start, end: pos.end });
+    }
+  });
+
+  filteredPositions.sort((a, b) => a.start - b.start);
+  return filteredPositions;
+};
+
 const processedAnnotationDataResponse = computed(() => {
-  return buildProcessedAnnotationDataResponseUtil(
-    annotationData.response,
-    annotationData.highlight_cues,
-    highlightCuesStatus.value,
-    keyConceptsStatus.value,
-    currentCueIndex.value
-  );
+  const originalText = annotationData.response;
+  const filteredPositions = getFilteredCuePositions();
+
+  // 构建最终的HTML文本
+  let result = "";
+  let lastEnd = 0;
+
+  filteredPositions.forEach(({ start, end, cue, index }) => {
+    // 添加未处理的文本部分
+    result += originalText.slice(lastEnd, start);
+
+    // 添加带高亮的cue
+    let className = "highlight-keyword";
+    if (currentCueIndex.value === index) className += " current";
+    if (highlightCuesStatus.value[index] === "edit") className += " edit";
+    else if (highlightCuesStatus.value[index] === "add") className += " add";
+    else if (highlightCuesStatus.value[index] === "keep") className += " keep";
+    else if (highlightCuesStatus.value[index] === "delete")
+      className += " delete";
+
+    // 如果cue和concept的status都有值，添加processed类名
+    if (
+      highlightCuesStatus.value[index] !== null &&
+      keyConceptsStatus.value[index] !== null
+    ) {
+      className += " processed";
+    }
+
+    result += `<span class="${className}" data-cue="${cue}" data-index="${index}">${cue}</span>`;
+
+    lastEnd = end;
+  });
+
+  // 添加最后一部分未处理的文本
+  result += originalText.slice(lastEnd);
+
+  return result;
 });
 
 const handleKeywordClick = (event) => {
@@ -551,6 +557,7 @@ const handleKeywordClick = (event) => {
     // const concepts = annotationData.key_concepts[index] || "No concepts found";
     // alert(`Related key concepts: ${concepts}`);
     currentCueIndex.value = index;
+    updateCurrentCuePosition();
   }
 };
 
@@ -697,13 +704,39 @@ const editConceptValue = computed({
 const previousCue = () => {
   if (currentCueIndex.value > 0) {
     currentCueIndex.value--;
+    updateCurrentCuePosition();
   }
 };
 
 const nextCue = () => {
   if (currentCueIndex.value < annotationData.highlight_cues.length - 1) {
     currentCueIndex.value++;
+    updateCurrentCuePosition();
   }
+};
+
+// 根据currentCueIndex更新currentCuePosition
+const updateCurrentCuePosition = () => {
+  if (
+    currentCueIndex.value >= 0 &&
+    currentCueIndex.value < annotationData.highlight_cues.length
+  ) {
+    const currentPosition = getFilteredCuePositions().find(
+      (position) => position.index === currentCueIndex.value
+    );
+    if (currentPosition) {
+      currentCuePosition.value = {
+        start: currentPosition.start,
+        end: currentPosition.end,
+      };
+      return;
+    }
+  }
+
+  currentCuePosition.value = {
+    start: 0,
+    end: 0,
+  };
 };
 
 const handleKeepClick = (type) => {
@@ -854,6 +887,13 @@ const handleDeleteClick = (type) => {
       );
     }
 
+    // 8. 如果还有cue，更新currentCuePosition
+    if (annotationData.highlight_cues.length > 0) {
+      updateCurrentCuePosition();
+    } else {
+      currentCuePosition.value = { start: 0, end: 0 };
+    }
+
     console.log("Deleted newly added item completely");
   } else {
     // 对于不是新加的项，同时设置两个状态为delete
@@ -870,6 +910,8 @@ const handleEditClick = (type) => {
   console.log(`${type}: Edit`, "currentCueIndex:", currentCueIndex.value);
   // 进入编辑模式
   if (type === "cue") {
+    // 每次进入编辑前先刷新位置，避免复用上次编辑后的旧坐标
+    updateCurrentCuePosition();
     isCueEditMode.value = true;
     // 保存当前值到编辑临时变量
     editCue.value = currentCue.value;
@@ -911,6 +953,7 @@ const handleCancelEdit = (type) => {
     annotationData.highlight_cues.length > 0
   ) {
     currentCueIndex.value = 0;
+    updateCurrentCuePosition();
   }
 };
 
@@ -926,10 +969,13 @@ const handleSubmitEdit = (type) => {
       return;
     }
 
-    // 在 response 中找到旧 cue 文本并替换为新文本
-    const oldCue = annotationData.highlight_cues[currentCueIndex.value];
-    const escapedOldCue = oldCue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    if (!new RegExp(escapedOldCue).test(annotationData.response)) {
+    // 使用记录的位置直接替换当前选中的cue
+    // 提交前再次定位，确保二次编辑时替换的是当前最新文本片段
+    updateCurrentCuePosition();
+    const { start, end } = currentCuePosition.value;
+    console.log("start:", start, "end:", end);
+
+    if (start === end) {
       ElMessage.warning("Failed to locate current text fragment, please retry");
       return;
     }
@@ -938,10 +984,14 @@ const handleSubmitEdit = (type) => {
     annotationData.highlight_cues[currentCueIndex.value] = editCue.value;
 
     // 构建更新后的response文本
-    annotationData.response = annotationData.response.replace(
-      new RegExp(escapedOldCue),
-      editCue.value
-    );
+    const updatedResponse =
+      annotationData.response.slice(0, start) +
+      editCue.value +
+      annotationData.response.slice(end);
+
+    // 更新response文本
+    annotationData.response = updatedResponse;
+    updateCurrentCuePosition();
 
     // 如果当前cue的状态是add，则保持为add，否则设置为edit
     if (highlightCuesStatus.value[currentCueIndex.value] !== "add") {
@@ -1016,6 +1066,7 @@ const handleCancelAddNew = () => {
   // 恢复currentCueIndex为有效索引
   if (annotationData.highlight_cues.length > 0) {
     currentCueIndex.value = 0;
+    updateCurrentCuePosition();
   }
 };
 
@@ -1062,6 +1113,12 @@ const handleSubmitAddNew = () => {
 
   // 更新currentCueIndex为新添加的索引
   currentCueIndex.value = annotationData.highlight_cues.length - 1;
+
+  // 更新currentCuePosition
+  currentCuePosition.value = {
+    start: newStartIndex + 1,
+    end: newEndIndex + 1,
+  };
 
   // 重置添加新的状态
   isAddingNew.value = false;
