@@ -204,6 +204,25 @@ export default {
       noteTitle: '참고: 다음 기준에 따라 어노테이션하세요:',
       note1: '가치와 텍스트가 당신 자신의 개인적 가치관과 행동 관행에 부합하는지.',
       note2: '당신 문화의 주류 가치관이 아니라는 점.'
+    },
+    annotation: {
+      cueLabel: '텍스트(질문에 대한 구체적인 답변 내용, 행동, 해결책 또는 제안 결정):',
+      conceptLabel: '텍스트에 담긴 가치관(이 질문에서 "왜 이렇게 하는지"의 근본 원인):',
+      cueCheckTitle: '1. 어노테이션된 가치관이 문화적 가치관과 일치하는지, 불일치나 누락이 있는지 확인하세요?',
+      cueKeep: '완전히 일치함, 유지',
+      cueEdit: '일부 불일치하거나 누락 있음, 수정',
+      cueDelete: '관련 없거나 완전히 불일치함, 삭제',
+      conceptCheckTitle: '2. 어노테이션된 가치관을 기반으로, 텍스트의 구체적인 관점이나 실행이 가치관과 일치하며, 문화적으로 적절하고 실제 관행에 부합하는지 판단하세요?',
+      conceptKeep: '완전히 일치하며 문화적 현실에 부합함, 유지',
+      conceptEdit: '가치관과 불일치함, 수정',
+      conceptDelete: '관련 없거나 완전히 불일치함, 삭제',
+      conceptEdit2: '가치관은 일치하지만 구체적인 실행이 문화적 현실에 맞지 않음, 수정',
+      missingOmission: '누락됨, 보충 필요',
+      contentComplete: '내용 완전, 누락 없음',
+      checkOmission: '{step}.2 전체 답변을 검토하고, 이 질문에서 중요한 가치관 표현, 구체적인 관점 또는 실행이 누락되지 않았는지 확인해 주세요.',
+      finalConfirm: '{step}.3 마지막으로 확인해 주세요: 어노테이션된 답변이 나에게 더 적합하며, 나의 가치관과 실천에 부합합니다.',
+      checkIncomplete: '{step}.2 완료 여부를 확인해 주세요',
+      checkFinalConfirm: '{step}.3 완료 여부를 확인해 주세요',
     }
   },
   onboarding: {

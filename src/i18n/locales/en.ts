@@ -204,6 +204,25 @@ export default {
       noteTitle: 'Note: Ground your annotation on:',
       note1: 'Whether the values and texts align with your own personal values and behavior practices.',
       note2: 'Not the mainstream values in your culture.'
+    },
+    annotation: {
+      cueLabel: 'Text (specific reply content, behavior, solution, or suggested decision to the question):',
+      conceptLabel: 'Value embodied in the text (the fundamental reason "why this is done under this question"):',
+      cueCheckTitle: '1. Is the annotated value consistent with cultural values? Are there any mismatches or omissions?',
+      cueKeep: 'Completely consistent, keep',
+      cueEdit: 'Partially inconsistent or has omissions, revise',
+      cueDelete: 'Irrelevant or completely inconsistent, delete',
+      conceptCheckTitle: '2. Based on the annotated value, judge whether the specific viewpoints or practices in the text are consistent with the value, and whether they are appropriate and match real practices in the culture?',
+      conceptKeep: 'Completely consistent with cultural reality, keep',
+      conceptEdit: 'Inconsistent with the value, revise',
+      conceptDelete: 'Irrelevant or completely inconsistent, delete',
+      conceptEdit2: 'Value is consistent, but specific practices do not match cultural reality, revise',
+      missingOmission: 'Missing, needs supplement',
+      contentComplete: 'Content complete, no omission',
+      checkOmission: '{step}.2 Please review the entire answer and confirm whether important value expressions, specific viewpoints, or practices under this question have been omitted?',
+      finalConfirm: '{step}.3 Finally, please confirm: the annotated answer is more suitable for me and aligns with my values and practices.',
+      checkIncomplete: 'Please confirm {step}.2 is completed',
+      checkFinalConfirm: 'Please confirm {step}.3 is completed',
     }
   },
   onboarding: {

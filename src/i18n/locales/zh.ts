@@ -204,6 +204,25 @@ export default {
       noteTitle: '注：请基于以下标准进行标注：',
       note1: '这些价值观和文本是否符合你自己的个人价值观和行为实践。',
       note2: '而不是你所属文化中的主流价值观。'
+    },
+    annotation: {
+      cueLabel: '文本（对问题的具体回复内容、行为、解决方案或建议决策）：',
+      conceptLabel: '文本蕴含的价值观（即"在该问题下为什么这么做的根本原因"）：',
+      cueCheckTitle: '1. 标注的价值观是否与文化价值观一致，是否存在不匹配或者遗漏？',
+      cueKeep: '完全一致，保留',
+      cueEdit: '部分不一致或有遗漏，需调整',
+      cueDelete: '无关或完全不一致，删除',
+      conceptCheckTitle: '2. 基于标注的价值观，判断文本中的具体观点或做法是否跟价值观一致，并且在文化下是合适且符合真实做法的？',
+      conceptKeep: '完全一致且符合文化实际，保留',
+      conceptEdit: '与价值观不一致，需调整',
+      conceptDelete: '无关或完全不一致，删除',
+      conceptEdit2: '价值观一致，但具体做法不符合文化实际，需调整',
+      missingOmission: '有遗漏，需要补充',
+      contentComplete: '内容完整，没有遗漏',
+      checkOmission: '{step}.2 请检查整条回答，确认是否遗漏了在这个问题下重要的价值观表达、具体观点或者做法？',
+      finalConfirm: '{step}.3 最后，请确认：标注后的回答对我而言是更合适的，符合我的价值观和具体做法。',
+      checkIncomplete: '请确认{step}.2是否完成',
+      checkFinalConfirm: '请确认{step}.3是否完成',
     }
   },
   onboarding: {

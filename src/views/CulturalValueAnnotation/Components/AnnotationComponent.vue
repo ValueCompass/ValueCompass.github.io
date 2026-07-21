@@ -35,10 +35,10 @@
           @click="handleKeywordClick"
         ></div>
       </div>
-      <div class="right" style="height: 45em;position: relative;">
+      <div class="right" style="min-height: 44em;padding-bottom: 3em;position: relative;">
         <div>
           <div>
-            <p>文本（对问题的具体回复内容、行为、解决方案或建议决策）：</p>
+            <p>{{ t("culturalValueAnnotation.annotation.cueLabel") }}</p>
             <div class="highlight-input-overlay">
               <el-input
                 v-model="editCueValue"
@@ -90,7 +90,7 @@
           </div>
           <div>
             <p>
-              文本蕴含的价值观（即"在该问题下为什么这么做的根本原因"）：
+              {{ t("culturalValueAnnotation.annotation.conceptLabel") }}
               <el-icon class="info-icon" @click="textInfoDialogVisible = true">
                 <QuestionFilled />
               </el-icon>
@@ -164,7 +164,7 @@
         <!-- 操作按钮 -->
         <div class="actions-box" v-if="!isAddingNew">
           <div>
-            <p>1. 标注的价值观是否与文化价值观一致，是否存在不匹配或者遗漏？</p>
+            <p>{{ t("culturalValueAnnotation.annotation.cueCheckTitle") }}</p>
             <div
                 class="button-container1 button-container-actions"
                 :class="{'disabled': isConceptEditMode || isAddingNew}"
@@ -173,33 +173,33 @@
                   v-if="!hideConceptKeepButton"
                   class="keep"
                   @click="handleKeepClick('concept')"
-                  >完全一致，保留</el-button
+                  >{{ t("culturalValueAnnotation.annotation.cueKeep") }}</el-button
                 >
                 
                 <el-button class="edit" @click="handleEditClick('concept')"
-                  >部分不一致或有遗漏，需调整</el-button
+                  >{{ t("culturalValueAnnotation.annotation.cueEdit") }}</el-button
                 >
                 <el-button class="delete" @click="handleDeleteClick('concept')"
-                  >无关或完全不一致，删除</el-button
+                  >{{ t("culturalValueAnnotation.annotation.cueDelete") }}</el-button
                 >
               </div>
           </div>
 
           <div>
-            <p>2. 基于标注的价值观，判断文本中的具体观点或做法是否跟价值观一致，并且在文化下是合适且符合真实做法的？</p>
+            <p>{{ t("culturalValueAnnotation.annotation.conceptCheckTitle") }}</p>
             <div class="button-container1 button-container-actions button-container-actions-cue" :class="{'disabled': isCueEditMode || isAddingNew}">
                 <el-button v-if="!hideConceptKeepButton" class="keep" @click="handleKeepClick('cue')"
-                  >完全一致且符合文化实际，保留</el-button
+                  >{{ t("culturalValueAnnotation.annotation.conceptKeep") }}</el-button
                 >
                 <el-button class="edit" @click="handleEditClick('cue')"
-                  >与价值观不一致，需调整</el-button
+                  >{{ t("culturalValueAnnotation.annotation.conceptEdit") }}</el-button
                 >
                 <el-button class="delete" @click="handleDeleteClick('cue')"
-                  >无关或完全不一致，删除</el-button
+                  >{{ t("culturalValueAnnotation.annotation.conceptDelete") }}</el-button
                 >
                 
                 <el-button class="edit" @click="handleEditClick('cue2')"
-                  >价值观一致，但具体做法不符合文化实际，需调整</el-button
+                  >{{ t("culturalValueAnnotation.annotation.conceptEdit2") }}</el-button
                 >
 
               </div>
@@ -248,18 +248,18 @@
 
     <div>
       <div class="step-level2">
-        <p class="">{{ step }}.2 请检查整条回答，确认是否遗漏了在这个问题下重要的价值观表达、具体观点或者做法？</p>
+        <p class="">{{ t("culturalValueAnnotation.annotation.checkOmission", { step }) }}</p>
         <div>
-          <el-button @click="handleAddNew">有遗漏，需要补充</el-button>
+          <el-button @click="handleAddNew">{{ t("culturalValueAnnotation.annotation.missingOmission") }}</el-button>
           <el-button 
             @click="isCompleteNoOmission = true"
             :disabled="hasAnyAddStatus"
             :class="{'selected': isCompleteNoOmission}"
-          >内容完整，没有遗漏</el-button>
+          >{{ t("culturalValueAnnotation.annotation.contentComplete") }}</el-button>
         </div>
       </div>
       <div class="step-level2">
-        <p class="">{{ step }}.3 最后，请确认：标注后的回答对我而言是更合适的，符合我的价值观和具体做法。</p>
+        <p class="">{{ t("culturalValueAnnotation.annotation.finalConfirm", { step }) }}</p>
         <el-checkbox v-model="isFinalConfirmed" label="1">&nbsp;</el-checkbox>
       </div>
     </div>
@@ -1341,6 +1341,7 @@ defineExpose({
           font-size: 1em;
           width: 33%;
           display: block;
+          padding: 2px 4px;
           & span {
             display: inline-block;
             white-space: normal;
@@ -1452,6 +1453,7 @@ defineExpose({
   flex-direction: row;
   align-items: center;
   gap: 1em;
+  flex-wrap: wrap;
   &>p{
     font-size: 1.24em;
     font-weight: bold;

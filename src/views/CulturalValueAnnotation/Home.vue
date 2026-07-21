@@ -1799,9 +1799,9 @@ const submitHighlightAndConcepts = () => {
     }
     if (component1Data.validationFailed) {
       if (component1Data.type === "complete_no_omission") {
-        ElMessage.warning("请确认5.2是否完成");
+        ElMessage.warning(t("culturalValueAnnotation.annotation.checkIncomplete", { step: "5" }));
       } else if (component1Data.type === "final_confirmation") {
-        ElMessage.warning("请确认5.3是否完成");
+        ElMessage.warning(t("culturalValueAnnotation.annotation.checkFinalConfirm", { step: "5" }));
       }
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
@@ -1821,9 +1821,9 @@ const submitHighlightAndConcepts = () => {
     }
     if (component2Data.validationFailed) {
       if (component2Data.type === "complete_no_omission") {
-        ElMessage.warning("请确认6.2是否完成");
+        ElMessage.warning(t("culturalValueAnnotation.annotation.checkIncomplete", { step: "6" }));
       } else if (component2Data.type === "final_confirmation") {
-        ElMessage.warning("请确认6.3是否完成");
+        ElMessage.warning(t("culturalValueAnnotation.annotation.checkFinalConfirm", { step: "6" }));
       }
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
