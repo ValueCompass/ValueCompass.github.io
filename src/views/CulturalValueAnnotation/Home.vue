@@ -845,6 +845,7 @@
               :annotationDataOrigin="annotationDataOrigin"
               :use_new_logic="use_new_logic"
               :editMode="submit_type === 'revise'"
+              :step="5"
               ref="annotationComponentRef"
             ></AnnotationComponent>
           </div>
@@ -884,6 +885,7 @@
             :annotationDataOrigin="annotationDataOrigin_person"
             :use_new_logic="use_new_logic"
             :editMode="submit_type === 'revise'"
+            :step="6"
             ref="annotationComponentRef2"
           ></AnnotationComponent>
         </div>
@@ -1795,11 +1797,34 @@ const submitHighlightAndConcepts = () => {
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
     }
+    if (component1Data.validationFailed) {
+      if (component1Data.type === "complete_no_omission") {
+        ElMessage.warning("请确认5.2是否完成");
+      } else if (component1Data.type === "final_confirmation") {
+        ElMessage.warning("请确认5.3是否完成");
+      }
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
+    }
 
     // 处理第二个注释组件
     const component2Data = annotationComponentRef2.value.processAnnotationData();
+    if (!component2Data) {
+      ElMessage.error(t("common.pleaseCompleteAnnotation"));
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
+    }
     if (component2Data.unmarked) {
       ElMessage.error(t("common.pleaseMarkAllItems"));
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
+    }
+    if (component2Data.validationFailed) {
+      if (component2Data.type === "complete_no_omission") {
+        ElMessage.warning("请确认6.2是否完成");
+      } else if (component2Data.type === "final_confirmation") {
+        ElMessage.warning("请确认6.3是否完成");
+      }
       isLoadingSubmitHighlightAndConcepts.value = false;
       return;
     }

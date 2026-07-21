@@ -1,211 +1,271 @@
 <template>
-  <div class="answer-content">
-    <div class="left">
-      <!-- <div>
-        highlightCuesStatus：{{ highlightCuesStatus }}
+  <div>
+    <div class="answer-content">
+      
+      <div class="left">
+        <!-- <div>
+          highlightCuesStatus：{{ highlightCuesStatus }}
+        </div>
+        <div>
+          keyConceptsStatus: {{ keyConceptsStatus }}
+        </div>
+        <div>
+          mismatchExplanations: {{ mismatchExplanations }}
+        </div>
+        <div>
+          originalHighlightCues: {{ originalHighlightCues }}
+        </div>
+        <div>
+          highlightCues: {{ annotationDataOrigin.highlight_cues }}
+        </div>
+        <div>
+          originalKeyConcepts: {{ originalKeyConcepts }}
+        </div>
+        <div>
+          response: 
+          <div  style="white-space: pre-wrap;"> {{ annotationDataOrigin.response }}</div>
+        </div>
+        <div  style="white-space: pre-wrap;">
+          originalResponse: {{ annotationDataOrigin.originalResponse }}
+        </div> -->
+        <div
+          class="response-text"
+          style="white-space: pre-line"
+          v-html="processedAnnotationDataResponse"
+          @click="handleKeywordClick"
+        ></div>
       </div>
-      <div>
-        keyConceptsStatus: {{ keyConceptsStatus }}
+      <div class="right" style="height: 45em;position: relative;">
+        <div>
+          <div>
+            <p>文本（对问题的具体回复内容、行为、解决方案或建议决策）：</p>
+            <div class="highlight-input-overlay">
+              <el-input
+                v-model="editCueValue"
+                :disabled="!isCueEditMode"
+                class="annotation-overlay-input cue-text-input"
+                :class="{
+                  'is-highlight-overlay':
+                    !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay,
+                }"
+                style=""
+                placeholder="Please input"
+                :autosize="{ minRows: 7, maxRows: 7 }"
+                type="textarea"
+              />
+              <!-- cue 侧覆盖层：
+                  - external-active-track-indexes：接收父组件同步的高亮轨道，让 concept hover 时 cue 下划线也联动
+                  - shared-tooltip：接收父组件统一管理的 tooltip 数据，保证 cue / concept hover 时弹窗位置一致
+                  - hover-change：cue 侧 hover 时把轨道和 tooltip 内容上报给父组件 -->
+              <ShowHighlight
+                v-if="hasCueConceptCorrespondenceField && !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay"
+                overlay-mode="cue"
+                :is-adding-new="isAddingNew"
+                :cue-text="currentCue"
+                :concept-text="currentConcept"
+                :cue-concept-correspondence="currentCueCorrespondence"
+                :cue-concept-evidence="currentCueEvidence"
+                :external-active-track-indexes="sharedHoveredTrackIndexes"
+                :shared-tooltip="sharedHighlightTooltip"
+                @hover-change="handleHighlightHoverChange"
+              />
+            </div>
+
+            <div class="status-container">
+              <p>status: {{ getStatusDisplayText(highlightCuesStatus[currentCueIndex]) }}</p>
+              
+              <div
+                v-if="!(!isCueEditMode || isAddingNew)"
+                class="button-container1 button-container-cancel-submit"
+                style="justify-content: flex-end"
+              >
+                <el-button class="cancel" @click="handleCancelEdit(currentCueEditType)">{{
+                  t("common.cancel")
+                }}</el-button>
+                <el-button class="submit" @click="handleSubmitEdit(currentCueEditType)">{{
+                  t("common.submit")
+                }}</el-button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p>
+              文本蕴含的价值观（即"在该问题下为什么这么做的根本原因"）：
+              <el-icon class="info-icon" @click="textInfoDialogVisible = true">
+                <QuestionFilled />
+              </el-icon>
+            </p>
+            <div class="highlight-input-overlay">
+              <el-input
+                v-model="editConceptValue"
+                :disabled="!isConceptEditMode"
+                class="annotation-overlay-input"
+                :class="{
+                  'is-highlight-overlay':
+                    !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay,
+                }"
+                style=""
+                placeholder="Please input"
+                :autosize="{ minRows: 3, maxRows: 3 }"
+                type="textarea"
+              />
+              <!-- concept 侧覆盖层：
+                  - external-active-track-indexes：接收父组件同步的高亮轨道，让 cue hover 时 concept 下划线也联动
+                  - disable-local-tooltip：禁止 concept 实例自行渲染弹窗，统一交由 cue 侧锚点处显示
+                  - hover-change：concept hover 时把轨道和 tooltip 内容上报给父组件 -->
+              <ShowHighlight
+                v-if="hasCueConceptCorrespondenceField && !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay"
+                overlay-mode="concepts"
+                :is-adding-new="isAddingNew"
+                :cue-text="currentCue"
+                :concept-text="currentConcept"
+                :cue-concept-correspondence="currentCueCorrespondence"
+                :cue-concept-evidence="currentCueEvidence"
+                :external-active-track-indexes="sharedHoveredTrackIndexes"
+                :disable-local-tooltip="true"
+                @hover-change="handleHighlightHoverChange"
+              />
+            </div>
+
+            <div class="status-container">
+              <p>status: {{ getStatusDisplayText(keyConceptsStatus[currentCueIndex]) }}</p>
+              
+              <div
+                v-if= "!(!isConceptEditMode || isAddingNew)"
+                class="button-container1 button-container-cancel-submit"
+                style="justify-content: flex-end"
+              >
+                <el-button class="cancel" @click="handleCancelEdit('concept')">{{
+                  t("common.cancel")
+                }}</el-button>
+                <el-button class="submit" @click="handleSubmitEdit('concept')">{{
+                  t("common.submit")
+                }}</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- add new 时候的submit/canvel按钮 -->
+        <div
+          class="button-container1 button-container-cancel-submit"
+          v-if="isAddingNew"
+          style="justify-content: flex-end; margin-top: 2em"
+        >
+          <el-button class="cancel" @click="handleCancelAddNew">{{
+            t("common.cancel")
+          }}</el-button>
+          <el-button class="submit" @click="handleSubmitAddNew">{{
+            t("common.submit")
+          }}</el-button>
+        </div>
+        
+
+        <!-- 操作按钮 -->
+        <div class="actions-box" v-if="!isAddingNew">
+          <div>
+            <p>1. 标注的价值观是否与文化价值观一致，是否存在不匹配或者遗漏？</p>
+            <div
+                class="button-container1 button-container-actions"
+                :class="{'disabled': isConceptEditMode || isAddingNew}"
+              >
+                <el-button
+                  v-if="!hideConceptKeepButton"
+                  class="keep"
+                  @click="handleKeepClick('concept')"
+                  >完全一致，保留</el-button
+                >
+                
+                <el-button class="edit" @click="handleEditClick('concept')"
+                  >部分不一致或有遗漏，需调整</el-button
+                >
+                <el-button class="delete" @click="handleDeleteClick('concept')"
+                  >无关或完全不一致，删除</el-button
+                >
+              </div>
+          </div>
+
+          <div>
+            <p>2. 基于标注的价值观，判断文本中的具体观点或做法是否跟价值观一致，并且在文化下是合适且符合真实做法的？</p>
+            <div class="button-container1 button-container-actions button-container-actions-cue" :class="{'disabled': isCueEditMode || isAddingNew}">
+                <el-button v-if="!hideConceptKeepButton" class="keep" @click="handleKeepClick('cue')"
+                  >完全一致且符合文化实际，保留</el-button
+                >
+                <el-button class="edit" @click="handleEditClick('cue')"
+                  >与价值观不一致，需调整</el-button
+                >
+                <el-button class="delete" @click="handleDeleteClick('cue')"
+                  >无关或完全不一致，删除</el-button
+                >
+                
+                <el-button class="edit" @click="handleEditClick('cue2')"
+                  >价值观一致，但具体做法不符合文化实际，需调整</el-button
+                >
+
+              </div>
+          </div>
+        </div>
+
+        <!-- pre  next -->
+        <div
+          style="position: absolute;width: 100%;bottom: 0;"
+        >
+          <!-- <el-button @click="handleAddNew">Add New </el-button> -->
+          <div class="button-container2"
+          :class="{'disabled': isCueEditMode || isConceptEditMode || isAddingNew}">
+            <el-button :disabled="currentCueIndex === 0" @click="previousCue"
+              >Previous</el-button
+            >
+
+            <b><{{ currentCueIndex + 1 }} / {{ annotationData.highlight_cues.length }}></b>
+            <el-button
+              :disabled="
+                currentCueIndex === annotationData.highlight_cues.length - 1
+              "
+              @click="nextCue"
+              >Next</el-button
+            >
+          </div>
+        </div>
+        
       </div>
-      <div>
-        mismatchExplanations: {{ mismatchExplanations }}
-      </div>
-      <div>
-        originalHighlightCues: {{ originalHighlightCues }}
-      </div>
-      <div>
-        highlightCues: {{ annotationDataOrigin.highlight_cues }}
-      </div>
-      <div>
-        originalKeyConcepts: {{ originalKeyConcepts }}
-      </div>
-      <div>
-        response: 
-        <div  style="white-space: pre-wrap;"> {{ annotationDataOrigin.response }}</div>
-      </div>
-      <div  style="white-space: pre-wrap;">
-        originalResponse: {{ annotationDataOrigin.originalResponse }}
-      </div> -->
-      <div
-        class="response-text"
-        style="white-space: pre-line"
-        v-html="processedAnnotationDataResponse"
-        @click="handleKeywordClick"
-      ></div>
+
+
+      
+
+      <!-- Mismatch 弹窗：cue=edit & concept=keep 或 cue=keep & concept=edit -->
+      <MismatchDialog
+        v-model:visible="mismatchDialogVisible"
+        :type="mismatchDialogType"
+        :text-fragment="currentCue"
+        :value-concepts="currentConcept"
+        :initial-explanation="currentMismatchExplanation"
+        @confirm="handleMismatchConfirm"
+        @return-to-edit="handleMismatchReturn"
+      />
     </div>
-    <div class="right" style="height: 40em">
-      <div>
-        <div>
-          <p>{{ t("common.text") }}:</p>
-          <div class="highlight-input-overlay">
-            <el-input
-              v-model="editCueValue"
-              :disabled="!isCueEditMode"
-              class="annotation-overlay-input cue-text-input"
-              :class="{
-                'is-highlight-overlay':
-                  !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay,
-              }"
-              style=""
-              placeholder="Please input"
-              :autosize="{ minRows: 7, maxRows: 7 }"
-              type="textarea"
-            />
-            <!-- cue 侧覆盖层：
-                 - external-active-track-indexes：接收父组件同步的高亮轨道，让 concept hover 时 cue 下划线也联动
-                 - shared-tooltip：接收父组件统一管理的 tooltip 数据，保证 cue / concept hover 时弹窗位置一致
-                 - hover-change：cue 侧 hover 时把轨道和 tooltip 内容上报给父组件 -->
-            <ShowHighlight
-              v-if="hasCueConceptCorrespondenceField && !isCueEditMode && !isAddingNew && shouldShowHighlightOverlay"
-              overlay-mode="cue"
-              :is-adding-new="isAddingNew"
-              :cue-text="currentCue"
-              :concept-text="currentConcept"
-              :cue-concept-correspondence="currentCueCorrespondence"
-              :cue-concept-evidence="currentCueEvidence"
-              :external-active-track-indexes="sharedHoveredTrackIndexes"
-              :shared-tooltip="sharedHighlightTooltip"
-              @hover-change="handleHighlightHoverChange"
-            />
-          </div>
 
-          <div v-if="!isAddingNew">
-            status: {{ getStatusDisplayText(highlightCuesStatus[currentCueIndex]) }}
-            <div class="button-container1" v-if="!isCueEditMode || isAddingNew">
-              <el-button v-if="!hideConceptKeepButton" class="keep" @click="handleKeepClick('cue')"
-                >{{ t("common.keep") }}</el-button
-              >
-              <el-button class="delete" @click="handleDeleteClick('cue')"
-                >{{ t("common.delete") }}</el-button
-              >
-              <el-button class="edit" @click="handleEditClick('cue')"
-                >{{ t("common.edit") }}</el-button
-              >
-            </div>
-            <div
-              v-else
-              class="button-container1"
-              style="justify-content: flex-end"
-            >
-              <el-button class="cancel" @click="handleCancelEdit('cue')">{{
-                t("common.cancel")
-              }}</el-button>
-              <el-button class="submit" @click="handleSubmitEdit('cue')">{{
-                t("common.submit")
-              }}</el-button>
-            </div>
-          </div>
-        </div>
-        <div>
-          <p>{{ t("common.value") }}:</p>
-          <div class="highlight-input-overlay">
-            <el-input
-              v-model="editConceptValue"
-              :disabled="!isConceptEditMode"
-              class="annotation-overlay-input"
-              :class="{
-                'is-highlight-overlay':
-                  !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay,
-              }"
-              style=""
-              placeholder="Please input"
-              :autosize="{ minRows: 3, maxRows: 3 }"
-              type="textarea"
-            />
-            <!-- concept 侧覆盖层：
-                 - external-active-track-indexes：接收父组件同步的高亮轨道，让 cue hover 时 concept 下划线也联动
-                 - disable-local-tooltip：禁止 concept 实例自行渲染弹窗，统一交由 cue 侧锚点处显示
-                 - hover-change：concept hover 时把轨道和 tooltip 内容上报给父组件 -->
-            <ShowHighlight
-              v-if="hasCueConceptCorrespondenceField && !isConceptEditMode && !isAddingNew && shouldShowHighlightOverlay"
-              overlay-mode="concepts"
-              :is-adding-new="isAddingNew"
-              :cue-text="currentCue"
-              :concept-text="currentConcept"
-              :cue-concept-correspondence="currentCueCorrespondence"
-              :cue-concept-evidence="currentCueEvidence"
-              :external-active-track-indexes="sharedHoveredTrackIndexes"
-              :disable-local-tooltip="true"
-              @hover-change="handleHighlightHoverChange"
-            />
-          </div>
 
-          <div v-if="!isAddingNew">
-            status: {{ getStatusDisplayText(keyConceptsStatus[currentCueIndex]) }}
-            <div
-              class="button-container1"
-              v-if="!isConceptEditMode || isAddingNew"
-            >
-              <el-button
-                v-if="!hideConceptKeepButton"
-                class="keep"
-                @click="handleKeepClick('concept')"
-                >{{ t("common.keep") }}</el-button
-              >
-              <el-button class="delete" @click="handleDeleteClick('concept')"
-                >{{ t("common.delete") }}</el-button
-              >
-              <el-button class="edit" @click="handleEditClick('concept')"
-                >{{ t("common.edit") }}</el-button
-              >
-            </div>
-            <div
-              v-else
-              class="button-container1"
-              style="justify-content: flex-end"
-            >
-              <el-button class="cancel" @click="handleCancelEdit('concept')">{{
-                t("common.cancel")
-              }}</el-button>
-              <el-button class="submit" @click="handleSubmitEdit('concept')">{{
-                t("common.submit")
-              }}</el-button>
-            </div>
-          </div>
+    <div>
+      <div class="step-level2">
+        <p class="">{{ step }}.2 请检查整条回答，确认是否遗漏了在这个问题下重要的价值观表达、具体观点或者做法？</p>
+        <div>
+          <el-button @click="handleAddNew">有遗漏，需要补充</el-button>
+          <el-button 
+            @click="isCompleteNoOmission = true"
+            :disabled="hasAnyAddStatus"
+            :class="{'selected': isCompleteNoOmission}"
+          >内容完整，没有遗漏</el-button>
         </div>
       </div>
-      <div
-        class="button-container2"
-        v-if="!isCueEditMode && !isConceptEditMode && !isAddingNew"
-      >
-        <el-button @click="handleAddNew">Add New </el-button>
-        <div>
-          <el-button :disabled="currentCueIndex === 0" @click="previousCue"
-            >Previous</el-button
-          >
-          <el-button
-            :disabled="
-              currentCueIndex === annotationData.highlight_cues.length - 1
-            "
-            @click="nextCue"
-            >Next</el-button
-          >
-        </div>
-      </div>
-      <div
-        class="button-container1"
-        v-else-if="isAddingNew"
-        style="justify-content: flex-end; margin-top: 2em"
-      >
-        <el-button class="cancel" @click="handleCancelAddNew">{{
-          t("common.cancel")
-        }}</el-button>
-        <el-button class="submit" @click="handleSubmitAddNew">{{
-          t("common.submit")
-        }}</el-button>
+      <div class="step-level2">
+        <p class="">{{ step }}.3 最后，请确认：标注后的回答对我而言是更合适的，符合我的价值观和具体做法。</p>
+        <el-checkbox v-model="isFinalConfirmed" label="1">&nbsp;</el-checkbox>
       </div>
     </div>
 
-    <!-- Mismatch 弹窗：cue=edit & concept=keep 或 cue=keep & concept=edit -->
-    <MismatchDialog
-      v-model:visible="mismatchDialogVisible"
-      :type="mismatchDialogType"
-      :text-fragment="currentCue"
-      :value-concepts="currentConcept"
-      :initial-explanation="currentMismatchExplanation"
-      @confirm="handleMismatchConfirm"
-      @return-to-edit="handleMismatchReturn"
-    />
+    <!-- 文本说明弹窗 -->
+    <TextInfoDialog v-model:visible="textInfoDialogVisible" />
   </div>
 </template>
 
@@ -216,8 +276,10 @@ import ShowHighlight from "./ShowHighlight.vue";
 import MismatchDialog from "./MismatchDialog.vue";
 import { buildProcessedAnnotationDataResponse as buildProcessedAnnotationDataResponseUtil } from "@/utils/processedAnnotationResponse";
 import { buildProcessedAnnotationDataResponseNewLogic } from "@/utils/processedAnnotationResponseNewLogic";
+import TextInfoDialog from "./TextInfoDialog.vue";
 
 import { ElMessage } from "element-plus";
+import { QuestionFilled } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -261,6 +323,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  step: {
+    type: Number,
+    default: 5,
+  },
 });
 
 const cloneCueConceptsCorrespondence = (correspondence = []) => {
@@ -290,7 +356,7 @@ const cloneCueConceptsEvidence = (evidence = []) => {
 const shouldClearCueConceptRelation = (cueStatus, conceptStatus) => {
   // 只要 cue 或 concept 任意一侧被编辑/删除，原有的 cue-concept 对应关系和证据就不再可信，提交时需要清空。
   return [cueStatus, conceptStatus].some((status) => {
-    return status === "edit" || status === "delete";
+    return (status && status.indexOf("edit") >= 0) || status === "delete";
   });
 };
 
@@ -319,7 +385,9 @@ const resetDataFunction = (annotationNewVal) => {
   }else{
     console.log("use_new_logic is true",annotationNewVal)
     // 新数据，不用处理delete状态，根据originalResponse，highlightCuesStatus。keyConceptsStatus
-    
+    // 重置 6.2 和 6.3 选择状态
+    isCompleteNoOmission.value = false;
+    isFinalConfirmed.value = false;
 
     if(props.editMode) {
       originalHighlightCues.value = Array.isArray(annotationNewVal.original_highlight_cues) ? [...annotationNewVal.original_highlight_cues]
@@ -414,6 +482,25 @@ const mismatchDialogType = ref(""); // "concept-edit-text-keep" | "text-edit-con
 // 存储 mismatch 弹窗用户输入的 explain 信息，与 highlightCuesStatus 等长数组
 const mismatchExplanations = ref([]);
 
+// 6.2 和 6.3 选择状态
+const isCompleteNoOmission = ref(false); // 6.2 "内容完整，没有遗漏" 是否选中
+const isFinalConfirmed = ref(false); // 6.3 复选框是否选中
+
+// 文本说明弹窗状态
+const textInfoDialogVisible = ref(false);
+
+// 当有 add 状态时，重置 isCompleteNoOmission
+const hasAnyAddStatus = computed(() => {
+  return highlightCuesStatus.value.some((s) => s === "add") ||
+    keyConceptsStatus.value.some((s) => s === "add");
+});
+
+watch(hasAnyAddStatus, (hasAdd) => {
+  if (hasAdd) {
+    isCompleteNoOmission.value = false;
+  }
+});
+
 // 自动清空：当 status 数组变化时，不再满足 keep+edit 组合的项自动清空 explanation
 watch(
   [highlightCuesStatus, keyConceptsStatus],
@@ -422,7 +509,7 @@ watch(
     for (let i = 0; i < len; i++) {
       if (!mismatchExplanations.value[i]) continue;
       const isStillMismatch =
-        (cueStatuses[i] === "edit" && conceptStatuses[i] === "keep") ||
+        ((cueStatuses[i] && cueStatuses[i].indexOf("edit") >= 0) && conceptStatuses[i] === "keep") ||
         (cueStatuses[i] === "keep" && conceptStatuses[i] === "edit");
       if (!isStillMismatch) {
         mismatchExplanations.value[i] = null;
@@ -476,6 +563,9 @@ const validateHighlightCues = () => {
   mismatchExplanations.value = Array(annotationData.highlight_cues.length).fill(
     null
   );
+  // 重置 6.2 和 6.3 选择状态
+  isCompleteNoOmission.value = false;
+  isFinalConfirmed.value = false;
 };
 
 onMounted(() => {
@@ -491,6 +581,7 @@ onMounted(() => {
 const currentCueIndex = ref(0); //
 
 const isCueEditMode = ref(false);
+const currentCueEditType = ref("cue"); // 记录当前cue编辑类型："cue"或"cue2"
 const isConceptEditMode = ref(false);
 // 父组件统一维护的高亮轨道列表，cue / concept 两侧实例共用，保证 hover 联动高亮同步。
 const sharedHoveredTrackIndexes = ref([]);
@@ -510,6 +601,7 @@ const isAddingNew = ref(false);
 const getStatusDisplayText = (status) => {
   const map = {
     edit: "revised",
+    edit2: "revised",
     keep: "kept",
     delete: "deleted",
     add: "added",
@@ -644,8 +736,10 @@ const currentItemHighlightStatus = computed(() => {
 });
 
 const currentItemAllowsHighlightOverlay = computed(() => {
-  return !["edit", "add"].includes(currentItemHighlightStatus.value.cue) &&
-    !["edit", "add"].includes(currentItemHighlightStatus.value.concept);
+  const cueStatus = currentItemHighlightStatus.value.cue;
+  const conceptStatus = currentItemHighlightStatus.value.concept;
+  return !(cueStatus && cueStatus.indexOf("edit") >= 0) && cueStatus !== "add" &&
+    !(conceptStatus && conceptStatus.indexOf("edit") >= 0) && conceptStatus !== "add";
 });
 
 // 只有存在关系字段、当前组关系非空、且当前项仍是原始未编辑状态时才显示 ShowHighlight。
@@ -772,7 +866,7 @@ const checkMismatchDialog = () => {
   const cueStatus = highlightCuesStatus.value[idx];
   const conceptStatus = keyConceptsStatus.value[idx];
 
-  if (cueStatus === "edit" && conceptStatus === "keep") {
+  if ((cueStatus && cueStatus.indexOf("edit") >= 0) && conceptStatus === "keep") {
     mismatchDialogType.value = "text-edit-concept-keep";
     mismatchDialogVisible.value = true;
   } else if (cueStatus === "keep" && conceptStatus === "edit") {
@@ -884,12 +978,13 @@ const handleDeleteClick = (type) => {
 const handleEditClick = (type) => {
   console.log(`${type}: Edit`, "currentCueIndex:", currentCueIndex.value);
   // 进入编辑模式
-  if (type === "cue") {
+  if (type === "cue" || type === "cue2") {
     isCueEditMode.value = true;
+    currentCueEditType.value = type; // 保存当前编辑类型
     // 保存当前值到编辑临时变量
     editCue.value = currentCue.value;
 
-    // 如果之前concept的状态是delete，现在cue改成edit，则将concept重置为空状态
+    // 如果之前concept的状态是delete，现在cue改成edit/edit2，则将concept重置为空状态
     if (keyConceptsStatus.value[currentCueIndex.value] === "delete") {
       keyConceptsStatus.value[currentCueIndex.value] = null;
     }
@@ -915,7 +1010,7 @@ const handleEditClick = (type) => {
 const handleCancelEdit = (type) => {
   console.log(`Cancel ${type} edit`);
   // 退出编辑模式，不保存修改
-  if (type === "cue") {
+  if (type === "cue" || type === "cue2") {
     isCueEditMode.value = false;
   } else if (type === "concept") {
     isConceptEditMode.value = false;
@@ -933,11 +1028,11 @@ const handleSubmitEdit = (type) => {
   console.log(`Submit ${type} edit`);
 
   // 根据type判断更新cue还是concept
-  if (type === "cue") {
+  if (type === "cue" || type === "cue2") {
     // 判断编辑后的值是否与原值相同
     if (editCue.value === currentCue.value) {
       console.log("Cue value unchanged, treating as cancel");
-      handleCancelEdit("cue");
+      handleCancelEdit(type);
       return;
     }
 
@@ -958,12 +1053,12 @@ const handleSubmitEdit = (type) => {
       editCue.value
     );
 
-    // 如果当前cue的状态是add，则保持为add，否则设置为edit
+    // 如果当前cue的状态是add，则保持为add，否则设置为edit(普通edit)或edit2(需调整)
     if (highlightCuesStatus.value[currentCueIndex.value] !== "add") {
-      highlightCuesStatus.value[currentCueIndex.value] = "edit";
+      highlightCuesStatus.value[currentCueIndex.value] = type === "cue" ? "edit" : "edit2";
     }
 
-    // 如果之前concept的状态是delete，现在cue改成edit，则将concept重置为空状态
+    // 如果之前concept的状态是delete，现在cue改成edit/edit2，则将concept重置为空状态
     if (keyConceptsStatus.value[currentCueIndex.value] === "delete") {
       keyConceptsStatus.value[currentCueIndex.value] = null;
     }
@@ -990,7 +1085,7 @@ const handleSubmitEdit = (type) => {
   }
 
   // 退出编辑模式
-  if (type === "cue") {
+  if (type === "cue" || type === "cue2") {
     isCueEditMode.value = false;
   } else if (type === "concept") {
     isConceptEditMode.value = false;
@@ -1088,11 +1183,28 @@ const handleSubmitAddNew = () => {
 
 const processAnnotationData = () => {
   // 检查是否所有项目都已标记
-  const unmarkedItems = highlightCuesStatus.value.filter(
+  const unmarkedCueItems = highlightCuesStatus.value.filter(
     (status) => status === null || status === undefined
   );
-  if (unmarkedItems.length > 0) {
+  const unmarkedConceptItems = keyConceptsStatus.value.filter(
+    (status) => status === null || status === undefined
+  );
+  if (unmarkedCueItems.length > 0 || unmarkedConceptItems.length > 0) {
     return { unmarked: true };
+  }
+
+  // 检查是否有任何 add 状态
+  const hasAddStatus = highlightCuesStatus.value.some((s) => s === "add") ||
+    keyConceptsStatus.value.some((s) => s === "add");
+
+  // 如果没有 add 状态，要求用户必须点击"内容完整没有遗漏"按钮
+  if (!hasAddStatus && !isCompleteNoOmission.value) {
+    return { validationFailed: true, type: "complete_no_omission" };
+  }
+
+  // *.3的复选框必须选中（始终需要验证）
+  if (!isFinalConfirmed.value) {
+    return { validationFailed: true, type: "final_confirmation" };
   }
 
   // 过滤掉状态为'delete'的cue和concept，并创建对应的actions数组
@@ -1198,8 +1310,8 @@ defineExpose({
     }
     &.right {
       & > div:nth-child(1) {
-        background: #f4f1d7;
-        padding: 1em;
+        // background: #f4f1d7;
+        // padding: 1em;
         border-radius: 8px;
         display: flex;
         flex-direction: column;
@@ -1225,7 +1337,7 @@ defineExpose({
           width: 50%;
         }
         :deep(.el-button) {
-          height: 3.4em;
+          height: 2.6em;
           font-size: 1em;
           width: 33%;
           display: block;
@@ -1257,15 +1369,46 @@ defineExpose({
         }
       }
 
+
+      .button-container2, .button-container-actions{
+        &.disabled{
+        opacity: .5;
+        pointer-events: none;
+      }
+      }
+      .button-container-actions{
+        .el-button{
+          font-size: 12px;
+        }
+      }
+      .button-container-actions-cue{
+        gap: .5em;
+        flex-wrap: wrap;
+        .el-button{
+          flex-wrap: wrap;
+          width: calc(49.5% - .25em);
+          margin-left: 0;
+        }
+      }
+
+      .button-container-cancel-submit{
+        .el-button{
+          height: 2.2em;
+          width: 5em !important;
+        }
+      }
+
       .button-container2 {
         height: 2.4em;
         margin-top: 1.5em;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         .el-button {
           border: 1px solid #0b70c3;
-          color: #0b70c3;
+          background: #0b70c3;
+          color: #fff;
           font-size: 1em;
           height: 2.4em;
           &:disabled {
@@ -1276,6 +1419,71 @@ defineExpose({
         }
       }
 
+    }
+  }
+
+  .status-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.8em;
+    p{
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+.info-icon {
+  cursor: pointer;
+  color: #0b70c3;
+  font-size: 1.1em;
+  vertical-align: middle;
+  margin-left: 0.3em;
+
+  &:hover {
+    color: #0958a8;
+  }
+}
+
+.step-level2{
+  margin: 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+  &>p{
+    font-size: 1.24em;
+    font-weight: bold;
+    color: #05408c;
+  }
+
+  .el-button{
+    font-size: 1em;
+    height: 2.6em;
+    border: 1px solid #0b70c3;
+    background: #fff;
+    color: #0b70c3;
+    &:disabled {
+      border: none;
+      background: #c2c2c2;
+      color: #fff;
+    }
+    &.selected {
+      background: #0b70c3;
+      color: #fff;
+    }
+  }
+  :deep(.el-checkbox__inner){
+    border: 1px solid #666;
+  }
+}
+
+.actions-box{
+  &> div{
+    margin-bottom: 1em;
+    &>p:nth-child(1){
+      margin-bottom: 0.5em;
     }
   }
 }
@@ -1291,6 +1499,7 @@ defineExpose({
 :deep(.el-textarea__inner) {
   --el-textarea-inner-height: 300px;
   font-size: 1rem;
+  box-shadow: 0 0 0 1px #999 inset;
 }
 
 :deep(.cue-text-input .el-textarea__inner) {
