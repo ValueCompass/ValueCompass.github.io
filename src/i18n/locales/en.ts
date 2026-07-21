@@ -196,14 +196,22 @@ export default {
       rule1Intro: 'For a text fragment for annotation,',
       rule1a: 'If you revise values, check alignment of the text and revise accordingly.',
       rule1b: 'Even if you keep values as correct, you must check whether the text does not align well with the values or the culture behavior practices, you should also revise text accordingly.',
-      rule2: 'Just focus on values and text reflecting values. Please ignore other differences not caused by values, such as language style (colloquial vs. written, formal vs. casual), text format and structure (paragraphing, punctuation conventions, etc.), and length. These issues are not within the scope of annotation.'
+      rule2: 'Just focus on values and text reflecting values. Please ignore other differences not caused by values, such as language style (colloquial vs. written, formal vs. casual), text format and structure (paragraphing, punctuation conventions, etc.), and length. These issues are not within the scope of annotation.',
+      homeTitle: 'Step 5: Review and refine the answer from a cultural perspective to get an answer that most people in your culture would consider more appropriate',
+      homeCoreAction: 'Core Action: Based on the mainstream values and common perspectives in your culture, judge what most people would consider an appropriate answer to this question, and refine accordingly—not your personal values and preferences.',
+      homeCheckTitle: '5.1 Please review each segment of the initial answer below',
+      homeCheckDesc: 'Please ignore changes caused by non-value or specific viewpoint differences, such as: language style (colloquial vs. written, formal vs. casual), text format and structure (paragraphing, punctuation conventions, etc.), length, etc. These issues are not within the scope of annotation.',
     },
     step6: {
       title: 'Step 6. Annotate the answer to align with personal values (same workflow as Step5, use Your Personal Values)',
       coreAction: 'Core Action: Repeat the workflow in Step 5, but use YOUR personal values.',
       noteTitle: 'Note: Ground your annotation on:',
       note1: 'Whether the values and texts align with your own personal values and behavior practices.',
-      note2: 'Not the mainstream values in your culture.'
+      note2: 'Not the mainstream values in your culture.',
+      homeTitle: 'Step 6: Review and refine the answer from a personal perspective to get an answer you consider more appropriate',
+      homeCoreAction: 'Core Action: Based on your own truly recognized values and practices, make modifications to get an answer you consider more appropriate—do not reference your culture\'s mainstream values.',
+      homeCheckTitle: '6.1 Please review each segment of the initial answer below',
+      homeCheckDesc: 'Please ignore changes caused by non-value or specific viewpoint differences, such as: language style (colloquial vs. written, formal vs. casual), text format and structure (paragraphing, punctuation conventions, etc.), length, etc. These issues are not within the scope of annotation.',
     },
     annotation: {
       cueLabel: 'Text (specific reply content, behavior, solution, or suggested decision to the question):',

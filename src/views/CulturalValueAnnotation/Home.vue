@@ -743,23 +743,23 @@
 
       <div class="step step5">
         <div class="intro-container">
-          <h4>{{ t("culturalValueAnnotation.step5.title") }}</h4>
+          <h4>{{ t("culturalValueAnnotation.step5.homeTitle") }}</h4>
           
           <div class="core-action-box flex-column">
             <h5>
-              {{ t("culturalValueAnnotation.step5.coreAction") }}
+              {{ t("culturalValueAnnotation.step5.homeCoreAction") }}
             </h5>
-            <ul>
+            <!-- <ul>
               <li>
                 {{ t("culturalValueAnnotation.step5.coreAction1") }}
               </li>
               <li>
                 {{ t("culturalValueAnnotation.step5.coreAction2") }}
               </li>
-            </ul>
+            </ul> -->
           </div>
 
-          <div class="seconed-container">
+          <!-- <div class="seconed-container">
             <p class="title-p">
               <img src="@/assets/images/step_icon3.png" alt="" />
               <b>{{ t("culturalValueAnnotation.step5.firstReviewTitle") }}</b>
@@ -821,9 +821,13 @@
                 <p>{{ t("culturalValueAnnotation.step5.rule2") }}</p>
               </li>
             </ul>
-          </div>
+          </div> -->
 
           <div class="highlight-container"  style="font-size: 1rem;">
+            <div class="step-level2">
+              <p class="title-p">{{ t("culturalValueAnnotation.step5.homeCheckTitle") }}</p>
+              <p>{{ t("culturalValueAnnotation.step5.homeCheckDesc") }}</p>
+            </div>
             <div class="show_question_container" v-if="questionValue">
               <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
               <div class="question_box" style="flex: 1">
@@ -854,13 +858,13 @@
 
       <div class="step step6">
         <div class="intro-container">
-          <h4>{{ t("culturalValueAnnotation.step6.title") }}</h4>
+          <h4>{{ t("culturalValueAnnotation.step6.homeTitle") }}</h4>
           <div class="core-action-box">
             <h5>
-              {{ t("culturalValueAnnotation.step6.coreAction") }}
+              {{ t("culturalValueAnnotation.step6.homeCoreAction") }}
             </h5>
           </div>
-          <div class="seconed-container">
+          <!-- <div class="seconed-container">
             <p class="title-p">
               <img src="@/assets/images/note-icon.png" alt="" />
               <span
@@ -871,10 +875,14 @@
               <li>{{ t("culturalValueAnnotation.step6.note1") }}</li>
               <li>{{ t("culturalValueAnnotation.step6.note2") }}</li>
             </ul>
-          </div>
+          </div> -->
         </div>
 
         <div class="highlight-container" style="font-size: 1rem;">
+          <div class="step-level2">
+              <p class="title-p">{{ t("culturalValueAnnotation.step6.homeCheckTitle") }}</p>
+              <p>{{ t("culturalValueAnnotation.step6.homeCheckDesc") }}</p>
+            </div>
           <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
             <div class="question_box">
@@ -2699,6 +2707,19 @@ const getQuestionNum = () => {
       flex-direction: column;
       gap: 1.2em;
       color: rgba(51, 51, 51, 1);
+    }
+
+    .step-level2{
+      line-height: 1.4;
+      .title-p{
+        font-size: 1.25em;
+        color: #05408c;
+        margin-bottom: .5em;
+        font-weight: bold;
+      }
+      p{
+        font-size: 1.125em;
+      }
     }
   }
 
