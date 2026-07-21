@@ -844,6 +844,7 @@
             <AnnotationComponent
               :annotationDataOrigin="annotationDataOrigin"
               :use_new_logic="use_new_logic"
+              :editMode="submit_type === 'revise'"
               ref="annotationComponentRef"
             ></AnnotationComponent>
           </div>
@@ -882,6 +883,7 @@
           <AnnotationComponent
             :annotationDataOrigin="annotationDataOrigin_person"
             :use_new_logic="use_new_logic"
+            :editMode="submit_type === 'revise'"
             ref="annotationComponentRef2"
           ></AnnotationComponent>
         </div>
@@ -1659,7 +1661,15 @@ const handleGetAnswerBtnClick = async () => {
       if (res.data) {
         // ElMessage.success("提交成功");
         annotationDataOrigin = res.data;
+        annotationDataOrigin.originalResponse = res.data.response;
+        annotationDataOrigin.original_highlight_cues = res.data.highlight_cues;
+        annotationDataOrigin.original_key_concepts = res.data.key_concepts;
+
         annotationDataOrigin_person = res.data;
+        annotationDataOrigin_person.originalResponse = res.data.response;
+        annotationDataOrigin_person.original_highlight_cues = res.data.highlight_cues;
+        annotationDataOrigin_person.original_key_concepts = res.data.key_concepts;
+
 
         original_response.value = res.data.response;
         original_highlight_cues.value = res.data.highlight_cues;
@@ -2121,17 +2131,17 @@ onMounted(async () => {
       original_key_concepts: question.original_key_concepts_person || [],
     };
 
-    original_response.value = question.response;
-    original_highlight_cues.value = question.highlight_cues;
-    original_key_concepts.value = question.key_concepts;
+    original_response.value = question.original_response;
+    original_highlight_cues.value = question.original_highlight_cues;
+    original_key_concepts.value = question.original_key_concepts;
     original_value_concepts_evidence.value =
       question.original_value_concepts_evidence || [];
     original_value_concepts_justification.value =
       question.original_value_concepts_justification || [];
 
-    original_response_person.value = question.response_person;
-    original_highlight_cues_person.value = question.highlight_cues_person;
-    original_key_concepts_person.value = question.key_concepts_person;
+    original_response_person.value = question.original_response_person;
+    original_highlight_cues_person.value = question.original_highlight_cues_person;
+    original_key_concepts_person.value = question.original_key_concepts_person;
   }
 });
 

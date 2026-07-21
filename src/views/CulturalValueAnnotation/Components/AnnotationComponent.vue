@@ -215,6 +215,7 @@ import { defineProps, watch, defineExpose } from "vue";
 import ShowHighlight from "./ShowHighlight.vue";
 import MismatchDialog from "./MismatchDialog.vue";
 import { buildProcessedAnnotationDataResponse as buildProcessedAnnotationDataResponseUtil } from "@/utils/processedAnnotationResponse";
+import { buildProcessedAnnotationDataResponseNewLogic } from "@/utils/processedAnnotationResponseNewLogic";
 
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
@@ -253,6 +254,10 @@ const props = defineProps({
     }),
   },
   use_new_logic: {
+    type: Boolean,
+    default: false,
+  },
+  editMode: {
     type: Boolean,
     default: false,
   },
@@ -316,7 +321,7 @@ const resetDataFunction = (annotationNewVal) => {
     // 新数据，不用处理delete状态，根据originalResponse，highlightCuesStatus。keyConceptsStatus
     
 
-    if(annotationNewVal.originalResponse) {
+    if(props.editMode) {
       originalHighlightCues.value = Array.isArray(annotationNewVal.original_highlight_cues) ? [...annotationNewVal.original_highlight_cues]
       : Array(annotationNewVal.highlight_cues.length).fill(null);;
       originalKeyConcepts.value = Array.isArray(annotationNewVal.original_key_concepts) ? [...annotationNewVal.original_key_concepts]
@@ -535,6 +540,16 @@ const editCue = ref("");
 const editConcept = ref("");
 
 const processedAnnotationDataResponse = computed(() => {
+  if (props.use_new_logic) {
+    return buildProcessedAnnotationDataResponseNewLogic(
+      annotationData.originalResponse || annotationData.response,
+      originalHighlightCues.value,
+      annotationData.highlight_cues,
+      highlightCuesStatus.value,
+      keyConceptsStatus.value,
+      currentCueIndex.value
+    );
+  }
   return buildProcessedAnnotationDataResponseUtil(
     annotationData.response,
     annotationData.highlight_cues,

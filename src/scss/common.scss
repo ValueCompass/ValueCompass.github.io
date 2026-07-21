@@ -348,12 +348,12 @@
   color: #333;
   font-size: 1.125em;;
   .highlight-keyword {
-    background: rgba(255, 254, 211, 1);
-    font-weight: 700;
-    font-style: italic;
+    background: #FFFED3;
+    font-weight: 500;
+    // font-style: italic;
     // padding: 0 .4em;
     margin-right: .5em;
-    color: #999;
+    color: #333;
     &:hover{
       background-color: #FCF014;
     }
@@ -361,6 +361,7 @@
     &.current {
       background: #FCF014 !important;
       color: #333;
+      font-weight: 600;
     }
 
     // &.keep,
@@ -369,13 +370,27 @@
     //   background: #F6FFED;
     //   color: #268709;
     // }
+    
     &.processed {
       background: #F6FFED;
       color: #268709;
+      background-color: #F6FFED;
     }
 
+    &.add {
+      color: #0b70c3;
+    }
     &.delete {
       text-decoration: line-through;
+    }
+
+    .diff-add {
+      color: #0b70c3;
+    }
+
+    .diff-del {
+      text-decoration: line-through;
+      color: #999;
     }
   }
 }
