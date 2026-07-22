@@ -172,14 +172,19 @@
                 <el-button
                   v-if="!hideConceptKeepButton"
                   class="keep"
+                  :class="{'selected': keyConceptsStatus[currentCueIndex] === 'keep'}"
                   @click="handleKeepClick('concept')"
                   >{{ t("culturalValueAnnotation.annotation.cueKeep") }}</el-button
                 >
                 
-                <el-button class="edit" @click="handleEditClick('concept')"
+                <el-button class="edit" 
+                  :class="{'selected': keyConceptsStatus[currentCueIndex] === 'edit'}"
+                  @click="handleEditClick('concept')"
                   >{{ t("culturalValueAnnotation.annotation.cueEdit") }}</el-button
                 >
-                <el-button class="delete" @click="handleDeleteClick('concept')"
+                <el-button class="delete" 
+                  :class="{'selected': keyConceptsStatus[currentCueIndex] === 'delete'}"
+                  @click="handleDeleteClick('concept')"
                   >{{ t("culturalValueAnnotation.annotation.cueDelete") }}</el-button
                 >
               </div>
@@ -188,17 +193,25 @@
           <div>
             <p>{{ t("culturalValueAnnotation.annotation.conceptCheckTitle") }}</p>
             <div class="button-container1 button-container-actions button-container-actions-cue" :class="{'disabled': isCueEditMode || isAddingNew}">
-                <el-button v-if="!hideConceptKeepButton" class="keep" @click="handleKeepClick('cue')"
+                <el-button v-if="!hideConceptKeepButton" class="keep" 
+                  :class="{'selected': highlightCuesStatus[currentCueIndex] === 'keep'}"
+                  @click="handleKeepClick('cue')"
                   >{{ t("culturalValueAnnotation.annotation.conceptKeep") }}</el-button
                 >
-                <el-button class="edit" @click="handleEditClick('cue')"
+                <el-button class="edit" 
+                  :class="{'selected': highlightCuesStatus[currentCueIndex] === 'edit'}"
+                  @click="handleEditClick('cue')"
                   >{{ t("culturalValueAnnotation.annotation.conceptEdit") }}</el-button
                 >
-                <el-button class="delete" @click="handleDeleteClick('cue')"
+                <el-button class="delete" 
+                  :class="{'selected': highlightCuesStatus[currentCueIndex] === 'delete'}"
+                  @click="handleDeleteClick('cue')"
                   >{{ t("culturalValueAnnotation.annotation.conceptDelete") }}</el-button
                 >
                 
-                <el-button class="edit" @click="handleEditClick('cue2')"
+                <el-button class="edit" 
+                  :class="{'selected': highlightCuesStatus[currentCueIndex] === 'edit2'}"
+                  @click="handleEditClick('cue2')"
                   >{{ t("culturalValueAnnotation.annotation.conceptEdit2") }}</el-button
                 >
 
@@ -1297,6 +1310,7 @@ defineExpose({
   flex-direction: row;
   justify-content: space-between;
   line-height: 1.5;
+  margin-bottom: 1.5em;
   & > div {
     width: 49%;
     border-radius: 8px;
@@ -1348,16 +1362,28 @@ defineExpose({
             width: 100%;
           }
           &.keep {
-            border: 1px solid #228b22;
-            color: #228b22;
+            border: 1px solid #097282;
+            color: #097282;
+            &.selected {
+              background-color: rgba(9, 114, 130, 0.2);
+              color: #097282;
+            }
           }
           &.delete {
-            border: 1px solid #b22222;
-            color: #b22222;
+            border: 1px solid #800000;
+            color: #800000;
+            &.selected {
+              background-color: rgba(128, 0, 0, 0.2);
+              color: #800000;
+            }
           }
           &.edit {
-            border: 1px solid #0b70c3;
-            color: #0b70c3;
+            border: 1px solid #30548E;
+            color: #30548E;
+            &.selected {
+              background-color: rgba(48, 84, 142, 0.2);
+              color: #30548E;
+            }
           }
           &.submit {
             border: 1px solid #0b70c3;
@@ -1455,7 +1481,7 @@ defineExpose({
   gap: 1em;
   flex-wrap: wrap;
   &>p{
-    font-size: 1.24em;
+    font-size: 1.25em;
     font-weight: bold;
     color: #05408c;
   }
