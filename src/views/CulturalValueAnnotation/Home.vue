@@ -400,13 +400,13 @@
             <h5>
               {{ t("culturalValueAnnotation.step4.coreAction") }}
             </h5>
-            <ul>
+            <!-- <ul>
               <li>{{ t("culturalValueAnnotation.step4.action1") }}</li>
               <li>{{ t("culturalValueAnnotation.step4.action2") }}</li>
               <li>{{ t("culturalValueAnnotation.step4.action3") }}</li>
-            </ul>
+            </ul> -->
           </div>
-          <div class="seconed-container flex-column">
+          <!-- <div class="seconed-container flex-column">
             <p class="title-p">
               <img src="@/assets/images/step_icon1.png" alt="" />
               <b>{{ t("culturalValueAnnotation.step4.scoringReferenceTitle") }}</b>
@@ -453,270 +453,292 @@
           <p>
             {{ t("culturalValueAnnotation.step4.balanceTypesIntro") }}
             <b>{{ t("culturalValueAnnotation.step4.balanceTypesEmphasis") }}</b>
-          </p>
+          </p> -->
         </div>
         <div
-          class="highlight-container"
+          class="highlight-container intro-container"
           style="display: flex; flex-direction: column; gap: 1.5em 0"
         >
-          <div class="annotated-summary">
-            <div class="annotated-summary__label">
-              {{ t("culturalValueAnnotation.step4.annotatedQuestions") }}
-            </div>
-            <div class="annotated-summary__content">
-              <table class="annotated-summary__stats">
-                <tbody>
-                  <tr>
-                    <td class="annotated-summary__stat-title">
-                      {{ t("culturalValueAnnotation.step4.newQuestions") }}
-                    </td>
-                    <td class="annotated-summary__stat-title">
-                      {{ t("culturalValueAnnotation.step4.existingQuestions") }}
-                    </td>
-                    <td class="annotated-summary__stat-title">
-                      {{ t("culturalValueAnnotation.step4.refinedQuestions") }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="annotated-summary__stat-value">
-                      {{ actionCounts.create }}
-                    </td>
-                    <td class="annotated-summary__stat-value">
-                      {{ actionCounts["select existing"] }}
-                    </td>
-                    <td class="annotated-summary__stat-value">
-                      {{ actionCounts.refine }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="annotated-summary__note">
-                <span class="annotated-summary__note-label">{{
-                  t("culturalValueAnnotation.step4.noteLabel")
-                }}</span>
-                <span>
-                  {{ t("culturalValueAnnotation.step4.summaryNote") }}
-                </span>
+          <div class="step-level2">
+            <p class="title-p">{{ t("culturalValueAnnotation.step4.step41Title") }}</p>
+          </div>
+          <div style="padding-left: 2em">
+             <div class="annotated-summary">
+              <div class="annotated-summary__label">
+                {{ t("culturalValueAnnotation.step4.annotatedQuestions") }}
               </div>
+              <div class="annotated-summary__content">
+                <table class="annotated-summary__stats">
+                  <tbody>
+                    <tr>
+                      <td class="annotated-summary__stat-title">
+                        {{ t("culturalValueAnnotation.step4.newQuestions") }}
+                      </td>
+                      <td class="annotated-summary__stat-title">
+                        {{ t("culturalValueAnnotation.step4.existingQuestions") }}
+                      </td>
+                      <td class="annotated-summary__stat-title">
+                        {{ t("culturalValueAnnotation.step4.refinedQuestions") }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="annotated-summary__stat-value">
+                        {{ actionCounts.create }}
+                      </td>
+                      <td class="annotated-summary__stat-value">
+                        {{ actionCounts["select existing"] }}
+                      </td>
+                      <td class="annotated-summary__stat-value">
+                        {{ actionCounts.refine }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="annotated-summary__note">
+                  <span class="annotated-summary__note-label">{{
+                    t("culturalValueAnnotation.step4.noteLabel")
+                  }}</span>
+                  <span>
+                    {{ t("culturalValueAnnotation.step4.summaryNote") }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="custom-tabs-header">
+                <button 
+                  class="custom-tab-button"
+                  :class="{
+                    'active': activeNameSelect1 === 'Select Existing Question',
+                    'disabled': hasClickedGetAnswerBtn || shouldForceCreateNewTab ||questionOptions.length === 0
+                  }"
+                  :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab || questionOptions.length === 0"
+                  @click="activeNameSelect1 = 'Select Existing Question'"
+                >{{ t('culturalValueAnnotation.step3.selectExisting') }}</button>
+                <button 
+                  class="custom-tab-button"
+                  :class="{
+                    'active': activeNameSelect1 === 'Refine Question',
+                    'disabled': hasClickedGetAnswerBtn || shouldForceCreateNewTab ||questionOptions.length === 0
+                  }"
+                  :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab || questionOptions.length === 0"
+                  @click="activeNameSelect1 = 'Refine Question'"
+                >{{ t('culturalValueAnnotation.step3.refine') }}</button>
+                <button 
+                  class="custom-tab-button"
+                  :class="{
+                    'active': activeNameSelect1 === 'Create New',
+                    'disabled': hasClickedGetAnswerBtn
+                  }"
+                  :disabled="hasClickedGetAnswerBtn"
+                  @click="activeNameSelect1 = 'Create New'"
+                >{{ t('culturalValueAnnotation.step3.createNew') }}</button>
             </div>
           </div>
-          <el-tabs v-model="activeNameSelect1" @tab-click="handleClick">
-            <el-tab-pane
-              :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab"
-              :label="
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                t('culturalValueAnnotation.step3.selectExisting') +
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-              "
-              name="Select Existing Question"
-            >
-              <div class="input-container question-input-container">
-                <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-                <div
-                  class="question-select-and-refine-container"
-                  style="
-                    position: relative;
-                    width: calc(100% - 16em);
-                    box-sizing: border-box;
-                  "
-                >
-                  <el-select
-                    :class="[
-                      'select-auto-height',
-                      {
-                        'get-answer-input-error': shouldHighlightGetAnswerValidation,
-                      },
-                    ]"
-                    popper-class="cultural-alignment-select-popper"
-                    :fit-input-width="true"
-                    v-model="questionValue_selectExisting_input"
-                    placeholder="Select"
-                    @change="handleSelectChange"
-                    :disabled="hasClickedGetAnswerBtn"
-                    style="width: 100%"
+          <div class="step-level2">
+            <p class="title-p">{{ t("culturalValueAnnotation.step4.step42Title") }}</p>
+          </div>
+          <div style="padding-left: 2em">
+            <div class="flex-column">
+              <p v-html="t('culturalValueAnnotation.step4.selectedTopicAndType')"></p>
+              <p>{{ t("culturalValueAnnotation.step4.ensureQuestion") }}</p>
+              <ul>
+                <li>{{ t("culturalValueAnnotation.step4.requirement1") }}</li>
+                <li>{{ t("culturalValueAnnotation.step4.requirement2") }}</li>
+                <li>{{ t("culturalValueAnnotation.step4.requirement3") }}</li>
+                <li>{{ t("culturalValueAnnotation.step4.requirement4") }}</li>
+              </ul>
+            </div>
+            <div class="custom-tabs" >
+              
+              <div class="custom-tabs-content" style="margin-top: 1em;">
+                <div v-if="activeNameSelect1 === 'Select Existing Question'" class="custom-tab-pane">
+                  <div class="input-container question-input-container">
+                  <!-- <span>{{ t("culturalValueAnnotation.step4.question") }}</span> -->
+                  <div
+                    class="question-select-and-refine-container"
+                    style="
+                      position: relative;
+                      flex: 1;
+                      box-sizing: border-box;
+                    "
                   >
-                    <template #label="{ label, value }">
-                      <div class="text-content">
-                        <div>
-                          <p>{{ value }}</p>
+                    <el-select
+                      :class="[
+                        'select-auto-height',
+                        {
+                          'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                        },
+                      ]"
+                      popper-class="cultural-alignment-select-popper"
+                      :fit-input-width="true"
+                      v-model="questionValue_selectExisting_input"
+                      placeholder="Select"
+                      @change="handleSelectChange"
+                      :disabled="hasClickedGetAnswerBtn"
+                      style="width: 100%"
+                    >
+                      <template #label="{ label, value }">
+                        <div class="text-content">
+                          <div>
+                            <p>{{ value }}</p>
+                          </div>
                         </div>
-                      </div>
-                    </template>
-                    <el-option
-                      v-for="item in questionOptions"
-                      :key="item.question"
-                      :label="item.question"
-                      :value="item.question"
-                    />
-                  </el-select>
+                      </template>
+                      <el-option
+                        v-for="item in questionOptions"
+                        :key="item.question"
+                        :label="item.question"
+                        :value="item.question"
+                      />
+                    </el-select>
+                  </div>
+                  <el-button
+                    type="primary"
+                    style="
+                      width: 4.5rem;
+                      height: 4.5rem;
+                      font-size: 0.85em;
+                      padding: 0;
+                      background: #fff;
+                      color: rgba(11, 112, 195, 1);
+                      white-space: pre-line;
+                      margin: 0;
+                      align-self: center;
+                    "
+                    @click="activeNameSelect1 = 'Refine Question'"
+                    :disabled="hasClickedGetAnswerBtn"
+                  >
+                    {{ t("common.editQuestionButton") }}
+                  </el-button>
                 </div>
-                <el-button
-                  type="primary"
-                  style="
-                    width: 4.5rem;
-                    height: 4.5rem;
-                    font-size: 0.85em;
-                    padding: 0;
-                    background: #fff;
-                    color: rgba(11, 112, 195, 1);
-                    white-space: pre-line;
-                    margin: 0;
-                    align-self: center;
-                  "
-                  @click="activeNameSelect1 = 'Refine Question'"
-                  :disabled="hasClickedGetAnswerBtn"
-                >
-                  {{ t("common.editQuestionButton") }}
-                </el-button>
-              </div>
-            </el-tab-pane>
-            <el-tab-pane
-              :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab"
-              :label="
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                t('culturalValueAnnotation.step3.refine') +
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-              "
-              name="Refine Question"
-            >
-              <div class="input-container question-input-container">
-                <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-                <div
-                  class="question-select-and-refine-container"
-                  style="
-                    position: relative;
-                    width: calc(100% - 16em);
-                    box-sizing: border-box;
-                  "
-                >
-                  <el-input
-                    v-model="questionValue_refine_input"
+                </div>
+                <div v-if="activeNameSelect1 === 'Refine Question'" class="custom-tab-pane">
+                  <div class="input-container question-input-container">
+                    <!-- <span>{{ t("culturalValueAnnotation.step4.question") }}</span> -->
+                  <div
+                    class="question-select-and-refine-container"
+                    style="
+                      position: relative;
+                      flex: 1;
+                      box-sizing: border-box;
+                    "
+                  >
+                    <el-input
+                      v-model="questionValue_refine_input"
+                      :class="{
+                        'get-answer-input-error': shouldHighlightGetAnswerValidation,
+                      }"
+                      style="position: relative; z-index: 2"
+                      type="textarea"
+                      :autosize="{ minRows: 2, maxRows: 10 }"
+                      placeholder="Please input"
+                      :disabled="hasClickedGetAnswerBtn"
+                    />
+                  </div>
+
+                  <el-button
+                    type="primary"
+                    style="
+                      width: 4.5rem;
+                      height: 4.5rem;
+                      font-size: 0.85em;
+                      padding: 0;
+                      background: #fff;
+                      color: rgba(11, 112, 195, 1);
+                      white-space: pre-line;
+                      margin: 0;
+                      align-self: center;
+                    "
+                    @click="activeNameSelect1 = 'Select Existing Question'"
+                    :disabled="hasClickedGetAnswerBtn"
+                  >
+                    {{ t("common.changeQuestionButton") }}
+                  </el-button>
+                </div>
+                </div>
+                <div v-if="activeNameSelect1 === 'Create New'" class="custom-tab-pane">
+                  <div class="input-container question-input-container">
+                    <!-- <span>{{ t("culturalValueAnnotation.step4.question") }}</span> -->
+                    <el-input
+                    v-model="questionValue_create_input"
                     :class="{
                       'get-answer-input-error': shouldHighlightGetAnswerValidation,
                     }"
-                    style="position: relative; z-index: 2"
+                    style="flex: 1;"
                     type="textarea"
                     :autosize="{ minRows: 2, maxRows: 10 }"
                     placeholder="Please input"
                     :disabled="hasClickedGetAnswerBtn"
-                  />
+                    />
+                  </div>
                 </div>
-
-                <el-button
-                  type="primary"
-                  style="
-                    width: 4.5rem;
-                    height: 4.5rem;
-                    font-size: 0.85em;
-                    padding: 0;
-                    background: #fff;
-                    color: rgba(11, 112, 195, 1);
-                    white-space: pre-line;
-                    margin: 0;
-                    align-self: center;
-                  "
-                  @click="activeNameSelect1 = 'Select Existing Question'"
-                  :disabled="hasClickedGetAnswerBtn"
-                >
-                  {{ t("common.changeQuestionButton") }}
-                </el-button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane
-              :disabled="hasClickedGetAnswerBtn"
-              :label="
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                t('culturalValueAnnotation.step3.createNew') +
-                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-              "
-              name="Create New"
+            </div>
+            <div
+              v-if="shouldShowGetAnswerValidationError"
+              class="question-error-tip"
             >
-              <div class="input-container question-input-container">
-                <span>{{ t("culturalValueAnnotation.step4.question") }}</span>
-                <el-input
-                  v-model="questionValue_create_input"
-                  :class="{
-                    'get-answer-input-error': shouldHighlightGetAnswerValidation,
-                  }"
-                  style="width: calc(100% - 16em)"
-                  type="textarea"
-                  :autosize="{ minRows: 2, maxRows: 10 }"
-                  placeholder="Please input"
-                  :disabled="hasClickedGetAnswerBtn"
-                />
+              <div>
+                <el-icon class="warning-icon"><Warning /></el-icon>
+              <p>{{ questionErrorTip }}</p>
               </div>
-            </el-tab-pane>
-          </el-tabs>
-          
-          <div
-            v-if="shouldShowGetAnswerValidationError"
-            class="question-error-tip"
-          >
-            <div>
-              <el-icon class="warning-icon"><Warning /></el-icon>
-            <p>{{ questionErrorTip }}</p>
             </div>
           </div>
-          <div class="score-container" style="margin-top: -1em;">
-            <div>
-              <span
-                >{{ t("culturalValueAnnotation.step4.importanceScore") }}:</span
-              >
-              <el-select
-                v-model="importanceValue"
-                :class="{
-                  'get-answer-input-error': shouldHighlightGetAnswerValidation,
-                }"
-                placeholder="Select"
-                :disabled="hasClickedGetAnswerBtn"
-              >
-                <el-option
-                  v-for="option in importanceScoreOptions"
-                  :key="`importance-${option.value}`"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
-            </div>
-            <div>
-              <span
-                >{{ t("culturalValueAnnotation.step4.distinctivenessScore") }}:</span
-              >
-              <el-select
-                v-model="distinctivenessValue"
-                :class="{
-                  'get-answer-input-error': shouldHighlightGetAnswerValidation,
-                }"
-                placeholder="Select"
-                :disabled="hasClickedGetAnswerBtn"
-              >
-                <el-option
-                  v-for="option in distinctivenessScoreOptions"
-                  :key="`distinctiveness-${option.value}`"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
-            </div>
-            <div>
-              <span
-                >{{ t("culturalValueAnnotation.step4.plausibilityScore") }}:</span
-              >
-              <el-select
-                v-model="plausibilityValue"
-                :class="{
-                  'get-answer-input-error': shouldHighlightGetAnswerValidation,
-                }"
-                placeholder="Select"
-                :disabled="hasClickedGetAnswerBtn"
-              >
-                <el-option
-                  v-for="option in plausibilityScoreOptions"
-                  :key="`plausibility-${option.value}`"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
+          
+          <div class="step-level2">
+            <p class="title-p">{{ t("culturalValueAnnotation.step4.step43Title") }}</p>
+          </div>
+          
+          <div style="padding-left: 2em;" class="flex-column">
+            <p v-html="t('culturalValueAnnotation.step4.scoreRequirement')"></p>
+            <div class="score-container">
+              <div class="score-item">
+                <p class="score-title"><b>1. {{ t("culturalValueAnnotation.step4.importanceScore") }}：</b>{{ t("culturalValueAnnotation.step4.importanceHintText") }}</p>
+                <div class="score-options">
+                  <div 
+                    v-for="option in importanceScoreOptions" 
+                    :key="`importance-${option.value}`"
+                    class="score-option"
+                    :class="{ 'active': importanceValue === option.value, 'disabled': hasClickedGetAnswerBtn }"
+                    @click="!hasClickedGetAnswerBtn && (importanceValue = option.value)"
+                  >
+                    <div class="score-circle">{{ option.value }}</div>
+                    <span class="score-label">{{ option.label }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="score-item">
+                <p class="score-title"><b>2. {{ t("culturalValueAnnotation.step4.distinctivenessScore") }}：</b>{{ t("culturalValueAnnotation.step4.distinctivenessHintText") }}</p>
+                <div class="score-options">
+                  <div 
+                    v-for="option in distinctivenessScoreOptions" 
+                    :key="`distinctiveness-${option.value}`"
+                    class="score-option"
+                    :class="{ 'active': distinctivenessValue === option.value, 'disabled': hasClickedGetAnswerBtn }"
+                    @click="!hasClickedGetAnswerBtn && (distinctivenessValue = option.value)"
+                  >
+                    <div class="score-circle">{{ option.value }}</div>
+                    <span class="score-label">{{ option.label }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="score-item">
+                <p class="score-title"><b>3. {{ t("culturalValueAnnotation.step4.plausibilityScore") }}：</b>{{ t("culturalValueAnnotation.step4.plausibilityHintText") }}</p>
+                <div class="score-options">
+                  <div 
+                    v-for="option in plausibilityScoreOptions" 
+                    :key="`plausibility-${option.value}`"
+                    class="score-option"
+                    :class="{ 'active': plausibilityValue === option.value, 'disabled': hasClickedGetAnswerBtn }"
+                    @click="!hasClickedGetAnswerBtn && (plausibilityValue = option.value)"
+                  >
+                    <div class="score-circle">{{ option.value }}</div>
+                    <span class="score-label">{{ option.label }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -2380,6 +2402,9 @@ const getQuestionNum = () => {
         line-height: 1.5;
         // margin-bottom: 1em;
       }
+      p{
+        line-height: 1.5;
+      }
       .core-action-box {
         font-size: 1.125em;
         color: rgba(34, 34, 34, 1);
@@ -2447,11 +2472,9 @@ const getQuestionNum = () => {
       }
     }
     .question-error-tip{
-      padding-left: 10em;
       color: rgba(128, 0, 0, 1);
       
       min-height: 1.5em;
-      margin-top: -2.2em;
       &>div{
         display: flex;
       flex-direction: row;
@@ -2460,7 +2483,7 @@ const getQuestionNum = () => {
       }
     }
     .input-container {
-      margin: 0.5em 0 1em;
+      margin: 0.5em 0;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -2470,7 +2493,6 @@ const getQuestionNum = () => {
         align-self: flex-end;
         font-size: 0.9em;
         height: 2.4em;
-        margin-left: 1em;
       }
       .el-input {
         width: 600px;
@@ -2551,6 +2573,53 @@ const getQuestionNum = () => {
         box-shadow: 0 0 0 1px #b22222;
       }
 
+      .custom-tabs-header {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 1em;
+        .custom-tab-button {
+          flex: 1;
+          padding: 12px 24px;
+          border: 2px solid #dcdfe6;
+          background: white;
+          cursor: pointer;
+          font-size: 1.25rem;
+          color: #606266;
+          border-radius: 4px;
+          transition: all 0.3s;
+          text-align: left;
+          border-radius: 6px;
+
+          &:hover {
+            // color: #0856A7;
+            // border-color: #0856A7;
+          }
+
+          &.active {
+            color: #0856A7;
+            border-color: #0856A7;
+            // background-color: rgba(11, 112, 195, 0.05);
+            font-weight: 500;
+          }
+
+          &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+
+
+      .custom-tab-pane {
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
       .annotated-summary {
         display: flex;
         align-items: center;
@@ -2562,7 +2631,6 @@ const getQuestionNum = () => {
           display: flex;
           align-items: center;
           justify-content: flex-end;
-          width: 9em;
           flex-shrink: 0;
           font-weight: bold;
           line-height: 1.65;
@@ -2654,26 +2722,76 @@ const getQuestionNum = () => {
 
       .score-container {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 0 1rem;
-        margin-top: -1rem;
-        & > div {
-          flex: 1 1 calc(33.333% - 1rem);
-          min-width: 18rem;
-          display: flex;
-          align-items: center;
-          span {
-            margin-right: 0.85em;
-            width: 9em;
-            display: inline-block;
-            text-align: right;
-            font-weight: bold;
-          }
-          :deep(.el-select) {
-            width: calc(100% - 9em);
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .score-item {
+        .score-title {
+          margin-bottom: 0.75rem;
+          line-height: 1.5;
+        }
+      }
+
+      .score-options {
+        display: flex;
+        gap: 2rem;
+        padding-left: 1.5rem;
+      }
+
+      .score-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(.disabled) {
+          .score-circle {
+            border-color: #0b70c3;
+            color: #0b70c3;
           }
         }
+
+        &.active {
+          .score-circle {
+            background-color: #0b70c3;
+            border-color: #0b70c3;
+            color: white !important;
+          }
+          .score-label {
+            color: #0b70c3;
+          }
+        }
+
+        &.disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+      }
+
+      .score-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #dcdfe6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 500;
+        color: #606266;
+        background: white;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+      }
+
+      .score-label {
+        font-size: 12px;
+        color: #606266;
+        text-align: center;
+        white-space: nowrap;
       }
       .input-container.question-input-container {
         & > span:nth-child(1) {
@@ -2706,13 +2824,13 @@ const getQuestionNum = () => {
       display: flex;
       flex-direction: column;
       gap: 1.2em;
-      color: rgba(51, 51, 51, 1);
+      color: #2F2F2F;
     }
 
     .step-level2{
       line-height: 1.4;
       .title-p{
-        font-size: 1.25em;
+        font-size: 1.25rem;
         color: #05408c;
         margin-bottom: .5em;
         font-weight: bold;
