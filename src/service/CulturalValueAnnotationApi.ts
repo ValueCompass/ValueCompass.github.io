@@ -8,7 +8,7 @@ const request = createAxios({
 });
 
 export const login = (data: any): any => {
-    return request.post("/annotations_test_2/user_login/", data)
+    return request.post("/annotations_v2/user_login/", data)
 
     const result = {
         data: {
@@ -24,7 +24,7 @@ export const login = (data: any): any => {
 }
 
 export const UserRegisterLogin = (data: any): any => {
-    return request.post("/annotations_test_2/user_register_login/", data)
+    return request.post("/annotations_v2/user_register_login/", data)
 
     const result = {
         data: {
@@ -45,7 +45,7 @@ export const UserRegisterLogin = (data: any): any => {
 }
 
 export const adminLogin = (data: any): any => {
-    return request.post("/annotations_test_2/admin_login/", data)
+    return request.post("/annotations_v2/admin_login/", data)
     const isValidAdmin = true
     const result = {
         data: isValidAdmin
@@ -79,7 +79,7 @@ export const getAdminAnnotationUsers = (data: any, token = ""): any => {
         }
         : undefined;
 
-    return request.post("/annotations_test_2/all_user_completed_annotations/", data, config) 
+    return request.post("/annotations_v2/all_user_completed_annotations/", data, config) 
     const result = {
         data: {
             ok: true,
@@ -97,15 +97,15 @@ export const getAdminAnnotationUsers = (data: any, token = ""): any => {
 }
 
 export const passedCalibrationQuiz = (data: any): any => {
-    return request.post("/annotations_test_2/passed_calibration_quiz/", data)
+    return request.post("/annotations_v2/passed_calibration_quiz/", data)
 }
 
 export const getCalibrationQuiz = (data: any): any => {
-    return request.post("/annotations_test_2/get_calibration_quiz/", data)
+    return request.post("/annotations_v2/get_calibration_quiz/", data)
 }
 
 export const StudiedAnnotationGuidance = (data: any): any => {
-    return request.post("/annotations_test_2/studied_annotation_guidance/", data)
+    return request.post("/annotations_v2/studied_annotation_guidance/", data)
 
     const result = {
         data: {
@@ -121,7 +121,7 @@ export const StudiedAnnotationGuidance = (data: any): any => {
 }
 
 export const getTopicTaskTaxonomy = (data: any): any => {
-    return request.post("/annotations_test_2/get_topic_task_taxonomy/", data) 
+    return request.post("/annotations_v2/get_topic_task_taxonomy/", data) 
 
     const result = {
         data: {
@@ -138,7 +138,7 @@ export const getTopicTaskTaxonomy = (data: any): any => {
 }
 
 export const getCandidateQuestions = (data: any): any => {
-    return request.post("/annotations_test_2/get_candidate_questions/", data) 
+    return request.post("/annotations_v2/get_candidate_questions/", data) 
 
     const result = {
         data: {
@@ -154,7 +154,7 @@ export const getCandidateQuestions = (data: any): any => {
 }
 
 export const computeQuestionSimilarity = (data: any): any => {
-    return request.post("/annotations_test_2/compute_question_similarity/", data)
+    return request.post("/annotations_v2/compute_question_similarity/", data)
 
     const result = {
         data: {
@@ -171,7 +171,7 @@ export const computeQuestionSimilarity = (data: any): any => {
 }
 
 export const getQuestionResponse = (data: any): any => {
-    return request.post("/annotations_test_2/get_question_response/", data) 
+    return request.post("/annotations_v2/get_question_response/", data) 
 
     const result = {
         data: {
@@ -202,7 +202,7 @@ export const getQuestionResponse = (data: any): any => {
 }
 
 export const submitAnnotation = (data: any): any => {
-    return request.post("/annotations_test_2/submit_annotation/", data) 
+    return request.post("/annotations_v2/submit_annotation/", data) 
 
     const result = {
         data: {
@@ -222,7 +222,7 @@ export const submitAnnotation = (data: any): any => {
 
 
 export const GetAllCompletedAnnotations = (data: any): any => {
-    return request.post("/annotations_test_2/all_completed_annotations/", data) 
+    return request.post("/annotations_v2/all_completed_annotations/", data) 
 
     const result = {
         data: {
@@ -265,13 +265,44 @@ export const GetAllCompletedAnnotations = (data: any): any => {
 
 
 export const DeleteAnnotationItem = (data: any): any => {
-    return request.post("annotations_test_2/delete_annotation/", data) 
+    return request.post("annotations_v2/delete_annotation/", data) 
 
     const result = {
         data: {
             "ok": true,
         }
     }
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve(result);
+        }, 1000);
+    });
+}
+
+
+
+
+// 更新标注项
+export const getQuestionValueList = (data: any): any => {
+    return request.post("/annotations_v2/get_question_value_list/", data) 
+
+    const result = {
+        data: {
+            value_list: [
+                "自主选择，成年人的人生选择应该由其自主决定",
+                "尊重父母，应该理解并回应父母的担忧",
+                "尊重父母，应该理解并回应父母的担忧",
+            ],
+            max_select_num: 3,
+            value_list_person: [
+                "自主选择，成年人的人生选择应该由其自主决定2",
+                "尊重父母，应该理解并回应父母的担忧2",
+                "尊重父母，应该理解并回应父母的担忧2",
+            ],
+            max_select_num_person: 3,
+        }
+    }
+
     return new Promise(function (resolve) {
         setTimeout(function () {
             resolve(result);

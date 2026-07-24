@@ -771,85 +771,13 @@
             <h5>
               {{ t("culturalValueAnnotation.step5.homeCoreAction") }}
             </h5>
-            <!-- <ul>
-              <li>
-                {{ t("culturalValueAnnotation.step5.coreAction1") }}
-              </li>
-              <li>
-                {{ t("culturalValueAnnotation.step5.coreAction2") }}
-              </li>
-            </ul> -->
+         
           </div>
 
-          <!-- <div class="seconed-container">
-            <p class="title-p">
-              <img src="@/assets/images/step_icon3.png" alt="" />
-              <b>{{ t("culturalValueAnnotation.step5.firstReviewTitle") }}</b>
-            </p>
-            <ul class="ul-decimal">
-              <li>
-                <p>
-                  {{ t("culturalValueAnnotation.step5.reviewValuesIntro") }}
-                </p>
-                <ul class="ul-lower-alpha">
-                  <li>
-                    {{ t("culturalValueAnnotation.step5.reviewValues1") }}
-                  </li>
-                  <li>
-                    {{ t("culturalValueAnnotation.step5.reviewValues2") }}
-                  </li>
-                  <li>
-                    {{ t("culturalValueAnnotation.step5.reviewValues3") }}
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <p>
-                  {{ t("culturalValueAnnotation.step5.reviewTextIntro") }}
-                </p>
-                <ul class="ul-lower-alpha">
-                  <li>{{ t("culturalValueAnnotation.step5.reviewText1") }}</li>
-                  <li>{{ t("culturalValueAnnotation.step5.reviewText2") }}</li>
-                  <li>{{ t("culturalValueAnnotation.step5.reviewText3") }}</li>
-                </ul>
-              </li>
-            </ul>
+       
 
-            <p class="title-p">
-              <img src="@/assets/images/step_icon4.png" alt="" />
-              <b>{{ t("culturalValueAnnotation.step5.wholeAnswerIntro") }}</b>
-            </p>
-            <ul class="ul-lower-alpha">
-              <li>{{ t("culturalValueAnnotation.step5.wholeAnswer1") }}</li>
-              <li>{{ t("culturalValueAnnotation.step5.wholeAnswer2") }}</li>
-            </ul>
-            <p>
-              {{ t("culturalValueAnnotation.step5.addNewHint") }}
-            </p>
-
-            <p class="title-p">
-              <img src="@/assets/images/note-icon.png" alt="" />
-              <span><b>{{ t("culturalValueAnnotation.step5.importantRulesTitle") }}</b></span>
-            </p>
-            <ul class="ul-decimal">
-              <li>
-                <p>{{ t("culturalValueAnnotation.step5.rule1Intro") }}</p>
-                <ul class="ul-lower-alpha">
-                  <li>{{ t("culturalValueAnnotation.step5.rule1a") }}</li>
-                  <li>{{ t("culturalValueAnnotation.step5.rule1b") }}</li>
-                </ul>
-              </li>
-              <li>
-                <p>{{ t("culturalValueAnnotation.step5.rule2") }}</p>
-              </li>
-            </ul>
-          </div> -->
-
-          <div class="highlight-container"  style="font-size: 1rem;">
-            <div class="step-level2">
-              <p class="title-p">{{ t("culturalValueAnnotation.step5.homeCheckTitle") }}</p>
-              <p>{{ t("culturalValueAnnotation.step5.homeCheckDesc") }}</p>
-            </div>
+          <div class=""  style="font-size: 1rem;margin-top: 1em;">
+            
             <div class="show_question_container" v-if="questionValue">
               <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
               <div class="question_box" style="flex: 1">
@@ -857,7 +785,7 @@
               </div>
             </div>
             <div
-              style="margin-top: 0em"
+              style="margin-top: 1em"
               v-if="hasClickedGetAnswerBtn"
             >
               <el-button
@@ -867,13 +795,13 @@
               >
               <p style="margin-top: 1em"><b>Notice：</b>You can also reselect or create new questions.</p>
             </div>
-            <AnnotationComponent
+           <AnnotationComponentNew
               :annotationDataOrigin="annotationDataOrigin"
               :use_new_logic="use_new_logic"
               :editMode="submit_type === 'revise'"
               :step="5"
               ref="annotationComponentRef"
-            ></AnnotationComponent>
+            ></AnnotationComponentNew>
           </div>
         </div>
       </div>
@@ -900,26 +828,23 @@
           </div> -->
         </div>
 
-        <div class="highlight-container" style="font-size: 1rem;">
-          <div class="step-level2">
-              <p class="title-p">{{ t("culturalValueAnnotation.step6.homeCheckTitle") }}</p>
-              <p>{{ t("culturalValueAnnotation.step6.homeCheckDesc") }}</p>
-            </div>
+        <div style="font-size: 1rem;">
           <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
             <div class="question_box">
               {{ questionValue }}
             </div>
           </div>
-          <AnnotationComponent
+          <AnnotationComponentNew
             :annotationDataOrigin="annotationDataOrigin_person"
             :use_new_logic="use_new_logic"
             :editMode="submit_type === 'revise'"
             :step="6"
             ref="annotationComponentRef2"
-          ></AnnotationComponent>
+          ></AnnotationComponentNew>
         </div>
       </div>
+      
     </div>
 
     <div v-if="!isAdminView" style="display: flex; justify-content: center; margin-top: 2em">
@@ -961,7 +886,7 @@ const isAdminView = computed(() => {
     String(route.query.adminView || "") === "1";
 });
 import UserDetail from "./UserDetail.vue";
-import AnnotationComponent from "./Components/AnnotationComponent.vue";
+import AnnotationComponentNew from "./Components/AnnotationComponentNew.vue";
 import SimilarityDialog from "./Components/SimilarityDialog.vue";
 import { isHighlySimilar } from "@/utils/CulturalAnnotationUtil";
 import {
@@ -972,6 +897,7 @@ import {
   getCandidateQuestions,
   computeQuestionSimilarity,
   getQuestionResponse,
+  getQuestionValueList,
   submitAnnotation,
   GetAllCompletedAnnotations,
 } from "@/service/CulturalValueAnnotationApi";
@@ -1437,34 +1363,27 @@ const shouldShowGetAnswerValidationError = computed(() => {
   return !!questionErrorTip.value && hasTriggeredGetAnswerValidation.value;
 });
 
-// 后端第一次传过来的 或者上次提交的
-let original_response = ref("");
-let original_highlight_cues = ref([]);
-let original_key_concepts = ref([]);
-let original_value_concepts_evidence = ref([]);
-let original_value_concepts_justification = ref([]);
 
-let original_response_person = ref("");
-let original_highlight_cues_person = ref([]);
-let original_key_concepts_person = ref([]);
 
 // cultural 部分的标注
 let annotationDataOrigin = reactive({
-  originalResponse: "",
+  value_list: [],
+  max_select_num: 1,
+  selected_ranked_values: [],
+  selected_ranked_comment: "",
   response: "",
-  highlight_cues: [],
-  key_concepts: [],
-  value_concepts_evidence: [],
-  value_concepts_justification: [],
+  inappropriate_response: "",
+  boundary_condition: {},
 });
 // personal 部分的标注
 let annotationDataOrigin_person = reactive({
-  originalResponse: "",
+  value_list: [],
+  max_select_num: 1,
+  selected_ranked_values: [],
+  selected_ranked_comment: "",
   response: "",
-  highlight_cues: [],
-  key_concepts: [],
-  value_concepts_evidence: [],
-  value_concepts_justification: [],
+  inappropriate_response: "",
+  boundary_condition: {},
 });
 
 const resetGetAnswerState = () => {
@@ -1479,32 +1398,26 @@ const resetGetAnswerState = () => {
   rawPlausibilityValue.value = null;
   questionAction.value = "";
 
-  original_response.value = "";
-  original_highlight_cues.value = [];
-  original_key_concepts.value = [];
-  original_value_concepts_evidence.value = [];
-  original_value_concepts_justification.value = [];
 
-  original_response_person.value = "";
-  original_highlight_cues_person.value = [];
-  original_key_concepts_person.value = [];
 
   annotationDataOrigin = {
-    originalResponse: "",
+    value_list: [],
+    max_select_num: 1,
+    selected_ranked_values: [],
+    selected_ranked_comment: "",
     response: "",
-    highlight_cues: [],
-    key_concepts: [],
-    value_concepts_evidence: [],
-    value_concepts_justification: [],
+    inappropriate_response: "",
+    boundary_condition: {},
   };
 
   annotationDataOrigin_person = {
-    originalResponse: "",
+    value_list: [],
+    max_select_num: 1,
+    selected_ranked_values: [],
+    selected_ranked_comment: "",
     response: "",
-    highlight_cues: [],
-    key_concepts: [],
-    value_concepts_evidence: [],
-    value_concepts_justification: [],
+    inappropriate_response: "",
+    boundary_condition: {},
   };
 };
 
@@ -1687,43 +1600,27 @@ const handleGetAnswerBtnClick = async () => {
   console.log(formData);
   isLoadingGetAnswer.value = true;
 
-  getQuestionResponse(formData)
+  getQuestionValueList(formData)
     .then((res) => {
       console.log(res);
       if (res.data) {
         // ElMessage.success("提交成功");
-        annotationDataOrigin = res.data;
-        annotationDataOrigin.originalResponse = res.data.response;
-        annotationDataOrigin.original_highlight_cues = res.data.highlight_cues;
-        annotationDataOrigin.original_key_concepts = res.data.key_concepts;
+        annotationDataOrigin = {
+          value_list: res.data.value_list,
+          max_select_num: res.data.max_select_num
+        },      
 
-        annotationDataOrigin_person = res.data;
-        annotationDataOrigin_person.originalResponse = res.data.response;
-        annotationDataOrigin_person.original_highlight_cues = res.data.highlight_cues;
-        annotationDataOrigin_person.original_key_concepts = res.data.key_concepts;
+        annotationDataOrigin_person = {
+          value_list: res.data.value_list_person,
+          max_select_num: res.data.max_select_num_person
+        },      
 
 
-        original_response.value = res.data.response;
-        original_highlight_cues.value = res.data.highlight_cues;
-        original_key_concepts.value = res.data.key_concepts;
-        original_value_concepts_evidence.value =
-          res.data.value_concepts_evidence || [];
-        original_value_concepts_justification.value =
-          res.data.value_concepts_justification || [];
-
-        original_response_person.value = res.data.response;
-        original_highlight_cues_person.value = res.data.highlight_cues;
-        original_key_concepts_person.value = res.data.key_concepts;
-
-        // annotationDataOrigin.response = res.data.response;
-        // annotationDataOrigin.highlight_cues = res.data.highlight_cues;
-        // annotationDataOrigin.key_concepts = res.data.key_concepts;
         hasClickedGetAnswerBtn.value = true;
         ElMessage.success(
           t("culturalValueAnnotation.step4.getAnswerLockedToast"),
         );
         answer_model.value = res.data.answer_model;
-        original_answer_country.value = res.data.original_answer_country || "";
       } else {
         ElMessage.error(t("common.unexpectedError"));
       }
@@ -1813,60 +1710,35 @@ const submitHighlightAndConcepts = () => {
   }).then(() => {
     isLoadingSubmitHighlightAndConcepts.value = true;
 
-    // 处理第一个注释组件
+    // 在这里先拿到组件中用户编辑后的数据
+    console.log("annotationComponentRef.value:", annotationComponentRef.value);
+    console.log("annotationComponentRef.value?.getFormData:", annotationComponentRef.value?.getFormData);
+    
+    // 校验两个组件的必填字段
+    if (annotationComponentRef.value && !annotationComponentRef.value.validate()) {
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
+    }
+    if (annotationComponentRef2.value && !annotationComponentRef2.value.validate()) {
+      isLoadingSubmitHighlightAndConcepts.value = false;
+      return;
+    }
+
     const component1Data = annotationComponentRef.value
-      ? annotationComponentRef.value.processAnnotationData()
+      ? annotationComponentRef.value.getFormData()
       : null;
-    if (!component1Data) {
-      ElMessage.error(t("common.pleaseCompleteAnnotation"));
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
-    if (component1Data.unmarked) {
-      ElMessage.error(t("common.pleaseMarkAllItems"));
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
-    if (component1Data.validationFailed) {
-      if (component1Data.type === "complete_no_omission") {
-        ElMessage.warning(t("culturalValueAnnotation.annotation.checkIncomplete", { step: "5" }));
-      } else if (component1Data.type === "final_confirmation") {
-        ElMessage.warning(t("culturalValueAnnotation.annotation.checkFinalConfirm", { step: "5" }));
-      }
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
+    const component2Data = annotationComponentRef2.value
+      ? annotationComponentRef2.value.getFormData()
+      : null;
+    
+    console.log("component1Data:", component1Data);
+    console.log("component2Data:", component2Data);
 
-    // 处理第二个注释组件
-    const component2Data = annotationComponentRef2.value.processAnnotationData();
-    if (!component2Data) {
-      ElMessage.error(t("common.pleaseCompleteAnnotation"));
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
-    if (component2Data.unmarked) {
-      ElMessage.error(t("common.pleaseMarkAllItems"));
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
-    if (component2Data.validationFailed) {
-      if (component2Data.type === "complete_no_omission") {
-        ElMessage.warning(t("culturalValueAnnotation.annotation.checkIncomplete", { step: "6" }));
-      } else if (component2Data.type === "final_confirmation") {
-        ElMessage.warning(t("culturalValueAnnotation.annotation.checkFinalConfirm", { step: "6" }));
-      }
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
-
-    // 判断 response/key_concepts 是否高度一致，任一相似则弹窗
-    const conceptsStr1 = (component1Data.key_concepts || []).join(" ");
-    const conceptsStr2 = (component2Data.key_concepts || []).join(" ");
+     // // 判断 response 是否高度一致，任一相似则弹窗
     const responseSimilar = isHighlySimilar(component1Data.response, component2Data.response);
-    const conceptsSimilar = isHighlySimilar(conceptsStr1, conceptsStr2);
 
-    if (responseSimilar && conceptsSimilar) {
-      // 两部分都大于 >= 0.85，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
+    if (responseSimilar) {
+      // response 大于 >= 0.85，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
       pendingComponent1Data.value = component1Data;
       pendingComponent2Data.value = component2Data;
       similarityDialogVisible.value = true;
@@ -1895,8 +1767,8 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
       }
 
       const sendData = {
-        answer_model: answer_model.value,
-        original_answer_country: original_answer_country.value,
+        // answer_model: answer_model.value,
+        // original_answer_country: original_answer_country.value,
         username: userDetail.username.trim(),
         country: userDetail.country.trim(),
         language: userDetail.language.trim(),
@@ -1916,51 +1788,26 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         raw_distinctiveness: rawDistinctivenessValue.value ?? null,
         raw_plausibility: rawPlausibilityValue.value ?? null,
 
-        // 原始响应
-        original_response: original_response.value || "",
-        original_highlight_cues: original_highlight_cues.value || [],
-        original_key_concepts: original_key_concepts.value || [],
-        original_value_concepts_evidence:
-          original_value_concepts_evidence.value || [],
-        original_value_concepts_justification:
-          original_value_concepts_justification.value || [],
-        original_response_person: original_response_person.value || "",
-        original_highlight_cues_person:
-          original_highlight_cues_person.value || [],
-        original_key_concepts_person: original_key_concepts_person.value || [],
 
-        // cultural 部分的标注
+        value_list: component1Data.value_list,
+        max_select_num: component1Data.max_select_num,
+        selected_ranked_values: component1Data.selected_ranked_values,
+        selected_ranked_comment: component1Data.selected_ranked_comment,
         response: component1Data.response,
-        highlight_cues: component1Data.highlight_cues,
-        key_concepts: component1Data.key_concepts,
-        cues_actions: component1Data.cues_actions,
-        concepts_actions: component1Data.concepts_actions,
-        // 直接使用组件过滤后的结果，保证长度与 highlight_cues / key_concepts 对齐。
-        value_concepts_evidence:
-          component1Data.value_concepts_evidence,
-        value_concepts_justification:
-          component1Data.value_concepts_justification,
-        textAndConceptMatch:
-          component1Data.textAndConceptMatch || [],
+        inappropriate_response: component1Data.inappropriate_response,
+        boundary_condition: component1Data.boundary_condition,
 
-        // 第二个注释组件的数据 personal 部分的标注
+        value_list_person: component2Data.value_list,
+        max_select_num_person: component2Data.max_select_num,
+        selected_ranked_values_person: component2Data.selected_ranked_values,
+        selected_ranked_comment_person: component2Data.selected_ranked_comment,
         response_person: component2Data.response,
-        highlight_cues_person: component2Data.highlight_cues,
-        key_concepts_person: component2Data.key_concepts,
-        cues_actions_person: component2Data.cues_actions,
-        concepts_actions_person: component2Data.concepts_actions,
-        // personal 部分同样提交过滤后的 correspondence / evidence，避免与个人标注结果错位。
-        value_concepts_evidence_person:
-          component2Data.value_concepts_evidence,
-        value_concepts_justification_person:
-          component2Data.value_concepts_justification,
-        textAndConceptMatch_person:
-          component2Data.textAndConceptMatch || [],
+        inappropriate_response_person: component2Data.inappropriate_response,
+        boundary_condition_person: component2Data.boundary_condition,        
 
         duration_time: Math.floor(duration_time.value / 1000),
         submit_type: submit_type.value,
         timestamp: new Date().toISOString(),
-        use_new_logic: use_new_logic.value,
       };
       if (similarityData) {
         sendData.personal_answer_similar_to_cultural_answer = similarityData;
@@ -2156,47 +2003,23 @@ onMounted(async () => {
     answer_model.value = question.answer_model;
     original_answer_country.value = question.original_answer_country || "";
     annotationDataOrigin = {
-      originalResponse: question.original_response,
-      response: question.response,
-      highlight_cues: question.highlight_cues,
-      key_concepts: question.key_concepts,
-      value_concepts_evidence: question.value_concepts_evidence || [],
-      value_concepts_justification: question.value_concepts_justification || [],
-      initialCuesActions: question.cues_actions || null,
-      initialConceptsActions: question.concepts_actions || null,
-      initialMismatchExplanations: question.textAndConceptMatch || null, 
-      
-      original_highlight_cues: question.original_highlight_cues || [],
-      original_key_concepts: question.original_key_concepts || [],
+      value_list: question.value_list || [],
+      max_select_num: question.max_select_num || 1,
+      selected_ranked_values: question.selected_ranked_values || [],
+      selected_ranked_comment: question.selected_ranked_comment || "",
+      response: question.response || "",
+      inappropriate_response: question.inappropriate_response || "",
+      boundary_condition: question.boundary_condition || {},
     };
     annotationDataOrigin_person = {
-      originalResponse: question.original_response_person,
-      response: question.response_person,
-      highlight_cues: question.highlight_cues_person,
-      key_concepts: question.key_concepts_person,
-      value_concepts_evidence:
-        question.value_concepts_evidence_person || [],
-      value_concepts_justification:
-        question.value_concepts_justification_person || [],
-      initialCuesActions: question.cues_actions_person || null,
-      initialConceptsActions: question.concepts_actions_person || null,
-      initialMismatchExplanations: question.textAndConceptMatch_person || null, 
-      
-      original_highlight_cues: question.original_highlight_cues_person || [],
-      original_key_concepts: question.original_key_concepts_person || [],
+      value_list: question.value_list_person || [],
+      max_select_num: question.max_select_num_person || 1,
+      selected_ranked_values: question.selected_ranked_values_person || [],
+      selected_ranked_comment: question.selected_ranked_comment_person || "",
+      response: question.response_person || "",
+      inappropriate_response: question.inappropriate_response_person || "",
+      boundary_condition: question.boundary_condition_person || {},
     };
-
-    original_response.value = question.original_response;
-    original_highlight_cues.value = question.original_highlight_cues;
-    original_key_concepts.value = question.original_key_concepts;
-    original_value_concepts_evidence.value =
-      question.original_value_concepts_evidence || [];
-    original_value_concepts_justification.value =
-      question.original_value_concepts_justification || [];
-
-    original_response_person.value = question.original_response_person;
-    original_highlight_cues_person.value = question.original_highlight_cues_person;
-    original_key_concepts_person.value = question.original_key_concepts_person;
   }
 });
 
