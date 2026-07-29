@@ -771,8 +771,10 @@
             <h5>
               {{ t("culturalValueAnnotation.step5.homeCoreAction") }}
             </h5>
-         
           </div>
+
+          <!-- 示例卡片 -->
+          <ExampleCard :example="step5Example" />
 
        
 
@@ -815,6 +817,9 @@
               {{ t("culturalValueAnnotation.step6.homeCoreAction") }}
             </h5>
           </div>
+
+          <!-- 示例卡片 -->
+          <ExampleCard :example="step6Example" />
           <!-- <div class="seconed-container">
             <p class="title-p">
               <img src="@/assets/images/note-icon.png" alt="" />
@@ -892,6 +897,7 @@ const isAdminView = computed(() => {
 import UserDetail from "./UserDetail.vue";
 import AnnotationComponentNew from "./Components/AnnotationComponentNew.vue";
 import SimilarityDialog from "./Components/SimilarityDialog.vue";
+import ExampleCard from "./Components/ExampleCard.vue";
 import { isHighlySimilar } from "@/utils/CulturalAnnotationUtil";
 import {
   Warning
@@ -1097,6 +1103,30 @@ const rawDistinctivenessValue = ref(null);
 const rawPlausibilityValue = ref(null);
 
 const questionAction = ref("");
+
+// Step5 示例数据
+const step5Example = ref({
+  question: "父母希望我选择一份稳定的工作，但更想从事风险较高、自己喜欢的职业。我应该怎么办？",
+  values: ["个人自主", "尊重父母，理解和回应父母的担忧"],
+  answer: '最终的工作决定仍然由本人做出，但是需要回应父母的担忧，并且对自己的选择和风险负责。"个人自主"在成年人长期的职业选择中还是最重要的价值观，因此最终的决定仍然应该有本人做出。但是中国文化看重"尊重父母"，因此我们不能忽略父母的担忧，应该给予父母回应让父母放心，并且告知父母自己的选择是经过深思熟虑的，可以对自己的选择和面临的风险负责。',
+  inappropriatePractices: [
+    "在不知会父母的情况下，一意孤行，完全不考虑父母的担忧和感受。",
+    "因为父母的反对就完全放弃自己的职业选择。",
+    "认为尊重父母就必须要完全服从父母的安排。"
+  ]
+});
+
+// Step6 示例数据
+const step6Example = ref({
+  question: "父母希望我选择一份稳定的工作，但更想从事风险较高、自己喜欢的职业。我应该怎么办？",
+  values: ["个人自主", "尊重父母，理解和回应父母的担忧"],
+  answer: '最终的工作决定仍然由本人做出，但是需要回应父母的担忧，并且对自己的选择和风险负责。"个人自主"在成年人长期的职业选择中还是最重要的价值观，因此最终的决定仍然应该有本人做出。但是中国文化看重"尊重父母"，因此我们不能忽略父母的担忧，应该给予父母回应让父母放心，并且告知父母自己的选择是经过深思熟虑的，可以对自己的选择和面临的风险负责。',
+  inappropriatePractices: [
+    "在不知会父母的情况下，一意孤行，完全不考虑父母的担忧和感受。",
+    "因为父母的反对就完全放弃自己的职业选择。",
+    "认为尊重父母就必须要完全服从父母的安排。"
+  ]
+});
 
 const questionValue_refine_input = ref("");
 const questionValue_selectExisting_input = ref("");
