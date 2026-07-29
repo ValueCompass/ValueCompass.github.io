@@ -240,7 +240,8 @@ const activeMainStepIndex = ref(1);
 
 // 是否需要通过 quiz（中国用户需要）。
 const isNeedPassQuizCheck = computed(() => {
-  return registeredUserCountry.value?.toLowerCase() === "china";
+  // return registeredUserCountry.value?.toLowerCase() === "china";
+  return false;
 });
 
 // Quiz 完成后才允许进入问卷步骤。

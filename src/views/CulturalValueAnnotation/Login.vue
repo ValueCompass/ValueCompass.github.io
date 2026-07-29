@@ -303,7 +303,8 @@ const handleAnnotatorLogin = () => {
     // 首次注册：服务端字段必定都是 false，直接保存即可。
     // 回访登录：使用服务端返回的实际值。
     // 非中国用户不需要 quiz，自动标记 passed_calibration_quiz 为 true。
-    const isNeedPassQuizCheck = res.data.country?.toLowerCase() === "china";
+    // const isNeedPassQuizCheck = res.data.country?.toLowerCase() === "china";
+    const isNeedPassQuizCheck = false;
     saveCulturalValueAnnotationUserDetail({
       username: res.data.username,
       country: res.data.country,

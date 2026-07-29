@@ -197,7 +197,8 @@ const handleTutorialDialogBeforeClose = (done) => {
 
 // 是否需要通过 quiz（中国用户需要）。
 const isNeedPassQuizCheck = computed(() => {
-  return userDetail.country?.toLowerCase() === "china";
+  // return userDetail.country?.toLowerCase() === "china";
+  return false;
 });
 
 onMounted(async () => {
