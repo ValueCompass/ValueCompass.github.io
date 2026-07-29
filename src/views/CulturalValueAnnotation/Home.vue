@@ -459,11 +459,11 @@
           class="highlight-container intro-container"
           style="display: flex; flex-direction: column; gap: 1.5em 0"
         >
-          <div class="step-level2">
+          <!-- <div class="step-level2">
             <p class="title-p">{{ t("culturalValueAnnotation.step4.step41Title") }}</p>
-          </div>
+          </div> -->
           <div style="padding-left: 2em">
-             <div class="annotated-summary">
+             <!-- <div class="annotated-summary">
               <div class="annotated-summary__label">
                 {{ t("culturalValueAnnotation.step4.annotatedQuestions") }}
               </div>
@@ -503,7 +503,7 @@
                   </span>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="custom-tabs-header">
                 <button 
                   class="custom-tab-button"
@@ -514,7 +514,7 @@
                   :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab || questionOptions.length === 0"
                   @click="activeNameSelect1 = 'Select Existing Question'"
                 >{{ t('culturalValueAnnotation.step3.selectExisting') }}</button>
-                <button 
+                <!-- <button 
                   class="custom-tab-button"
                   :class="{
                     'active': activeNameSelect1 === 'Refine Question',
@@ -531,7 +531,7 @@
                   }"
                   :disabled="hasClickedGetAnswerBtn"
                   @click="activeNameSelect1 = 'Create New'"
-                >{{ t('culturalValueAnnotation.step3.createNew') }}</button>
+                >{{ t('culturalValueAnnotation.step3.createNew') }}</button> -->
             </div>
           </div>
           <div class="step-level2">
@@ -592,7 +592,7 @@
                       />
                     </el-select>
                   </div>
-                  <el-button
+                  <!-- <el-button
                     type="primary"
                     style="
                       width: 4.5rem;
@@ -609,7 +609,7 @@
                     :disabled="hasClickedGetAnswerBtn"
                   >
                     {{ t("common.editQuestionButton") }}
-                  </el-button>
+                  </el-button> -->
                 </div>
                 </div>
                 <div v-if="activeNameSelect1 === 'Refine Question'" class="custom-tab-pane">
@@ -2079,19 +2079,19 @@ const shouldForceCreateNewTab = computed(() => {
   );
 });
 
-watch(
-  [
-    submit_type,
-    hasClickedSaveAndGetQuestionListBtn,
-    () => questionOptions.value.length,
-  ],
-  () => {
-    // 当候选问题为空时，自动保持在 Create New，避免用户切回不可用的 tab。
-    if (shouldForceCreateNewTab.value) {
-      activeNameSelect1.value = "Create New";
-    }
-  },
-);
+// watch(
+//   [
+//     submit_type,
+//     hasClickedSaveAndGetQuestionListBtn,
+//     () => questionOptions.value.length,
+//   ],
+//   () => {
+//     // 当候选问题为空时，自动保持在 Create New，避免用户切回不可用的 tab。
+//     if (shouldForceCreateNewTab.value) {
+//       activeNameSelect1.value = "Create New";
+//     }
+//   },
+// );
 
 const handleClick = (tab, event) => {
   if (hasClickedGetAnswerBtn.value || shouldForceCreateNewTab.value) {
@@ -2427,7 +2427,7 @@ const getQuestionNum = () => {
         gap: 16px;
         margin-bottom: 1em;
         .custom-tab-button {
-          flex: 1;
+          // flex: 1;
           padding: 12px 24px;
           border: 2px solid #dcdfe6;
           background: white;
