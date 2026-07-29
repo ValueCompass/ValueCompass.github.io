@@ -75,10 +75,9 @@
                 v-model="priorityDescription"
                 type="textarea"
                 :rows="4"
-                :maxlength="200"
-                show-word-limit
                 placeholder="请说明这些 Points 的优先级或如何权衡（1-3句话）"
               />
+              <span class="word-counter" :class="{ 'is-over': countWords(priorityDescription) > 200 }">{{ countWords(priorityDescription) }}/200</span>
             </div>
             </div>
           </div>
@@ -109,10 +108,9 @@
                   v-model="positionText"
                   type="textarea"
                   :rows="4"
-                  :maxlength="200"
-                  show-word-limit
                   placeholder="请清晰地表达重点，不少于100字"
                 />
+                <span class="word-counter" :class="{ 'is-over': countWords(positionText) > 200 }">{{ countWords(positionText) }}/200</span>
               </div>
             </div>
           </div>
@@ -127,10 +125,9 @@
                   v-model="incorrectText"
                   type="textarea"
                   :rows="4"
-                  :maxlength="200"
-                  show-word-limit
                   placeholder="请分点列出1-3项"
                 />
+                <span class="word-counter" :class="{ 'is-over': countWords(incorrectText) > 200 }">{{ countWords(incorrectText) }}/200</span>
               </div>
             </div>
           </div>
@@ -279,6 +276,31 @@ const boundaryChoice = ref(null);
 
 // 边界条件说明文本
 const boundaryText = ref("");
+
+/**
+ * 计算字数：中文每个字算1个，英文每个单词算1个
+ * @param {string} text
+ * @returns {number}
+ */
+const countWords = (text) => {
+  if (!text) return 0;
+  let count = 0;
+  let inEnglishWord = false;
+  for (const char of text) {
+    if (/[\u4e00-\u9fa5\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/.test(char)) {
+      count++;
+      inEnglishWord = false;
+    } else if (/\s/.test(char)) {
+      inEnglishWord = false;
+    } else {
+      if (!inEnglishWord) {
+        count++;
+        inEnglishWord = true;
+      }
+    }
+  }
+  return count;
+};
 
 // 根据annotationDataOrigin初始化表单数据（深拷贝，避免修改原始数据）
 const initForm = () => {
@@ -496,6 +518,10 @@ const validate = () => {
     ElMessage.warning("请填写明确立场");
     return false;
   }
+  if (countWords(positionText.value) < 100) {
+    ElMessage.warning("明确立场的内容不少于100字");
+    return false;
+  }
   if (!incorrectText.value.trim()) {
     ElMessage.warning("请填写不合适的做法");
     return false;
@@ -637,8 +663,19 @@ defineExpose({
 
         /* 文本框容器 */
         .textarea-wrapper {
+          position: relative;
           :deep(.el-textarea__inner) {
             resize: vertical;
+          }
+          .word-counter {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 12px;
+            color: #909399;
+            &.is-over {
+              color: #f56c6c;
+            }
           }
         }
       }
