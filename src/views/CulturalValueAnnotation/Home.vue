@@ -776,24 +776,25 @@
 
        
 
-          <div class=""  style="font-size: 1rem;margin-top: 1em;">
-            
-            <div class="show_question_container" v-if="questionValue">
-              <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
-              <div class="question_box" style="flex: 1">
-                {{ questionValue }}
+          <div class=""  style="font-size: 1rem;margin-top: 1em; border: 1px solid #DBEAFE">
+            <div class="question-show-container">
+              <div class="show_question_container" v-if="questionValue">
+                <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
+                <div class="question_box" style="flex: 1">
+                  {{ questionValue }}
+                </div>
               </div>
-            </div>
-            <div
-              style="margin-top: 1em"
-              v-if="hasClickedGetAnswerBtn"
-            >
-              <el-button
-                color="#0B70C3"
-                @click="handleReselectQuestionClick"
-                >{{ t("common.reselectQuestion") }}</el-button
+              <div
+                style="margin-top: 1em; display: flex; flex-direction: row; align-items: center; gap: 1em;"
+                v-if="hasClickedGetAnswerBtn"
               >
-              <p style="margin-top: 1em"><b>Notice：</b>You can also reselect or create new questions.</p>
+                <el-button
+                  color="#0B70C3"
+                  @click="handleReselectQuestionClick"
+                  >{{ t("common.reselectQuestion") }}</el-button
+                >
+                <p><b>Notice：</b>You can also reselect or create new questions.</p>
+              </div>
             </div>
            <AnnotationComponentNew
               :annotationDataOrigin="annotationDataOrigin"
@@ -808,7 +809,7 @@
 
       <div class="step step6">
         <div class="intro-container">
-          <h4>{{ t("culturalValueAnnotation.step6.homeTitle") }}</h4>
+          <h4 style="color: #780096" v-html="t('culturalValueAnnotation.step6.homeTitle')"></h4>
           <div class="core-action-box">
             <h5>
               {{ t("culturalValueAnnotation.step6.homeCoreAction") }}
@@ -829,12 +830,15 @@
         </div>
 
         <div style="font-size: 1rem;">
-          <div class="show_question_container" v-if="questionValue">
+          <div class="question-show-container question-show-container-person">
+            <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
             <div class="question_box">
               {{ questionValue }}
             </div>
           </div>
+          </div>
+          
           <AnnotationComponentNew
             :annotationDataOrigin="annotationDataOrigin_person"
             :use_new_logic="use_new_logic"
@@ -2759,6 +2763,17 @@ const getQuestionNum = () => {
     }
 
   }
+
+  .question-show-container{
+    background: #EFF6FF; 
+    padding: 1.5em 3em; 
+    border-radius: 12px;
+    &.question-show-container-person{
+      background: #F3E8FF;
+      border: 1px solid #988AC1;
+    }
+  }
+
   .step4 .el-textarea__inner {
     padding: 0.3em 1em !important;
     font-size: 1.25rem;
@@ -2787,5 +2802,10 @@ const getQuestionNum = () => {
     display: flex;
     align-items: center;
   }
+}
+
+.wavy-line {
+  text-decoration-line: underline;
+  text-decoration-style: wavy; /* 波浪 */
 }
 </style>

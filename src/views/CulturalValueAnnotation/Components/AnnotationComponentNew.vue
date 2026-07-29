@@ -1,22 +1,20 @@
 <template>
-  <div class="annotation-container">
+  <div class="annotation-container" :class="step == 6 ? 'question-show-container-person' : ''">
     <!-- 左侧面板容器（占50%宽度） -->
     <div class="left-panel">
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">Step 1. 选择并排序重要的Points</div>
-          <div class="step-hint">
-            <span class="hint-icon">⚠</span>
-            提示 提示 请选择会影响你判断或回答当前问题的重要价值观，避免那些跟当前问题无关的价值观。
-选择后请进行排序，并说明这些价值观的优先级或权衡关系。
-          </div>
+          <div class="title-text">{{step}}.1 选择重要价值观并排序</div>
         </div>
+        <p class="des" style="padding: 0 1em">
+          {{ step == 5 ? '请根据你对所在文化的观察，选择在这个问题下被社会广泛认可的若干个价值观，避免那些不重要和无关的价值观。不要仅依据传统文化印象或者一些刻板印象。' : '请根据你自己的价值观和偏好，选择在这个问题下最影响你判断的若干个价值观并对优先级进行排序，避免那些不重要和无关的价值观。' }}
+        </p>
         <div class="step-content point-section">
           <!-- Point 列表面板 -->
           <div class="left">
-            <h5>候选Points</h5>
+            <h5>5.1.1候选价值观</h5>
             <!-- 添加新 Point 按钮 -->
-            <div class="add-point-btn" @click="showAddDialog">+ 添加新的 Point</div>
+            <div class="add-point-btn" @click="showAddDialog">+ 添加新的价值观</div>
 
             <!-- Point 列表：使用 el-checkbox-group 实现多选 -->
             <div class="point-list">
@@ -38,16 +36,14 @@
             </div>
 
             <!-- 提示文字 -->
-            <div class="hint-text">建议选择 2-4 个真正重要的 Points，最多可选 {{ maxSelectNum }} 个</div>
+            <div class="hint-text">请选择真正重要的价值观，最多可以选{{ maxSelectNum }}个</div>
           </div>
 
           <!-- 已选 Point 排序面板 -->
           <div class="right">
-            <h5>已选Points ({{ selectedPoints.length }})</h5>
+            <h5>{{step}}.1.2 请对选择的价值观排序，确定优先级</h5>
             <!-- 拖拽排序提示 -->
-            <div class="priority-header">
-              <span>拖拽排序以确定优先级（从上到下：优先级由高到低）</span>
-            </div>
+            <p class="hint-text">拖拽排序，从上到下：优先级由高到低</p>
             <!-- 已选 Point 列表：支持拖拽排序 -->
             <div class="selected-list">
               <div 
@@ -61,18 +57,18 @@
                 @dragend="onDragEnd"
               >
                 <div class="move-btns">
-                  <button class="move-btn" @click="moveUp(i)" :disabled="i === 0">↑</button>
-                  <button class="move-btn" @click="moveDown(i)" :disabled="i === selectedPoints.length - 1">↓</button>
+                  <button class="move-btn up" @click="moveUp(i)" :disabled="i === 0"></button>
+                  <button class="move-btn down" @click="moveDown(i)" :disabled="i === selectedPoints.length - 1"></button>
                 </div>
-                <span class="priority-number">{{ i + 1 }}</span>
+                <span class="priority-number" :style="{ backgroundColor: getPriorityColor(i) }">{{ i + 1 }}</span>
                 <span class="selected-text">{{ point }}</span>
-                <button class="remove-btn" @click="removePoint(i)">×</button>
+                <el-icon class="remove-btn" @click="removePoint(i)"><Close /></el-icon>
               </div>
             </div>
 
             <!-- 优先级关系或权衡说明 -->
             <div class="input-section">
-              <h4 class="section-label">优先级关系或权衡说明 <span class="required">（必填）</span></h4>
+              <p class="des">优先级关系说明（选填，如果你认为上述排序无法准确表达优先级关系，可以在此添加说明）</p>
              
               <div class="textarea-wrapper">
               <el-input
@@ -95,47 +91,54 @@
       <!-- Step 2: 基于points指导回答 -->
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">Step 2. 基于前面选择的points指导问题的回答 (level-2)</div>
-          <div class="step-hint">
-            <span class="hint-icon">⚠</span>
-            提示 如果题目需要明确立场，请先给出立场。
-          </div>
+          <div class="title-text">{{step}}.2 根据选择的价值观给出对问题的回答</div>
         </div>
         <div class="step-content">
           <!-- (1) 明确立场 -->
           <div class="input-section full-width">
-            <div class="section-label">(1) 明确立场（如需）</div>
-            <div class="textarea-wrapper">
-              <el-input
-                v-model="positionText"
-                type="textarea"
-                :rows="4"
-                :maxlength="200"
-                show-word-limit
-                placeholder="请输入明确立场..."
-              />
+            <h5>{{step}}.2.1 综合选择的价值观和优先级排序，写出对问题的回答</h5>
+            <div style="padding-left: 1em;">
+                <p class="des">
+                注意：不要求语言特别流畅，细节、结构特别完整，但回答需清楚包含：<br/>
+                (1)  对问题的直接回应。如果问题需要明确立场、判断、决策、建议或解决方案等，请直接明确地说明。<br/>
+                (2)  结合价值观给出支持以上观点或判断的具体方案、做法，或者解释给出这个观点或做法的原因。<br/>
+                请清晰地表达重点，不少于100字。
+              </p>
+              <div class="textarea-wrapper">
+                <el-input
+                  v-model="positionText"
+                  type="textarea"
+                  :rows="4"
+                  :maxlength="200"
+                  show-word-limit
+                  placeholder="请清晰地表达重点，不少于100字"
+                />
+              </div>
             </div>
           </div>
 
           <!-- 不合适的做法(至少列出1条) -->
           <div class="input-section full-width">
-            <div class="section-label">(2) 不合适的做法(至少列出1条)</div>
-            <div class="textarea-wrapper">
-              <el-input
-                v-model="incorrectText"
-                type="textarea"
-                :rows="4"
-                :maxlength="200"
-                show-word-limit
-                placeholder="请输入明确立场..."
-              />
+            <h5>{{step}}.2.2 {{ step == 5 ? '列出在这个问题下，对文化而言明显不合适、应该避免的做法、判断或回复。' : '列出在这个问题下，对你个人而言明显不合适、应该避免的做法、判断或回复。'  }}</h5>
+            <div style="padding-left: 1em;">
+              <p class="des">注意：不要求语言特别流畅，但需明确说明什么做法是不合适的、应该避免什么，不能只写“不尊重”、“不公平”、“不负责任”等简短抽象的句子。必要时可以加入解释说明为什么这是不合适的。<br/>请分点列出1-3项。</p>
+              <div class="textarea-wrapper">
+                <el-input
+                  v-model="incorrectText"
+                  type="textarea"
+                  :rows="4"
+                  :maxlength="200"
+                  show-word-limit
+                  placeholder="请分点列出1-3项"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Step 3: 生成完整回答 -->
-      <div class="step-section">
+      <!-- <div class="step-section">
         <div class="step-title">
           <div class="title-text">Step 3. 边界情况判断 </div>
           <div class="step-hint">
@@ -164,7 +167,7 @@
             </div>
           </el-radio-group>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- 添加新 Point 对话框 -->
@@ -192,6 +195,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { ElMessage } from "element-plus";
+import { Close } from "@element-plus/icons-vue";
 
 const props = defineProps({
   annotationDataOrigin: {
@@ -228,12 +232,12 @@ const props = defineProps({
 
 // Point 数据数组（使用 ref 使其响应式）
 const pointArr = ref([
-  "自主选择，成年人是人生应该自己做主",
-  "尊重父母，应该理解并回应父母的担忧",
-  "服从父母，应当以父母的意见为主",
-  "稳定与安全，在不确定的情况下优先选择稳定的道路",
-  "追求自我实现，应该追随自己的兴趣和热爱",
-  "对家庭负责，考虑自己的选择对家庭带来的影响"
+  // "自主选择，成年人是人生应该自己做主",
+  // "尊重父母，应该理解并回应父母的担忧",
+  // "服从父母，应当以父母的意见为主",
+  // "稳定与安全，在不确定的情况下优先选择稳定的道路",
+  // "追求自我实现，应该追随自己的兴趣和热爱",
+  // "对家庭负责，考虑自己的选择对家庭带来的影响"
 ]);
 
 // 已选 Point 的索引数组
@@ -366,6 +370,28 @@ const removePoint = (i) => {
   selectedPoints.value.splice(i, 1);
 };
 
+/**
+ * 根据优先级返回对应的背景颜色
+ * @param {number} index - 优先级序号（从0开始）
+ * @returns {string} 背景颜色
+ */
+const getPriorityColor = (index) => {
+  const baseColor = '#0856A7';
+  const opacities = [
+    1,     // 1级：不透明
+    0.85,  // 2级：85%透明度
+    0.7,   // 3级：70%透明度
+    0.55,  // 4级：55%透明度
+    0.4,   // 5级：40%透明度
+  ];
+  const opacity = opacities[Math.min(index, opacities.length - 1)];
+  // 将十六进制颜色转换为rgba
+  const r = parseInt(baseColor.slice(1, 3), 16);
+  const g = parseInt(baseColor.slice(3, 5), 16);
+  const b = parseInt(baseColor.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
 // ===== 右侧拖拽排序功能函数 =====
 
 /**
@@ -474,14 +500,14 @@ const validate = () => {
     ElMessage.warning("请填写不合适的做法");
     return false;
   }
-  if (!boundaryChoice.value) {
-    ElMessage.warning("请选择边界情况");
-    return false;
-  }
-  if (!boundaryText.value.trim()) {
-    ElMessage.warning("请填写边界情况说明");
-    return false;
-  }
+  // if (!boundaryChoice.value) {
+  //   ElMessage.warning("请选择边界情况");
+  //   return false;
+  // }
+  // if (!boundaryText.value.trim()) {
+  //   ElMessage.warning("请填写边界情况说明");
+  //   return false;
+  // }
   return true;
 };
 
@@ -522,11 +548,28 @@ defineExpose({
     border-radius: 6px;
     overflow: hidden;
 
+    /* Step 描述 */
+    .des {
+      line-height: 1.5;
+      margin: .75em 0;
+    }
+    /* 提示文字样式 */
+    .hint-text {
+      color: #9CA3AF;
+      font-size: 12px;
+    }
+
+    h5{
+      font-size: 1.125rem;
+      line-height: 1.5;
+      font-weight: 600;
+      margin-bottom: 1em;
+    }
     /* Step 标题 */
     .step-title {
-      padding: 12px 16px;
+      padding: 1em;
       border-bottom: 1px solid #ddd;
-      background-color: #ecf5ff;
+      background-color: #F3F3F3;
       border-radius: 4px;
       
 
@@ -534,12 +577,13 @@ defineExpose({
       .title-text {
         font-weight: 600;
         font-size: 1.25rem;
-        color: #0B70C3;
-        margin-bottom: 8px;
+        color: #0856A7;
+        
       }
 
       /* Step 提示 */
       .step-hint {
+        margin-top: 8px;
         color: #909399;
         font-size: .875rem;
         display: flex;
@@ -551,6 +595,7 @@ defineExpose({
           font-size: 1em;
         }
       }
+      
     }
 
     /* Step 内容区域 */
@@ -590,14 +635,6 @@ defineExpose({
           width: 100%;
         }
 
-        /* 区块标签 */
-        .section-label {
-          font-weight: 500;
-          margin-bottom: 8px;
-          font-weight: 600;
-          font-size: 1.125rem;
-        }
-
         /* 文本框容器 */
         .textarea-wrapper {
           :deep(.el-textarea__inner) {
@@ -622,7 +659,7 @@ defineExpose({
 
       /* 添加新 Point 按钮 */
       .add-point-btn {
-        border: 2px solid #ddd;
+        border: 2px dotted #BFDBFE;
         color: #0B70C3;
         padding: 12px;
         text-align: center;
@@ -680,11 +717,7 @@ defineExpose({
         }
       }
 
-      /* 提示文字样式 */
-      .hint-text {
-        color: #999;
-        margin-top: 16px;
-      }
+      
     }
 
     /* 已选 Point 排序面板 */
@@ -695,28 +728,22 @@ defineExpose({
       padding: 16px;
       box-sizing: border-box;
 
-      /* 拖拽排序提示 */
-      .priority-header {
-        color: #666;
-        margin-bottom: 16px;
-      }
-
       /* 已选列表容器 */
       .selected-list {
         display: flex;
         flex-direction: column;
         gap: 12px;
         min-height: 10em;
-        margin-bottom:3em;
+        margin:1em 0 3em;
 
         /* 已选项样式 */
         .selected-item {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 12px;
-          background-color: #f5f7fa;
-          border: 1px solid #e0e0e0;
+          padding: 10px 12px;
+          background-color: #F9FAFB;
+          border: 1px solid #F3F4F6;
           border-radius: 8px;
           cursor: move;
 
@@ -728,30 +755,42 @@ defineExpose({
           .move-btns {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 6px;
 
             /* 移动按钮样式 */
             .move-btn {
               background: none;
-              border: 1px solid #dcdfe6;
-              color: #606266;
-              width: 20px;
-              height: 18px;
+              border: none;
+              width: 0;
+              height: 0;
               cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 12px;
               padding: 0;
-              border-radius: 2px;
+
+              /* 向上三角形 */
+              &.up {
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-bottom: 8px solid #9CA3AF;
+              }
+
+              /* 向下三角形 */
+              &.down {
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 8px solid #9CA3AF;
+              }
 
               &:hover:not(:disabled) {
-                color: #0B70C3;
-                border-color: #0B70C3;
+                &.up {
+                  border-bottom-color: #0B70C3;
+                }
+                &.down {
+                  border-top-color: #0B70C3;
+                }
               }
 
               &:disabled {
-                opacity: 0.4;
+                opacity: 0.3;
                 cursor: not-allowed;
               }
             }
@@ -759,7 +798,6 @@ defineExpose({
 
           /* 优先级编号样式 */
           .priority-number {
-            background-color: #0B70C3;
             color: white;
             width: 24px;
             height: 24px;
@@ -782,12 +820,9 @@ defineExpose({
 
           /* 删除按钮样式 */
           .remove-btn {
-            background: none;
-            border: none;
             color: #999;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            padding: 0 4px;
 
             &:hover {
               color: #f56c6c;
@@ -795,45 +830,15 @@ defineExpose({
           }
         }
       }
-
-      /* 优先级说明区域 */
-      .priority-description {
-        margin-top: 20px;
-
-        /* 优先级说明标题 */
-        h4 {
-          margin-bottom: 12px;
-          font-size: 1.125rem;
-
-          /* 必填标记样式 */
-          .required {
-            color: #f56c6c;
-          }
-        }
-
-        /* 文本输入框样式 */
-        textarea {
-          width: 100%;
-          padding: 12px;
-          border: 1px solid #dcdfe6;
-          border-radius: 4px;
-          resize: vertical;
-          font-size: 14px;
-          line-height: 1.5;
-          box-sizing: border-box;
-
-          &:focus {
-            outline: none;
-            border-color: #0B70C3;
-          }
-        }
-      }
     }
-    h5{
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 16px;
+  }
+
+  &.question-show-container-person{
+    .step-section .step-title .title-text{
+      color: #780096;
     }
   }
 }
+
+
 </style>
