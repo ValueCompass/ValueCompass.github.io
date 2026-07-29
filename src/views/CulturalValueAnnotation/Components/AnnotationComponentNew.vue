@@ -4,17 +4,17 @@
     <div class="left-panel">
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">{{step}}.1 选择重要价值观并排序</div>
+          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.stepTitle', { step }) }}</div>
         </div>
         <p class="des" style="padding: 0 1em">
-          {{ step == 5 ? '请根据你对所在文化的观察，选择在这个问题下被社会广泛认可的若干个价值观，避免那些不重要和无关的价值观。不要仅依据传统文化印象或者一些刻板印象。' : '请根据你自己的价值观和偏好，选择在这个问题下最影响你判断的若干个价值观并对优先级进行排序，避免那些不重要和无关的价值观。' }}
+          {{ step == 5 ? t('culturalValueAnnotation.annotationNew.step5Description') : t('culturalValueAnnotation.annotationNew.step6Description') }}
         </p>
         <div class="step-content point-section">
           <!-- Point 列表面板 -->
           <div class="left">
-            <h5>5.1.1候选价值观</h5>
+            <h5>{{ t('culturalValueAnnotation.annotationNew.candidateValues') }}</h5>
             <!-- 添加新 Point 按钮 -->
-            <div class="add-point-btn" @click="showAddDialog">+ 添加新的价值观</div>
+            <div class="add-point-btn" @click="showAddDialog">{{ t('culturalValueAnnotation.annotationNew.addNewValue') }}</div>
 
             <!-- Point 列表：使用 el-checkbox-group 实现多选 -->
             <div class="point-list">
@@ -36,14 +36,14 @@
             </div>
 
             <!-- 提示文字 -->
-            <div class="hint-text">请选择真正重要的价值观，最多可以选{{ maxSelectNum }}个</div>
+            <div class="hint-text">{{ t('culturalValueAnnotation.annotationNew.selectHint', { max: maxSelectNum }) }}</div>
           </div>
 
           <!-- 已选 Point 排序面板 -->
           <div class="right">
-            <h5>{{step}}.1.2 请对选择的价值观排序，确定优先级</h5>
+            <h5>{{ t('culturalValueAnnotation.annotationNew.sortTitle', { step }) }}</h5>
             <!-- 拖拽排序提示 -->
-            <p class="hint-text">拖拽排序，从上到下：优先级由高到低</p>
+            <p class="hint-text">{{ t('culturalValueAnnotation.annotationNew.dragHint') }}</p>
             <!-- 已选 Point 列表：支持拖拽排序 -->
             <div class="selected-list">
               <div 
@@ -68,14 +68,14 @@
 
             <!-- 优先级关系或权衡说明 -->
             <div class="input-section">
-              <p class="des">优先级关系说明（选填，如果你认为上述排序无法准确表达优先级关系，可以在此添加说明）</p>
+              <p class="des">{{ t('culturalValueAnnotation.annotationNew.priorityDescriptionLabel') }}</p>
              
               <div class="textarea-wrapper">
               <el-input
                 v-model="priorityDescription"
                 type="textarea"
                 :rows="4"
-                placeholder="请说明这些 Points 的优先级或如何权衡（1-3句话）"
+                :placeholder="t('culturalValueAnnotation.annotationNew.priorityDescriptionPlaceholder')"
               />
               <span class="word-counter" :class="{ 'is-over': countWords(priorityDescription) > 200 }">{{ countWords(priorityDescription) }}/200</span>
             </div>
@@ -90,25 +90,20 @@
       <!-- Step 2: 基于points指导回答 -->
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">{{step}}.2 根据选择的价值观给出对问题的回答</div>
+          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.answerTitle', { step }) }}</div>
         </div>
         <div class="step-content">
           <!-- (1) 明确立场 -->
           <div class="input-section full-width">
-            <h5>{{step}}.2.1 综合选择的价值观和优先级排序，写出对问题的回答</h5>
+            <h5>{{ t('culturalValueAnnotation.annotationNew.positionTitle', { step }) }}</h5>
             <div style="padding-left: 1em;">
-                <p class="des">
-                注意：不要求语言特别流畅，细节、结构特别完整，但回答需清楚包含：<br/>
-                (1)  对问题的直接回应。如果问题需要明确立场、判断、决策、建议或解决方案等，请直接明确地说明。<br/>
-                (2)  结合价值观给出支持以上观点或判断的具体方案、做法，或者解释给出这个观点或做法的原因。<br/>
-                请清晰地表达重点，不少于100字。
-              </p>
+                <p class="des" v-html="t('culturalValueAnnotation.annotationNew.positionNote')"></p>
               <div class="textarea-wrapper">
                 <el-input
                   v-model="positionText"
                   type="textarea"
                   :rows="4"
-                  placeholder="请清晰地表达重点，不少于100字"
+                  :placeholder="t('culturalValueAnnotation.annotationNew.positionPlaceholder')"
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(positionText) > 200 }">{{ countWords(positionText) }}/200</span>
               </div>
@@ -117,15 +112,15 @@
 
           <!-- 不合适的做法(至少列出1条) -->
           <div class="input-section full-width">
-            <h5>{{step}}.2.2 {{ step == 5 ? '列出在这个问题下，对文化而言明显不合适、应该避免的做法、判断或回复。' : '列出在这个问题下，对你个人而言明显不合适、应该避免的做法、判断或回复。'  }}</h5>
+            <h5>{{ step == 5 ? t('culturalValueAnnotation.annotationNew.incorrectTitle5', { step }) : t('culturalValueAnnotation.annotationNew.incorrectTitle6', { step }) }}</h5>
             <div style="padding-left: 1em;">
-              <p class="des">注意：不要求语言特别流畅，但需明确说明什么做法是不合适的、应该避免什么，不能只写“不尊重”、“不公平”、“不负责任”等简短抽象的句子。必要时可以加入解释说明为什么这是不合适的。<br/>请分点列出1-3项。</p>
+              <p class="des" v-html="t('culturalValueAnnotation.annotationNew.incorrectNote')"></p>
               <div class="textarea-wrapper">
                 <el-input
                   v-model="incorrectText"
                   type="textarea"
                   :rows="4"
-                  placeholder="请分点列出1-3项"
+                  :placeholder="t('culturalValueAnnotation.annotationNew.incorrectPlaceholder')"
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(incorrectText) > 200 }">{{ countWords(incorrectText) }}/200</span>
               </div>
@@ -170,19 +165,19 @@
     <!-- 添加新 Point 对话框 -->
     <el-dialog
       v-model="addDialogVisible"
-      title="添加新的 Point"
+      :title="t('culturalValueAnnotation.annotationNew.addDialogTtitle')"
       width="500px"
     >
       <el-input
         v-model="newPointText"
-        placeholder="请输入新的 Point"
+        :placeholder="t('culturalValueAnnotation.annotationNew.addDialogPlaceholder')"
         type="textarea"
         :rows="3"
       />
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="addDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="addNewPoint">确定</el-button>
+          <el-button @click="addDialogVisible = false">{{ t('culturalValueAnnotation.annotationNew.cancel') }}</el-button>
+          <el-button type="primary" @click="addNewPoint">{{ t('culturalValueAnnotation.annotationNew.confirm') }}</el-button>
         </span>
       </template>
     </el-dialog>
@@ -193,6 +188,8 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { Close } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 const props = defineProps({
   annotationDataOrigin: {
@@ -507,23 +504,23 @@ const getFormData = () => {
  */
 const validate = () => {
   if (selectedPoints.value.length === 0) {
-    ElMessage.warning("请至少选择一个 Point");
+    ElMessage.warning(t('culturalValueAnnotation.annotationNew.selectPointWarning'));
     return false;
   }
   if (!priorityDescription.value.trim()) {
-    ElMessage.warning("请填写优先级关系或权衡说明");
+    ElMessage.warning(t('culturalValueAnnotation.annotationNew.priorityDescriptionWarning'));
     return false;
   }
   if (!positionText.value.trim()) {
-    ElMessage.warning("请填写明确立场");
+    ElMessage.warning(t('culturalValueAnnotation.annotationNew.positionEmptyWarning'));
     return false;
   }
   if (countWords(positionText.value) < 100) {
-    ElMessage.warning("明确立场的内容不少于100字");
+    ElMessage.warning(t('culturalValueAnnotation.annotationNew.positionMinWordsError'));
     return false;
   }
   if (!incorrectText.value.trim()) {
-    ElMessage.warning("请填写不合适的做法");
+    ElMessage.warning(t('culturalValueAnnotation.annotationNew.incorrectEmptyWarning'));
     return false;
   }
   // if (!boundaryChoice.value) {

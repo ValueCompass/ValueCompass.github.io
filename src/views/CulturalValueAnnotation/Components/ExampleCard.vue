@@ -5,7 +5,7 @@
     <div class="card-header" @click="toggle">
       <div class="header-left">
         <span class="lightbulb-icon">💡</span>
-        <span class="title">Example</span>
+        <span class="title">{{ t('culturalValueAnnotation.exampleCard.title') }}</span>
       </div>
       <el-icon class="toggle-icon" :class="{ expanded }"><ArrowUpBold /></el-icon>
     </div>
@@ -14,13 +14,13 @@
     <div v-show="expanded" class="card-body">
       <!-- 问题 -->
       <div class="section">
-        <div class="section-title">问题</div>
+        <div class="section-title">{{ t('culturalValueAnnotation.exampleCard.question') }}</div>
         <div class="section-content">{{ example.question }}</div>
       </div>
 
       <!-- 价值观选项和优先级 -->
       <div class="section">
-        <div class="section-title">价值观选项和优先级</div>
+        <div class="section-title">{{ t('culturalValueAnnotation.exampleCard.valuesAndPriority') }}</div>
         <div class="values-list">
           <div v-for="(value, index) in example.values" :key="index" class="value-item">
             <span class="value-badge" :style="{ backgroundColor: getPriorityColor(index) }">{{ index + 1 }}</span>
@@ -31,13 +31,13 @@
 
       <!-- 回答 -->
       <div class="section">
-        <div class="section-title">回答</div>
+        <div class="section-title">{{ t('culturalValueAnnotation.exampleCard.answer') }}</div>
         <div class="section-content">{{ example.answer }}</div>
       </div>
 
       <!-- 不合适的做法 -->
       <div class="section">
-        <div class="section-title">不合适的做法</div>
+        <div class="section-title">{{ t('culturalValueAnnotation.exampleCard.inappropriatePractices') }}</div>
         <ol class="practices-list">
           <li v-for="(practice, index) in example.inappropriatePractices" :key="index">
             {{ practice }}
@@ -51,6 +51,8 @@
 <script setup>
 import { ref } from "vue";
 import { ArrowUpBold } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 // Props定义
 const props = defineProps({

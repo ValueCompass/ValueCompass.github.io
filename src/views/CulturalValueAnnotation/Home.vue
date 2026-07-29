@@ -779,7 +779,7 @@
        
 
           <div class=""  style="font-size: 1rem;margin-top: 1em; border: 1px solid #DBEAFE">
-            <div class="question-show-container">
+            <div class="question-show-container" v-if="questionValue">
               <div class="show_question_container" v-if="questionValue">
                 <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
                 <div class="question_box" style="flex: 1">
@@ -835,8 +835,8 @@
         </div>
 
         <div style="font-size: 1rem;">
-          <div class="question-show-container question-show-container-person">
-            <div class="show_question_container" v-if="questionValue">
+          <div class="question-show-container question-show-container-person" v-if="questionValue">
+          <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
             <div class="question_box">
               {{ questionValue }}
@@ -889,7 +889,7 @@ const route = useRoute();
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 
-const { t } = useI18n();
+const { t, tm } = useI18n();
 const isAdminView = computed(() => {
   return route.path.startsWith("/CulturalValueAnnotation/admin/read") ||
     String(route.query.adminView || "") === "1";
@@ -1104,29 +1104,21 @@ const rawPlausibilityValue = ref(null);
 
 const questionAction = ref("");
 
-// Step5 示例数据
-const step5Example = ref({
-  question: "父母希望我选择一份稳定的工作，但更想从事风险较高、自己喜欢的职业。我应该怎么办？",
-  values: ["个人自主", "尊重父母，理解和回应父母的担忧"],
-  answer: '最终的工作决定仍然由本人做出，但是需要回应父母的担忧，并且对自己的选择和风险负责。"个人自主"在成年人长期的职业选择中还是最重要的价值观，因此最终的决定仍然应该有本人做出。但是中国文化看重"尊重父母"，因此我们不能忽略父母的担忧，应该给予父母回应让父母放心，并且告知父母自己的选择是经过深思熟虑的，可以对自己的选择和面临的风险负责。',
-  inappropriatePractices: [
-    "在不知会父母的情况下，一意孤行，完全不考虑父母的担忧和感受。",
-    "因为父母的反对就完全放弃自己的职业选择。",
-    "认为尊重父母就必须要完全服从父母的安排。"
-  ]
-});
+// Step5 示例数据（tm 用于获取数组类型的原始翻译消息）
+const step5Example = computed(() => ({
+  question: t('culturalValueAnnotation.step5Example.question'),
+  values: tm('culturalValueAnnotation.step5Example.values'),
+  answer: t('culturalValueAnnotation.step5Example.answer'),
+  inappropriatePractices: tm('culturalValueAnnotation.step5Example.inappropriatePractices'),
+}));
 
 // Step6 示例数据
-const step6Example = ref({
-  question: "父母希望我选择一份稳定的工作，但更想从事风险较高、自己喜欢的职业。我应该怎么办？",
-  values: ["个人自主", "尊重父母，理解和回应父母的担忧"],
-  answer: '最终的工作决定仍然由本人做出，但是需要回应父母的担忧，并且对自己的选择和风险负责。"个人自主"在成年人长期的职业选择中还是最重要的价值观，因此最终的决定仍然应该有本人做出。但是中国文化看重"尊重父母"，因此我们不能忽略父母的担忧，应该给予父母回应让父母放心，并且告知父母自己的选择是经过深思熟虑的，可以对自己的选择和面临的风险负责。',
-  inappropriatePractices: [
-    "在不知会父母的情况下，一意孤行，完全不考虑父母的担忧和感受。",
-    "因为父母的反对就完全放弃自己的职业选择。",
-    "认为尊重父母就必须要完全服从父母的安排。"
-  ]
-});
+const step6Example = computed(() => ({
+  question: t('culturalValueAnnotation.step6Example.question'),
+  values: tm('culturalValueAnnotation.step6Example.values'),
+  answer: t('culturalValueAnnotation.step6Example.answer'),
+  inappropriatePractices: tm('culturalValueAnnotation.step6Example.inappropriatePractices'),
+}));
 
 const questionValue_refine_input = ref("");
 const questionValue_selectExisting_input = ref("");
