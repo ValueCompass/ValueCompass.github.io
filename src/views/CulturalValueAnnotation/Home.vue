@@ -905,7 +905,6 @@ import {
 import {
   getTopicTaskTaxonomy,
   getCandidateQuestions,
-  computeQuestionSimilarity,
   getQuestionResponse,
   getQuestionValueList,
   submitAnnotation,
@@ -1097,11 +1096,6 @@ const questionValue = ref("");
 const importanceValue = ref(null);
 const distinctivenessValue = ref(null);
 const plausibilityValue = ref(null);
-const rawQuestionValue = ref("");
-const rawImportanceValue = ref(null);
-const rawDistinctivenessValue = ref(null);
-const rawPlausibilityValue = ref(null);
-
 const questionAction = ref("");
 
 // Step5 示例数据（tm 用于获取数组类型的原始翻译消息）
@@ -1418,10 +1412,6 @@ const resetGetAnswerState = () => {
   answer_model.value = "";
   original_answer_country.value = "";
   questionValue.value = "";
-  rawQuestionValue.value = "";
-  rawImportanceValue.value = null;
-  rawDistinctivenessValue.value = null;
-  rawPlausibilityValue.value = null;
   questionAction.value = "";
 
 
@@ -1452,13 +1442,6 @@ const updateQuestionScores = (questionText) => {
     (item) => item.question === questionText,
   );
   if (selectedQuestion) {
-    rawImportanceValue.value = selectedQuestion.importance;
-    rawDistinctivenessValue.value = selectedQuestion.distinctiveness;
-    rawPlausibilityValue.value = selectedQuestion.plausibility;
-    // importanceValue.value = selectedQuestion.importance;
-    // distinctivenessValue.value = selectedQuestion.distinctiveness;
-    // plausibilityValue.value = selectedQuestion.plausibility;
-
     importanceValue.value = null;
     distinctivenessValue.value = null;
     plausibilityValue.value = null;
@@ -1469,10 +1452,6 @@ const getRawQuestionAndScores = () => {
   if (activeNameSelect1.value === "Create New") {
     questionAction.value = "create";
     questionValue.value = questionValue_create_input.value.trim();
-    rawQuestionValue.value = null;
-    rawImportanceValue.value = null;
-    rawDistinctivenessValue.value = null;
-    rawPlausibilityValue.value = null;
     return;
   }
 
@@ -1484,29 +1463,6 @@ const getRawQuestionAndScores = () => {
     activeNameSelect1.value === "Refine Question"
       ? questionValue_refine_input.value.trim()
       : questionValue_selectExisting_input.value.trim();
-
-  const selectedQuestionText = questionValue_selectExisting_input.value.trim();
-  const selectedQuestion = questionOptions.value.find(
-    (item) => item.question === selectedQuestionText,
-  );
-
-  rawQuestionValue.value = selectedQuestionText || null;
-
-  if (
-    editCurrentQuestionDetail.value &&
-    rawQuestionValue.value === editCurrentQuestionDetail.value.raw_question.trim()
-  ) {
-    rawImportanceValue.value = editCurrentQuestionDetail.value.raw_importance ?? null;
-    rawDistinctivenessValue.value =
-      editCurrentQuestionDetail.value.raw_distinctiveness ?? null;
-    rawPlausibilityValue.value =
-      editCurrentQuestionDetail.value.raw_plausibility ?? null;
-    return;
-  }
-
-  rawImportanceValue.value = selectedQuestion?.importance ?? null;
-  rawDistinctivenessValue.value = selectedQuestion?.distinctiveness ?? null;
-  rawPlausibilityValue.value = selectedQuestion?.plausibility ?? null;
 };
 
 const handleSelectChange = () => {
@@ -1549,47 +1505,6 @@ const handleGetAnswerBtnClick = async () => {
     questionErrorTip.value = t("culturalValueAnnotation.step4.similarQuestionError");
     return;
   }
-  //  对于创建新问题，增加对于similarity的检查，如果是ok是false，提示错误用户
-  let similarityQuestionForCreateQuestion = null;
-  if (activeNameSelect1.value === "Create New") {
-    let shouldStopAfterSimilarityCheck = false;
-    isLoadingGetAnswer.value = true;
-    await computeQuestionSimilarity({
-        question_action: "create",
-        question: questionValue.value,
-        country: userDetail.country?.trim() || "",
-      })
-      .then((response) => {
-        const similarityResponse = response?.data;
-        if (similarityResponse?.ok === false) {
-          hasTriggeredGetAnswerValidation.value = true;
-          questionErrorTip.value =
-            // similarityResponse.message ||
-            t("culturalValueAnnotation.step4.createSimilarQuestionError");
-          shouldStopAfterSimilarityCheck = true;
-        }else {
-          if(similarityResponse?.raw_question){
-            rawQuestionValue.value = similarityResponse.raw_question.question || "";
-            rawImportanceValue.value = similarityResponse.raw_question.importance ?? null;
-            rawDistinctivenessValue.value = similarityResponse.raw_question.distinctiveness ?? null;
-            rawPlausibilityValue.value = similarityResponse.raw_question.plausibility ?? null;
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        ElMessage.error("error:" + err.message);
-        hasTriggeredGetAnswerValidation.value = true;
-        questionErrorTip.value = t("culturalValueAnnotation.step4.networkError");
-        shouldStopAfterSimilarityCheck = true;
-      }).finally(() => {
-        isLoadingGetAnswer.value = false;
-      });
-
-    if (shouldStopAfterSimilarityCheck) {
-      return;
-    }
-  }
 
   if (!areScoresValidForGetAnswer.value) {
     // 不满足分数门槛时，高亮当前问题框和三个分数框，并阻止继续请求后端接口。
@@ -1605,6 +1520,10 @@ const handleGetAnswerBtnClick = async () => {
 
   
   
+  const selectedCandidateQuestion = questionOptions.value.find(
+    (item) => item.question === questionValue.value.trim(),
+  );
+
   const formData = {
     username: userDetail.username.trim(),
     country: userDetail.country.trim(),
@@ -1612,14 +1531,11 @@ const handleGetAnswerBtnClick = async () => {
     task_1: taskValue1.value.trim(),
     task_2: taskValue2.value.trim(),
     question: questionValue.value.trim(),
-    raw_question: rawQuestionValue.value?.trim() || "",
     question_action: questionAction.value,
     importance: importanceValue.value,
     distinctiveness: distinctivenessValue.value,
     plausibility: plausibilityValue.value,
-    raw_importance: rawImportanceValue.value,
-    raw_distinctiveness: rawDistinctivenessValue.value,
-    raw_plausibility: rawPlausibilityValue.value,
+    question_info: selectedCandidateQuestion?.question_info || {},
   };
   
 
@@ -1805,14 +1721,10 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         task_2: taskValue2.value,
 
         question: questionValue.value,
-        raw_question: rawQuestionValue.value || "",
         question_action: questionAction.value || "",
         importance: importanceValue.value || null,
         distinctiveness: distinctivenessValue.value || null,
         plausibility: plausibilityValue.value || null,
-        raw_importance: rawImportanceValue.value ?? null,
-        raw_distinctiveness: rawDistinctivenessValue.value ?? null,
-        raw_plausibility: rawPlausibilityValue.value ?? null,
 
 
         value_list: component1Data.value_list,
@@ -1982,7 +1894,6 @@ onMounted(async () => {
     use_new_logic.value = question.use_new_logic;
     // 填充表单数据
     questionValue.value = question.question;
-    rawQuestionValue.value = question.raw_question;
     questionAction.value = question.question_action;
 
     questionValue_create_input.value = "";
@@ -1992,21 +1903,18 @@ onMounted(async () => {
     importanceValue.value = question.importance;
     distinctivenessValue.value = question.distinctiveness;
     plausibilityValue.value = question.plausibility;
-    rawImportanceValue.value = question.raw_importance;
-    rawDistinctivenessValue.value = question.raw_distinctiveness;
-    rawPlausibilityValue.value = question.raw_plausibility;
 
     if (question.question_action == "create") {
       activeNameSelect1.value = "Create New";
       questionValue_create_input.value = question.question;
     } else if (question.question_action == "select existing") {
       activeNameSelect1.value = "Select Existing Question";
-      questionValue_selectExisting_input.value = question.raw_question;
+      questionValue_selectExisting_input.value = question.question;
       questionValue_refine_input.value = question.question;
     } else {
       activeNameSelect1.value = "Refine Question";
       questionValue_refine_input.value = question.question;
-      questionValue_selectExisting_input.value = question.raw_question;
+      questionValue_selectExisting_input.value = question.question;
     }
 
     topicValue1.value = question.topic_1;
