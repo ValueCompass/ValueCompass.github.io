@@ -1708,6 +1708,10 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         duration_time.value = 0;
       }
 
+      const selectedCandidateQuestion = questionOptions.value.find(
+        (item) => item.question === questionValue.value.trim(),
+      );
+
       const sendData = {
         // answer_model: answer_model.value,
         // original_answer_country: original_answer_country.value,
@@ -1725,9 +1729,11 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         importance: importanceValue.value || null,
         distinctiveness: distinctivenessValue.value || null,
         plausibility: plausibilityValue.value || null,
+        question_info: selectedCandidateQuestion?.question_info || {},
 
 
         value_list: component1Data.value_list,
+        value_name_list: component1Data.value_name_list,
         max_select_num: component1Data.max_select_num,
         selected_ranked_values: component1Data.selected_ranked_values,
         selected_ranked_comment: component1Data.selected_ranked_comment,
@@ -1736,6 +1742,7 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         boundary_condition: component1Data.boundary_condition,
 
         value_list_person: component2Data.value_list,
+        value_name_list_person: component2Data.value_name_list,
         max_select_num_person: component2Data.max_select_num,
         selected_ranked_values_person: component2Data.selected_ranked_values,
         selected_ranked_comment_person: component2Data.selected_ranked_comment,
@@ -1938,6 +1945,7 @@ onMounted(async () => {
     original_answer_country.value = question.original_answer_country || "";
     annotationDataOrigin = {
       value_list: question.value_list || [],
+      value_name_list: question.value_name_list || [],
       max_select_num: question.max_select_num || 1,
       selected_ranked_values: question.selected_ranked_values || [],
       selected_ranked_comment: question.selected_ranked_comment || "",
@@ -1947,6 +1955,7 @@ onMounted(async () => {
     };
     annotationDataOrigin_person = {
       value_list: question.value_list_person || [],
+      value_name_list: question.value_name_list_person || [],
       max_select_num: question.max_select_num_person || 1,
       selected_ranked_values: question.selected_ranked_values_person || [],
       selected_ranked_comment: question.selected_ranked_comment_person || "",

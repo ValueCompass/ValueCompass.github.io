@@ -224,17 +224,13 @@ const props = defineProps({
 
 // ===== 数据定义 =====
 
-// Point 数据数组（使用 ref 使其响应式）
-const pointArr = ref([
-  // "自主选择，成年人是人生应该自己做主",
-  // "尊重父母，应该理解并回应父母的担忧",
-  // "服从父母，应当以父母的意见为主",
-  // "稳定与安全，在不确定的情况下优先选择稳定的道路",
-  // "追求自我实现，应该追随自己的兴趣和热爱",
-  // "对家庭负责，考虑自己的选择对家庭带来的影响"
-]);
+// 原始 value_list（对象数组，保持不变）
+const valueList = ref([]);
 
-// 已选 Point 的索引数组
+// Point 数据数组（从 value_list 提取的 code_name 字符串数组）
+const pointArr = ref([]);
+
+// 已选 Point 的 code_name 字符串数组
 const selectedPoints = ref([]);
 const maxSelectNum = ref(0);
 
@@ -306,9 +302,15 @@ const initForm = () => {
     // 深拷贝，确保页面操作不会改变 annotationDataOrigin
     const copy = JSON.parse(JSON.stringify(data));
     
-    // 填充左侧候选Points
+    // 保存原始 value_list（对象数组，不变）
     if (copy.value_list && copy.value_list.length > 0) {
-      pointArr.value = copy.value_list;
+      valueList.value = copy.value_list;
+    }
+    // pointArr 优先从 value_name_list 获取，没有则从 value_list 提取 code_name
+    if (copy.value_name_list && copy.value_name_list.length > 0) {
+      pointArr.value = copy.value_name_list;
+    } else if (copy.value_list && copy.value_list.length > 0) {
+      pointArr.value = copy.value_list.map(item => item.code_name);
     }
     
     // 填充已选Points
@@ -480,7 +482,8 @@ const moveDown = (index) => {
 const getFormData = () => {
 
   return {
-    value_list: pointArr.value,
+    value_list: valueList.value,
+    value_name_list: pointArr.value,
     max_select_num: maxSelectNum.value,
     // 已选并排序的 Points
     selected_ranked_values: selectedPoints.value,
