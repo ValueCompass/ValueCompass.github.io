@@ -2509,6 +2509,7 @@ const getQuestionNum = () => {
         align-items: center;
         cursor: pointer;
         transition: all 0.2s;
+        width: 11em;
 
         &:hover:not(.disabled) {
           .score-circle {
@@ -2554,7 +2555,8 @@ const getQuestionNum = () => {
         font-size: 12px;
         color: #606266;
         text-align: center;
-        white-space: nowrap;
+        white-space: pre-wrap;
+        line-height: 1.4;
       }
       .input-container.question-input-container {
         & > span:nth-child(1) {
@@ -2611,6 +2613,17 @@ const getQuestionNum = () => {
       &.is-disabled {
         background: #fff !important;
       }
+    }
+
+    .el-select__suffix {
+      width: 2rem;
+      justify-content: center;
+      color: #000;
+    }
+
+    .el-select__caret {
+      font-size: 1.5rem;
+      color: #000;
     }
   }
   --el-text-color-regular: #000;
