@@ -4,7 +4,7 @@
     <div class="left-panel">
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.stepTitle', { step }) }}</div>
+          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.stepTitle', { step }) }}<span> ({{ step == 5 ? t('common.culturalPerspective') : t('common.personalPerspective') }})</span></div>
         </div>
         <p class="des" style="padding: 0 1em">
           {{ step == 5 ? t('culturalValueAnnotation.annotationNew.step5Description') : t('culturalValueAnnotation.annotationNew.step6Description') }}
@@ -90,7 +90,7 @@
       <!-- Step 2: 基于points指导回答 -->
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.answerTitle', { step }) }}</div>
+          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.answerTitle', { step }) }} ({{ step == 5 ? t('common.culturalPerspective') : t('common.personalPerspective') }})</div>
         </div>
         <div class="step-content">
           <!-- (1) 明确立场 -->
@@ -508,10 +508,6 @@ const getFormData = () => {
 const validate = () => {
   if (selectedPoints.value.length === 0) {
     ElMessage.warning(t('culturalValueAnnotation.annotationNew.selectPointWarning'));
-    return false;
-  }
-  if (!priorityDescription.value.trim()) {
-    ElMessage.warning(t('culturalValueAnnotation.annotationNew.priorityDescriptionWarning'));
     return false;
   }
   if (!positionText.value.trim()) {

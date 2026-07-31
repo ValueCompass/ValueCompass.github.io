@@ -70,7 +70,7 @@ const props = defineProps({
 });
 
 // 展开/收起状态
-const expanded = ref(true);
+const expanded = ref(false);
 
 // 切换展开/收起
 const toggle = () => {

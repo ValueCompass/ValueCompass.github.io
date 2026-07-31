@@ -52,13 +52,13 @@
                 {{ t("culturalValueAnnotation.step1.prioritize4") }}
               </p>
             </div>
-            <p>
+            <!-- <p>
               {{ t("culturalValueAnnotation.step1.customNote") }}
             </p>
             <p>
               <b>{{ t("culturalValueAnnotation.step1.noteLabel") }}</b>
               {{ t("culturalValueAnnotation.step1.repeatNote") }}
-            </p>
+            </p> -->
           </div>
         </div>
         <div class="highlight-container">
@@ -258,9 +258,9 @@
                 <li>{{ t("culturalValueAnnotation.step3.criteria2") }}</li>
               </ul>
             </div>
-            <p>
+            <!-- <p>
               <b>{{ t("culturalValueAnnotation.step3.note") }}</b>
-            </p>
+            </p> -->
           </div>
         </div>
 
@@ -461,9 +461,9 @@
         >
           <!-- <div class="step-level2">
             <p class="title-p">{{ t("culturalValueAnnotation.step4.step41Title") }}</p>
-          </div> -->
+          </div>
           <div style="padding-left: 2em">
-             <!-- <div class="annotated-summary">
+             <div class="annotated-summary">
               <div class="annotated-summary__label">
                 {{ t("culturalValueAnnotation.step4.annotatedQuestions") }}
               </div>
@@ -503,7 +503,7 @@
                   </span>
                 </div>
               </div>
-            </div> -->
+            </div>
             <div class="custom-tabs-header">
                 <button 
                   class="custom-tab-button"
@@ -514,7 +514,7 @@
                   :disabled="hasClickedGetAnswerBtn || shouldForceCreateNewTab || questionOptions.length === 0"
                   @click="activeNameSelect1 = 'Select Existing Question'"
                 >{{ t('culturalValueAnnotation.step3.selectExisting') }}</button>
-                <!-- <button 
+                <button 
                   class="custom-tab-button"
                   :class="{
                     'active': activeNameSelect1 === 'Refine Question',
@@ -531,15 +531,15 @@
                   }"
                   :disabled="hasClickedGetAnswerBtn"
                   @click="activeNameSelect1 = 'Create New'"
-                >{{ t('culturalValueAnnotation.step3.createNew') }}</button> -->
+                >{{ t('culturalValueAnnotation.step3.createNew') }}</button>
             </div>
-          </div>
+          </div> -->
           <div class="step-level2">
             <p class="title-p">{{ t("culturalValueAnnotation.step4.step42Title") }}</p>
           </div>
           <div style="padding-left: 2em">
             <div class="flex-column">
-              <p v-html="t('culturalValueAnnotation.step4.selectedTopicAndType')"></p>
+              <p v-html="t('culturalValueAnnotation.step4.selectedTopicAndType', { topic: topicValue2 || '-', taskType: taskValue2 || '-' })"></p>
               <p>{{ t("culturalValueAnnotation.step4.ensureQuestion") }}</p>
               <ul>
                 <li>{{ t("culturalValueAnnotation.step4.requirement1") }}</li>
