@@ -74,7 +74,7 @@
               <el-input
                 v-model="priorityDescription"
                 type="textarea"
-                :rows="4"
+                :rows="5"
                 :placeholder="t('culturalValueAnnotation.annotationNew.priorityDescriptionPlaceholder')"
               />
               <span class="word-counter" :class="{ 'is-over': countWords(priorityDescription) > 200 }">{{ countWords(priorityDescription) }}/200</span>
@@ -102,7 +102,7 @@
                 <el-input
                   v-model="positionText"
                   type="textarea"
-                  :rows="4"
+                  :rows="8"
                   :placeholder="t('culturalValueAnnotation.annotationNew.positionPlaceholder')"
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(positionText) > 200 }">{{ countWords(positionText) }}/200</span>
@@ -119,7 +119,7 @@
                 <el-input
                   v-model="incorrectText"
                   type="textarea"
-                  :rows="4"
+                  :rows="8"
                   :placeholder="t('culturalValueAnnotation.annotationNew.incorrectPlaceholder')"
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(incorrectText) > 200 }">{{ countWords(incorrectText) }}/200</span>
@@ -224,13 +224,13 @@ const props = defineProps({
 
 // ===== 数据定义 =====
 
-// 原始 value_list（对象数组，保持不变）
+// 原始 value_list（保持不变）
 const valueList = ref([]);
 
-// Point 数据数组（从 value_list 提取的 code_name 字符串数组）
+// Point 数据数组（对象取 code_name，其他数据保留原值）
 const pointArr = ref([]);
 
-// 已选 Point 的 code_name 字符串数组
+// 已选 Point 数组
 const selectedPoints = ref([]);
 const maxSelectNum = ref(0);
 
@@ -306,11 +306,15 @@ const initForm = () => {
     if (copy.value_list && copy.value_list.length > 0) {
       valueList.value = copy.value_list;
     }
-    // pointArr 优先从 value_name_list 获取，没有则从 value_list 提取 code_name
+    // pointArr 优先从 value_name_list 获取，否则对象取 code_name，其他数据保留原值
     if (copy.value_name_list && copy.value_name_list.length > 0) {
       pointArr.value = copy.value_name_list;
     } else if (copy.value_list && copy.value_list.length > 0) {
-      pointArr.value = copy.value_list.map(item => item.code_name);
+      pointArr.value = copy.value_list.map(item =>
+        item !== null && typeof item === "object" && "code_name" in item
+          ? item.code_name
+          : item
+      );
     }
     
     // 填充已选Points
@@ -545,6 +549,7 @@ defineExpose({
 .annotation-container {
   display: flex;
   justify-content: space-between;
+  align-items: stretch;
   padding: 20px;
 
   /* 左侧面板容器（占49%宽度） */
@@ -552,18 +557,24 @@ defineExpose({
     width: 49%;
     display: flex;
     justify-content: space-between;
-
-    
   }
 
   /* 右侧区域（占49%宽度） */
   .right-panel {
     width: 49%;
-
-
+    display: flex;
+    flex-direction: column;
   }
 
-    /* Step 区块通用样式 */
+  .left-panel,
+  .right-panel {
+    > .step-section {
+      flex: 1;
+      margin-bottom: 0;
+    }
+  }
+
+  /* Step 区块通用样式 */
   .step-section {
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -766,7 +777,7 @@ defineExpose({
         display: flex;
         flex-direction: column;
         gap: 12px;
-        min-height: 10em;
+        min-height: 18em;
         margin:1em 0 3em;
 
         /* 已选项样式 */
