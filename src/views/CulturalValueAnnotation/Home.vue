@@ -122,9 +122,9 @@
             >
               
               <div class="flex-column">
-                <p>
+                <!-- <p>
                   {{ t("culturalValueAnnotation.step2.templateReference") }}
-                </p>
+                </p> -->
                 <ul>
                   <li>{{ t("culturalValueAnnotation.step2.template1") }}</li>
                   <li>{{ t("culturalValueAnnotation.step2.template2") }}</li>

@@ -248,7 +248,7 @@ export default {
       stepTitle: '{step}.1 Select the most important values for this question',
       step5Description: 'Based on your observation of your culture, select several values that are widely recognized in your culture for this question. Avoid values that are unimportant or irrelevant. Do not rely solely on traditional cultural impressions or stereotypes.',
       step6Description: 'Based on your own values and preferences, select several values that most influence your judgment for this question and prioritize them. Avoid values that are unimportant or irrelevant.',
-      candidateValues: '5.1.1 Candidate Values',
+      candidateValues: '5.1.1 Select the most important values for this question',
       addNewValue: '+ Add new value',
       selectHint: 'Select truly important values, up to {max}',
       sortTitle: '{step}.1.2 Rank the selected values to determine priority',
