@@ -170,7 +170,7 @@ export default {
       similarQuestionError: '这个问题与已有问题在语义上过于相似。请修改后再继续。',
       createSimilarQuestionError: '已有一个非常相似的问题被许多用户标注过，请选择该问题进行标注，而不是创建新问题。',
       networkError: '网络错误',
-      scoreRequirementError: '该问题不满足分数要求。请修改问题，使其更好地体现价值重要性、文化差异性和问题真实性，并确保三项分数都 ≥ 3，且至少两项分数 ≥ 4。',
+      scoreRequirementError: '该问题不满足分数要求。请修改问题，使其更好地体现价值重要性、文化差异性和问题真实性，并确保三项分数都 ≥ 4。',
       noteLabel: '注：',
       summaryNote: '你必须覆盖并平衡三类问题：选择、修改、创建。避免只使用其中一种。',
       step41Title: '4.1 请你确定问题的生成方式',

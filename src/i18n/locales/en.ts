@@ -170,7 +170,7 @@ export default {
       similarQuestionError: 'This question is too semantically similar to an existing one. Please revise it.',
       createSimilarQuestionError: 'There is a very similar question that has already been annotated by many users, please choose that question to annotate instead of creating a new one.',
       networkError: 'Network error',
-      scoreRequirementError: 'This question does not meet the score requirements. Please revise the question to better reflect cultural relevance, cultural distinctiveness, and real-life plausibility, ensuring all three scores are ≥ 3 and at least two scores are ≥ 4.',
+      scoreRequirementError: 'This question does not meet the score requirements. Please revise the question to better reflect value importance, cultural distinctiveness, and question plausibility, ensuring all three scores are ≥ 4.',
       noteLabel: 'Note:',
       summaryNote: 'You must cover and balance three types of questions: Select, Refine, Create. Avoid using only one type.',
       step41Title: '4.1 Please determine how to generate the question',

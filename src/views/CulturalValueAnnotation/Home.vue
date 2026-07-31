@@ -1355,19 +1355,16 @@ const isGetAnswerBtnDisabled = computed(() => {
   );
 });
 
-// Get Answer 前要求三个分数都 >= 3，且至少两个分数 >= 4。
+// Get Answer 前要求三个分数都 >= 4。
 const areScoresValidForGetAnswer = computed(() => {
   const importanceScore = Number(importanceValue.value);
   const distinctivenessScore = Number(distinctivenessValue.value);
   const plausibilityScore = Number(plausibilityValue.value);
-  const scores = [importanceScore, distinctivenessScore, plausibilityScore];
-  const highScoreCount = scores.filter((score) => score >= 4).length;
 
   return (
-    importanceScore >= 3 &&
-    distinctivenessScore >= 3 &&
-    plausibilityScore >= 3 &&
-    highScoreCount >= 2
+    importanceScore >= 4 &&
+    distinctivenessScore >= 4 &&
+    plausibilityScore >= 4
   );
 });
 
