@@ -21,11 +21,39 @@
           <div
             role="button"
             tabindex="0"
-            class="flow-step-item"
-            :class="{ active: activeMainStepIndex === 1, completed: trainingVideoStepCompleted }"
+            class="flow-step-item survey-step"
+            :class="{
+              active: activeMainStepIndex === 1,
+              completed: surveyCompleted,
+            }"
             @click="handleMainStepChange(1)"
             @keydown.enter.prevent="handleMainStepChange(1)"
             @keydown.space.prevent="handleMainStepChange(1)"
+          >
+            <div class="step-group-main">
+              <div class="step-group-icon">
+                <el-icon v-if="surveyCompleted" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
+                <el-icon v-else><Document /></el-icon>
+              </div>
+              <div class="step-group-content">
+                <h4 class="step-title-text">1.Fill Survey</h4>
+              </div>
+            </div>
+          </div>
+
+          <div
+            role="button"
+            tabindex="0"
+            class="flow-step-item"
+            :class="{
+              active: activeMainStepIndex === 2,
+              completed: trainingVideoStepCompleted,
+              locked: !canEnterTrainingVideo,
+            }"
+            :aria-disabled="!canEnterTrainingVideo"
+            @click="handleMainStepChange(2)"
+            @keydown.enter.prevent="handleMainStepChange(2)"
+            @keydown.space.prevent="handleMainStepChange(2)"
           >
             <div class="step-group-main">
               <div class="step-group-icon">
@@ -33,42 +61,7 @@
                 <el-icon v-else><VideoPlay /></el-icon>
               </div>
               <div class="step-group-content">
-                <h4
-                  class="step-title-toggle"
-                  :class="{ collapsible: trainingVideoStepCompleted }"
-                  @click.stop="handleTrainingVideoTitleClick"
-                >
-                  1.Watch Training Videos
-                </h4>
-                <div
-                  class="step-group-body"
-                >
-                  <!-- <p class="step-group-progress">
-                    {{ completedTrainingVideoStepCount }} / {{ trainingVideoSteps.length }} Completed
-                  </p> -->
-
-                  <ul class="video-substeps">
-                    <li
-                      v-for="trainingVideoStep in trainingVideoSteps"
-                      :key="trainingVideoStep.id"
-                      :class="{
-                        done: isTrainingVideoStepCompleted(trainingVideoStep.id),
-                        current:
-                          activeMainStepIndex === 1 && trainingVideoStep.id === activeTrainingVideoStepIndex,
-                        locked: !canAccessTrainingVideoStep(trainingVideoStep.id),
-                      }"
-                      @click.stop="handleTrainingVideoStepChange(trainingVideoStep.id)"
-                    >
-                      <el-icon v-if="isTrainingVideoStepCompleted(trainingVideoStep.id)"><CircleCheck /></el-icon>
-                      <span
-                        v-else-if="canAccessTrainingVideoStep(trainingVideoStep.id)"
-                        class="current-circle-icon"
-                      ></span>
-                      <el-icon v-else><Lock /></el-icon>
-                      <span>VIDEO {{ trainingVideoStep.id }}</span>
-                    </li>
-                  </ul>
-                </div>
+                <h4 class="step-title-text">2.Watch Training Video</h4>
               </div>
             </div>
           </div>
@@ -79,14 +72,14 @@
             tabindex="0"
             class="flow-step-item quiz-step"
             :class="{
-              active: activeMainStepIndex === 2,
+              active: activeMainStepIndex === 3,
               completed: quizCompleted,
               locked: !trainingVideoStepCompleted,
             }"
             :aria-disabled="!trainingVideoStepCompleted"
-            @click="handleMainStepChange(2)"
-            @keydown.enter.prevent="handleMainStepChange(2)"
-            @keydown.space.prevent="handleMainStepChange(2)"
+            @click="handleMainStepChange(3)"
+            @keydown.enter.prevent="handleMainStepChange(3)"
+            @keydown.space.prevent="handleMainStepChange(3)"
           >
             <div class="step-group-main">
               <div class="step-group-icon">
@@ -94,7 +87,7 @@
                 <el-icon v-else><List /></el-icon>
               </div>
               <div class="step-group-content">
-                <h4 class="step-title-text">2.Complete Quiz</h4>
+                <h4 class="step-title-text">3.Complete Quiz</h4>
                 <div class="step-group-body">
                   <!-- <p class="step-group-progress">
                     {{ quizCompleted ? "Completed" : quizCheckState.answeredCount + " / " + quizCheckState.totalCount + " Completed" }}
@@ -110,7 +103,7 @@
                       :key="q.qid"
                       :class="{
                         done: ['pass', 'fail'].includes(quizCheckState.questionStatusMap[q.qid]),
-                        current: isQuizQuestionCurrent(q.qid) && activeMainStepIndex == 2,
+                        current: isQuizQuestionCurrent(q.qid) && activeMainStepIndex == 3,
                         locked: !isQuizQuestionCurrent(q.qid) && !['pass', 'fail'].includes(quizCheckState.questionStatusMap[q.qid]),
                       }"
                     >
@@ -129,37 +122,22 @@
             </div>
           </div>
 
-          <div
-            role="button"
-            tabindex="0"
-            class="flow-step-item survey-step"
-            
-            :class="{
-                active: activeMainStepIndex === 3,
-                completed: hasCompletedOnboardingSurveys(),
-                locked: !canEnterSurvey,
-              }"
-            :aria-disabled="!canEnterSurvey"
-            @click="handleMainStepChange(3)"
-            @keydown.enter.prevent="handleMainStepChange(3)"
-            @keydown.space.prevent="handleMainStepChange(3)"
-          >
-            <div class="step-group-main">
-              <div class="step-group-icon">
-                <el-icon v-if="hasCompletedOnboardingSurveys()" class="main-step-complete-icon"><CircleCheckFilled /></el-icon>
-                <el-icon v-else><Document /></el-icon>
-              </div>
-              <div class="step-group-content">
-                <h4 class="step-title-text">{{ isNeedPassQuizCheck ? '3.Fill Survey' : '2.Fill Survey' }}</h4>
-                
-              </div>
-            </div>
-          </div>
         </aside>
 
         <section class="step-content-area">
+          <div v-show="activeMainStepIndex === 1">
+            <Survey
+              ref="surveyRef"
+              :registered-user-name="registeredUserName"
+              :registered-user-country="registeredUserCountry"
+              :registered-user-language="registeredUserLanguage"
+              :surveys-completed="surveyCompleted"
+              @survey-next="handleSurveyNext"
+            />
+          </div>
+
           <TrainingVideo
-            v-show="activeMainStepIndex === 1"
+            v-show="activeMainStepIndex === 2"
             v-model:active-video-step-index="activeTrainingVideoStepIndex"
             :video-steps="trainingVideoSteps"
             :training-video-completion-status="trainingVideoCompletionStatus"
@@ -172,7 +150,7 @@
           />
 
           <QuizCheck
-            v-show="activeMainStepIndex === 2"
+            v-show="activeMainStepIndex === 3"
             :reset-key="quizResetKey"
             :questions="quizQuestions"
             :loading="quizLoading"
@@ -180,21 +158,11 @@
             :country="registeredUserCountry"
             :language="registeredUserLanguage"
             v-model:quiz-state="quizCheckState"
-            @back="handleMainStepChange(1)"
+            @back="handleMainStepChange(2)"
             @quiz-passed="handleQuizPassed"
             @quiz-failed="handleQuizFailed"
           />
 
-          <div v-show="activeMainStepIndex === 3">
-            <Survey
-              ref="surveyRef"
-              :registered-user-name="registeredUserName"
-              :registered-user-country="registeredUserCountry"
-              :registered-user-language="registeredUserLanguage"
-              :surveys-completed="hasCompletedOnboardingSurveys()"
-              @survey-next="handleSurveyNext"
-            />
-          </div>
         </section>
       </div>
     </div>
@@ -234,7 +202,7 @@ import { fetchOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQui
 const TRAINING_VIDEO_PROGRESS_STORAGE_PREFIX =
   "culturalValueAnnotationTrainingVideoProgress";
 
-// 主流程状态：1=视频引导，2=测验，3=问卷。
+// 主流程状态：1=问卷，2=视频引导，3=测验（按用户配置显示）。
 const activeTrainingVideoStepIndex = ref(1);
 const activeMainStepIndex = ref(1);
 
@@ -244,7 +212,7 @@ const isNeedPassQuizCheck = computed(() => {
   return false;
 });
 
-// Quiz 完成后才允许进入问卷步骤。
+// Quiz 完成状态；需要 Quiz 的用户在视频完成后进入该步骤。
 const quizCompleted = ref(false);
 
 // Quiz 是否有任意一题 fail。
@@ -259,9 +227,7 @@ const registeredUserLanguage = ref("");
 
 // Survey 组件引用，用于读取 allSurveysChecked。
 const surveyRef = ref(null);
-
-// 左侧训练视频分组完成后允许折叠。
-const isTrainingVideoGroupCollapsed = ref(false);
+const surveyCompleted = ref(false);
 
 // 长期完成态来自 userDetail.studied_annotation_guidance。
 const hasStudiedTrainingVideoGuidance =
@@ -321,7 +287,7 @@ const isQuizModuleActive = (moduleItems) => {
 
 // 问卷完成数量：点击 start annotation 后整体算 1，否则为 0。
 const completedSurveyCount = computed(() => {
-  return hasCompletedOnboardingSurveys() ? 1 : 0;
+  return surveyCompleted.value ? 1 : 0;
 });
 
 // 整体进度总数 = 视频数 + Quiz 题数 + 问卷（整体算 1 项）。
@@ -358,10 +324,9 @@ const trainingVideoStepCompleted = computed(() => {
   );
 });
 
-// 问卷入口条件：视频完成 + (Quiz 完成或已完成问卷)，或本地已经记录问卷完成。
-const canEnterSurvey = computed(() => {
-  if (hasCompletedOnboardingSurveys()) return true;
-  return trainingVideoStepCompleted.value && quizCompleted.value;
+// Survey 是第一步，完成后才允许进入培训视频。
+const canEnterTrainingVideo = computed(() => {
+  return surveyCompleted.value;
 });
 
 // 统计训练视频完成数量，用于左侧第一步进度和整体进度。
@@ -429,32 +394,17 @@ const persistTrainingVideoProgress = () => {
   );
 };
 
-// 判断某个训练视频子步骤是否可进入：只能顺序解锁，已完成引导用户除外。
-const canAccessTrainingVideoStep = (stepId) => {
-  // 已完成引导的用户可自由切换任意视频。
-  if (hasStudiedTrainingVideoGuidance) {
-    return true;
-  }
-
-  if (stepId === 1) {
-    return true;
-  }
-
-  return isTrainingVideoStepCompleted(stepId - 1);
-};
-
-// 左侧主流程点击切换：视频、Quiz、Survey 三个阶段按顺序解锁。
+// 左侧主流程点击切换：Survey、Video、Quiz 三个阶段按顺序解锁。
 const handleMainStepChange = (stepId) => {
   // 三个阶段按顺序解锁，防止跳步进入后续流程。
   if (stepId === 1) {
-    // 视频步骤始终是 step 1。
+    // Survey 是第一步，始终允许返回查看。
     activeMainStepIndex.value = 1;
-    isTrainingVideoGroupCollapsed.value = false;
     return;
   }
 
   if (stepId === 2) {
-    if (!trainingVideoStepCompleted.value) {
+    if (!canEnterTrainingVideo.value) {
       return;
     }
 
@@ -463,37 +413,10 @@ const handleMainStepChange = (stepId) => {
   }
 
   if (stepId === 3) {
-    // survey 对所有用户都是 activeMainStepIndex 3。
-    if (!canEnterSurvey.value) return;
+    if (!isNeedPassQuizCheck.value || !trainingVideoStepCompleted.value) return;
     activeMainStepIndex.value = 3;
     return;
   }
-};
-
-// 左侧视频子步骤点击：先切回训练视频主步骤，再按解锁规则切换视频。
-const handleTrainingVideoStepChange = (stepId) => {
-  activeMainStepIndex.value = 1;
-  isTrainingVideoGroupCollapsed.value = false;
-
-  if (
-    !canAccessTrainingVideoStep(stepId) ||
-    stepId === activeTrainingVideoStepIndex.value
-  ) {
-    return;
-  }
-
-  activeTrainingVideoStepIndex.value = stepId;
-};
-
-// 点击训练视频标题时，先选中 TrainingVideo 步骤；已完成后才允许再次折叠。
-const handleTrainingVideoTitleClick = () => {
-  if (activeMainStepIndex.value !== 1) {
-    activeMainStepIndex.value = 1;
-    isTrainingVideoGroupCollapsed.value = false;
-    return;
-  }
-
-  handleToggleTrainingVideoGroup();
 };
 
 // TrainingVideo 播放结束后回传当前视频 id，父页面更新独立完成状态。
@@ -504,42 +427,34 @@ const handleTrainingVideoCompleted = (stepId) => {
   };
 };
 
-// 训练视频全部完成后，允许收起/展开左侧视频子步骤列表。
-const handleToggleTrainingVideoGroup = () => {
-  if (!trainingVideoStepCompleted.value) {
-    return;
-  }
-
-  isTrainingVideoGroupCollapsed.value = !isTrainingVideoGroupCollapsed.value;
-};
-
 // TrainingVideo 组件完成最后一个视频后，通知父页面切到下一步。
 const moveFromTrainingVideoToQuizStep = () => {
-  // 非中国用户跳过 quiz，直接进入问卷。
+  // 无需 Quiz 的用户完成唯一视频后即可进入正式标注。
   if (!isNeedPassQuizCheck.value) {
-    activeMainStepIndex.value = 3;
+    router.push("/CulturalValueAnnotation/home");
     return;
   }
-  activeMainStepIndex.value = 2;
+  activeMainStepIndex.value = 3;
 };
 
-// Quiz 通过后：进入问卷步骤。
+// Quiz 通过后完成全部 Onboarding，进入正式标注。
 const handleQuizPassed = () => {
   quizCompleted.value = true;
-  activeMainStepIndex.value = 3;
+  router.push("/CulturalValueAnnotation/home");
 };
 
 // Quiz 未通过：重置本地状态，回到训练视频步骤。
 const handleQuizFailed = () => {
   quizResetKey.value += 1;
   quizCompleted.value = false;
-  activeMainStepIndex.value = 1;
+  activeMainStepIndex.value = 2;
 };
 
-// 问卷完成后标记 survey 完成状态，进入正式 Cultural Value Annotation 首页。
+// 问卷完成后标记 Survey 完成状态，进入第二步培训视频。
 const handleSurveyNext = () => {
   markOnboardingSurveysCompleted();
-  router.push("/CulturalValueAnnotation/home");
+  surveyCompleted.value = true;
+  activeMainStepIndex.value = 2;
 };
 
 // 复制注册用户名，方便用户粘贴到问卷中保持姓名一致。
@@ -547,9 +462,9 @@ const handleSurveyNext = () => {
 // ---------- 页面初始化：决定 Onboarding 的起始步骤 ----------
 //
 // Onboarding 分三个阶段，每个阶段有独立的完成标志：
-//   Step 1 — 培训视频（studied_annotation_guidance，来自服务端）
-//   Step 2 — 校准测验（passed_calibration_quiz，来自服务端）
-//   Step 3 — 问卷（survey，仅保存在本地 localStorage）
+//   Step 1 — 问卷（survey，仅保存在本地 localStorage）
+//   Step 2 — 培训视频（studied_annotation_guidance，来自服务端）
+//   Step 3 — 校准测验（passed_calibration_quiz，来自服务端，仅部分用户需要）
 //
 // 完整决策矩阵：
 //   Step 1 视频 │ Step 2 测验 │ Step 3 问卷 │ 起始步骤
@@ -580,33 +495,29 @@ onMounted(async () => {
     quizLoading.value = false;
   }
 
-  // 读取 Step 1 完成标志（studied_annotation_guidance）。
+  // 读取 Step 2 完成标志（studied_annotation_guidance）。
   const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance();
 
-  // 读取 Step 2 完成标志（passed_calibration_quiz），来自 localStorage。
+  // 读取 Step 3 完成标志（passed_calibration_quiz），来自 localStorage。
   const quizDone = hasPassedCalibrationQuiz();
   quizCompleted.value = quizDone; // 同步左侧侧边栏的 quiz 完成状态
 
-  // 读取 Step 3 完成标志（问卷），所有问卷都勾选完成才视为完成。
+  // 读取 Step 1 完成标志（问卷），所有问卷都勾选完成才视为完成。
   const surveyDone = hasCompletedOnboardingSurveys();
+  surveyCompleted.value = surveyDone;
 
   // 先恢复训练视频进度，避免未完成引导的用户刷新后又从第一个视频开始。
   restoreTrainingVideoProgress();
 
-  if (guidanceDone && quizDone && surveyDone) {
+  if (surveyDone && guidanceDone && (!isNeedPassQuizCheck.value || quizDone)) {
     // 三个阶段全部完成，直接跳到首页。
     router.push({ name: "CulturalValueAnnotationHome" });
-  } else if (guidanceDone && quizDone) {
-    // Step 1 和 Step 2 完成，但问卷未完成 → 跳到 Step 3。
-    activeMainStepIndex.value = 3;
-    isTrainingVideoGroupCollapsed.value = true;
-  } else if (guidanceDone) {
-    // Step 1 完成但 Step 2 未通过 → 跳到 Step 2。
-    activeMainStepIndex.value = 2;
-    isTrainingVideoGroupCollapsed.value = true;
-  } else{
-    // 其余情况（培训未完成），默认停留在 Step 1。
+  } else if (!surveyDone) {
     activeMainStepIndex.value = 1;
+  } else if (!guidanceDone) {
+    activeMainStepIndex.value = 2;
+  } else {
+    activeMainStepIndex.value = 3;
   }
   
 });
@@ -859,11 +770,8 @@ watch(
     }
 
     &.active {
-      // background: rgba(175, 217, 254, 1);
+      background: rgb(175, 217, 254);
       color: rgba(12, 50, 98, 1);
-    }
-    &.survey-step.active{
-      background: rgba(175, 217, 254, 1);
     }
 
     &.completed {

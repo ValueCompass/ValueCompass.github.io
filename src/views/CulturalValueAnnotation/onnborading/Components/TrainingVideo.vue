@@ -2,7 +2,7 @@
   <div class="onboarding-container">
     <section class="hero-card">
       <div class="hero-copy">
-        <span class="step-pill">{{ currentVideoStepData.pill }}</span>
+        <span class="step-pill">VIDEO</span>
         <h1>{{ currentVideoStepData.heading }}</h1>
         <p>{{ currentVideoStepData.description }}</p>
       </div>
@@ -69,7 +69,7 @@
           >
             {{
               isLastVideoStep
-                ? "Continue"
+                ? "Start Annotation"
                 : `Complete ${currentVideoStepData.label}`
             }}
             <svgIcon

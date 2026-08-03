@@ -60,7 +60,7 @@
               :disabled="!allSurveysChecked"
               @click="$emit('survey-next')"
               type="primary"
-              >Start Annotation</el-button
+              >Next</el-button
             >
           </div>
         </div>
@@ -139,7 +139,7 @@ const surveys = ref(
 // 问卷语言链接默认展开，方便用户直接选择对应版本。
 const surveyLinksExpanded = ref(true);
 
-// 三个问卷 checkbox 是否都已勾选，用于控制 start annotation 按钮的 disabled 状态。
+// 三个问卷 checkbox 是否都已勾选，用于控制 Next 按钮的 disabled 状态。
 const allSurveysChecked = computed(() => {
   return surveys.value.every((survey) => survey.completed);
 });

@@ -1,4 +1,5 @@
 import onboardingPreview from "@/assets/images/Collaborators.png";
+import onboardingTrainingVideo from "@/assets/CulturalAnnotation/English/Part.mp4";
 import onboardingVideoStep1 from "@/assets/CulturalAnnotation/English/Part 1.mp4";
 import onboardingVideoStep2 from "@/assets/CulturalAnnotation/English/Part 2.mp4";
 import onboardingVideoStep3 from "@/assets/CulturalAnnotation/English/Part 3.mp4";
@@ -125,38 +126,15 @@ export const countryLanguageMap = {
 };
 
 export const createOnboardingSteps = () => {
-  const { language } = getStoredOnboardingUserDetail();
-  const resourceSet = getOnboardingResourceSet(language);
-
   return [
     {
       id: 1,
       label: "Step 1",
-      pill: "Step 1. Task Overview & Objectives",
-      heading: "Get to Know the Task",
+      pill: "Step 1. Learn How to Annotate",
+      heading: "Learn How to Annotate",
       description:
-        "Understand the workflow and purpose of the annotation system.",
-      videoSrc: resourceSet.videos[0],
-      videoType: "video/mp4",
-    },
-    {
-      id: 2,
-      label: "Step 2",
-      pill: "Step 2. Key Guidelines & How to Annotate",
-      heading: "Learn the Annotation Rules",
-      description:
-        "Learn rules and criteria to ensure consistent, reliable annotations.",
-      videoSrc: resourceSet.videos[1],
-      videoType: "video/mp4",
-    },
-    {
-      id: 3,
-      label: "Step 3",
-      pill: "Step 3. Real Cases & Best Practices",
-      heading: "Examples & Practical",
-      description:
-        "See real examples to reinforce understanding and apply in practice.",
-      videoSrc: resourceSet.videos[2],
+        "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
+      videoSrc: onboardingTrainingVideo,
       videoType: "video/mp4",
     },
   ];
@@ -192,19 +170,19 @@ export const createOnboardingSurveys = () => {
       links: [
         {
           label: "English",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUE4QklKTjZaMFNaSE5JSEFYNlNZTkZMNi4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUMUc1UDJFOUhHUjNRVzFXUlVDWFM5NDJJSi4u",
         },
         {
           label: "Chinese",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURVFPVVJHTFMzTzZKWlFURUxWMjBNSUJLSy4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUODlKN1oyV0xPQkdGNjg4TVdXUDZPRlgwUi4u",
         },
         {
           label: "Japanese",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUQUZBUjRVMlZGT0EyVTBTVDdOVVc3RTc3Ti4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUREhKRDU0SVFQNVlDSUIyQjQxWkIyWEM2Si4u",
         },
         {
           label: "Korean",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURjQwWlNZVFlKSjZXTjAwTzlESFFWR1oxVy4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNEpUNFFUQTRYNkQ3NFpQRzBIV1BUQTRLSS4u",
         },
       ],
     },
@@ -214,19 +192,19 @@ export const createOnboardingSurveys = () => {
       links: [
         {
           label: "English;",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNFEyTzhORDM2RktBRTRUNjFWSTZWSzdDMC4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUQjlCRUJUSEg0NlRWR0E2SkdSMlpYSFJSTC4u",
         },
         {
           label: "Chinese;",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUMEtSTkI3VEkwMEc3STRQTkhKRk41UTJPRS4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNUozUFZFWkhVTlFTSzdMNEpNQzkzMFVHOS4u",
         },
         {
           label: "Japanese;",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURUZWNEQ5TDZFVVFHODRZVFU2WVpDWjQ4WC4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUMFdKMDkySEhFS1M0WElVVUxWMDk5UUVRSS4u",
         },
         {
           label: "Korean",
-          href: "https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxUNVc1RTVFQjBSVlNIRTNRT0Q5VzhJV0o1RC4u",
+          href: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR-pAHAm2aJ5JuuKZp_7_rMxURUMwMUs0SU5SVDJFQjdLTERJVUU2UlQ0SS4u",
         },
       ],
     },
