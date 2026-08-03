@@ -1,13 +1,13 @@
 <template>
-  <div class="annotation-container" :class="step == 6 ? 'question-show-container-person' : ''">
+  <div class="annotation-container" :class="!isCulturalPerspective ? 'question-show-container-person' : ''">
     <!-- 左侧面板容器（占50%宽度） -->
     <div class="left-panel">
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.stepTitle', { step }) }}<span> ({{ step == 5 ? t('common.culturalPerspective') : t('common.personalPerspective') }})</span></div>
+          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.stepTitle', { step }) }}<span> ({{ isCulturalPerspective ? t('common.culturalPerspective') : t('common.personalPerspective') }})</span></div>
         </div>
         <p class="des" style="padding: 0 1em">
-          {{ step == 5 ? t('culturalValueAnnotation.annotationNew.step5Description') : t('culturalValueAnnotation.annotationNew.step6Description') }}
+          {{ isCulturalPerspective ? t('culturalValueAnnotation.annotationNew.step5Description') : t('culturalValueAnnotation.annotationNew.step6Description') }}
         </p>
         <div class="step-content point-section">
           <!-- Point 列表面板 -->
@@ -16,7 +16,7 @@
             class="left validation-area"
             :class="{ 'has-validation-error': validationErrors.points }"
           >
-            <h5>{{ t('culturalValueAnnotation.annotationNew.candidateValues') }}</h5>
+            <h5>{{ t('culturalValueAnnotation.annotationNew.candidateValues', { step }) }}</h5>
             <!-- 添加新 Point 按钮 -->
             <div class="add-point-btn" @click="showAddDialog">{{ t('culturalValueAnnotation.annotationNew.addNewValue') }}</div>
 
@@ -97,7 +97,7 @@
       <!-- Step 2: 基于points指导回答 -->
       <div class="step-section">
         <div class="step-title">
-          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.answerTitle', { step }) }} ({{ step == 5 ? t('common.culturalPerspective') : t('common.personalPerspective') }})</div>
+          <div class="title-text">{{ t('culturalValueAnnotation.annotationNew.answerTitle', { step }) }} ({{ isCulturalPerspective ? t('common.culturalPerspective') : t('common.personalPerspective') }})</div>
         </div>
         <div class="step-content">
           <!-- (1) 明确立场 -->
@@ -130,7 +130,7 @@
             class="input-section full-width validation-area"
             :class="{ 'has-validation-error': validationErrors.incorrect }"
           >
-            <h5>{{ step == 5 ? t('culturalValueAnnotation.annotationNew.incorrectTitle5', { step }) : t('culturalValueAnnotation.annotationNew.incorrectTitle6', { step }) }}</h5>
+            <h5>{{ isCulturalPerspective ? t('culturalValueAnnotation.annotationNew.incorrectTitle5', { step }) : t('culturalValueAnnotation.annotationNew.incorrectTitle6', { step }) }}</h5>
             <div style="padding-left: 1em;">
               <p class="des" v-html="t('culturalValueAnnotation.annotationNew.incorrectNote')"></p>
               <div class="textarea-wrapper">
@@ -240,6 +240,15 @@ const props = defineProps({
     type: Number,
     default: 5,
   },
+  perspective: {
+    type: String,
+    default: "culturalPerspective",
+  },
+});
+
+// 视角类型与显示步骤号分离，随机换序后仍使用正确的文化/个人文案和样式。
+const isCulturalPerspective = computed(() => {
+  return props.perspective === "culturalPerspective";
 });
 
 

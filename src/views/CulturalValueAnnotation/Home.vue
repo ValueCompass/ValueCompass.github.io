@@ -763,9 +763,10 @@
         </div>
       </div>
 
-      <div class="step step5">
+      <!-- 根据本地保存的视角顺序参数，动态排列文化视角和个人视角模块。 -->
+      <div class="step step5" :style="{ order: getPerspectiveStep(CULTURAL_PERSPECTIVE) }">
         <div class="intro-container">
-          <h4>{{ t("culturalValueAnnotation.step5.homeTitle") }}</h4>
+          <h4>{{ t("culturalValueAnnotation.step5.homeTitle", { step: getPerspectiveStep(CULTURAL_PERSPECTIVE) }) }}</h4>
           
           <div class="core-action-box flex-column">
             <h5>
@@ -802,16 +803,17 @@
               :annotationDataOrigin="annotationDataOrigin"
               :use_new_logic="use_new_logic"
               :editMode="submit_type === 'revise'"
-              :step="5"
+              :step="getPerspectiveStep(CULTURAL_PERSPECTIVE)"
+              :perspective="CULTURAL_PERSPECTIVE"
               ref="annotationComponentRef"
             ></AnnotationComponentNew>
           </div>
         </div>
       </div>
 
-      <div class="step step6">
+      <div class="step step6" :style="{ order: getPerspectiveStep(PERSONAL_PERSPECTIVE) }">
         <div class="intro-container">
-          <h4 style="color: #780096" v-html="t('culturalValueAnnotation.step6.homeTitle')"></h4>
+          <h4 style="color: #780096" v-html="t('culturalValueAnnotation.step6.homeTitle', { step: getPerspectiveStep(PERSONAL_PERSPECTIVE) })"></h4>
           <div class="core-action-box">
             <h5>
               {{ t("culturalValueAnnotation.step6.homeCoreAction") }}
@@ -848,7 +850,8 @@
             :annotationDataOrigin="annotationDataOrigin_person"
             :use_new_logic="use_new_logic"
             :editMode="submit_type === 'revise'"
-            :step="6"
+            :step="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
+            :perspective="PERSONAL_PERSPECTIVE"
             ref="annotationComponentRef2"
           ></AnnotationComponentNew>
         </div>
@@ -930,6 +933,48 @@ const userInfo = ref({
   country: userDetail.country || "",
   language: userDetail.language || "",
 });
+
+// 按用户保存随机顺序，避免同一浏览器上的不同标注员共享排序结果。
+const PERSPECTIVE_ORDER_STORAGE_KEY = `culturalValueAnnotationPerspectiveOrder:${userDetail.username || "anonymous"}`;
+const CULTURAL_PERSPECTIVE = "culturalPerspective";
+const PERSONAL_PERSPECTIVE = "personalPerspective";
+const getInitialPerspectiveOrder = () => {
+  try {
+    const storedOrder = JSON.parse(
+      localStorage.getItem(PERSPECTIVE_ORDER_STORAGE_KEY) || "null",
+    );
+    // 仅复用包含两个合法视角的完整顺序；旧的数字格式会进入重新生成流程。
+    if (
+      Array.isArray(storedOrder) &&
+      storedOrder.length === 2 &&
+      storedOrder.includes(CULTURAL_PERSPECTIVE) &&
+      storedOrder.includes(PERSONAL_PERSPECTIVE)
+    ) {
+      return storedOrder;
+    }
+  } catch (error) {
+    console.warn("Unable to read the perspective order from local storage", error);
+  }
+
+  // 首次进入时以相同概率生成两种顺序，并持久化供后续访问复用。
+  const generatedOrder = Math.random() < 0.5
+    ? [PERSONAL_PERSPECTIVE, CULTURAL_PERSPECTIVE]
+    : [CULTURAL_PERSPECTIVE, PERSONAL_PERSPECTIVE];
+  try {
+    localStorage.setItem(
+      PERSPECTIVE_ORDER_STORAGE_KEY,
+      JSON.stringify(generatedOrder),
+    );
+  } catch (error) {
+    console.warn("Unable to save the perspective order to local storage", error);
+  }
+  return generatedOrder;
+};
+const perspectiveOrder = ref(getInitialPerspectiveOrder());
+// 前四步使用默认顺序 0；两个视角使用 5、6，确保只在彼此之间交换位置。
+const getPerspectiveStep = (perspective) => {
+  return 5 + perspectiveOrder.value.indexOf(perspective);
+};
 
 const allFromData = reactive({
   username: "",
@@ -1653,14 +1698,17 @@ const submitHighlightAndConcepts = () => {
     console.log("annotationComponentRef.value:", annotationComponentRef.value);
     console.log("annotationComponentRef.value?.getFormData:", annotationComponentRef.value?.getFormData);
     
-    // 校验两个组件的必填字段
-    if (annotationComponentRef.value && !annotationComponentRef.value.validate()) {
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
-    }
-    if (annotationComponentRef2.value && !annotationComponentRef2.value.validate()) {
-      isLoadingSubmitHighlightAndConcepts.value = false;
-      return;
+    // 按当前展示顺序校验，使错误定位优先跳到用户先看到的视角。
+    const annotationComponents = {
+      [CULTURAL_PERSPECTIVE]: annotationComponentRef.value,
+      [PERSONAL_PERSPECTIVE]: annotationComponentRef2.value,
+    };
+    for (const perspective of perspectiveOrder.value) {
+      const component = annotationComponents[perspective];
+      if (component && !component.validate()) {
+        isLoadingSubmitHighlightAndConcepts.value = false;
+        return;
+      }
     }
 
     const component1Data = annotationComponentRef.value
