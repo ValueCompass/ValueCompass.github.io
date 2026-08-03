@@ -135,7 +135,7 @@ export const resetCulturalValueAnnotationTutorialAutoOpenedState = () => {
 };
 
 // annotator 退出时只清掉登录信息、编辑缓存和教程自动弹窗状态。
-// 保留按用户存储的问卷完成状态及 culturalValueAnnotationPerspectiveOrder:* 视角顺序缓存。
+// 视角顺序来自登录接口，下次登录时会随 userDetail 重新保存。
 export const clearCulturalValueAnnotationAnnotatorSession = () => {
   localStorage.removeItem(CULTURAL_VALUE_ANNOTATION_USER_STORAGE_KEY);
   sessionStorage.removeItem("editCurrentQuestion");

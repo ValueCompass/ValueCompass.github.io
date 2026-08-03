@@ -934,43 +934,14 @@ const userInfo = ref({
   language: userDetail.language || "",
 });
 
-// 按用户保存随机顺序，避免同一浏览器上的不同标注员共享排序结果。
-const PERSPECTIVE_ORDER_STORAGE_KEY = `culturalValueAnnotationPerspectiveOrder:${userDetail.username || "anonymous"}`;
 const CULTURAL_PERSPECTIVE = "culturalPerspective";
 const PERSONAL_PERSPECTIVE = "personalPerspective";
-const getInitialPerspectiveOrder = () => {
-  try {
-    const storedOrder = JSON.parse(
-      localStorage.getItem(PERSPECTIVE_ORDER_STORAGE_KEY) || "null",
-    );
-    // 仅复用包含两个合法视角的完整顺序；旧的数字格式会进入重新生成流程。
-    if (
-      Array.isArray(storedOrder) &&
-      storedOrder.length === 2 &&
-      storedOrder.includes(CULTURAL_PERSPECTIVE) &&
-      storedOrder.includes(PERSONAL_PERSPECTIVE)
-    ) {
-      return storedOrder;
-    }
-  } catch (error) {
-    console.warn("Unable to read the perspective order from local storage", error);
-  }
-
-  // 首次进入时以相同概率生成两种顺序，并持久化供后续访问复用。
-  const generatedOrder = Math.random() < 0.5
+// 登录接口决定视角顺序；字段缺失或异常时固定使用文化视角优先，不再前端随机。
+const perspectiveOrder = ref(
+  userDetail.cultural_personal_order === "personal_first"
     ? [PERSONAL_PERSPECTIVE, CULTURAL_PERSPECTIVE]
-    : [CULTURAL_PERSPECTIVE, PERSONAL_PERSPECTIVE];
-  try {
-    localStorage.setItem(
-      PERSPECTIVE_ORDER_STORAGE_KEY,
-      JSON.stringify(generatedOrder),
-    );
-  } catch (error) {
-    console.warn("Unable to save the perspective order to local storage", error);
-  }
-  return generatedOrder;
-};
-const perspectiveOrder = ref(getInitialPerspectiveOrder());
+    : [CULTURAL_PERSPECTIVE, PERSONAL_PERSPECTIVE],
+);
 // 前四步使用默认顺序 0；两个视角使用 5、6，确保只在彼此之间交换位置。
 const getPerspectiveStep = (perspective) => {
   return 5 + perspectiveOrder.value.indexOf(perspective);

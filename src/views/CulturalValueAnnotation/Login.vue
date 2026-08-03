@@ -311,6 +311,8 @@ const handleAnnotatorLogin = () => {
       language: res.data.language,
       studied_annotation_guidance: isFirstTime ? false : res.data.studied_annotation_guidance === true,
       passed_calibration_quiz: isFirstTime ? !isNeedPassQuizCheck : (res.data.passed_calibration_quiz === true || !isNeedPassQuizCheck),
+      // 由登录接口分配文化/个人视角的展示顺序，后续页面直接从 userDetail 读取。
+      cultural_personal_order: res.data.cultural_personal_order,
     });
 
     // 登录成功后立即同步 i18n 语言设置，确保后续页面使用正确的语言。
