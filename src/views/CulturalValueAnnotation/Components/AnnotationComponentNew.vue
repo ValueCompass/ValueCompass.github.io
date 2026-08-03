@@ -11,7 +11,11 @@
         </p>
         <div class="step-content point-section">
           <!-- Point 列表面板 -->
-          <div class="left">
+          <div
+            ref="pointsSectionRef"
+            class="left validation-area"
+            :class="{ 'has-validation-error': validationErrors.points }"
+          >
             <h5>{{ t('culturalValueAnnotation.annotationNew.candidateValues') }}</h5>
             <!-- 添加新 Point 按钮 -->
             <div class="add-point-btn" @click="showAddDialog">{{ t('culturalValueAnnotation.annotationNew.addNewValue') }}</div>
@@ -37,6 +41,9 @@
 
             <!-- 提示文字 -->
             <div class="hint-text">{{ t('culturalValueAnnotation.annotationNew.selectHint', { max: maxSelectNum }) }}</div>
+            <p v-if="validationErrors.points" class="validation-error-tip">
+              {{ validationErrors.points }}
+            </p>
           </div>
 
           <!-- 已选 Point 排序面板 -->
@@ -94,7 +101,11 @@
         </div>
         <div class="step-content">
           <!-- (1) 明确立场 -->
-          <div class="input-section full-width">
+          <div
+            ref="positionSectionRef"
+            class="input-section full-width validation-area"
+            :class="{ 'has-validation-error': validationErrors.position }"
+          >
             <h5>{{ t('culturalValueAnnotation.annotationNew.positionTitle', { step }) }}</h5>
             <div style="padding-left: 1em;">
                 <p class="des" v-html="t('culturalValueAnnotation.annotationNew.positionNote')"></p>
@@ -107,11 +118,18 @@
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(positionText) > 200 }">{{ countWords(positionText) }}/200</span>
               </div>
+              <p v-if="validationErrors.position" class="validation-error-tip">
+                {{ validationErrors.position }}
+              </p>
             </div>
           </div>
 
           <!-- 不合适的做法(至少列出1条) -->
-          <div class="input-section full-width">
+          <div
+            ref="incorrectSectionRef"
+            class="input-section full-width validation-area"
+            :class="{ 'has-validation-error': validationErrors.incorrect }"
+          >
             <h5>{{ step == 5 ? t('culturalValueAnnotation.annotationNew.incorrectTitle5', { step }) : t('culturalValueAnnotation.annotationNew.incorrectTitle6', { step }) }}</h5>
             <div style="padding-left: 1em;">
               <p class="des" v-html="t('culturalValueAnnotation.annotationNew.incorrectNote')"></p>
@@ -124,6 +142,9 @@
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(incorrectText) > 200 }">{{ countWords(incorrectText) }}/200</span>
               </div>
+              <p v-if="validationErrors.incorrect" class="validation-error-tip">
+                {{ validationErrors.incorrect }}
+              </p>
             </div>
           </div>
         </div>
@@ -185,7 +206,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { Close } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
@@ -261,6 +282,15 @@ const positionText = ref("");
 
 // 不合适的做法文本
 const incorrectText = ref("");
+
+const pointsSectionRef = ref(null);
+const positionSectionRef = ref(null);
+const incorrectSectionRef = ref(null);
+const validationErrors = ref({
+  points: "",
+  position: "",
+  incorrect: "",
+});
 
 // ===== Step3 相关数据 =====
 
@@ -346,6 +376,18 @@ watch(
   },
   { deep: true, immediate: true }
 );
+
+watch(selectedPoints, (value) => {
+  if (value.length > 0) validationErrors.value.points = "";
+});
+
+watch(positionText, (value) => {
+  if (countWords(value) >= 100) validationErrors.value.position = "";
+});
+
+watch(incorrectText, (value) => {
+  if (value.trim()) validationErrors.value.incorrect = "";
+});
 
 // 页面加载时初始化
 onMounted(() => {
@@ -510,20 +552,33 @@ const getFormData = () => {
  * @returns {boolean} 校验是否通过
  */
 const validate = () => {
-  if (selectedPoints.value.length === 0) {
-    ElMessage.warning(t('culturalValueAnnotation.annotationNew.selectPointWarning'));
-    return false;
-  }
-  if (!positionText.value.trim()) {
-    ElMessage.warning(t('culturalValueAnnotation.annotationNew.positionEmptyWarning'));
-    return false;
-  }
-  if (countWords(positionText.value) < 100) {
-    ElMessage.warning(t('culturalValueAnnotation.annotationNew.positionMinWordsError'));
-    return false;
-  }
-  if (!incorrectText.value.trim()) {
-    ElMessage.warning(t('culturalValueAnnotation.annotationNew.incorrectEmptyWarning'));
+  validationErrors.value = {
+    points: selectedPoints.value.length === 0
+      ? t('culturalValueAnnotation.annotationNew.selectPointWarning')
+      : "",
+    position: !positionText.value.trim()
+      ? t('culturalValueAnnotation.annotationNew.positionEmptyWarning')
+      : countWords(positionText.value) < 100
+        ? t('culturalValueAnnotation.annotationNew.positionMinWordsError')
+        : "",
+    incorrect: !incorrectText.value.trim()
+      ? t('culturalValueAnnotation.annotationNew.incorrectEmptyWarning')
+      : "",
+  };
+
+  const invalidFields = [
+    { message: validationErrors.value.points, element: pointsSectionRef.value },
+    { message: validationErrors.value.position, element: positionSectionRef.value },
+    { message: validationErrors.value.incorrect, element: incorrectSectionRef.value },
+  ];
+  const firstInvalidField = invalidFields.find(field => field.message);
+
+  if (firstInvalidField) {
+    ElMessage.warning(firstInvalidField.message);
+    nextTick(() => {
+      firstInvalidField.element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      firstInvalidField.element?.querySelector("textarea")?.focus({ preventScroll: true });
+    });
     return false;
   }
   // if (!boundaryChoice.value) {
@@ -687,6 +742,28 @@ defineExpose({
         }
       }
     }
+  }
+
+  .validation-area {
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+
+    &.has-validation-error {
+      border-color: #f56c6c !important;
+      box-shadow: 0 0 0 2px rgba(245, 108, 108, 0.2);
+      background-color: #fff8f8;
+
+      :deep(.el-textarea__inner) {
+        box-shadow: 0 0 0 1px #f56c6c inset;
+      }
+    }
+  }
+
+  .validation-error-tip {
+    margin-top: 8px;
+    color: #d93025;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-weight: 500;
   }
 
   .point-section{
