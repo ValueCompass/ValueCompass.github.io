@@ -236,7 +236,9 @@ const router = useRouter();
 const { t } = useI18n();
 
 // 训练视频步骤只保存视频元数据，完成状态单独存在 trainingVideoCompletionStatus。
-const trainingVideoSteps = ref(createOnboardingSteps());
+const trainingVideoSteps = ref(
+  createOnboardingSteps(getStoredOnboardingUserDetail().language),
+);
 const trainingVideoCompletionStatus = ref({});
 
 // 页面内轻量测验题库，从 API 异步加载。

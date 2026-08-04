@@ -125,7 +125,12 @@ export const countryLanguageMap = {
   "Republic of Korea": "Korean",
 };
 
-export const createOnboardingSteps = () => {
+export const createOnboardingSteps = (language = "") => {
+  const videoSrc =
+    normalizeOnboardingResourceLanguage(language) === "Chinese"
+      ? "https://training-video-1258865474.cos.ap-beijing.myqcloud.com/Training%20Video%20-%20CN%20-%20Marked.mp4"
+      : onboardingTrainingVideo;
+
   return [
     {
       id: 1,
@@ -134,7 +139,7 @@ export const createOnboardingSteps = () => {
       heading: "Learn How to Annotate",
       description:
         "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
-      videoSrc: onboardingTrainingVideo,
+      videoSrc,
       videoType: "video/mp4",
     },
   ];

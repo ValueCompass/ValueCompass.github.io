@@ -164,7 +164,9 @@ const handleDownloadGuidelineDocument = () => {
   downloadOnboardingGuidelineDocument();
 };
 
-const steps = ref(createOnboardingSteps());
+const steps = ref(
+  createOnboardingSteps(getStoredOnboardingUserDetail().language),
+);
 
 const surveys = ref(createOnboardingSurveys());
 
