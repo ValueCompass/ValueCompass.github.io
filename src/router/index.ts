@@ -4,7 +4,6 @@ import {
   hasCulturalValueAnnotationAdminLogin,
   hasStudiedCulturalValueAnnotationVideoGuidance,
   hasPassedCalibrationQuiz,
-  hasCompletedOnboardingSurveys,
 } from '../utils/culturalValueAnnotationAuth'
 
 const routes: Array<RouteRecordRaw> = [
@@ -307,11 +306,10 @@ router.beforeEach((to, from, next) => {
     }
 
     if (hasCulturalValueAnnotationAnnotatorLogin()) {
-      // 三个阶段任一未完成都应进入 Onboarding 补全，否则进首页。
+      // 持久完成态由培训与测验字段决定，Survey 不持久化。
       const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance()
       const quizDone = hasPassedCalibrationQuiz()
-      const surveyDone = hasCompletedOnboardingSurveys()
-      const onboardingDone = guidanceDone && quizDone && surveyDone
+      const onboardingDone = guidanceDone && quizDone
 
       next({
         path: onboardingDone
@@ -337,12 +335,11 @@ router.beforeEach((to, from, next) => {
     }
 
     if (!hasAdminAccessToTaskHistory && to.name !== 'CulturalValueAnnotationOnboarding') {
-      // 只要三个阶段中有任意一项未完成，都强制跳回 Onboarding 补全。
+      // 培训或测验未完成时强制进入 Onboarding；Survey 不持久化。
       const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance()
       const quizDone = hasPassedCalibrationQuiz()
-      const surveyDone = hasCompletedOnboardingSurveys()
 
-      if (!guidanceDone || !quizDone || !surveyDone) {
+      if (!guidanceDone || !quizDone) {
         next({
           path: '/CulturalValueAnnotation/onboarding'
         })

@@ -189,9 +189,7 @@ import Survey from "./onnborading/Components/Survey.vue";
 import {
   hasStudiedCulturalValueAnnotationVideoGuidance,
   hasPassedCalibrationQuiz,
-  hasCompletedOnboardingSurveys,
   updateUserDetailFields,
-  markOnboardingSurveysCompleted,
 } from "@/utils/culturalValueAnnotationAuth";
 import {
   createOnboardingSteps,
@@ -452,9 +450,8 @@ const handleQuizFailed = () => {
   activeMainStepIndex.value = 2;
 };
 
-// 问卷完成后标记 Survey 完成状态，进入第二步培训视频。
+// Survey 完成状态只在当前 Onboarding 页面有效，进入页面时始终重新开始。
 const handleSurveyNext = () => {
-  markOnboardingSurveysCompleted();
   surveyCompleted.value = true;
   activeMainStepIndex.value = 2;
 };
@@ -463,19 +460,10 @@ const handleSurveyNext = () => {
 
 // ---------- 页面初始化：决定 Onboarding 的起始步骤 ----------
 //
-// Onboarding 分三个阶段，每个阶段有独立的完成标志：
-//   Step 1 — 问卷（survey，仅保存在本地 localStorage）
+// Onboarding 分三个阶段：
+//   Step 1 — 问卷（仅保存在当前页面状态，进入 Onboarding 时始终未完成）
 //   Step 2 — 培训视频（studied_annotation_guidance，来自服务端）
 //   Step 3 — 校准测验（passed_calibration_quiz，来自服务端，仅部分用户需要）
-//
-// 完整决策矩阵：
-//   Step 1 视频 │ Step 2 测验 │ Step 3 问卷 │ 起始步骤
-//   ────────────┼─────────────┼─────────────┼──────────────────
-//   false       │ false       │  —          │ Step 1 培训
-//   true        │ false       │  —          │ Step 2 测验
-//   true        │ true        │ false       │ Step 3 问卷
-//   true        │ true        │ true        │ 全部完成 → 首页
-//   false       │ true        │  —          │ 防御性 → Step 1
 onMounted(async () => {
   const storedUserDetail = getStoredOnboardingUserDetail();
   registeredUserName.value = storedUserDetail.username;
@@ -497,31 +485,16 @@ onMounted(async () => {
     quizLoading.value = false;
   }
 
-  // 读取 Step 2 完成标志（studied_annotation_guidance）。
-  const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance();
-
   // 读取 Step 3 完成标志（passed_calibration_quiz），来自 localStorage。
   const quizDone = hasPassedCalibrationQuiz();
   quizCompleted.value = quizDone; // 同步左侧侧边栏的 quiz 完成状态
 
-  // 读取 Step 1 完成标志（问卷），所有问卷都勾选完成才视为完成。
-  const surveyDone = hasCompletedOnboardingSurveys();
-  surveyCompleted.value = surveyDone;
+  // 只要进入 Onboarding，Survey 就从未完成状态开始，不读取持久化状态。
+  surveyCompleted.value = false;
 
   // 先恢复训练视频进度，避免未完成引导的用户刷新后又从第一个视频开始。
   restoreTrainingVideoProgress();
-
-  if (surveyDone && guidanceDone && (!isNeedPassQuizCheck.value || quizDone)) {
-    // 三个阶段全部完成，直接跳到首页。
-    router.push({ name: "CulturalValueAnnotationHome" });
-  } else if (!surveyDone) {
-    activeMainStepIndex.value = 1;
-  } else if (!guidanceDone) {
-    activeMainStepIndex.value = 2;
-  } else {
-    activeMainStepIndex.value = 3;
-  }
-  
+  activeMainStepIndex.value = 1;
 });
 
 // TrainingVideo 完成状态变化后持久化，刷新后可继续未完成的视频。

@@ -193,7 +193,6 @@ import {
   saveCulturalValueAnnotationUserDetail,
   hasStudiedCulturalValueAnnotationVideoGuidance,
   hasPassedCalibrationQuiz,
-  hasCompletedOnboardingSurveys,
 } from "../../utils/culturalValueAnnotationAuth";
 
 const isLoading = ref(false);
@@ -320,19 +319,10 @@ const handleAnnotatorLogin = () => {
 
     // ---------- 路由判断逻辑（详细注释） ----------
     //
-    // Onboarding 分三个阶段，每个阶段有独立的完成标志：
+    // Onboarding 的持久完成态来自服务端字段：
     //   Step 1 — 培训视频（studied_annotation_guidance，来自服务端）
     //   Step 2 — 校准测验（passed_calibration_quiz，来自服务端）
-    //   Step 3 — 问卷（survey，仅保存在本地 localStorage）
-    //
-    // 完整决策矩阵：
-    //   Step 1 视频 │ Step 2 测验 │ Step 3 问卷 │ 行为
-    //   ────────────┼─────────────┼─────────────┼──────────────────────────
-    //   false       │ false       │  —          │ 进 Onboarding Step 1
-    //   true        │ false       │  —          │ 进 Onboarding Step 2
-    //   true        │ true        │ false       │ 进 Onboarding Step 3
-    //   true        │ true        │ true        │ 全部完成，直接进首页
-    //   false       │ true        │  —          │ 防御性：不应出现，进 Step 1
+    // Survey 不持久化，只要进入 Onboarding 页面就视为未完成。
     //
     // 首次注册的用户必定从 Step 1 开始，无需调用判断函数。
 
@@ -344,21 +334,18 @@ const handleAnnotatorLogin = () => {
       return;
     }
 
-    // 回访登录：根据 localStorage 中的完成状态决定起始步骤。
+    // 回访登录：根据登录响应中的完成字段决定是否进入 Onboarding。
     // （saveCulturalValueAnnotationUserDetail 已将服务端字段写入 localStorage）
     const guidanceDone = hasStudiedCulturalValueAnnotationVideoGuidance();
     const quizDone = hasPassedCalibrationQuiz();
-    const surveyDone = hasCompletedOnboardingSurveys();
 
-    if (guidanceDone && quizDone && surveyDone) {
-      // 三个阶段全部完成，直接进入正式标注首页。
+    if (guidanceDone && quizDone) {
+      // 持久阶段全部完成，直接进入正式标注首页。
       router.push({
         name: "CulturalValueAnnotationHome",
       });
     } else {
-      // 任意一项未完成，进入 Onboarding 补全。
-      // Onboarding.vue 的 onMounted 会根据三个阶段的完成状态
-      // 自动决定从 Step 1 / Step 2 / Step 3 开始，无需额外传参。
+      // 任意持久阶段未完成，进入 Onboarding，并从 Survey 开始。
       router.push({
         name: "CulturalValueAnnotationOnboarding",
       });
