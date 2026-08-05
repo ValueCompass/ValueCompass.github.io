@@ -27,7 +27,10 @@
                   v-for="(point, index) in pointArr" 
                   :key="index"
                   class="point-item"
-                  :class="{ 'is-draggable': selectedPoints.includes(point) }"
+                  :class="{
+                    'is-draggable': selectedPoints.includes(point),
+                    'is-ranked': rankedPoints.includes(point),
+                  }"
                   :draggable="selectedPoints.includes(point)"
                   @dragstart="onCandidateDragStart($event, point)"
                   @dragend="onDragEnd"
@@ -945,6 +948,10 @@ defineExpose({
             &:active {
               cursor: grabbing;
             }
+          }
+
+          &.is-ranked {
+            opacity: 0.65;
           }
         }
 
