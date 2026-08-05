@@ -41,7 +41,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column v-if="!isAdminView" label="Review Status" width="150">
+      <el-table-column label="Review Status" width="150">
         <template #default="scope">
           <span>{{ formatQualityReviewStatus(scope.row.quality_reviews) }}</span>
         </template>
@@ -243,8 +243,19 @@ const qualityReviewStatusLabels = {
   reviewed_and_qualified: "数据合格",
 };
 
+const adminQualityReviewStatusLabels = {
+  not_reviewed: "-",
+  reviewed_and_waiting_for_revise: "待用户修改",
+  revised_and_waiting_for_review: "用户已修改，待确认",
+  reviewed_and_qualified: "数据合格",
+};
+
 const formatQualityReviewStatus = (qualityReviews) => {
   const status = qualityReviews?.quality_review_status;
+  if (isAdminView) {
+    return adminQualityReviewStatusLabels[status] || status || "-";
+  }
+
   return qualityReviewStatusLabels[status] || status || "等待管理员审查";
 };
 
