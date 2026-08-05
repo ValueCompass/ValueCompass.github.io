@@ -220,6 +220,18 @@ export const submitAnnotation = (data: any): any => {
     });
 }
 
+export const submit_quality_reviews = (data: any, token = ""): any => {
+    const config = token
+        ? {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+        : undefined;
+
+    return request.post("/annotations_v2/submit_quality_reviews/", data, config)
+}
+
 
 export const GetAllCompletedAnnotations = (data: any): any => {
     return request.post("/annotations_v2/all_completed_annotations/", data) 

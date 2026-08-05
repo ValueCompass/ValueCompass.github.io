@@ -259,6 +259,13 @@ const formatQualityReviewStatus = (qualityReviews) => {
   return qualityReviewStatusLabels[status] || status || "等待管理员审查";
 };
 
+const getStage1Review = (responseData = {}) =>
+  responseData.stage1_review ||
+  responseData.quality_reviews?.stage1_review ||
+  responseData.user_quality_reviews?.stage1_review ||
+  responseData.annotations?.stage1_review ||
+  null;
+
 onMounted(() => {
   if (!resolvedUserDetail.value.username) {
     router.push({
@@ -279,16 +286,23 @@ onMounted(() => {
     .then((res) => {
       console.log(res.data);
       downLoadData.value = res.data.annotations;
+      const stage1Review = getStage1Review(res.data);
 
       // 将对象转换为数组
-      const annotationEntries = Object.entries(res.data.annotations).map(
-        ([key, value]) => ({
+      const annotationEntries = Object.entries(res.data.annotations)
+        .filter(([key]) => key !== "stage1_review")
+        .map(([key, value]) => ({
           key,
           row: {
             ...value,
+            quality_reviews: {
+              ...(value?.quality_reviews || {}),
+              ...(value?.quality_reviews?.stage1_review || !stage1Review
+                ? {}
+                : { stage1_review: stage1Review }),
+            },
           },
-        })
-      );
+        }));
 
       if (annotationEntries.length === 0) {
         ElMessage.warning("No task history found.");

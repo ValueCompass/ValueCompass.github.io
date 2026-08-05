@@ -1,6 +1,12 @@
 <template>
   <div
-    :class="['main-container', { 'admin-readonly': isAdminView }]"
+    :class="[
+      'main-container',
+      {
+        'admin-readonly': isAdminView,
+        'is-new-annotation': submit_type === 'create new',
+      },
+    ]"
     style="margin-bottom: 4em; margin-top: 2em"
   >
     <div style="display: flex; flex-direction: column; gap: 0.6em">
@@ -26,8 +32,19 @@
         >
       </div>
     </div>
+    <QualityReviewControl
+      v-if="submit_type === 'revise'"
+      class="user-quality-review"
+      v-model="qualityReviews.stage1_review"
+      :is-admin="isAdminView"
+      :saving="isSavingQualityReviews"
+      :criteria="REVIEW_CRITERIA.stage1_review"
+      :step-number="1"
+      title="Stage 1. Survey Questionnaire"
+    />
     <div class="step-container">
       <div class="step step1">
+        <div class="step-content">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step1.title") }}</h4>
           <div class="core-action-box">
@@ -103,13 +120,16 @@
             </el-select>
           </div>
         </div>
+        </div>
+        <div class="quality-review-control quality-review-control--empty"></div>
       </div>
 
       <div ref="step2SectionRef" class="step step2">
+        <div class="step-content">
         <div class="intro-container">
-          <h4>
-            {{ t("culturalValueAnnotation.step2.title") }}
-          </h4>
+          <div class="step-title-row">
+            <h4>{{ t("culturalValueAnnotation.step2.title") }}</h4>
+          </div>
           <div class="core-action-box">
             <h5>
                 {{ t("culturalValueAnnotation.step2.coreAction") }}
@@ -241,9 +261,23 @@
             >{{ principleValidationErrorMessage }}</p>
           </div>
         </div>
+        </div>
+        <QualityReviewControl
+          v-if="submit_type === 'revise'"
+          v-model="qualityReviews.principles_review"
+          :is-admin="isAdminView"
+          :saving="isSavingQualityReviews"
+          :criteria="REVIEW_CRITERIA.principles_review"
+          :step-number="2"
+        />
+        <div
+          v-else
+          class="quality-review-control quality-review-control--empty"
+        ></div>
       </div>
 
       <div class="step step3">
+        <div class="step-content">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step3.title") }}</h4>
           <div class="core-action-box">
@@ -391,11 +425,16 @@
             </div>
           </div>
         </div>
+        </div>
+        <div class="quality-review-control quality-review-control--empty"></div>
       </div>
 
       <div class="step step4">
+        <div class="step-content">
         <div class="intro-container">
-          <h4>{{ t("culturalValueAnnotation.step4.title") }}</h4>
+          <div class="step-title-row">
+            <h4>{{ t("culturalValueAnnotation.step4.title") }}</h4>
+          </div>
           <div class="core-action-box flex-column">
             <h5>
               {{ t("culturalValueAnnotation.step4.coreAction") }}
@@ -761,12 +800,28 @@
             >
           </div>
         </div>
+        </div>
+        <QualityReviewControl
+          v-if="submit_type === 'revise'"
+          v-model="qualityReviews.question_review"
+          :is-admin="isAdminView"
+          :saving="isSavingQualityReviews"
+          :criteria="REVIEW_CRITERIA.question_review"
+          :step-number="4"
+        />
+        <div
+          v-else
+          class="quality-review-control quality-review-control--empty"
+        ></div>
       </div>
 
       <!-- 根据本地保存的视角顺序参数，动态排列文化视角和个人视角模块。 -->
       <div class="step step5" :style="{ order: getPerspectiveStep(CULTURAL_PERSPECTIVE) }">
+        <div class="step-content">
         <div class="intro-container">
-          <h4>{{ t("culturalValueAnnotation.step5.homeTitle", { step: getPerspectiveStep(CULTURAL_PERSPECTIVE) }) }}</h4>
+          <div class="step-title-row">
+            <h4>{{ t("culturalValueAnnotation.step5.homeTitle", { step: getPerspectiveStep(CULTURAL_PERSPECTIVE) }) }}</h4>
+          </div>
           
           <div class="core-action-box flex-column">
             <h5>
@@ -809,11 +864,27 @@
             ></AnnotationComponentNew>
           </div>
         </div>
+        </div>
+        <QualityReviewControl
+          v-if="submit_type === 'revise'"
+          v-model="qualityReviews[getPerspectiveReviewKey(CULTURAL_PERSPECTIVE)]"
+          :is-admin="isAdminView"
+          :saving="isSavingQualityReviews"
+          :criteria="REVIEW_CRITERIA[getPerspectiveReviewKey(CULTURAL_PERSPECTIVE)]"
+          :step-number="getPerspectiveStep(CULTURAL_PERSPECTIVE)"
+        />
+        <div
+          v-else
+          class="quality-review-control quality-review-control--empty"
+        ></div>
       </div>
 
       <div class="step step6" :style="{ order: getPerspectiveStep(PERSONAL_PERSPECTIVE) }">
+        <div class="step-content">
         <div class="intro-container">
-          <h4 style="color: #780096" v-html="t('culturalValueAnnotation.step6.homeTitle', { step: getPerspectiveStep(PERSONAL_PERSPECTIVE) })"></h4>
+          <div class="step-title-row">
+            <h4 style="color: #780096" v-html="t('culturalValueAnnotation.step6.homeTitle', { step: getPerspectiveStep(PERSONAL_PERSPECTIVE) })"></h4>
+          </div>
           <div class="core-action-box">
             <h5>
               {{ t("culturalValueAnnotation.step6.homeCoreAction") }}
@@ -855,6 +926,19 @@
             ref="annotationComponentRef2"
           ></AnnotationComponentNew>
         </div>
+        </div>
+        <QualityReviewControl
+          v-if="submit_type === 'revise'"
+          v-model="qualityReviews[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
+          :is-admin="isAdminView"
+          :saving="isSavingQualityReviews"
+          :criteria="REVIEW_CRITERIA[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
+          :step-number="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
+        />
+        <div
+          v-else
+          class="quality-review-control quality-review-control--empty"
+        ></div>
       </div>
       
     </div>
@@ -872,6 +956,14 @@
         @click="submitHighlightAndConcepts"
         >{{ t("common.submitAnnotation") }}</el-button
       >
+    </div>
+    <div v-else class="quality-review-submit">
+      <el-button
+        type="primary"
+        color="#d95f02"
+        :loading="isSavingQualityReviews"
+        @click="submitQualityReviews"
+      >Submit Quality Review</el-button>
     </div>
 
     <!-- <UserDetail @hideUsrerContainer="hideUsrerContainer"></UserDetail> -->
@@ -901,7 +993,9 @@ import UserDetail from "./UserDetail.vue";
 import AnnotationComponentNew from "./Components/AnnotationComponentNew.vue";
 import SimilarityDialog from "./Components/SimilarityDialog.vue";
 import ExampleCard from "./Components/ExampleCard.vue";
+import QualityReviewControl from "./Components/QualityReviewControl.vue";
 import { isHighlySimilar } from "@/utils/CulturalAnnotationUtil";
+import { getCulturalValueAnnotationAdminDetail } from "@/utils/culturalValueAnnotationAuth";
 import {
   Warning
 } from "@element-plus/icons-vue";
@@ -911,6 +1005,7 @@ import {
   getQuestionResponse,
   getQuestionValueList,
   submitAnnotation,
+  submit_quality_reviews,
   GetAllCompletedAnnotations,
 } from "@/service/CulturalValueAnnotationApi";
 import {
@@ -946,6 +1041,86 @@ const perspectiveOrder = ref(
 const getPerspectiveStep = (perspective) => {
   return 5 + perspectiveOrder.value.indexOf(perspective);
 };
+const getPerspectiveReviewKey = (perspective) =>
+  perspective === CULTURAL_PERSPECTIVE
+    ? "cultural_perspective_review"
+    : "personal_perspective_review";
+
+const QUALITY_REVIEW_KEYS = [
+  "stage1_review",
+  "principles_review",
+  "question_review",
+  "cultural_perspective_review",
+  "personal_perspective_review",
+];
+
+const REVIEW_CRITERIA = {
+  stage1_review: [
+    "完成三份问卷，且问卷中填写的 username 跟系统一致",
+    "在文化价值观问卷中“个人价值观陈述”、“文化价值观陈述”选择至少 3 个角度进行回答",
+    "必须通过问卷中的 Attention 测试（Schwartz Q6、Q19；Cultural Value Q7、Q24），个人视角和文化视角都选择“不符合”",
+    "在相反问题上的 label 有方向差异（Schwartz Q15-Q4；Cultural Value Q17-Q23）",
+  ],
+  principles_review: [
+    "不少于三条，每条内容表达清晰。",
+    "遵循给定模板或相近的模板",
+    "多条行为准则之间，中心思想不重复，且不照抄示例",
+    "价值原则符合目标文化，没有明显不符的原则",
+  ],
+  question_review: [
+    "对所选问题的打分 >= 4",
+    "从文化专家的角度来看，所选问题在价值重要性、文化差异性、问题真实性上的打分 >= 4",
+  ],
+  cultural_perspective_review: [
+    "所选的价值观确实与问题相关，没有选择完全无关的价值观",
+    "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致（如果全部一致的话，怀疑只进行了选择，而跳过了优先级排序这一步）",
+    "问题回答所反映的价值观与确定的价值观优先级是一致的",
+    "问题回答包括 (i) 对问题的直接回应；(ii) 符合文化的行为准则和做法",
+    "分点列出 1-3 条不合适、应该避免的做法",
+    "从文化专家的角度来看，问题回答和不合适的做法都基本符合文化主流价值观（注：只有明显不符合的要求修改）",
+  ],
+  personal_perspective_review: [
+    "所选的价值观确实与问题相关，没有选择完全无关的价值观",
+    "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致（如果全部一致的话，怀疑只进行了选择，而跳过了优先级排序这一步）",
+    "问题回答所反映的价值观与确定的价值观优先级是一致的",
+    "问题回答包括 (i) 对问题的直接回应；(ii) 符合文化的行为准则和做法",
+    "分点列出 1-3 条不合适、应该避免的做法",
+  ],
+};
+
+const normalizeQualityReviews = (qualityReviews = {}) => {
+  const normalizedReviews = QUALITY_REVIEW_KEYS.reduce((reviews, key) => {
+    const review = qualityReviews?.[key];
+    reviews[key] = {
+      qualified:
+        review?.qualified === true || review?.qualified === false
+          ? review.qualified
+          : null,
+      check_list: REVIEW_CRITERIA[key].map((_, index) => {
+        const value = review?.check_list?.[index];
+        return value === true || value === false ? value : null;
+      }),
+      comments: Array.isArray(review?.comments)
+        ? review.comments.map((comment) => ({
+            text: String(comment?.text || ""),
+            timestamp: comment?.timestamp || "",
+            addressed:
+              comment?.addressed === true || comment?.addressed === false
+                ? comment.addressed
+                : null,
+          }))
+        : [],
+    };
+    return reviews;
+  }, {});
+
+  normalizedReviews.quality_review_status =
+    qualityReviews?.quality_review_status || "not_reviewed";
+  return normalizedReviews;
+};
+
+const qualityReviews = ref(normalizeQualityReviews());
+const isSavingQualityReviews = ref(false);
 
 const allFromData = reactive({
   username: "",
@@ -1770,6 +1945,15 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
         submit_type: submit_type.value,
         timestamp: new Date().toISOString(),
       };
+      if (submit_type.value === "revise") {
+        sendData.quality_reviews = {
+          ...JSON.parse(JSON.stringify(qualityReviews.value)),
+          quality_review_status:
+            qualityReviews.value.quality_review_status === "not_reviewed"
+              ? "not_reviewed"
+              : "revised_and_waiting_for_review",
+        };
+      }
       if (similarityData) {
         sendData.personal_answer_similar_to_cultural_answer = similarityData;
       }
@@ -1882,6 +2066,89 @@ watch(taskValue1, (newValue) => {
 const topic_task_count = ref(null);
 
 const editCurrentQuestionDetail = ref(null);
+const submitQualityReviews = async () => {
+  if (!editCurrentQuestionDetail.value || isSavingQualityReviews.value) {
+    return;
+  }
+
+  const source = editCurrentQuestionDetail.value;
+  const adminDetail = getCulturalValueAnnotationAdminDetail() || {};
+  const incompleteReviewItems = QUALITY_REVIEW_KEYS.flatMap((key) => {
+    const areaLabel = key === "stage1_review"
+      ? "Stage 1"
+      : key === "principles_review"
+        ? "Step 2"
+        : key === "question_review"
+          ? "Step 4"
+      : key === "cultural_perspective_review"
+          ? `Step ${getPerspectiveStep(CULTURAL_PERSPECTIVE)}`
+          : `Step ${getPerspectiveStep(PERSONAL_PERSPECTIVE)}`;
+    return qualityReviews.value[key].check_list.reduce((items, value, index) => {
+      if (value !== true && value !== false) {
+        items.push(`${areaLabel}.${index + 1}`);
+      }
+      return items;
+    }, []);
+  });
+  if (incompleteReviewItems.length > 0) {
+    ElMessage.warning(`请完成以下审核项：${incompleteReviewItems.join("、")}`);
+    return;
+  }
+
+  const updatedQualityReviews = QUALITY_REVIEW_KEYS.reduce((reviews, key) => {
+    const review = qualityReviews.value[key];
+    reviews[key] = {
+      ...JSON.parse(JSON.stringify(review)),
+      qualified: review.check_list.every((value) => value === true),
+    };
+    return reviews;
+  }, {});
+  const targetUser = {
+    username: String(route.query.username || source.username || userDetail.username || "").trim(),
+    country: String(route.query.country || source.country || userDetail.country || "").trim(),
+    // language: String(route.query.language || source.language || userDetail.language || "").trim(),
+  };
+
+  isSavingQualityReviews.value = true;
+  try {
+    const response = await submit_quality_reviews(
+      {
+        ...source,
+        ...targetUser,
+        data_index: route.params.id || source.index,
+        quality_reviews: updatedQualityReviews,
+      },
+      String(adminDetail.token || "").trim(),
+    );
+
+    if (!response?.data?.ok) {
+      ElMessage.error(
+        response?.data?.message || "质量审核提交失败",
+      );
+      return;
+    }
+
+    editCurrentQuestionDetail.value = {
+      ...source,
+      quality_reviews: updatedQualityReviews,
+    };
+    sessionStorage.setItem(
+      "editCurrentQuestion",
+      JSON.stringify(editCurrentQuestionDetail.value),
+    );
+    ElMessage.success("质量审核提交成功");
+  } catch (error) {
+    console.error(error);
+    ElMessage.error(
+      error?.response?.data?.message ||
+        error?.message ||
+        "质量审核提交失败",
+    );
+  } finally {
+    isSavingQualityReviews.value = false;
+  }
+};
+
 onMounted(async () => {
   if (!isAdminView.value && (!userDetail.username || !userDetail.country || !userDetail.language)) {
     return;
@@ -1910,6 +2177,13 @@ onMounted(async () => {
     const question = JSON.parse(editCurrentQuestion);
     await fetchCandidateQuestionsForEdit(question);
     editCurrentQuestionDetail.value = question;
+    qualityReviews.value = normalizeQualityReviews({
+      ...(question.quality_reviews || {}),
+      stage1_review:
+        question.quality_reviews?.stage1_review ||
+        question.stage1_review ||
+        question.user_quality_reviews?.stage1_review,
+    });
     hasClickedGetAnswerBtn.value = true;
     hasClickedSaveAndGetQuestionListBtn.value = true;
     console.log("要编辑的question信息", question);
@@ -2162,6 +2436,10 @@ const getQuestionNum = () => {
 };
 </script>
 <style scoped lang="scss">
+.user-quality-review {
+  margin-top: 2em;
+}
+
 .step-container {
   padding: 3em 0;
   display: flex;
@@ -2170,8 +2448,23 @@ const getQuestionNum = () => {
   line-height: 1.2;
   .step {
     display: flex;
-    flex-direction: column;
-    gap: 1.5em 0;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 1.5em;
+
+    .step-content {
+      display: flex;
+      flex: 6 1 0;
+      min-width: 0;
+      flex-direction: column;
+      gap: 1.5em 0;
+    }
+
+    > .quality-review-control {
+      flex: 1 1 0;
+      min-width: 280px;
+    }
+
     .intro-container {
       display: flex;
       flex-direction: column;
@@ -2371,11 +2664,6 @@ const getQuestionNum = () => {
           transition: all 0.3s;
           text-align: left;
           border-radius: 6px;
-
-          &:hover {
-            // color: #0856A7;
-            // border-color: #0856A7;
-          }
 
           &.active {
             color: #0856A7;
@@ -2688,6 +2976,10 @@ const getQuestionNum = () => {
 }
 
 .admin-readonly {
+  .step-container .step .step-content {
+    flex-grow: 3;
+  }
+
   :deep(.el-button),
   :deep(.el-select),
   :deep(.el-input),
@@ -2700,6 +2992,53 @@ const getQuestionNum = () => {
   :deep(.admin-back-button) {
     pointer-events: auto;
     cursor: pointer;
+  }
+
+  :deep(.quality-review-submit .el-button) {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  :deep(.quality-review-control),
+  :deep(.quality-review-control .el-button),
+  :deep(.quality-review-control .el-checkbox),
+  :deep(.quality-review-control .el-input),
+  :deep(.quality-review-control .el-textarea) {
+    pointer-events: auto;
+    cursor: auto;
+  }
+}
+
+.is-new-annotation {
+  .step-container .step .step-content {
+    flex: 1 1 100%;
+  }
+
+  .quality-review-control--empty {
+    display: none;
+  }
+}
+
+.step-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.quality-review-submit {
+  display: flex;
+  justify-content: center;
+  margin-top: 2em;
+}
+
+@media (max-width: 1100px) {
+  .step-container .step {
+    flex-direction: column;
+
+    > .quality-review-control {
+      min-width: 0;
+    }
   }
 }
 </style>
