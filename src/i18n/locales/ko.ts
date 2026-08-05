@@ -253,6 +253,8 @@ export default {
       selectHint: '진정으로 중요한 가치를 선택하세요, 최대 {max}개',
       sortTitle: '{step}.1.2 선택한 가치관의 순위를 매기고 우선순위를 정하세요',
       dragHint: '드래그하여 정렬, 위에서 아래로: 우선순위 높은 순',
+      dropValueHint: '왼쪽에서 선택한 가치관을 여기로 드래그하여 순위를 지정하세요',
+      rankAllValuesWarning: '선택한 모든 가치관을 순위 지정 영역으로 드래그하세요',
       priorityDescriptionLabel: '우선순위 관계 설명 (선택사항, 위의 정렬이 우선순위 관계를 정확히 표현할 수 없다고 생각되면 여기에 설명을 추가하세요)',
       priorityDescriptionPlaceholder: '이 Points의 우선순위 또는 절충점을 설명해 주세요 (1-3문장)',
       answerTitle: '{step}.2 선택한 가치를 바탕으로 답변 작성',

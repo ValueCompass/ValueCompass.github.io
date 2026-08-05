@@ -253,6 +253,8 @@ export default {
       selectHint: 'Select truly important values, up to {max}',
       sortTitle: '{step}.1.2 Rank the selected values to determine priority',
       dragHint: 'Drag to sort, from top to bottom: priority from high to low',
+      dropValueHint: 'Drag a selected value from the left here to rank it',
+      rankAllValuesWarning: 'Please drag all selected values into the ranking area',
       priorityDescriptionLabel: 'Priority relationship description (optional, add explanation if you think the above ranking cannot accurately express the priority relationship)',
       priorityDescriptionPlaceholder: 'Please describe the priority or trade-off of these Points (1-3 sentences)',
       answerTitle: '{step}.2 Provide an answer based on the selected values',

@@ -27,6 +27,10 @@
                   v-for="(point, index) in pointArr" 
                   :key="index"
                   class="point-item"
+                  :class="{ 'is-draggable': selectedPoints.includes(point) }"
+                  :draggable="selectedPoints.includes(point)"
+                  @dragstart="onCandidateDragStart($event, point)"
+                  @dragend="onDragEnd"
                 >
                   <el-checkbox 
                     :label="point" 
@@ -47,31 +51,51 @@
           </div>
 
           <!-- 已选 Point 排序面板 -->
-          <div class="right">
+          <div
+            ref="rankingSectionRef"
+            class="right validation-area"
+            :class="{ 'has-validation-error': validationErrors.ranking }"
+          >
             <h5>{{ t('culturalValueAnnotation.annotationNew.sortTitle', { step }) }}</h5>
             <!-- 拖拽排序提示 -->
             <p class="hint-text">{{ t('culturalValueAnnotation.annotationNew.dragHint') }}</p>
             <!-- 已选 Point 列表：支持拖拽排序 -->
-            <div class="selected-list">
-              <div 
-                v-for="(point, i) in selectedPoints" 
-                :key="point"
+            <div
+              class="selected-list"
+              @dragover.prevent
+              @drop="onRankingListDrop"
+            >
+              <template v-for="(point, i) in rankedPoints" :key="point || `ranking-slot-${i}`">
+              <div
+                v-if="point"
                 class="selected-item"
                 draggable="true"
-                @dragstart="onDragStart(i)"
-                @dragover="onDragOver(i)"
-                @drop="onDrop(i)"
+                @dragstart="onRankedDragStart($event, i)"
+                @dragover.prevent
+                @drop.stop="onRankedItemDrop(i)"
                 @dragend="onDragEnd"
               >
                 <div class="move-btns">
                   <button class="move-btn up" @click="moveUp(i)" :disabled="i === 0"></button>
-                  <button class="move-btn down" @click="moveDown(i)" :disabled="i === selectedPoints.length - 1"></button>
+                  <button class="move-btn down" @click="moveDown(i)" :disabled="i === rankedPoints.length - 1"></button>
                 </div>
                 <span class="priority-number" :style="{ backgroundColor: getPriorityColor(i) }">{{ i + 1 }}</span>
                 <span class="selected-text">{{ point }}</span>
-                <el-icon class="remove-btn" @click="removePoint(i)"><Close /></el-icon>
+                <el-icon class="remove-btn" @click="removePoint(point)"><Close /></el-icon>
               </div>
+              <div
+                v-else
+                class="ranking-placeholder"
+                @dragover.prevent
+                @drop.stop="onRankingSlotDrop(i)"
+              >
+                {{ t('culturalValueAnnotation.annotationNew.dropValueHint') }}
+              </div>
+              </template>
             </div>
+            <p v-if="validationErrors.ranking" class="validation-error-tip">
+              {{ validationErrors.ranking }}
+            </p>
 
             <!-- 优先级关系或权衡说明 -->
             <div class="input-section">
@@ -262,13 +286,18 @@ const pointArr = ref([]);
 
 // 已选 Point 数组
 const selectedPoints = ref([]);
+const rankedPoints = ref([]);
 const maxSelectNum = ref(0);
 
 // 优先级说明文本
 const priorityDescription = ref("");
 
-// 拖拽起始索引
-const dragIndex = ref(null);
+// 当前拖拽来源：候选项或右侧已排序项。
+const dragState = ref(null);
+
+const rankedPointCount = computed(() => {
+  return rankedPoints.value.filter(Boolean).length;
+});
 
 // ===== 添加新 Point 相关数据 =====
 
@@ -293,10 +322,12 @@ const positionText = ref("");
 const incorrectText = ref("");
 
 const pointsSectionRef = ref(null);
+const rankingSectionRef = ref(null);
 const positionSectionRef = ref(null);
 const incorrectSectionRef = ref(null);
 const validationErrors = ref({
   points: "",
+  ranking: "",
   position: "",
   incorrect: "",
 });
@@ -357,7 +388,8 @@ const initForm = () => {
     }
     
     // 填充已选Points
-    selectedPoints.value = copy.selected_ranked_values || [];
+    selectedPoints.value = [...(copy.selected_ranked_values || [])];
+    rankedPoints.value = [...(copy.selected_ranked_values || [])];
     maxSelectNum.value = copy.max_select_num || 0;
     
     // 填充优先级说明
@@ -386,9 +418,37 @@ watch(
   { deep: true, immediate: true }
 );
 
-watch(selectedPoints, (value) => {
-  if (value.length > 0) validationErrors.value.points = "";
-});
+watch(
+  selectedPoints,
+  (value, previousValue = []) => {
+    const selectedSet = new Set(value);
+    const removedPoints = previousValue.filter((point) => !selectedSet.has(point));
+
+    removedPoints.forEach((point) => {
+      const rankedIndex = rankedPoints.value.indexOf(point);
+      if (rankedIndex !== -1) {
+        rankedPoints.value.splice(rankedIndex, 1);
+      } else {
+        const emptyIndex = rankedPoints.value.lastIndexOf(null);
+        if (emptyIndex !== -1) rankedPoints.value.splice(emptyIndex, 1);
+      }
+    });
+
+    while (rankedPoints.value.length < value.length) {
+      rankedPoints.value.push(null);
+    }
+    while (rankedPoints.value.length > value.length) {
+      const emptyIndex = rankedPoints.value.lastIndexOf(null);
+      rankedPoints.value.splice(emptyIndex === -1 ? rankedPoints.value.length - 1 : emptyIndex, 1);
+    }
+
+    if (value.length > 0) validationErrors.value.points = "";
+    if (rankedPointCount.value === value.length) {
+      validationErrors.value.ranking = "";
+    }
+  },
+  { deep: true },
+);
 
 watch(positionText, (value) => {
   if (countWords(value) >= 100) validationErrors.value.position = "";
@@ -439,11 +499,11 @@ const togglePoint = (index) => {
 };
 
 /**
- * 从已选列表中移除 Point
- * @param {number} index - Point 在 pointArr 中的索引
+ * 从排序列表删除时同时取消左侧选择，其他排序保持不变。
+ * @param {string} point - Point 文本
  */
-const removePoint = (i) => {
-  selectedPoints.value.splice(i, 1);
+const removePoint = (point) => {
+  selectedPoints.value = selectedPoints.value.filter((item) => item !== point);
 };
 
 /**
@@ -471,41 +531,84 @@ const getPriorityColor = (index) => {
 // ===== 右侧拖拽排序功能函数 =====
 
 /**
- * 拖拽开始：记录起始位置
- * @param {number} index - 拖拽元素在 selectedPoints 中的索引
+ * 从左侧拖拽已勾选的候选项。
  */
-const onDragStart = (index) => {
-  dragIndex.value = index;
-};
-
-/**
- * 拖拽经过：阻止默认行为以允许放置
- * @param {number} index - 经过元素在 selectedPoints 中的索引
- */
-const onDragOver = (index) => {
-  event.preventDefault();
-};
-
-/**
- * 放置：交换元素位置
- * @param {number} index - 放置目标在 selectedPoints 中的索引
- */
-const onDrop = (index) => {
-  const fromIndex = dragIndex.value;
-  const toIndex = index;
-  if (fromIndex !== null && fromIndex !== toIndex) {
-    // 移除拖拽元素
-    const item = selectedPoints.value.splice(fromIndex, 1)[0];
-    // 插入到目标位置
-    selectedPoints.value.splice(toIndex, 0, item);
+const onCandidateDragStart = (event, point) => {
+  if (!selectedPoints.value.includes(point)) {
+    event.preventDefault();
+    return;
   }
+  dragState.value = { source: "candidate", point };
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", point);
+};
+
+/**
+ * 从右侧拖拽已排序项。
+ */
+const onRankedDragStart = (event, index) => {
+  dragState.value = { source: "ranked", index };
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", rankedPoints.value[index]);
+};
+
+/**
+ * 将当前拖拽项放到指定排序位置。
+ */
+const placeDraggedPoint = (targetIndex) => {
+  if (!dragState.value) return;
+
+  if (dragState.value.source === "candidate") {
+    const point = dragState.value.point;
+    const existingIndex = rankedPoints.value.indexOf(point);
+    if (existingIndex !== -1) {
+      dragState.value = { source: "ranked", index: existingIndex };
+      placeDraggedPoint(targetIndex);
+      return;
+    }
+
+    if (rankedPoints.value[targetIndex] === null) {
+      rankedPoints.value[targetIndex] = point;
+    } else {
+      rankedPoints.value.splice(targetIndex, 0, point);
+      const emptyIndex = rankedPoints.value.lastIndexOf(null);
+      if (emptyIndex !== -1) rankedPoints.value.splice(emptyIndex, 1);
+    }
+  } else {
+    const fromIndex = dragState.value.index;
+    if (fromIndex !== targetIndex) {
+      if (rankedPoints.value[targetIndex] === null) {
+        rankedPoints.value[targetIndex] = rankedPoints.value[fromIndex];
+        rankedPoints.value[fromIndex] = null;
+      } else {
+        const point = rankedPoints.value.splice(fromIndex, 1)[0];
+        rankedPoints.value.splice(targetIndex, 0, point);
+      }
+    }
+  }
+
+  if (rankedPointCount.value === selectedPoints.value.length) {
+    validationErrors.value.ranking = "";
+  }
+};
+
+const onRankedItemDrop = (index) => {
+  placeDraggedPoint(index);
+};
+
+const onRankingSlotDrop = (index) => {
+  placeDraggedPoint(index);
+};
+
+const onRankingListDrop = () => {
+  placeDraggedPoint(Math.max(rankedPoints.value.length - 1, 0));
 };
 
 /**
  * 拖拽结束：清空拖拽索引
  */
 const onDragEnd = () => {
-  dragIndex.value = null;
+  dragState.value = null;
 };
 
 /**
@@ -514,8 +617,8 @@ const onDragEnd = () => {
  */
 const moveUp = (index) => {
   if (index > 0) {
-    const item = selectedPoints.value.splice(index, 1)[0];
-    selectedPoints.value.splice(index - 1, 0, item);
+    const item = rankedPoints.value.splice(index, 1)[0];
+    rankedPoints.value.splice(index - 1, 0, item);
   }
 };
 
@@ -524,9 +627,9 @@ const moveUp = (index) => {
  * @param {number} index - 当前索引
  */
 const moveDown = (index) => {
-  if (index < selectedPoints.value.length - 1) {
-    const item = selectedPoints.value.splice(index, 1)[0];
-    selectedPoints.value.splice(index + 1, 0, item);
+  if (index < rankedPoints.value.length - 1) {
+    const item = rankedPoints.value.splice(index, 1)[0];
+    rankedPoints.value.splice(index + 1, 0, item);
   }
 };
 
@@ -541,7 +644,7 @@ const getFormData = () => {
     value_name_list: pointArr.value,
     max_select_num: maxSelectNum.value,
     // 已选并排序的 Points
-    selected_ranked_values: selectedPoints.value,
+    selected_ranked_values: rankedPoints.value.filter(Boolean),
     // 优先级说明
     selected_ranked_comment: priorityDescription.value,
     // 立场说明
@@ -565,6 +668,9 @@ const validate = () => {
     points: selectedPoints.value.length === 0
       ? t('culturalValueAnnotation.annotationNew.selectPointWarning')
       : "",
+    ranking: selectedPoints.value.length > 0 && rankedPointCount.value !== selectedPoints.value.length
+      ? t('culturalValueAnnotation.annotationNew.rankAllValuesWarning')
+      : "",
     position: !positionText.value.trim()
       ? t('culturalValueAnnotation.annotationNew.positionEmptyWarning')
       : countWords(positionText.value) < 100
@@ -577,6 +683,7 @@ const validate = () => {
 
   const invalidFields = [
     { message: validationErrors.value.points, element: pointsSectionRef.value },
+    { message: validationErrors.value.ranking, element: rankingSectionRef.value },
     { message: validationErrors.value.position, element: positionSectionRef.value },
     { message: validationErrors.value.incorrect, element: incorrectSectionRef.value },
   ];
@@ -831,6 +938,14 @@ defineExpose({
             flex: 1;
             line-height: 1.5;
           }
+
+          &.is-draggable {
+            cursor: grab;
+
+            &:active {
+              cursor: grabbing;
+            }
+          }
         }
 
         /* 重置复选框样式 */
@@ -957,6 +1072,27 @@ defineExpose({
             &:hover {
               color: #f56c6c;
             }
+          }
+        }
+
+        .ranking-placeholder {
+          min-height: 44px;
+          border: 1px dashed #9ca3af;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px 12px;
+          box-sizing: border-box;
+          color: #9ca3af;
+          font-size: 12px;
+          text-align: center;
+          transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+
+          &:hover {
+            border-color: #0b70c3;
+            background-color: #f0f7ff;
+            color: #0b70c3;
           }
         }
       }

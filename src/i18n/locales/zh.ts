@@ -253,6 +253,8 @@ export default {
       selectHint: '请选择真正重要的价值观，最多可以选{max}个',
       sortTitle: '{step}.1.2  对选择的价值观排序，确定优先级',
       dragHint: '拖拽排序，从上到下：优先级由高到低',
+      dropValueHint: '将左侧已勾选的价值观拖拽到此处排序',
+      rankAllValuesWarning: '请将所有已选择的价值观拖入排序区域',
       priorityDescriptionLabel: '优先级关系说明（选填，如果你认为上述排序无法准确表达优先级关系，可以在此添加说明）',
       priorityDescriptionPlaceholder: '请说明这些 Points 的优先级或如何权衡（1-3句话）',
       answerTitle: '{step}.2 根据选择的价值观给出对问题的回答',

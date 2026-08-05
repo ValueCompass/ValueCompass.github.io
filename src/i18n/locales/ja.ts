@@ -253,6 +253,8 @@ export default {
       selectHint: '本当に重要な価値観を選択してください。最大{max}個',
       sortTitle: '{step}.1.2 選択した価値観の順位を付け、優先順位を決定してください',
       dragHint: 'ドラッグして並べ替え、上から下へ：優先順位は高い順',
+      dropValueHint: '左側で選択した価値観をここにドラッグして順位を付けてください',
+      rankAllValuesWarning: '選択したすべての価値観を順位付けエリアにドラッグしてください',
       priorityDescriptionLabel: '優先順位の関係説明（選択：上記の並べ替えでは優先関係を正確に表現できないと认为場合は、ここで説明を追加できます）',
       priorityDescriptionPlaceholder: 'これらのPointsの優先順位またはトレードオフを説明してください（1-3文）',
       answerTitle: '{step}.2 選択した価値観に基づいて回答を作成',
