@@ -31,7 +31,7 @@
       style="width: 100%; margin-top: 1em"
     >
       <el-table-column type="index" width="90" label="Number" />
-      <el-table-column prop="question" label="Question" min-width="360">
+      <el-table-column prop="question" label="Question" min-width="250">
         <template #default="scope">
           <span
             :class="{ 'question-link': isAdminView }"
@@ -41,12 +41,18 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="question_action" label="Question Action" width="140" />
+      <el-table-column v-if="!isAdminView" label="Review Status" width="150">
+        <template #default="scope">
+          <span>{{ formatQualityReviewStatus(scope.row.quality_reviews) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="topic_1" label="Topic 1" width="140" />
       <el-table-column prop="topic_2" label="Topic 2" width="140" />
       <el-table-column prop="task_1" label="Task 1" width="140" />
       <el-table-column prop="task_2" label="Task 2" width="140" />
-      <el-table-column prop="timestamp" label="Timestamp" width="180">
+      <el-table-column prop="question_action" label="Question Action" width="90" />
+
+      <el-table-column prop="timestamp" label="Timestamp" width="120">
         <template #default="scope">
           <span>
             {{
@@ -229,6 +235,18 @@ const taskHistory = ref([]);
 
 const downLoadData = ref(null);
 const tableLoading = ref(false);
+
+const qualityReviewStatusLabels = {
+  not_reviewed: "等待管理员审查",
+  reviewed_and_waiting_for_revise: "需要修改",
+  revised_and_waiting_for_review: "已修改，待管理员确认",
+  reviewed_and_qualified: "数据合格",
+};
+
+const formatQualityReviewStatus = (qualityReviews) => {
+  const status = qualityReviews?.quality_review_status;
+  return qualityReviewStatusLabels[status] || status || "等待管理员审查";
+};
 
 onMounted(() => {
   if (!resolvedUserDetail.value.username) {
