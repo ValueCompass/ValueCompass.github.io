@@ -76,6 +76,7 @@ export default {
       fail: '不通过',
       administrator: '管理员',
       addressed: '已完成',
+      unresolvedCommentsError: '还有审核问题没有完全解决，请将所有评论标记为“已完成”后再提交。',
       commentPlaceholder: '添加注释...',
       send: '发送',
       submit: '提交质量审核',

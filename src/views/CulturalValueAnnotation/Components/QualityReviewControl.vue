@@ -36,6 +36,8 @@
         v-for="(comment, index) in review.comments"
         :key="`${comment.timestamp}-${index}`"
         class="quality-review-comment"
+        :data-addressed="comment.addressed === true ? 'true' : 'false'"
+        tabindex="-1"
       >
         <div class="quality-review-comment__meta">
           <span>{{ t("culturalValueAnnotation.qualityReview.administrator") }}</span>
@@ -345,6 +347,11 @@ const formatReviewTimestamp = (date) => {
   margin-bottom: 18px;
   background: #fff;
   font-size: 1em;
+
+  &:focus {
+    outline: 3px solid rgba(222, 101, 0, 0.28);
+    outline-offset: 3px;
+  }
 
   &__meta {
     display: flex;

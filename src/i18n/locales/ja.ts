@@ -76,6 +76,7 @@ export default {
       fail: '不合格',
       administrator: '管理者',
       addressed: '対応済み',
+      unresolvedCommentsError: '未対応の審査コメントがあります。すべてのコメントを「対応済み」にしてから送信してください。',
       commentPlaceholder: 'コメントを追加...',
       send: '送信',
       submit: '品質審査を送信',

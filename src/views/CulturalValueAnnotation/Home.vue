@@ -1830,7 +1830,41 @@ const handleSimilarityConfirm = (similarityData) => {
   }
 };
 
+const hasUnresolvedReviewComment = computed(() =>
+  getActiveQualityReviewKeys().some((key) =>
+    qualityReviews.value[key]?.comments?.some(
+      (comment) => comment.addressed !== true,
+    ),
+  ),
+);
+
+const validateReviewCommentsBeforeSubmit = () => {
+  if (submit_type.value !== "revise") {
+    return true;
+  }
+
+  if (!hasUnresolvedReviewComment.value) {
+    return true;
+  }
+
+  ElMessage.warning(
+    t("culturalValueAnnotation.qualityReview.unresolvedCommentsError"),
+  );
+  requestAnimationFrame(() => {
+    const unresolvedComment = document.querySelector(
+      '.quality-review-comment[data-addressed="false"]',
+    );
+    unresolvedComment?.scrollIntoView({ behavior: "smooth", block: "center" });
+    unresolvedComment?.focus({ preventScroll: true });
+  });
+  return false;
+};
+
 const submitHighlightAndConcepts = () => {
+  if (!validateReviewCommentsBeforeSubmit()) {
+    return;
+  }
+
   // 最终提交前也要走同一套 principle 校验，避免跳过 Get Question List 后直接提交脏数据。
   if (!validatePrinciplesBeforeContinue()) {
     return;
@@ -1955,10 +1989,10 @@ const sendSubmitAPI = (component1Data, component2Data, similarityData = null) =>
       if (submit_type.value === "revise") {
         sendData.quality_reviews = {
           ...JSON.parse(JSON.stringify(qualityReviews.value)),
-          quality_review_status:
-            qualityReviews.value.quality_review_status === "not_reviewed"
-              ? "not_reviewed"
-              : "revised_and_waiting_for_review",
+          // quality_review_status:
+          //   qualityReviews.value.quality_review_status === "not_reviewed"
+          //     ? "not_reviewed"
+          //     : "revised_and_waiting_for_review",
         };
       }
       if (similarityData) {
@@ -2144,6 +2178,10 @@ const submitQualityReviews = async () => {
       JSON.stringify(editCurrentQuestionDetail.value),
     );
     ElMessage.success("质量审核提交成功");
+    router.push({
+      path: "/CulturalValueAnnotation/admin/TaskHistory",
+      query: targetUser,
+    });
   } catch (error) {
     console.error(error);
     ElMessage.error(
