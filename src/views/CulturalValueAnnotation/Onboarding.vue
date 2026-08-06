@@ -470,20 +470,21 @@ onMounted(async () => {
   registeredUserCountry.value = storedUserDetail.country;
   registeredUserLanguage.value = storedUserDetail.language;
 
-  // 从 API 获取 quiz 题目。
-  try {
-    const { items, moduleTitles } = await fetchOnboardingQuizQuestions(
-      storedUserDetail.country,
-      storedUserDetail.language,
-    );
-    quizQuestions.value = items;
-    quizModuleTitles.value = moduleTitles;
-    quizCheckState.value.totalCount = items.length;
-  } catch (err) {
-    console.error("Failed to fetch calibration quiz", err);
-  } finally {
-    quizLoading.value = false;
+  // 只有当前用户需要展示 Quiz 页面时，才向后端请求校准题目。
+  if (isNeedPassQuizCheck.value) {
+    try {
+      const { items, moduleTitles } = await fetchOnboardingQuizQuestions(
+        storedUserDetail.country,
+        storedUserDetail.language,
+      );
+      quizQuestions.value = items;
+      quizModuleTitles.value = moduleTitles;
+      quizCheckState.value.totalCount = items.length;
+    } catch (err) {
+      console.error("Failed to fetch calibration quiz", err);
+    }
   }
+  quizLoading.value = false;
 
   // 读取 Step 3 完成标志（passed_calibration_quiz），来自 localStorage。
   const quizDone = hasPassedCalibrationQuiz();
