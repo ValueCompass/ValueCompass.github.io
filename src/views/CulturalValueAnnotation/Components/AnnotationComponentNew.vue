@@ -1,5 +1,11 @@
 <template>
-  <div class="annotation-container" :class="!isCulturalPerspective ? 'question-show-container-person' : ''">
+  <div
+    class="annotation-container"
+    :class="{
+      'question-show-container-person': !isCulturalPerspective,
+      'is-readonly': readonly,
+    }"
+  >
     <!-- 左侧面板容器（占50%宽度） -->
     <div class="left-panel">
       <div class="step-section">
@@ -28,17 +34,17 @@
                   :key="index"
                   class="point-item"
                   :class="{
-                    'is-draggable': selectedPoints.includes(point),
+                    'is-draggable': !readonly && selectedPoints.includes(point),
                     'is-ranked': rankedPoints.includes(point),
                   }"
-                  :draggable="selectedPoints.includes(point)"
+                  :draggable="!readonly && selectedPoints.includes(point)"
                   @dragstart="onCandidateDragStart($event, point)"
                   @dragend="onDragEnd"
                 >
                   <el-checkbox 
                     :label="point" 
                     class="point-checkbox"
-                    :disabled="!selectedPoints.includes(point) && selectedPoints.length >= maxSelectNum"
+                    :disabled="readonly || (!selectedPoints.includes(point) && selectedPoints.length >= maxSelectNum)"
                   >
                     <span class="point-text">{{ point }}</span>
                   </el-checkbox>
@@ -72,15 +78,15 @@
               <div
                 v-if="point"
                 class="selected-item"
-                draggable="true"
+                :draggable="!readonly"
                 @dragstart="onRankedDragStart($event, i)"
                 @dragover.prevent
                 @drop.stop="onRankedItemDrop(i)"
                 @dragend="onDragEnd"
               >
                 <div class="move-btns">
-                  <button class="move-btn up" @click="moveUp(i)" :disabled="i === 0"></button>
-                  <button class="move-btn down" @click="moveDown(i)" :disabled="i === rankedPoints.length - 1"></button>
+                  <button class="move-btn up" @click="moveUp(i)" :disabled="readonly || i === 0"></button>
+                  <button class="move-btn down" @click="moveDown(i)" :disabled="readonly || i === rankedPoints.length - 1"></button>
                 </div>
                 <span class="priority-number" :style="{ backgroundColor: getPriorityColor(i) }">{{ i + 1 }}</span>
                 <span class="selected-text">{{ point }}</span>
@@ -109,6 +115,7 @@
                 v-model="priorityDescription"
                 type="textarea"
                 :rows="5"
+                :readonly="readonly"
                 :placeholder="t('culturalValueAnnotation.annotationNew.priorityDescriptionPlaceholder')"
               />
               <span class="word-counter" :class="{ 'is-over': countWords(priorityDescription) > 200 }">{{ countWords(priorityDescription) }}/200</span>
@@ -141,6 +148,7 @@
                   v-model="positionText"
                   type="textarea"
                   :rows="8"
+                  :readonly="readonly"
                   :placeholder="t('culturalValueAnnotation.annotationNew.positionPlaceholder')"
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(positionText) > 200 }">{{ countWords(positionText) }}/200</span>
@@ -165,6 +173,7 @@
                   v-model="incorrectText"
                   type="textarea"
                   :rows="8"
+                  :readonly="readonly"
                   :placeholder="t('culturalValueAnnotation.annotationNew.incorrectPlaceholder')"
                 />
                 <span class="word-counter" :class="{ 'is-over': countWords(incorrectText) > 200 }">{{ countWords(incorrectText) }}/200</span>
@@ -260,6 +269,10 @@ const props = defineProps({
     default: false,
   },
   editMode: {
+    type: Boolean,
+    default: false,
+  },
+  readonly: {
     type: Boolean,
     default: false,
   },
@@ -473,6 +486,8 @@ onMounted(() => {
  * 显示添加新 Point 对话框
  */
 const showAddDialog = () => {
+  if (props.readonly) return;
+
   newPointText.value = "";
   addDialogVisible.value = true;
 };
@@ -481,6 +496,8 @@ const showAddDialog = () => {
  * 添加新 Point 到 pointArr
  */
 const addNewPoint = () => {
+  if (props.readonly) return;
+
   if (newPointText.value.trim()) {
     pointArr.value.push(newPointText.value.trim());
     addDialogVisible.value = false;
@@ -506,6 +523,8 @@ const togglePoint = (index) => {
  * @param {string} point - Point 文本
  */
 const removePoint = (point) => {
+  if (props.readonly) return;
+
   selectedPoints.value = selectedPoints.value.filter((item) => item !== point);
 };
 
@@ -537,7 +556,7 @@ const getPriorityColor = (index) => {
  * 从左侧拖拽已勾选的候选项。
  */
 const onCandidateDragStart = (event, point) => {
-  if (!selectedPoints.value.includes(point)) {
+  if (props.readonly || !selectedPoints.value.includes(point)) {
     event.preventDefault();
     return;
   }
@@ -550,6 +569,11 @@ const onCandidateDragStart = (event, point) => {
  * 从右侧拖拽已排序项。
  */
 const onRankedDragStart = (event, index) => {
+  if (props.readonly) {
+    event.preventDefault();
+    return;
+  }
+
   dragState.value = { source: "ranked", index };
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("text/plain", rankedPoints.value[index]);
@@ -559,7 +583,7 @@ const onRankedDragStart = (event, index) => {
  * 将当前拖拽项放到指定排序位置。
  */
 const placeDraggedPoint = (targetIndex) => {
-  if (!dragState.value) return;
+  if (props.readonly || !dragState.value) return;
 
   if (dragState.value.source === "candidate") {
     const point = dragState.value.point;
@@ -619,6 +643,8 @@ const onDragEnd = () => {
  * @param {number} index - 当前索引
  */
 const moveUp = (index) => {
+  if (props.readonly) return;
+
   if (index > 0) {
     const item = rankedPoints.value.splice(index, 1)[0];
     rankedPoints.value.splice(index - 1, 0, item);
@@ -630,6 +656,8 @@ const moveUp = (index) => {
  * @param {number} index - 当前索引
  */
 const moveDown = (index) => {
+  if (props.readonly) return;
+
   if (index < rankedPoints.value.length - 1) {
     const item = rankedPoints.value.splice(index, 1)[0];
     rankedPoints.value.splice(index + 1, 0, item);
@@ -725,6 +753,21 @@ defineExpose({
   justify-content: space-between;
   align-items: stretch;
   padding: 20px;
+
+  &.is-readonly {
+    .add-point-btn,
+    .point-list,
+    .selected-list {
+      pointer-events: none;
+    }
+
+    .add-point-btn,
+    .point-item,
+    .selected-item,
+    .ranking-placeholder {
+      cursor: default !important;
+    }
+  }
 
   /* 左侧面板容器（占49%宽度） */
   .left-panel {

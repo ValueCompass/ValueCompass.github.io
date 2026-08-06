@@ -239,6 +239,7 @@
                   type="textarea"
                   autosize
                   v-model="principlesList[index]"
+                  :readonly="isAdminView"
                   :class="{
                     'principle-input-error': isPrincipleInputInvalid(principle),
                   }"
@@ -675,6 +676,7 @@
                   >
                     <el-input
                       v-model="questionValue_refine_input"
+                      :readonly="isAdminView"
                       :class="{
                         'get-answer-input-error': shouldHighlightGetAnswerValidation,
                       }"
@@ -711,6 +713,7 @@
                     <!-- <span>{{ t("culturalValueAnnotation.step4.question") }}</span> -->
                     <el-input
                     v-model="questionValue_create_input"
+                    :readonly="isAdminView"
                     :class="{
                       'get-answer-input-error': shouldHighlightGetAnswerValidation,
                     }"
@@ -869,6 +872,7 @@
               :annotationDataOrigin="annotationDataOrigin"
               :use_new_logic="use_new_logic"
               :editMode="submit_type === 'revise'"
+              :readonly="isAdminView"
               :step="getPerspectiveStep(CULTURAL_PERSPECTIVE)"
               :perspective="CULTURAL_PERSPECTIVE"
               ref="annotationComponentRef"
@@ -932,6 +936,7 @@
             :annotationDataOrigin="annotationDataOrigin_person"
             :use_new_logic="use_new_logic"
             :editMode="submit_type === 'revise'"
+            :readonly="isAdminView"
             :step="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
             :perspective="PERSONAL_PERSPECTIVE"
             ref="annotationComponentRef2"
@@ -3008,7 +3013,6 @@ const getQuestionNum = () => {
   :deep(.el-button),
   :deep(.el-select),
   :deep(.el-input),
-  :deep(.el-textarea),
   :deep(.el-tabs__item) {
     pointer-events: none;
     cursor: default;
