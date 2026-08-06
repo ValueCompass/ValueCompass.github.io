@@ -1,5 +1,6 @@
 import onboardingPreview from "@/assets/images/Collaborators.png";
 import onboardingTrainingVideo from "@/assets/CulturalAnnotation/English/Part.mp4";
+import koreanOnboardingTrainingVideo from "@/assets/CulturalAnnotation/Korean/Part.mp4";
 
 export { onboardingPreview };
 
@@ -77,7 +78,7 @@ const onboardingResourceMap = {
         heading: "Learn How to Annotate",
         description:
           "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
-        videoSrc: "",
+        videoSrc: koreanOnboardingTrainingVideo,
         videoType: "video/mp4",
       },
     ],
