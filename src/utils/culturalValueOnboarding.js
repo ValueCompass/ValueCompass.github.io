@@ -1,99 +1,92 @@
 import onboardingPreview from "@/assets/images/Collaborators.png";
 import onboardingTrainingVideo from "@/assets/CulturalAnnotation/English/Part.mp4";
-import onboardingVideoStep1 from "@/assets/CulturalAnnotation/English/Part 1.mp4";
-import onboardingVideoStep2 from "@/assets/CulturalAnnotation/English/Part 2.mp4";
-import onboardingVideoStep3 from "@/assets/CulturalAnnotation/English/Part 3.mp4";
-import annotationSlidesPart1 from "@/assets/CulturalAnnotation/English/Human Annotation Guideline Video - Part 1.pptx";
-import annotationSlidesPart2 from "@/assets/CulturalAnnotation/English/Human Annotation Guideline Video - Part 2.pptx";
-import annotationSlidesPart3 from "@/assets/CulturalAnnotation/English/Human Annotation Guideline Video - Part 3.pptx";
-import annotationGuidelineDocument from "@/assets/CulturalAnnotation/English/Human Annotation Guidelines v3 - English.docx";
-import onboardingVideoStep1Chinese from "@/assets/CulturalAnnotation/Chinese/Part 1 - Chinese.mp4";
-import onboardingVideoStep2Chinese from "@/assets/CulturalAnnotation/Chinese/Part 2 - Chinese.mp4";
-import onboardingVideoStep3Chinese from "@/assets/CulturalAnnotation/Chinese/Part 3 - Chinese.mp4";
-import annotationSlidesPart1Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 1 - Chinese.pptx";
-import annotationSlidesPart2Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 2.pptx";
-import annotationSlidesPart3Chinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guideline Video - Part 3 - Chinese.pptx";
-import annotationGuidelineDocumentChinese from "@/assets/CulturalAnnotation/Chinese/Human Annotation Guidelines v3 - China.docx";
-import onboardingVideoStep1Japanese from "@/assets/CulturalAnnotation/Japanese/Part 1.mp4";
-import onboardingVideoStep2Japanese from "@/assets/CulturalAnnotation/Japanese/Part 2.mp4";
-import onboardingVideoStep3Japanese from "@/assets/CulturalAnnotation/Japanese/Part 3.mp4";
 
 export { onboardingPreview };
 
 const onboardingResourceMap = {
   English: {
-    videos: [
-      onboardingVideoStep1,
-      onboardingVideoStep2,
-      onboardingVideoStep3,
-    ],
-    slides: [
+    steps: [
       {
-        url: annotationSlidesPart1,
-        fileName: "Human Annotation Guideline Video - Part 1.pptx",
-      },
-      {
-        url: annotationSlidesPart2,
-        fileName: "Human Annotation Guideline Video - Part 2.pptx",
-      },
-      {
-        url: annotationSlidesPart3,
-        fileName: "Human Annotation Guideline Video - Part 3.pptx",
+        id: 1,
+        label: "Step 1",
+        pill: "Step 1. Learn How to Annotate",
+        heading: "Learn How to Annotate",
+        description:
+          "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
+        videoSrc: onboardingTrainingVideo,
+        videoType: "video/mp4",
       },
     ],
     guidelineDocument: {
-      url: annotationGuidelineDocument,
-      fileName: "Human Annotation Guidelines v3 - English.docx",
+      url: new URL(
+        "../assets/CulturalAnnotation/English/Human Annotation Guidelines v4 - English.docx",
+        import.meta.url,
+      ).href,
+      fileName: "Human Annotation Guidelines v4 - English.docx",
     },
   },
   Chinese: {
-    videos: [
-      "https://training-video-1258865474.cos.ap-beijing.myqcloud.com/Part3-small.mp4",
-      "https://training-video-1258865474.cos.ap-beijing.myqcloud.com/Part2-small.mp4",
-      "https://training-video-1258865474.cos.ap-beijing.myqcloud.com/Part1-small.mp4"
-    ],
-    slides: [
+    steps: [
       {
-        url: annotationSlidesPart1Chinese,
-        fileName: "Human Annotation Guideline Video - Part 1 - Chinese.pptx",
-      },
-      {
-        url: annotationSlidesPart2Chinese,
-        fileName: "Human Annotation Guideline Video - Part 2.pptx",
-      },
-      {
-        url: annotationSlidesPart3Chinese,
-        fileName: "Human Annotation Guideline Video - Part 3 - Chinese.pptx",
+        id: 1,
+        label: "Step 1",
+        pill: "Step 1. Learn How to Annotate",
+        heading: "Learn How to Annotate",
+        description:
+          "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
+        videoSrc:
+          "https://training-video-1258865474.cos.ap-beijing.myqcloud.com/Training%20Video%20-%20CN%20-%20Marked.mp4",
+        videoType: "video/mp4",
       },
     ],
     guidelineDocument: {
-      url: annotationGuidelineDocumentChinese,
-      fileName: "Human Annotation Guidelines v3 - China.docx",
+      url: new URL(
+        "../assets/CulturalAnnotation/Chinese/Human Annotation Guidelines v4 - China.docx",
+        import.meta.url,
+      ).href,
+      fileName: "Human Annotation Guidelines v4 - China.docx",
     },
   },
   Japanese: {
-    videos: [
-      onboardingVideoStep1Japanese,
-      onboardingVideoStep2Japanese,
-      onboardingVideoStep3Japanese,
-    ],
-    slides: [
+    steps: [
       {
-        url: annotationSlidesPart1,
-        fileName: "Human Annotation Guideline Video - Part 1.pptx",
-      },
-      {
-        url: annotationSlidesPart2,
-        fileName: "Human Annotation Guideline Video - Part 2.pptx",
-      },
-      {
-        url: annotationSlidesPart3,
-        fileName: "Human Annotation Guideline Video - Part 3.pptx",
+        id: 1,
+        label: "Step 1",
+        pill: "Step 1. Learn How to Annotate",
+        heading: "Learn How to Annotate",
+        description:
+          "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
+        videoSrc: onboardingTrainingVideo,
+        videoType: "video/mp4",
       },
     ],
     guidelineDocument: {
-      url: annotationGuidelineDocument,
-      fileName: "Human Annotation Guidelines v3 - English.docx",
+      url: new URL(
+        "../assets/CulturalAnnotation/Japanese/Human Annotation Guidelines v4 - Japanese.docx",
+        import.meta.url,
+      ).href,
+      fileName: "Human Annotation Guidelines v4 - Japanese.docx",
+    },
+  },
+  Korean: {
+    steps: [
+      {
+        id: 1,
+        label: "Step 1",
+        pill: "Step 1. Learn How to Annotate",
+        heading: "Learn How to Annotate",
+        description:
+          "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
+        videoSrc: "",
+        videoType: "video/mp4",
+      },
+    ],
+    guidelineDocument: {
+      url: new URL(
+        "../assets/CulturalAnnotation/Korean/Human Annotation Guidelines v4 - Korean.docx",
+        import.meta.url,
+      ).href,
+      fileName: "Human Annotation Guidelines v4 - Korean.docx",
     },
   },
 };
@@ -109,10 +102,14 @@ const normalizeOnboardingResourceLanguage = (language = "") => {
     return "Japanese";
   }
 
+  if (normalizedLanguage === "korean") {
+    return "Korean";
+  }
+
   return "English";
 };
 
-const getOnboardingResourceSet = (language = "") => {
+export const getOnboardingResourceSet = (language = "") => {
   const resourceLanguage = normalizeOnboardingResourceLanguage(language);
   return onboardingResourceMap[resourceLanguage] || onboardingResourceMap.English;
 };
@@ -123,26 +120,6 @@ export const countryLanguageMap = {
   "South Korea": "Korean",
   Korea: "Korean",
   "Republic of Korea": "Korean",
-};
-
-export const createOnboardingSteps = (language = "") => {
-  const videoSrc =
-    normalizeOnboardingResourceLanguage(language) === "Chinese"
-      ? "https://training-video-1258865474.cos.ap-beijing.myqcloud.com/Training%20Video%20-%20CN%20-%20Marked.mp4"
-      : onboardingTrainingVideo;
-
-  return [
-    {
-      id: 1,
-      label: "Step 1",
-      pill: "Step 1. Learn How to Annotate",
-      heading: "Learn How to Annotate",
-      description:
-        "This section explains the project background and clarifies values, cultural values, and personal vs. cultural perspectives.",
-      videoSrc,
-      videoType: "video/mp4",
-    },
-  ];
 };
 
 export const createOnboardingSurveys = () => {
@@ -315,17 +292,6 @@ const triggerFileDownload = (url, fileName) => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-};
-
-export const downloadOnboardingSlides = () => {
-  const { language } = getStoredOnboardingUserDetail();
-  const resourceSet = getOnboardingResourceSet(language);
-
-  resourceSet.slides.forEach((file, index) => {
-    window.setTimeout(() => {
-      triggerFileDownload(file.url, file.fileName);
-    }, index * 150);
-  });
 };
 
 export const downloadOnboardingGuidelineDocument = () => {

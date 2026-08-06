@@ -44,11 +44,6 @@
             <p><b>Annotation Resources</b></p>
             <p>Download supporting materials before annotation.</p>
             <p>
-              <a class="download-a" href="" @click.prevent="handleDownloadSlides"
-                >[ Download Slides ]</a
-              >
-            </p>
-            <p>
               <a
                 class="download-a"
                 href=""
@@ -104,7 +99,6 @@ import { syncLocaleFromUserDetail } from "@/i18n";
 import { markCulturalValueAnnotationTutorialAutoOpenedThisLogin, updateUserDetailFields } from "@/utils/culturalValueAnnotationAuth";
 import {
   onboardingPreview,
-  downloadOnboardingSlides,
   downloadOnboardingGuidelineDocument,
 } from "@/utils/culturalValueOnboarding";
 
@@ -185,10 +179,6 @@ const progressStyle = computed(() => {
     width: `${progress}%`,
   };
 });
-
-const handleDownloadSlides = () => {
-  downloadOnboardingSlides();
-};
 
 const handleDownloadGuidelineDocument = () => {
   downloadOnboardingGuidelineDocument();

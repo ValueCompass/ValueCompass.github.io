@@ -192,7 +192,7 @@ import {
   updateUserDetailFields,
 } from "@/utils/culturalValueAnnotationAuth";
 import {
-  createOnboardingSteps,
+  getOnboardingResourceSet,
   getStoredOnboardingUserDetail,
 } from "@/utils/culturalValueOnboarding";
 import { fetchOnboardingQuizQuestions } from "@/utils/culturalValueOnboardingQuiz";
@@ -235,7 +235,7 @@ const { t } = useI18n();
 
 // 训练视频步骤只保存视频元数据，完成状态单独存在 trainingVideoCompletionStatus。
 const trainingVideoSteps = ref(
-  createOnboardingSteps(getStoredOnboardingUserDetail().language),
+  getOnboardingResourceSet(getStoredOnboardingUserDetail().language).steps,
 );
 const trainingVideoCompletionStatus = ref({});
 

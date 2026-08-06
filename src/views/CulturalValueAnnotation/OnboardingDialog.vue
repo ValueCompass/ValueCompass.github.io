@@ -17,11 +17,7 @@
               <div>
                 <p><b>Annotation Resources</b></p>
                 <p>
-                  <a class="download-a" href="" @click.prevent="handleDownloadSlides"
-                    >[ Download Slides ]</a
-                  >
-
-                  <a class="download-a" style="margin-left: 2em;" href="" @click.prevent="handleDownloadGuidelineDocument"
+                  <a class="download-a" href="" @click.prevent="handleDownloadGuidelineDocument"
                     >[ Download Guideline Document ]</a
                   >
                 </p>
@@ -130,14 +126,13 @@ import {
 import { useRouter } from "vue-router";
 import {
   onboardingPreview,
-  createOnboardingSteps,
+  getOnboardingResourceSet,
   createOnboardingSurveys,
   normalizeLanguageLabel,
   getPreferredSurveyLanguage,
   buildDisplaySurveys,
   getStoredOnboardingUserDetail,
   copyTextWithFallback,
-  downloadOnboardingSlides,
   downloadOnboardingGuidelineDocument,
 } from "@/utils/culturalValueOnboarding";
 
@@ -156,16 +151,12 @@ const registeredUserName = ref("hua");
 const registeredUserCountry = ref("");
 const surveyLinksExpanded = ref(false);
 const router = useRouter();
-const handleDownloadSlides = () => {
-  downloadOnboardingSlides();
-};
-
 const handleDownloadGuidelineDocument = () => {
   downloadOnboardingGuidelineDocument();
 };
 
 const steps = ref(
-  createOnboardingSteps(getStoredOnboardingUserDetail().language),
+  getOnboardingResourceSet(getStoredOnboardingUserDetail().language).steps,
 );
 
 const surveys = ref(createOnboardingSurveys());
