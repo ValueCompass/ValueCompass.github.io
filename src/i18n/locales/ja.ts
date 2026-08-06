@@ -67,6 +67,30 @@ export default {
     },
   },
   culturalValueAnnotation: {
+    qualityReview: {
+      result: '審査結果：',
+      passed: '審査合格',
+      failed: '審査不合格',
+      unreviewed: '未審査',
+      pass: '合格',
+      fail: '不合格',
+      administrator: '管理者',
+      addressed: '対応済み',
+      commentPlaceholder: 'コメントを追加...',
+      send: '送信',
+      annotatorStatuses: {
+        notReviewed: '管理者の審査待ち',
+        waitingForRevision: '修正が必要',
+        waitingForReview: '修正済み、管理者の確認待ち',
+        qualified: 'データ合格',
+      },
+      adminStatuses: {
+        notReviewed: '-',
+        waitingForRevision: 'ユーザーの修正待ち',
+        waitingForReview: 'ユーザー修正済み、確認待ち',
+        qualified: 'データ合格',
+      },
+    },
     step1: {
       title: 'ステップ1. 価値観関連の質問を生成するためのトピックを選択',
       coreAction: 'コアアクション: まずレベル1のトピックを選び、次にレベル2のサブトピックを選択してください。',

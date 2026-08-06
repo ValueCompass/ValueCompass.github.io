@@ -67,6 +67,30 @@ export default {
     },
   },
   culturalValueAnnotation: {
+    qualityReview: {
+      result: '审核结果：',
+      passed: '审核通过',
+      failed: '审核未通过',
+      unreviewed: '未审核',
+      pass: '通过',
+      fail: '不通过',
+      administrator: '管理员',
+      addressed: '已完成',
+      commentPlaceholder: '添加注释...',
+      send: '发送',
+      annotatorStatuses: {
+        notReviewed: '等待管理员审查',
+        waitingForRevision: '需要修改',
+        waitingForReview: '已修改，待管理员确认',
+        qualified: '数据合格',
+      },
+      adminStatuses: {
+        notReviewed: '-',
+        waitingForRevision: '待用户修改',
+        waitingForReview: '用户已修改，待确认',
+        qualified: '数据合格',
+      },
+    },
     step1: {
       title: '第 1 步：选择一个主题来生成价值观相关问题',
       coreAction: '核心操作：请先选择一级主题，再选择二级子主题。',

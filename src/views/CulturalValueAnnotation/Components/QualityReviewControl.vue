@@ -5,7 +5,7 @@
         <strong v-if="title" class="quality-review-control__title">
           {{ title }}
         </strong>
-        <strong style="font-size: 14px">审核结果：</strong>
+        <strong style="font-size: 14px">{{ t("culturalValueAnnotation.qualityReview.result") }}</strong>
         <span
           class="quality-review-status"
           :class="`quality-review-status--${statusType}`"
@@ -26,8 +26,8 @@
             :disabled="saving"
             @change="(value) => handleCheckChange(index, value)"
           >
-            <el-radio :value="true">通过</el-radio>
-            <el-radio :value="false">不通过</el-radio>
+            <el-radio :value="true">{{ t("culturalValueAnnotation.qualityReview.pass") }}</el-radio>
+            <el-radio :value="false">{{ t("culturalValueAnnotation.qualityReview.fail") }}</el-radio>
           </el-radio-group>
         </div>
       </div>
@@ -38,7 +38,7 @@
         class="quality-review-comment"
       >
         <div class="quality-review-comment__meta">
-          <span>管理员</span>
+          <span>{{ t("culturalValueAnnotation.qualityReview.administrator") }}</span>
           <span>{{ formatTimestamp(comment.timestamp) }}</span>
         </div>
         <p>{{ comment.text }}</p>
@@ -46,7 +46,7 @@
           :model-value="comment.addressed === true"
           :disabled="isAdmin || saving"
           @change="(value) => handleAddressedChange(index, value)"
-        >已完成</el-checkbox>
+        >{{ t("culturalValueAnnotation.qualityReview.addressed") }}</el-checkbox>
       </div>
 
       <el-input
@@ -55,7 +55,7 @@
         type="textarea"
         :rows="3"
         show-word-limit
-        placeholder="添加注释..."
+        :placeholder="t('culturalValueAnnotation.qualityReview.commentPlaceholder')"
         :disabled="saving"
       />
       <div v-if="isAdmin" class="quality-review-control__actions">
@@ -65,7 +65,7 @@
           :loading="saving"
           :disabled="!newComment.trim()"
           @click="addComment"
-        >发送</el-button>
+        >{{ t("culturalValueAnnotation.qualityReview.send") }}</el-button>
       </div>
     </div>
   </div>
@@ -73,6 +73,9 @@
 
 <script setup>
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps({
   modelValue: {
@@ -117,12 +120,12 @@ const review = computed(() => ({
 
 const statusLabel = computed(() => {
   if (review.value.qualified === true) {
-    return "审核通过";
+    return t("culturalValueAnnotation.qualityReview.passed");
   }
   if (review.value.qualified === false) {
-    return "审核未通过";
+    return t("culturalValueAnnotation.qualityReview.failed");
   }
-  return "未审核";
+  return t("culturalValueAnnotation.qualityReview.unreviewed");
 });
 
 const statusType = computed(() => {

@@ -67,6 +67,30 @@ export default {
     },
   },
   culturalValueAnnotation: {
+    qualityReview: {
+      result: '검토 결과:',
+      passed: '검토 통과',
+      failed: '검토 미통과',
+      unreviewed: '미검토',
+      pass: '통과',
+      fail: '미통과',
+      administrator: '관리자',
+      addressed: '처리 완료',
+      commentPlaceholder: '댓글 추가...',
+      send: '전송',
+      annotatorStatuses: {
+        notReviewed: '관리자 검토 대기 중',
+        waitingForRevision: '수정 필요',
+        waitingForReview: '수정 완료, 관리자 확인 대기 중',
+        qualified: '데이터 적합',
+      },
+      adminStatuses: {
+        notReviewed: '-',
+        waitingForRevision: '사용자 수정 대기 중',
+        waitingForReview: '사용자 수정 완료, 확인 대기 중',
+        qualified: '데이터 적합',
+      },
+    },
     step1: {
       title: '1단계. 가치 관련 질문 생성을 위한 주제 선택',
       coreAction: '핵심 작업: 먼저 1단계 주제를 선택한 뒤 2단계 하위 주제를 선택하세요.',

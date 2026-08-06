@@ -101,8 +101,10 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { GetAllCompletedAnnotations, DeleteAnnotationItem } from "@/service/CulturalValueAnnotationApi";
 import router from "@/router";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 const route = useRoute();
+const { t } = useI18n();
 const userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 const viewUsername = String(route.query.username || "").trim();
 const viewCountry = String(route.query.country || "").trim();
@@ -243,26 +245,35 @@ const downLoadData = ref(null);
 const tableLoading = ref(false);
 
 const qualityReviewStatusLabels = {
-  not_reviewed: "等待管理员审查",
-  reviewed_and_waiting_for_revise: "需要修改",
-  revised_and_waiting_for_review: "已修改，待管理员确认",
-  reviewed_and_qualified: "数据合格",
+  not_reviewed: "annotatorStatuses.notReviewed",
+  reviewed_and_waiting_for_revise: "annotatorStatuses.waitingForRevision",
+  revised_and_waiting_for_review: "annotatorStatuses.waitingForReview",
+  reviewed_and_qualified: "annotatorStatuses.qualified",
 };
 
 const adminQualityReviewStatusLabels = {
-  not_reviewed: "-",
-  reviewed_and_waiting_for_revise: "待用户修改",
-  revised_and_waiting_for_review: "用户已修改，待确认",
-  reviewed_and_qualified: "数据合格",
+  not_reviewed: "adminStatuses.notReviewed",
+  reviewed_and_waiting_for_revise: "adminStatuses.waitingForRevision",
+  revised_and_waiting_for_review: "adminStatuses.waitingForReview",
+  reviewed_and_qualified: "adminStatuses.qualified",
 };
 
 const formatQualityReviewStatus = (qualityReviews) => {
   const status = qualityReviews?.quality_review_status;
-  if (isAdminView) {
-    return adminQualityReviewStatusLabels[status] || status || "-";
-  }
+  const statusLabels = isAdminView
+    ? adminQualityReviewStatusLabels
+    : qualityReviewStatusLabels;
+  const statusKey = statusLabels[status];
 
-  return qualityReviewStatusLabels[status] || status || "等待管理员审查";
+  return statusKey
+    ? t(`culturalValueAnnotation.qualityReview.${statusKey}`)
+    : status || t(
+        `culturalValueAnnotation.qualityReview.${
+          isAdminView
+            ? "adminStatuses.notReviewed"
+            : "annotatorStatuses.notReviewed"
+        }`,
+      );
 };
 
 const getQualityReviewStatusClass = (qualityReviews) => {

@@ -67,6 +67,30 @@ export default {
     },
   },
   culturalValueAnnotation: {
+    qualityReview: {
+      result: 'Review result:',
+      passed: 'Review passed',
+      failed: 'Review failed',
+      unreviewed: 'Not reviewed',
+      pass: 'Pass',
+      fail: 'Fail',
+      administrator: 'Administrator',
+      addressed: 'Addressed',
+      commentPlaceholder: 'Add a comment...',
+      send: 'Send',
+      annotatorStatuses: {
+        notReviewed: 'Waiting for administrator review',
+        waitingForRevision: 'Revision required',
+        waitingForReview: 'Revised, awaiting administrator confirmation',
+        qualified: 'Qualified',
+      },
+      adminStatuses: {
+        notReviewed: '-',
+        waitingForRevision: 'Waiting for user revision',
+        waitingForReview: 'User revised, awaiting confirmation',
+        qualified: 'Qualified',
+      },
+    },
     step1: {
       title: 'Step 1. Select a topic to generate values-related questions',
       coreAction: 'Core Action: Please choose a Level-1 topic first then Level-2 subtopic.',
