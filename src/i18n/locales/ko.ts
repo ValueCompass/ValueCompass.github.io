@@ -78,6 +78,7 @@ export default {
       addressed: '처리 완료',
       commentPlaceholder: '댓글 추가...',
       send: '전송',
+      submit: '품질 검토 제출',
       annotatorStatuses: {
         notReviewed: '관리자 검토 대기 중',
         waitingForRevision: '수정 필요',

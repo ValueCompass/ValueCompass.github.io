@@ -963,7 +963,7 @@
         color="#d95f02"
         :loading="isSavingQualityReviews"
         @click="submitQualityReviews"
-      >Submit Quality Review</el-button>
+      >{{ t("culturalValueAnnotation.qualityReview.submit") }}</el-button>
     </div>
 
     <!-- <UserDetail @hideUsrerContainer="hideUsrerContainer"></UserDetail> -->

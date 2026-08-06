@@ -78,6 +78,7 @@ export default {
       addressed: '已完成',
       commentPlaceholder: '添加注释...',
       send: '发送',
+      submit: '提交质量审核',
       annotatorStatuses: {
         notReviewed: '等待管理员审查',
         waitingForRevision: '需要修改',

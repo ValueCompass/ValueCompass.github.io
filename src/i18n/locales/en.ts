@@ -78,6 +78,7 @@ export default {
       addressed: 'Addressed',
       commentPlaceholder: 'Add a comment...',
       send: 'Send',
+      submit: 'Submit Quality Review',
       annotatorStatuses: {
         notReviewed: 'Waiting for administrator review',
         waitingForRevision: 'Revision required',

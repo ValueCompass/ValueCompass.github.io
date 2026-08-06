@@ -78,6 +78,7 @@ export default {
       addressed: '対応済み',
       commentPlaceholder: 'コメントを追加...',
       send: '送信',
+      submit: '品質審査を送信',
       annotatorStatuses: {
         notReviewed: '管理者の審査待ち',
         waitingForRevision: '修正が必要',
