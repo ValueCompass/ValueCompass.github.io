@@ -121,7 +121,18 @@
           </div>
         </div>
         </div>
-        <div class="quality-review-control quality-review-control--empty"></div>
+        <QualityReviewControl
+          v-if="submit_type === 'revise'"
+          v-model="qualityReviews.topic_review"
+          :is-admin="isAdminView"
+          :saving="isSavingQualityReviews"
+          :criteria="REVIEW_CRITERIA.topic_review"
+          :step-number="1"
+        />
+        <div
+          v-else
+          class="quality-review-control quality-review-control--empty"
+        ></div>
       </div>
 
       <div ref="step2SectionRef" class="step step2">
@@ -1051,6 +1062,7 @@ const getPerspectiveReviewKey = (perspective) =>
 
 const QUALITY_REVIEW_KEYS = [
   "stage1_review",
+  "topic_review",
   "principles_review",
   "question_review",
   "cultural_perspective_review",
@@ -1061,39 +1073,9 @@ const getActiveQualityReviewKeys = () =>
     ? QUALITY_REVIEW_KEYS
     : QUALITY_REVIEW_KEYS.filter((key) => key !== "stage1_review");
 
-const REVIEW_CRITERIA = {
-  stage1_review: [
-    "完成三份问卷，且问卷中填写的 username 跟系统一致",
-    "在文化价值观问卷中“个人价值观陈述”、“文化价值观陈述”选择至少 3 个角度进行回答",
-    "必须通过问卷中的 Attention 测试（Schwartz Q6、Q19；Cultural Value Q7、Q24），个人视角和文化视角都选择“不符合”",
-    "在相反问题上的 label 有方向差异（Schwartz Q15-Q4；Cultural Value Q17-Q23）",
-  ],
-  principles_review: [
-    "不少于三条，每条内容表达清晰。",
-    "遵循给定模板或相近的模板",
-    "多条行为准则之间，中心思想不重复，且不照抄示例",
-    "价值原则符合目标文化，没有明显不符的原则",
-  ],
-  question_review: [
-    "对所选问题的打分 >= 4",
-    "从文化专家的角度来看，所选问题在价值重要性、文化差异性、问题真实性上的打分 >= 4",
-  ],
-  cultural_perspective_review: [
-    "所选的价值观确实与问题相关，没有选择完全无关的价值观",
-    "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致（如果全部一致的话，怀疑只进行了选择，而跳过了优先级排序这一步）",
-    "问题回答所反映的价值观与确定的价值观优先级是一致的",
-    "问题回答包括 (i) 对问题的直接回应；(ii) 符合文化的行为准则和做法",
-    "分点列出 1-3 条不合适、应该避免的做法",
-    "从文化专家的角度来看，问题回答和不合适的做法都基本符合文化主流价值观（注：只有明显不符合的要求修改）",
-  ],
-  personal_perspective_review: [
-    "所选的价值观确实与问题相关，没有选择完全无关的价值观",
-    "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致（如果全部一致的话，怀疑只进行了选择，而跳过了优先级排序这一步）",
-    "问题回答所反映的价值观与确定的价值观优先级是一致的",
-    "问题回答包括 (i) 对问题的直接回应；(ii) 符合文化的行为准则和做法",
-    "分点列出 1-3 条不合适、应该避免的做法",
-  ],
-};
+const REVIEW_CRITERIA = computed(() =>
+  tm("culturalValueAnnotation.qualityReview.criteria"),
+);
 
 const normalizeQualityReviews = (qualityReviews = {}) => {
   const normalizedReviews = getActiveQualityReviewKeys().reduce((reviews, key) => {
@@ -1103,7 +1085,7 @@ const normalizeQualityReviews = (qualityReviews = {}) => {
         review?.qualified === true || review?.qualified === false
           ? review.qualified
           : null,
-      check_list: REVIEW_CRITERIA[key].map((_, index) => {
+      check_list: REVIEW_CRITERIA.value[key].map((_, index) => {
         const value = review?.check_list?.[index];
         return value === true || value === false ? value : null;
       }),
@@ -2117,6 +2099,8 @@ const submitQualityReviews = async () => {
   const incompleteReviewItems = getActiveQualityReviewKeys().flatMap((key) => {
     const areaLabel = key === "stage1_review"
       ? "Stage 1"
+      : key === "topic_review"
+        ? "Step 1"
       : key === "principles_review"
         ? "Step 2"
         : key === "question_review"
