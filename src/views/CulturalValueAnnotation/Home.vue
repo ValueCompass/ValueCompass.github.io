@@ -33,7 +33,7 @@
       </div>
     </div>
     <QualityReviewControl
-      v-if="submit_type === 'revise'"
+      v-if="submit_type === 'revise' && shouldReviewStage1"
       class="user-quality-review"
       v-model="qualityReviews.stage1_review"
       :is-admin="isAdminView"
@@ -989,6 +989,9 @@ const isAdminView = computed(() => {
   return route.path.startsWith("/CulturalValueAnnotation/admin/read") ||
     String(route.query.adminView || "") === "1";
 });
+const shouldReviewStage1 = computed(
+  () => String(route.query.stage1Review || "") === "1",
+);
 import UserDetail from "./UserDetail.vue";
 import AnnotationComponentNew from "./Components/AnnotationComponentNew.vue";
 import SimilarityDialog from "./Components/SimilarityDialog.vue";
@@ -1053,6 +1056,10 @@ const QUALITY_REVIEW_KEYS = [
   "cultural_perspective_review",
   "personal_perspective_review",
 ];
+const getActiveQualityReviewKeys = () =>
+  shouldReviewStage1.value
+    ? QUALITY_REVIEW_KEYS
+    : QUALITY_REVIEW_KEYS.filter((key) => key !== "stage1_review");
 
 const REVIEW_CRITERIA = {
   stage1_review: [
@@ -1089,7 +1096,7 @@ const REVIEW_CRITERIA = {
 };
 
 const normalizeQualityReviews = (qualityReviews = {}) => {
-  const normalizedReviews = QUALITY_REVIEW_KEYS.reduce((reviews, key) => {
+  const normalizedReviews = getActiveQualityReviewKeys().reduce((reviews, key) => {
     const review = qualityReviews?.[key];
     reviews[key] = {
       qualified:
@@ -2073,7 +2080,7 @@ const submitQualityReviews = async () => {
 
   const source = editCurrentQuestionDetail.value;
   const adminDetail = getCulturalValueAnnotationAdminDetail() || {};
-  const incompleteReviewItems = QUALITY_REVIEW_KEYS.flatMap((key) => {
+  const incompleteReviewItems = getActiveQualityReviewKeys().flatMap((key) => {
     const areaLabel = key === "stage1_review"
       ? "Stage 1"
       : key === "principles_review"
@@ -2095,7 +2102,7 @@ const submitQualityReviews = async () => {
     return;
   }
 
-  const updatedQualityReviews = QUALITY_REVIEW_KEYS.reduce((reviews, key) => {
+  const updatedQualityReviews = getActiveQualityReviewKeys().reduce((reviews, key) => {
     const review = qualityReviews.value[key];
     reviews[key] = {
       ...JSON.parse(JSON.stringify(review)),
@@ -2177,13 +2184,9 @@ onMounted(async () => {
     const question = JSON.parse(editCurrentQuestion);
     await fetchCandidateQuestionsForEdit(question);
     editCurrentQuestionDetail.value = question;
-    qualityReviews.value = normalizeQualityReviews({
-      ...(question.quality_reviews || {}),
-      stage1_review:
-        question.quality_reviews?.stage1_review ||
-        question.stage1_review ||
-        question.user_quality_reviews?.stage1_review,
-    });
+    qualityReviews.value = normalizeQualityReviews(
+      question.quality_reviews || {},
+    );
     hasClickedGetAnswerBtn.value = true;
     hasClickedSaveAndGetQuestionListBtn.value = true;
     console.log("要编辑的question信息", question);

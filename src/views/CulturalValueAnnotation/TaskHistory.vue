@@ -43,7 +43,10 @@
       </el-table-column>
       <el-table-column label="Review Status" width="150">
         <template #default="scope">
-          <span>{{ formatQualityReviewStatus(scope.row.quality_reviews) }}</span>
+          <span
+            class="review-status"
+            :class="getQualityReviewStatusClass(scope.row.quality_reviews)"
+          >{{ formatQualityReviewStatus(scope.row.quality_reviews) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="topic_1" label="Topic 1" width="140" />
@@ -141,13 +144,16 @@ const handleQuestionClick = (question, rowIndex) => {
     path: isAdminView
       ? "/CulturalValueAnnotation/admin/read/" + index
       : "/CulturalValueAnnotation/edit/" + index,
-    query: isAdminView
-      ? {
-          username: resolvedUserDetail.value.username,
-          country: resolvedUserDetail.value.country,
-          language: resolvedUserDetail.value.language,
-        }
-      : undefined,
+    query: {
+      ...(isAdminView
+        ? {
+            username: resolvedUserDetail.value.username,
+            country: resolvedUserDetail.value.country,
+            language: resolvedUserDetail.value.language,
+          }
+        : {}),
+      ...(rowIndex === 0 ? { stage1Review: "1" } : {}),
+    },
     // params: question,
     // query: question
   });
@@ -259,11 +265,22 @@ const formatQualityReviewStatus = (qualityReviews) => {
   return qualityReviewStatusLabels[status] || status || "等待管理员审查";
 };
 
+const getQualityReviewStatusClass = (qualityReviews) => {
+  const status = qualityReviews?.quality_review_status || "not_reviewed";
+  const supportedStatuses = [
+    "not_reviewed",
+    "reviewed_and_waiting_for_revise",
+    "revised_and_waiting_for_review",
+    "reviewed_and_qualified",
+  ];
+
+  return supportedStatuses.includes(status)
+    ? `review-status--${status}`
+    : "review-status--not_reviewed";
+};
+
 const getStage1Review = (responseData = {}) =>
-  responseData.stage1_review ||
   responseData.quality_reviews?.stage1_review ||
-  responseData.user_quality_reviews?.stage1_review ||
-  responseData.annotations?.stage1_review ||
   null;
 
 onMounted(() => {
@@ -291,18 +308,23 @@ onMounted(() => {
       // 将对象转换为数组
       const annotationEntries = Object.entries(res.data.annotations)
         .filter(([key]) => key !== "stage1_review")
-        .map(([key, value]) => ({
-          key,
-          row: {
-            ...value,
-            quality_reviews: {
-              ...(value?.quality_reviews || {}),
-              ...(value?.quality_reviews?.stage1_review || !stage1Review
-                ? {}
-                : { stage1_review: stage1Review }),
+        .map(([key, value], index) => {
+          const { stage1_review, ...annotationQualityReviews } =
+            value?.quality_reviews || {};
+
+          return {
+            key,
+            row: {
+              ...value,
+              quality_reviews: {
+                ...annotationQualityReviews,
+                ...(index === 0 && (stage1_review || stage1Review)
+                  ? { stage1_review: stage1_review || stage1Review }
+                  : {}),
+              },
             },
-          },
-        }));
+          };
+        });
 
       if (annotationEntries.length === 0) {
         ElMessage.warning("No task history found.");
@@ -509,6 +531,42 @@ const downloadExcel = () => {
   &:hover {
     color: #095aa7;
   }
+}
+
+.review-status {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.3em 0.55em;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  text-align: center;
+  white-space: normal;
+}
+
+.review-status--not_reviewed {
+  color: #5f6368;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.review-status--reviewed_and_waiting_for_revise {
+  color: #9b1c1c;
+  background: #fef2f2;
+  border-color: #f3b8b8;
+}
+
+.review-status--revised_and_waiting_for_review {
+  color: #075a9c;
+  background: #eff6ff;
+  border-color: #a9ccef;
+}
+
+.review-status--reviewed_and_qualified {
+  color: #17643a;
+  background: #edf8f1;
+  border-color: #9cccad;
 }
 
 .action-buttons {
