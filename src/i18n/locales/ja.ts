@@ -78,6 +78,8 @@ export default {
       addressed: '対応済み',
       unresolvedCommentsError: '未対応の審査コメントがあります。すべてのコメントを「対応済み」にしてから送信してください。',
       commentPlaceholder: 'コメントを追加...',
+      similarityOption: '選択肢',
+      similarityExplanation: '説明',
       send: '送信',
       submit: '品質審査を送信',
       criteria: {

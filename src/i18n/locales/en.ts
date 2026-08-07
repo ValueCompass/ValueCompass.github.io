@@ -78,6 +78,8 @@ export default {
       addressed: 'Addressed',
       unresolvedCommentsError: 'Some review comments have not been fully addressed. Please mark every comment as Addressed before submitting.',
       commentPlaceholder: 'Add a comment...',
+      similarityOption: 'Option',
+      similarityExplanation: 'Explanation',
       send: 'Send',
       submit: 'Submit Quality Review',
       criteria: {

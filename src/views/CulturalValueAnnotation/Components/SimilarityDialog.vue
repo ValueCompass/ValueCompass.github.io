@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { isReasonLongEnough } from "@/utils/common";
 
@@ -91,20 +91,6 @@ watch(
   }
 );
 
-// const optionMap = computed(() => ({
-//   agree: t("common.similarity.optionAgree"),
-//   "little-divergence": t("common.similarity.optionLittleDivergence"),
-//   "already-revised": t("common.similarity.optionAlreadyRevised"),
-//   other: t("common.similarity.optionOther"),
-// }));
-
-const optionMap = computed(() => ({
-  agree: 'agree',
-  "little-divergence": 'little-divergence',
-  "already-revised": 'already-revised',
-  other: 'other',
-}));
-
 const handleRevise = () => {
   emit("revise");
   emit("update:visible", false);
@@ -117,7 +103,7 @@ const handleSubmit = () => {
   }
   reasonError.value = "";
   emit("confirm", {
-    value: optionMap.value[selectedOption.value] || selectedOption.value,
+    value: selectedOption.value,
     reason: reasonText.value || "",
   });
   emit("update:visible", false);

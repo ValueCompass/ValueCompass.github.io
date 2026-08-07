@@ -78,6 +78,8 @@ export default {
       addressed: '처리 완료',
       unresolvedCommentsError: '아직 해결되지 않은 검토 댓글이 있습니다. 모든 댓글을 "처리 완료"로 표시한 후 제출해 주세요.',
       commentPlaceholder: '댓글 추가...',
+      similarityOption: '옵션',
+      similarityExplanation: '설명',
       send: '전송',
       submit: '품질 검토 제출',
       criteria: {

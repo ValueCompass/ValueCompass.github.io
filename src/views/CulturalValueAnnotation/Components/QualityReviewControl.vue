@@ -32,6 +32,17 @@
         </div>
       </div>
 
+      <div v-if="hasSimilarityDetail" class="quality-review-similarity">
+        <div>
+          <span>{{ t("culturalValueAnnotation.qualityReview.similarityOption") }}</span>
+          <p>{{ similarityOptionLabel }}</p>
+        </div>
+        <div>
+          <span>{{ t("culturalValueAnnotation.qualityReview.similarityExplanation") }}</span>
+          <p>{{ similarityExplanation }}</p>
+        </div>
+      </div>
+
       <div
         v-for="(comment, index) in review.comments"
         :key="`${comment.timestamp}-${index}`"
@@ -104,6 +115,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  similarityDetail: {
+    type: Object,
+    default: null,
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -138,6 +153,34 @@ const statusType = computed(() => {
     return "warning";
   }
   return "info";
+});
+
+const similarityOption = computed(() =>
+  String(props.similarityDetail?.option ?? props.similarityDetail?.value ?? "").trim(),
+);
+const similarityExplanation = computed(() =>
+  String(props.similarityDetail?.explanation ?? props.similarityDetail?.reason ?? "").trim(),
+);
+const hasSimilarityDetail = computed(() =>
+  Boolean(similarityOption.value || similarityExplanation.value),
+);
+const similarityOptionLabel = computed(() => {
+  const optionLabels = {
+    agree: "common.similarity.optionAgree",
+    optionAgree: "common.similarity.optionAgree",
+    "1": "common.similarity.optionAgree",
+    "little-divergence": "common.similarity.optionLittleDivergence",
+    optionLittleDivergence: "common.similarity.optionLittleDivergence",
+    "2": "common.similarity.optionLittleDivergence",
+    "already-revised": "common.similarity.optionAlreadyRevised",
+    optionAlreadyRevised: "common.similarity.optionAlreadyRevised",
+    "3": "common.similarity.optionAlreadyRevised",
+    other: "common.similarity.optionOther",
+    optionOther: "common.similarity.optionOther",
+    "4": "common.similarity.optionOther",
+  };
+  const translationKey = optionLabels[similarityOption.value];
+  return translationKey ? t(translationKey) : similarityOption.value;
 });
 
 const updateReview = (nextReview) => {
@@ -328,6 +371,33 @@ const formatReviewTimestamp = (date) => {
       color: #002f6c !important;
       font-size: 1em;
       line-height: 30px;
+    }
+  }
+}
+
+.quality-review-similarity {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #DE6500;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background: #fff;
+
+  > div {
+    span {
+      color: #7a8491;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: #000;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
   }
 }

@@ -950,6 +950,7 @@
           :saving="isSavingQualityReviews"
           :criteria="REVIEW_CRITERIA[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
           :step-number="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
+          :similarity-detail="editCurrentQuestionDetail?.personal_answer_similar_to_cultural_answer"
         />
         <div
           v-else
@@ -1899,7 +1900,7 @@ const submitHighlightAndConcepts = () => {
     const responseSimilar = isHighlySimilar(component1Data.response, component2Data.response);
 
     if (responseSimilar) {
-      // response 大于 >= 0.85，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
+      // response 相似度 >= 0.8，弹出相似度弹窗，等用户确认后再调用 sendSubmitAPI
       pendingComponent1Data.value = component1Data;
       pendingComponent2Data.value = component2Data;
       similarityDialogVisible.value = true;
