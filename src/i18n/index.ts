@@ -17,6 +17,7 @@ const countryLanguageMap = {
   China: "Chinese",
   Japan: "Japanese",
   "South Korea": "Korean",
+  South_Korea: "Korean",
   Korea: "Korean",
   "Republic of Korea": "Korean",
 }
