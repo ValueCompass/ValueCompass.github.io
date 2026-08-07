@@ -950,6 +950,7 @@
           :saving="isSavingQualityReviews"
           :criteria="REVIEW_CRITERIA[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
           :step-number="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
+          show-similarity-detail
           :similarity-detail="editCurrentQuestionDetail?.personal_answer_similar_to_cultural_answer"
         />
         <div

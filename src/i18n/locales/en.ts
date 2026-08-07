@@ -117,6 +117,7 @@ export default {
           'The values reflected in the answer are consistent with the determined value priorities.',
           'The answer includes (i) a direct response to the question and (ii) culturally appropriate norms and behavior practices.',
           'List 1–3 inappropriate practices that should be avoided, in bullet points.',
+          'The cultural-perspective and personal-perspective answers must not be completely identical.',
         ],
       },
       annotatorStatuses: {

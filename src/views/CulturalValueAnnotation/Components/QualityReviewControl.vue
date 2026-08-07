@@ -32,15 +32,18 @@
         </div>
       </div>
 
-      <div v-if="hasSimilarityDetail" class="quality-review-similarity">
-        <div>
+      <div v-if="showSimilarityDetail" class="quality-review-similarity">
+        <template v-if="hasSimilarityDetail">
+          <div>
           <span>{{ t("culturalValueAnnotation.qualityReview.similarityOption") }}</span>
           <p>{{ similarityOptionLabel }}</p>
-        </div>
-        <div>
+          </div>
+          <div>
           <span>{{ t("culturalValueAnnotation.qualityReview.similarityExplanation") }}</span>
           <p>{{ similarityExplanation }}</p>
-        </div>
+          </div>
+        </template>
+        <p v-else class="quality-review-similarity__empty">None</p>
       </div>
 
       <div
@@ -118,6 +121,10 @@ const props = defineProps({
   similarityDetail: {
     type: Object,
     default: null,
+  },
+  showSimilarityDetail: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -384,6 +391,12 @@ const formatReviewTimestamp = (date) => {
   border-radius: 10px;
   margin-bottom: 20px;
   background: #fff;
+
+  &__empty {
+    margin: 0;
+    color: #7a8491;
+    line-height: 1.5;
+  }
 
   > div {
     span {
