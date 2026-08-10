@@ -288,7 +288,7 @@
         ></div>
       </div>
 
-      <div class="step step3">
+      <div ref="step3SectionRef" class="step step3">
         <div class="step-content">
         <div class="intro-container">
           <h4>{{ t("culturalValueAnnotation.step3.title") }}</h4>
@@ -360,7 +360,7 @@
               </el-option>
             </el-select>
 
-             <div style="display: flex">
+             <div style="display: flex; gap: 0.8em">
             <el-popover
               placement="right-start"
               :width="500"
@@ -411,6 +411,13 @@
                 </div>
               </template>
             </el-popover>
+            <el-button
+              v-if="submit_type === 'create new' && hasClickedSaveAndGetQuestionListBtn"
+              style="height: 2.8em; font-size: 1em; margin: 0"
+              @click="handleBackToStep3Click"
+              color="#0B70C3"
+              >{{ t("common.backToStep3") }}</el-button
+            >
           </div>
           </div>
 
@@ -1318,6 +1325,7 @@ const questionOptions = ref([]);
 
 const hasClickedSaveAndGetQuestionListBtn = ref(false);
 const hasClickedGetAnswerBtn = ref(false);
+const step3SectionRef = ref(null);
 
 const isLoadingSaveAndGetQuestionList = ref(false);
 const isSaveAndGetQuestionListBtnDisabled = computed(() => {
@@ -1619,6 +1627,28 @@ const resetGetAnswerState = () => {
     inappropriate_response: "",
     boundary_condition: {},
   };
+};
+
+const handleBackToStep3Click = () => {
+  if (submit_type.value !== "create new") {
+    return;
+  }
+
+  resetGetAnswerState();
+  hasClickedSaveAndGetQuestionListBtn.value = false;
+  hasTriggeredGetAnswerValidation.value = false;
+  questionOptions.value = [];
+  questionValue_refine_input.value = "";
+  questionValue_selectExisting_input.value = "";
+  questionValue_create_input.value = "";
+  importanceValue.value = null;
+  distinctivenessValue.value = null;
+  plausibilityValue.value = null;
+  actionCounts.create = 0;
+  actionCounts.refine = 0;
+  actionCounts["select existing"] = 0;
+
+  step3SectionRef.value?.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
 const updateQuestionScores = (questionText) => {

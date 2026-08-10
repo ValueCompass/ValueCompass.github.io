@@ -20,6 +20,7 @@ export default {
     taskHistory: '작업 기록',
     getQuestionList: '질문 목록 가져오기',
     getQuestionListClicked: '질문 목록 가져오기 버튼을 이미 클릭했습니다.',
+    backToStep3: '돌아가서 질문 목록 다시 가져오기',
     editQuestionButton: '질문\n수정',
     changeQuestionButton: '질문\n변경',
     getAnswer: '답변 가져오기',

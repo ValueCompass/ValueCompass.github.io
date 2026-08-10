@@ -20,6 +20,7 @@ export default {
     taskHistory: '任务历史',
     getQuestionList: '获取问题列表',
     getQuestionListClicked: '你已经点击过获取问题列表按钮。',
+    backToStep3: '返回重新获取问题列表',
     editQuestionButton: '编辑\n问题',
     changeQuestionButton: '更改\n问题',
     getAnswer: '获取回答',

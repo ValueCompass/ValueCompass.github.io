@@ -20,6 +20,7 @@ export default {
     taskHistory: 'タスク履歴',
     getQuestionList: '質問リストを取得',
     getQuestionListClicked: '質問リスト取得ボタンはすでにクリックされています。',
+    backToStep3: '戻って質問リストを再取得',
     editQuestionButton: '質問を\n編集',
     changeQuestionButton: '質問を\n変更',
     getAnswer: '回答を取得',

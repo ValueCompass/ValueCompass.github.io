@@ -20,6 +20,7 @@ export default {
     taskHistory: 'Task History',
     getQuestionList: 'Get Question List',
     getQuestionListClicked: 'You have clicked the button to get the question list.',
+    backToStep3: 'Back to Get the Question List Again',
     editQuestionButton: 'Edit\nthe\nQuestion',
     changeQuestionButton: 'Change\nthe\nQuestion',
     getAnswer: 'Get Answer',
