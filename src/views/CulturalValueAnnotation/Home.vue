@@ -41,6 +41,7 @@
       :criteria="REVIEW_CRITERIA.stage1_review"
       :step-number="1"
       title="Stage 1. Survey Questionnaire"
+      :note="t('culturalValueAnnotation.qualityReview.stage1Note')"
     />
     <div class="step-container">
       <div class="step step1">
@@ -950,16 +951,24 @@
           ></AnnotationComponentNew>
         </div>
         </div>
-        <QualityReviewControl
-          v-if="submit_type === 'revise'"
-          v-model="qualityReviews[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
-          :is-admin="isAdminView"
-          :saving="isSavingQualityReviews"
-          :criteria="REVIEW_CRITERIA[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
-          :step-number="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
-          show-similarity-detail
-          :similarity-detail="editCurrentQuestionDetail?.personal_answer_similar_to_cultural_answer"
-        />
+        <div v-if="submit_type === 'revise'" class="quality-review-column">
+          <QualityReviewControl
+            v-model="qualityReviews[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
+            :is-admin="isAdminView"
+            :saving="isSavingQualityReviews"
+            :criteria="REVIEW_CRITERIA[getPerspectiveReviewKey(PERSONAL_PERSPECTIVE)]"
+            :step-number="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
+            show-similarity-detail
+            :similarity-detail="editCurrentQuestionDetail?.personal_answer_similar_to_cultural_answer"
+          />
+          <QualityReviewControl
+            v-model="qualityReviews.overall_quality_review"
+            :is-admin="isAdminView"
+            :saving="isSavingQualityReviews"
+            :criteria="REVIEW_CRITERIA.overall_quality_review"
+            title="整体质量"
+          />
+        </div>
         <div
           v-else
           class="quality-review-control quality-review-control--empty"
@@ -1009,7 +1018,7 @@ const route = useRoute();
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 
-const { t, tm } = useI18n();
+const { t, tm, locale } = useI18n();
 const isAdminView = computed(() => {
   return route.path.startsWith("/CulturalValueAnnotation/admin/read") ||
     String(route.query.adminView || "") === "1";
@@ -1049,6 +1058,12 @@ import {
   PRINCIPLE_SIMILARITY_THRESHOLD,
 } from "@/utils/common";
 import { Language } from "@amcharts/amcharts4/core";
+import {
+  isQualityReviewSelectionComplete,
+  isQualityReviewSelectionPassing,
+  localizeQualityReviewCriteria,
+  normalizeQualityReviewSelection,
+} from "@/utils/qualityReviewCriteria";
 
 let userDetail = JSON.parse(localStorage.getItem("userDetail") || "{}");
 const userInfo = ref({
@@ -1081,15 +1096,14 @@ const QUALITY_REVIEW_KEYS = [
   "question_review",
   "cultural_perspective_review",
   "personal_perspective_review",
+  "overall_quality_review",
 ];
 const getActiveQualityReviewKeys = () =>
   shouldReviewStage1.value
     ? QUALITY_REVIEW_KEYS
     : QUALITY_REVIEW_KEYS.filter((key) => key !== "stage1_review");
 
-const REVIEW_CRITERIA = computed(() =>
-  tm("culturalValueAnnotation.qualityReview.criteria"),
-);
+const REVIEW_CRITERIA = computed(() => localizeQualityReviewCriteria(locale.value));
 
 const normalizeQualityReviews = (qualityReviews = {}) => {
   const normalizedReviews = getActiveQualityReviewKeys().reduce((reviews, key) => {
@@ -1099,9 +1113,9 @@ const normalizeQualityReviews = (qualityReviews = {}) => {
         review?.qualified === true || review?.qualified === false
           ? review.qualified
           : null,
-      check_list: REVIEW_CRITERIA.value[key].map((_, index) => {
+      check_list: REVIEW_CRITERIA.value[key].map((criterion, index) => {
         const value = review?.check_list?.[index];
-        return value === true || value === false ? value : null;
+        return normalizeQualityReviewSelection(criterion, value);
       }),
       comments: Array.isArray(review?.comments)
         ? review.comments.map((comment) => ({
@@ -2142,11 +2156,13 @@ const submitQualityReviews = async () => {
         ? "Step 2"
         : key === "question_review"
           ? "Step 4"
-      : key === "cultural_perspective_review"
+        : key === "cultural_perspective_review"
           ? `Step ${getPerspectiveStep(CULTURAL_PERSPECTIVE)}`
-          : `Step ${getPerspectiveStep(PERSONAL_PERSPECTIVE)}`;
+        : key === "personal_perspective_review"
+          ? `Step ${getPerspectiveStep(PERSONAL_PERSPECTIVE)}`
+          : "整体质量";
     return qualityReviews.value[key].check_list.reduce((items, value, index) => {
-      if (value !== true && value !== false) {
+      if (!isQualityReviewSelectionComplete(REVIEW_CRITERIA.value[key][index], value)) {
         items.push(`${areaLabel}.${index + 1}`);
       }
       return items;
@@ -2161,7 +2177,9 @@ const submitQualityReviews = async () => {
     const review = qualityReviews.value[key];
     reviews[key] = {
       ...JSON.parse(JSON.stringify(review)),
-      qualified: review.check_list.every((value) => value === true),
+      qualified: review.check_list.every((value, index) =>
+        isQualityReviewSelectionPassing(REVIEW_CRITERIA.value[key][index], value),
+      ),
     };
     return reviews;
   }, {});
@@ -2523,8 +2541,16 @@ const getQuestionNum = () => {
     }
 
     > .quality-review-control {
-      flex: 1 1 0;
-      min-width: 280px;
+      flex: 1.4 1 0;
+      min-width: 340px;
+    }
+
+    > .quality-review-column {
+      display: flex;
+      flex: 1.4 1 0;
+      min-width: 340px;
+      flex-direction: column;
+      gap: 1.5em;
     }
 
     .intro-container {
@@ -3097,7 +3123,8 @@ const getQuestionNum = () => {
   .step-container .step {
     flex-direction: column;
 
-    > .quality-review-control {
+    > .quality-review-control,
+    > .quality-review-column {
       min-width: 0;
     }
   }

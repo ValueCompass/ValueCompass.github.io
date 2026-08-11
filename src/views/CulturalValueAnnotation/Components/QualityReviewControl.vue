@@ -17,20 +17,27 @@
       <div v-if="isAdmin" class="quality-review-checklist">
         <div
           v-for="(criterion, index) in criteria"
-          :key="criterion"
+          :key="criterion.label"
           class="quality-review-checklist__item"
         >
-          <p>{{ criterionNumber(index) }} {{ criterion }}</p>
+          <p>{{ criterionNumber(index) }} {{ criterion.label }}</p>
           <el-radio-group
             :model-value="review.check_list[index]"
             :disabled="saving"
             @change="(value) => handleCheckChange(index, value)"
           >
-            <el-radio :value="true">{{ t("culturalValueAnnotation.qualityReview.pass") }}</el-radio>
-            <el-radio :value="false">{{ t("culturalValueAnnotation.qualityReview.fail") }}</el-radio>
+            <el-radio
+              v-for="reviewOption in criterion.options"
+              :key="reviewOption.value"
+              :value="reviewOption.value"
+            >{{ reviewOption.label }}</el-radio>
           </el-radio-group>
         </div>
       </div>
+
+      <p v-if="isAdmin && note" class="quality-review-control__note">
+        {{ note }}
+      </p>
 
       <div v-if="showSimilarityDetail" class="quality-review-similarity">
         <template v-if="hasSimilarityDetail">
@@ -90,6 +97,11 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import {
+  isQualityReviewSelectionComplete,
+  isQualityReviewSelectionPassing,
+  normalizeQualityReviewSelection,
+} from "@/utils/qualityReviewCriteria";
 
 const { t } = useI18n();
 
@@ -118,6 +130,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  note: {
+    type: String,
+    default: "",
+  },
   similarityDetail: {
     type: Object,
     default: null,
@@ -133,9 +149,9 @@ const newComment = ref("");
 
 const review = computed(() => ({
   qualified: props.modelValue?.qualified ?? null,
-  check_list: props.criteria.map((_, index) => {
+  check_list: props.criteria.map((criterion, index) => {
     const value = props.modelValue?.check_list?.[index];
-    return value === true || value === false ? value : null;
+    return normalizeQualityReviewSelection(criterion, value);
   }),
   comments: Array.isArray(props.modelValue?.comments)
     ? props.modelValue.comments
@@ -199,15 +215,20 @@ const criterionNumber = (index) =>
 
 const handleCheckChange = (index, value) => {
   const checkList = [...review.value.check_list];
-  checkList[index] = value === true;
-  const isComplete = checkList.every(
-    (checkValue) => checkValue === true || checkValue === false,
+  checkList[index] = value;
+  const isComplete = props.criteria.every(
+    (criterion, criterionIndex) =>
+      isQualityReviewSelectionComplete(criterion, checkList[criterionIndex]),
   );
 
   updateReview({
     ...review.value,
     check_list: checkList,
-    qualified: isComplete ? checkList.every(Boolean) : null,
+    qualified: isComplete
+      ? props.criteria.every((criterion, criterionIndex) =>
+          isQualityReviewSelectionPassing(criterion, checkList[criterionIndex]),
+        )
+      : null,
   });
 };
 
@@ -281,6 +302,12 @@ const formatReviewTimestamp = (date) => {
     margin-top: 10px;
   }
 
+  &__note {
+    margin: 0 0 20px;
+    color: #d93025;
+    line-height: 1.5;
+  }
+
   &__result {
     display: flex;
     align-items: center;
@@ -337,11 +364,14 @@ const formatReviewTimestamp = (date) => {
       margin: 0 0 6px;
       font-size: 1em;
       line-height: 1.5;
+      font-weight: 600;
     }
 
     :deep(.el-radio-group) {
       display: flex;
-      gap: 16px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
       padding-left: 32px;
     }
 
@@ -349,9 +379,16 @@ const formatReviewTimestamp = (date) => {
       --theme-color: #e65c00;
       --text-color: #002f6c;
       --bg-color: #fff;
-      height: 30px;
+      width: 100%;
+      height: auto;
       margin-right: 0 !important;
       color: #002f6c !important;
+      white-space: normal;
+    }
+
+    :deep(.el-radio__label) {
+      line-height: 1.5;
+      white-space: normal;
     }
 
     :deep(.el-radio__inner) {
@@ -377,7 +414,7 @@ const formatReviewTimestamp = (date) => {
       padding-left: 8px !important;
       color: #002f6c !important;
       font-size: 1em;
-      line-height: 30px;
+      line-height: 1.2;
     }
   }
 }

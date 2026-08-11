@@ -83,44 +83,7 @@ export default {
       similarityExplanation: 'Explanation',
       send: 'Send',
       submit: 'Submit Quality Review',
-      criteria: {
-        stage1_review: [
-          'Complete three questionnaires, and ensure the username entered in the questionnaires matches the system username.',
-          'In the Cultural Values questionnaire, answer the “Personal Values Statement” and “Cultural Values Statement” from at least three perspectives.',
-          'To ensure careful annotation, the annotator must pass the attention checks in the questionnaire: Schwartz Q6, Q19, Cultural Value Q7, and Q24. For example: “To confirm that you have read the questions carefully, please answer as follows.” Select “Does not apply” for both the personal perspective and cultural perspective.',
-          'To ensure careful annotation, labels for opposite questions must show directional differences. Schwartz (Q15, Q4), (Q7, Q10), and Cultural Value (Q17, Q23). For example: “You believe that everyone in the world should be treated equally” and “It is reasonable for people of different social status to be treated differently.”',
-          'Do not tell annotators that “test questions are included in the questionnaire”; instead, directly evaluate annotators’ performance.',
-        ],
-        topic_review: [
-          'Selected topic follows the prioritization criteria: i) receives widespread attention, ii) involves values/social norms/behavior principles and iii) is culturally distinctive.',
-        ],
-        principles_review: [
-          'At least three items; each item is clearly expressed.',
-          'Follow the given templates or templates similar to that.',
-          'The central idea of different principles should not be repetitive, and they should not copy the examples.',
-          'The value principles should fit the target culture, without obviously inappropriate principles.',
-        ],
-        question_review: [
-          'The score of three dimensions for the selected question are >= 4.',
-          'Evaluating from the perspective of a cultural expert, the selected question scores >= 4 on value importance, cultural distinctiveness, and question real-life plausibility.',
-        ],
-        cultural_perspective_review: [
-          'The selected values are indeed related to the question; no completely unrelated values are selected.',
-          'For an annotator, the value rankings under all questions should not all match the order of values in the list on the left. (If they all match, we suspect that the annotator only selected values and skipped the priority-ranking step.)',
-          'The values reflected in the answer are consistent with the determined value priorities.',
-          'The answer includes (i) a direct response to the question and (ii) culturally appropriate norms and behavior practices.',
-          'List 1–3 inappropriate practices that should be avoided, in bullet points.',
-          'Evaluating from the perspective of a cultural expert, both the answer and the inappropriate practices basically align with the culture’s mainstream values. [Note: Request revisions only when there is an obvious mismatch.]',
-        ],
-        personal_perspective_review: [
-          'The selected values are indeed related to the question; no completely unrelated values are selected.',
-          'For an annotator, the value rankings under all questions should not all match the order of values in the list on the left. (If they all match, we suspect that the annotator only selected values and skipped the priority-ranking step.)',
-          'The values reflected in the answer are consistent with the determined value priorities.',
-          'The answer includes (i) a direct response to the question and (ii) culturally appropriate norms and behavior practices.',
-          'List 1–3 inappropriate practices that should be avoided, in bullet points.',
-          'The cultural-perspective and personal-perspective answers must not be completely identical.',
-        ],
-      },
+      stage1Note: '*Do not tell annotators that the questionnaires contain test questions; evaluate their performance directly.',
       annotatorStatuses: {
         notReviewed: 'Waiting for administrator review',
         waitingForRevision: 'Revision required',
