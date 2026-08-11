@@ -81,6 +81,8 @@ export default {
       commentPlaceholder: 'コメントを追加...',
       similarityOption: '選択肢',
       similarityExplanation: '説明',
+      currentDuration: '現在のアノテーション時間',
+      durationFormat: '{minutes}分{seconds}秒（合計{totalSeconds}秒）',
       send: '送信',
       submit: '品質審査を送信',
       stage1Note: '*アンケートにテスト問題が含まれていることを回答者に伝えず、回答者の実際の結果を直接確認してください。',

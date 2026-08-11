@@ -966,6 +966,7 @@
             :is-admin="isAdminView"
             :saving="isSavingQualityReviews"
             :criteria="REVIEW_CRITERIA.overall_quality_review"
+            :duration-seconds="editCurrentQuestionDetail?.duration_time"
             title="整体质量"
           />
         </div>

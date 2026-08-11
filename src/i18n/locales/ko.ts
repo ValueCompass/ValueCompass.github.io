@@ -81,6 +81,8 @@ export default {
       commentPlaceholder: '댓글 추가...',
       similarityOption: '옵션',
       similarityExplanation: '설명',
+      currentDuration: '현재 주석 소요 시간',
+      durationFormat: '{minutes}분 {seconds}초 (총 {totalSeconds}초)',
       send: '전송',
       submit: '품질 검토 제출',
       stage1Note: '*설문에 테스트 문항이 포함되어 있음을 어노테이터에게 알리지 말고, 실제 수행 결과를 직접 확인하세요.',

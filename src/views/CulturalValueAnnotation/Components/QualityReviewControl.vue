@@ -14,6 +14,14 @@
         </span>
       </div>
 
+      <p
+        v-if="isAdmin && formattedDuration"
+        class="quality-review-control__duration"
+      >
+        {{ t("culturalValueAnnotation.qualityReview.currentDuration") }}：
+        <strong>{{ formattedDuration }}</strong>
+      </p>
+
       <div v-if="isAdmin" class="quality-review-checklist">
         <div
           v-for="(criterion, index) in criteria"
@@ -134,6 +142,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  durationSeconds: {
+    type: [Number, String],
+    default: null,
+  },
   similarityDetail: {
     type: Object,
     default: null,
@@ -176,6 +188,25 @@ const statusType = computed(() => {
     return "warning";
   }
   return "info";
+});
+
+const formattedDuration = computed(() => {
+  if (props.durationSeconds === null || props.durationSeconds === undefined || props.durationSeconds === "") {
+    return "";
+  }
+
+  const totalSeconds = Math.max(0, Math.floor(Number(props.durationSeconds)));
+  if (!Number.isFinite(totalSeconds)) {
+    return "";
+  }
+
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return t("culturalValueAnnotation.qualityReview.durationFormat", {
+    minutes,
+    seconds,
+    totalSeconds,
+  });
 });
 
 const similarityOption = computed(() =>
@@ -312,7 +343,13 @@ const formatReviewTimestamp = (date) => {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
+  }
+
+  &__duration {
+    margin: 0 0 10px 0;
+    color: #d95f02;
+    line-height: 1.5;
   }
 
   &__title {
@@ -424,7 +461,7 @@ const formatReviewTimestamp = (date) => {
   flex-direction: column;
   gap: 14px;
   padding: 16px;
-  border: 1px solid #DE6500;
+  // border: 1px solid #DE6500;
   border-radius: 10px;
   margin-bottom: 20px;
   background: #fff;
@@ -464,7 +501,7 @@ const formatReviewTimestamp = (date) => {
   padding: 14px 16px 12px;
   border: 1px solid #DE6500;
   border-radius: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   background: #fff;
   font-size: 1em;
 

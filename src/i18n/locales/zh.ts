@@ -81,6 +81,8 @@ export default {
       commentPlaceholder: '添加注释...',
       similarityOption: '选项',
       similarityExplanation: '说明',
+      currentDuration: '当前数据标注时长',
+      durationFormat: '{minutes}分{seconds}秒（共{totalSeconds}秒）',
       send: '发送',
       submit: '提交质量审核',
       stage1Note: '*不要告诉标注人员“问卷中涉及了测试问题”，而是直接看标注人员的表现',
