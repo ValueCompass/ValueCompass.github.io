@@ -83,7 +83,7 @@ export default {
       similarityExplanation: '说明',
       send: '发送',
       submit: '提交质量审核',
-      stage1Note: '*不要告诉标注人员“问卷中涉及了测试问题”，而是直接查看标注人员的表现',
+      stage1Note: '*不要告诉标注人员“问卷中涉及了测试问题”，而是直接看标注人员的表现',
       annotatorStatuses: {
         notReviewed: '等待管理员审查',
         waitingForRevision: '需要修改',

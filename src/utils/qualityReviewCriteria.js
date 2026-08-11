@@ -5,7 +5,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "Complete three questionnaires, and ensure the username entered in the questionnaires matches the system username.",
-        "zh": "完成三份问卷，且问卷中填写的 username 跟系统一致",
+        "zh": "完成三份问卷，且问卷中填写的username跟系统一致",
         "ja": "3つのアンケートを完了し、アンケートに入力したユーザー名がシステム上のユーザー名と一致していること。",
         "ko": "세 가지 설문지를 모두 완료하고, 설문지에 입력한 사용자 이름이 시스템 사용자 이름과 일치해야 합니다."
       },
@@ -15,7 +15,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: All questionnaires are completed and the usernames match.",
-            "zh": "通过：均填写，且 username 一致",
+            "zh": "通过：均填写，且username一致",
             "ja": "合格：すべて回答済みで、ユーザー名が一致している",
             "ko": "통과: 모든 설문을 작성했고 사용자 이름이 일치함"
           }
@@ -25,7 +25,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Needs revision: All are completed, but the usernames do not match; add a note.",
-            "zh": "待修改：均填写，但 username 不一致，需注明",
+            "zh": "待修改：均填写，但username不一致，需注明",
             "ja": "要修正：すべて回答済みだが、ユーザー名が一致していないため注記が必要",
             "ko": "수정 필요: 모두 작성했지만 사용자 이름이 일치하지 않아 설명이 필요함"
           }
@@ -55,7 +55,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Both statements are answered from at least three perspectives.",
-            "zh": "通过：两项均从至少 3 个角度回答",
+            "zh": "通过：两项均>=3个角度",
             "ja": "合格：両方とも3つ以上の観点から回答している",
             "ko": "통과: 두 진술 모두 3개 이상의 관점에서 답변함"
           }
@@ -65,7 +65,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: Either statement has fewer than three perspectives.",
-            "zh": "不通过：任一项少于 3 个角度",
+            "zh": "不通过：任一项少于3个",
             "ja": "不合格：いずれかが3つ未満の観点である",
             "ko": "미통과: 진술 중 하나라도 관점이 3개 미만임"
           }
@@ -75,7 +75,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "To ensure careful annotation, the annotator must pass the attention checks in the questionnaire: Schwartz Q6, Q19, Cultural Value Q7, and Q24. For example: “To confirm that you have read the questions carefully, please answer as follows.” Select “Does not apply” for both the personal perspective and cultural perspective.",
-        "zh": "通过了问卷中的 Attention测试，Schwartz Q6, Q19, Cultural Value Q7, Q24,  如：为了确认您认真阅读了题目，请按如下要求作答。个人视角和文化视角都选择“不符合”。",
+        "zh": "通过了问卷中的 Attention测试，Schwartz Q6, Q19, Cultural Value Q7, Q24，如：为了确认您认真阅读了题目，请按如下要求作答。个人视角和文化视角都选择“不符合”。",
         "ja": "慎重にアノテーションしていることを確認するため、アノテーターはアンケート内の注意確認設問（Schwartz Q6、Q19、Cultural Value Q7、Q24）に合格していること。例：「質問を注意深く読んだことを確認するため、次のように回答してください。」個人の視点と文化的視点の両方で「該当しない」を選択すること。",
         "ko": "신중하게 어노테이션했는지 확인하기 위해 어노테이터는 설문지의 주의력 확인 문항인 Schwartz Q6, Q19, Cultural Value Q7, Q24를 통과해야 합니다. 예: “질문을 주의 깊게 읽었는지 확인하기 위해 다음과 같이 답변해 주세요.” 개인 관점과 문화적 관점 모두에서 “해당하지 않음”을 선택해야 합니다."
       },
@@ -105,7 +105,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "To ensure careful annotation, labels for opposite questions must show directional differences. Schwartz (Q15, Q4), (Q7, Q10), and Cultural Value (Q17, Q23). For example: “You believe that everyone in the world should be treated equally” and “It is reasonable for people of different social status to be treated differently.”",
-        "zh": "在相反的测试问题上选项有方向差异。Schwartz (Q15,Q4), (Q7,Q10)； CulturalValue (Q17, Q23).如：“你们相信，世界上的每一个人都应该被平等对待。”和“社会地位不同的人，受到不同对待是合理的。”",
+        "zh": "在相反的测试问题上选项有方向差异。Schwartz (Q15,Q4), (Q7,Q10)；CulturalValue (Q17, Q23)。如：“你们相信，世界上的每一个人都应该被平等对待。”和“社会地位不同的人，受到不同对待是合理的。”",
         "ja": "慎重にアノテーションしていることを確認するため、反対の内容を持つ設問へのラベルは方向性に違いがあること。Schwartz（Q15、Q4）、（Q7、Q10）、Cultural Value（Q17、Q23）。例：「世界中のすべての人が平等に扱われるべきだと思う」と「社会的地位が異なる人々が異なる扱いを受けるのは合理的である」。",
         "ko": "신중하게 어노테이션했는지 확인하기 위해 반대되는 문항의 레이블은 방향성 차이를 보여야 합니다. Schwartz (Q15, Q4), (Q7, Q10), Cultural Value (Q17, Q23). 예: “세상의 모든 사람은 평등하게 대우받아야 한다고 생각한다”와 “사회적 지위가 다른 사람을 다르게 대우하는 것은 합리적이다.”"
       },
@@ -137,7 +137,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "Selected topic follows the prioritization criteria: i) receives widespread attention, ii) involves values/social norms/behavior principles and iii) is culturally distinctive.",
-        "zh": "话题满足：i) 在文化中广受关注，ii) 能引发价值观、社会规范的讨论，iii) 目标文化表现出差异性",
+        "zh": "话题满足： i) 在文化中广受关注， ii) 能引发价值观、社会规范的讨论， iii) 目标文化表现出差异性",
         "ja": "選択したトピックが優先基準を満たしていること：i) 広く関心を集めている、ii) 価値観・社会規範・行動原則に関わる、iii) 文化的な独自性がある。",
         "ko": "선택한 주제가 다음 우선순위 기준을 충족해야 합니다: i) 폭넓은 관심을 받고, ii) 가치관·사회 규범·행동 원칙을 포함하며, iii) 문화적 차별성이 있어야 합니다."
       },
@@ -413,7 +413,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: All selected values are directly relevant and affect judgment of the question.",
-            "zh": "通过：所选价值观均直接相关，会影响问题的判断",
+            "zh": "通过： 所选价值观均直接相关，会影响问题的判断",
             "ja": "合格：選択した価値観がすべて直接関連し、問題の判断に影響する",
             "ko": "통과: 선택한 가치관이 모두 직접 관련되며 문제 판단에 영향을 줌"
           }
@@ -423,7 +423,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Acceptable: Some values are weakly related but still reasonable.",
-            "zh": "可接受：存在与问题关联较弱，但仍合理的价值观",
+            "zh": "可接受： 存在与问题关联较弱、但仍合理的价值观",
             "ja": "許容可能：関連性は弱いが妥当な価値観が含まれる",
             "ko": "수용 가능: 관련성은 약하지만 여전히 합리적인 가치관이 있음"
           }
@@ -433,7 +433,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: A clearly unrelated value was selected.",
-            "zh": "不通过：选择了与问题明显无关的价值观",
+            "zh": "不通过： 选择了与问题明显无关的价值观",
             "ja": "不合格：問題と明らかに無関係な価値観を選択している",
             "ko": "미통과: 문제와 명백히 무관한 가치관을 선택함"
           }
@@ -443,7 +443,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "For an annotator, the value rankings under all questions should not all match the order of values in the list on the left. (If they all match, we suspect that the annotator only selected values and skipped the priority-ranking step.)",
-        "zh": "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致 （如果全都一致的话，怀疑只进行了选择，而跳过了优先级排序这一步）",
+        "zh": "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致 【标注者级别，需最终综合判断】",
         "ja": "同一のアノテーターについて、すべての質問での価値観の順位が左側のリストの順序と完全に一致していないこと。（すべて一致する場合、価値観を選択しただけで優先順位付けを省略した可能性がある。）",
         "ko": "한 어노테이터의 경우 모든 질문에서 가치관 순위가 왼쪽 목록의 가치관 순서와 전부 일치해서는 안 됩니다. (모두 일치하면 어노테이터가 가치관만 선택하고 우선순위 지정 단계를 건너뛴 것으로 의심할 수 있습니다.)"
       },
@@ -453,7 +453,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Consistency rate < 30%.",
-            "zh": "通过：一致率 < 30%",
+            "zh": "通过： 一致率 < 30%",
             "ja": "合格：一致率30%未満",
             "ko": "통과: 일치율 30% 미만"
           }
@@ -463,7 +463,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Needs review: Consistency rate is 30%-60%; remind the annotator.",
-            "zh": "需审查：一致率 30% ～ 60%，提醒标注者",
+            "zh": "需审查： 一致率 30% ～ 60%，提醒标注者",
             "ja": "要確認：一致率30%-60%。回答者に注意を促す",
             "ko": "검토 필요: 일치율 30%-60%, 어노테이터에게 알림"
           }
@@ -473,7 +473,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: Consistency rate > 60%; review is also required.",
-            "zh": "不通过：一致率 > 60%，同样需审查",
+            "zh": "不通过： 一致率 > 60%，同样需审查",
             "ja": "不合格：一致率60%超。同様に確認が必要",
             "ko": "미통과: 일치율 60% 초과, 동일하게 검토 필요"
           }
@@ -493,7 +493,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: High-priority values lead the answer while lower-priority values are also reflected.",
-            "zh": "通过：高优先级价值观主导回答，同时体现低优先级",
+            "zh": "通过： 高优先级价值观主导回答，同时体现低优先级",
             "ja": "合格：高優先度の価値観が回答を主導し、低優先度も反映されている",
             "ko": "통과: 높은 우선순위 가치관이 답변을 주도하고 낮은 우선순위도 반영됨"
           }
@@ -503,7 +503,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: Priorities are reversed and lower-priority values lead the answer.",
-            "zh": "不通过：优先级错位，低优先级价值观主导回答",
+            "zh": "不通过： 优先级错位，低优先级价值观主导回答",
             "ja": "不合格：優先順位が逆で、低優先度の価値観が回答を主導している",
             "ko": "미통과: 우선순위가 뒤바뀌어 낮은 우선순위 가치관이 답변을 주도함"
           }
@@ -513,7 +513,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: The answer does not reflect the selected values or mainly reflects unrelated values.",
-            "zh": "不通过：回答未体现所选价值观，或主要体现了无关价值观",
+            "zh": "不通过： 回答未体现所选价值观，或主要体现了无关价值观",
             "ja": "不合格：選択した価値観が反映されていない、または無関係な価値観が中心である",
             "ko": "미통과: 선택한 가치관이 반영되지 않거나 무관한 가치관이 주로 반영됨"
           }
@@ -533,7 +533,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: The question is answered directly with specific reasons and behavioral principles.",
-            "zh": "通过：对问题直接回应，并给出具体理由和行为准则",
+            "zh": "通过： 对问题直接回应，并给出具体理由和行为准则",
             "ja": "合格：問題に直接回答し、具体的な理由と行動原則を示している",
             "ko": "통과: 질문에 직접 답하고 구체적인 이유와 행동 원칙을 제시함"
           }
@@ -543,7 +543,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Acceptable: The structure or wording is disorganized, but both parts can still be inferred.",
-            "zh": "可接受：结构、表述较乱，但依然可推断出这两部分",
+            "zh": "可接受： 结构、表述较乱，但依然可推断出这两部分",
             "ja": "許容可能：構成や表現は乱れているが、両方の要素を推測できる",
             "ko": "수용 가능: 구조나 표현이 다소 혼란스럽지만 두 부분을 추론할 수 있음"
           }
@@ -553,7 +553,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: A direct response, specific reasons, or practices are missing.",
-            "zh": "不通过：缺少直接回应或者具体理由、做法",
+            "zh": "不通过： 缺少直接回应或者具体理由、做法。",
             "ja": "不合格：直接回答、具体的理由、または実践が欠けている",
             "ko": "미통과: 직접 답변, 구체적 이유 또는 실천 내용이 부족함"
           }
@@ -563,7 +563,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "List 1–3 inappropriate practices that should be avoided, in bullet points.",
-        "zh": "分点列出 1-3 条不合适、应该避免的做法",
+        "zh": "分点列出1-3条不合适、应该避免的做法",
         "ja": "避けるべき不適切な慣行を1～3項目、箇条書きで示していること。",
         "ko": "피해야 할 부적절한 관행 1~3개를 글머리표로 나열해야 합니다."
       },
@@ -573,7 +573,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Lists 1-3 specific and clear inappropriate practices.",
-            "zh": "通过：分点列出 1-3 条具体、明确的不合适做法",
+            "zh": "通过： 分点列出1-3条具体、明确的不合适做法",
             "ja": "合格：避けるべき具体的で明確な行動を1-3項目列挙している",
             "ko": "통과: 피해야 할 구체적이고 명확한 행동을 1-3개 항목으로 제시함"
           }
@@ -583,7 +583,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: The content is unclear and the specific behavior to avoid cannot be identified.",
-            "zh": "不通过：内容不清晰，无法判断应避免的具体行为",
+            "zh": "不通过： 内容不清晰，无法判断应避免的具体行为",
             "ja": "不合格：内容が不明確で、避けるべき具体的行動を判断できない",
             "ko": "미통과: 내용이 불명확하여 피해야 할 구체적 행동을 판단할 수 없음"
           }
@@ -593,7 +593,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "Evaluating from the perspective of a cultural expert, both the answer and the inappropriate practices basically align with the culture’s mainstream values. [Note: Request revisions only when there is an obvious mismatch.]",
-        "zh": "你从文化专家的角度评估，问题回答和不合适的做法都基本符合文化主流价值观 【注：只有明确不符合的要求修改】",
+        "zh": "你从文化专家的角度来看，问题回答和不合适的做法都基本符合文化主流价值观 【注:只有明显不符合的要求修改】",
         "ja": "文化の専門家の視点から評価し、回答と不適切な慣行の両方がその文化の主流の価値観と概ね一致していること。［注：明らかな不一致がある場合のみ修正を求めること。］",
         "ko": "문화 전문가의 관점에서 평가할 때, 답변과 부적절한 관행이 모두 해당 문화의 주류 가치관과 대체로 일치해야 합니다. [참고: 명백한 불일치가 있을 때만 수정을 요청하세요.]"
       },
@@ -603,7 +603,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Aligns with values broadly recognized today.",
-            "zh": "通过：符合当代广泛认可的价值观",
+            "zh": "通过： 符合当代广泛认可的价值观",
             "ja": "合格：現代に広く認められた価値観に適合している",
             "ko": "통과: 현대에 널리 인정되는 가치관에 부합함"
           }
@@ -613,7 +613,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Acceptable: A non-mainstream but genuinely held group perspective.",
-            "zh": "可接受：非主流，但属于真实存在的群体观点",
+            "zh": "可接受： 非主流，但属于真实存在的群体观点",
             "ja": "許容可能：主流ではないが、実在する集団の見解である",
             "ko": "수용 가능: 비주류이지만 실제 존재하는 집단의 관점임"
           }
@@ -623,7 +623,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: Clearly inaccurate, stereotypical, or extremely marginal views.",
-            "zh": "不通过：明显失真、刻板化、极少数的观点",
+            "zh": "不通过： 明显失真、刻板化、极少数的观点",
             "ja": "不合格：明らかに事実と異なる、ステレオタイプ、または極端に少数の見解である",
             "ko": "미통과: 명백히 부정확하거나 고정관념적이거나 극소수의 관점임"
           }
@@ -645,7 +645,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: All selected values are directly relevant and affect judgment of the question.",
-            "zh": "通过：所选价值观均直接相关，会影响问题的判断",
+            "zh": "通过： 所选价值观均直接相关，会影响问题的判断",
             "ja": "合格：選択した価値観がすべて直接関連し、問題の判断に影響する",
             "ko": "통과: 선택한 가치관이 모두 직접 관련되며 문제 판단에 영향을 줌"
           }
@@ -655,7 +655,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Acceptable: Some values are weakly related but still reasonable.",
-            "zh": "可接受：存在与问题关联较弱，但仍合理的价值观",
+            "zh": "可接受： 存在与问题关联较弱、但仍合理的价值观",
             "ja": "許容可能：関連性は弱いが妥当な価値観が含まれる",
             "ko": "수용 가능: 관련성은 약하지만 여전히 합리적인 가치관이 있음"
           }
@@ -665,7 +665,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: A clearly unrelated value was selected.",
-            "zh": "不通过：选择了与问题明显无关的价值观",
+            "zh": "不通过： 选择了与问题明显无关的价值观",
             "ja": "不合格：問題と明らかに無関係な価値観を選択している",
             "ko": "미통과: 문제와 명백히 무관한 가치관을 선택함"
           }
@@ -675,7 +675,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "For an annotator, the value rankings under all questions should not all match the order of values in the list on the left. (If they all match, we suspect that the annotator only selected values and skipped the priority-ranking step.)",
-        "zh": "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致 （如果全都一致的话，怀疑只进行了选择，而跳过了优先级排序这一步）",
+        "zh": "对于一个标注者，不是所有问题下的价值观排序都与价值观在左侧列表中的顺序一致 【标注者级别，需最终综合判断】",
         "ja": "同一のアノテーターについて、すべての質問での価値観の順位が左側のリストの順序と完全に一致していないこと。（すべて一致する場合、価値観を選択しただけで優先順位付けを省略した可能性がある。）",
         "ko": "한 어노테이터의 경우 모든 질문에서 가치관 순위가 왼쪽 목록의 가치관 순서와 전부 일치해서는 안 됩니다. (모두 일치하면 어노테이터가 가치관만 선택하고 우선순위 지정 단계를 건너뛴 것으로 의심할 수 있습니다.)"
       },
@@ -685,7 +685,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Consistency rate < 30%.",
-            "zh": "通过：一致率 < 30%",
+            "zh": "通过： 一致率 < 30%",
             "ja": "合格：一致率30%未満",
             "ko": "통과: 일치율 30% 미만"
           }
@@ -695,7 +695,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Needs review: Consistency rate is 30%-60%; remind the annotator.",
-            "zh": "需审查：一致率 30% ～ 60%，提醒标注者",
+            "zh": "需审查： 一致率 30% ～ 60%，提醒标注者",
             "ja": "要確認：一致率30%-60%。回答者に注意を促す",
             "ko": "검토 필요: 일치율 30%-60%, 어노테이터에게 알림"
           }
@@ -705,7 +705,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: Consistency rate > 60%; review is also required.",
-            "zh": "不通过：一致率 > 60%，同样需审查",
+            "zh": "不通过： 一致率 > 60%，同样需审查",
             "ja": "不合格：一致率60%超。同様に確認が必要",
             "ko": "미통과: 일치율 60% 초과, 동일하게 검토 필요"
           }
@@ -725,9 +725,19 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: High-priority values lead the answer while lower-priority values are also reflected.",
-            "zh": "通过：高优先级价值观主导回答，同时体现低优先级",
+            "zh": "通过： 高优先级价值观主导回答，同时体现低优先级",
             "ja": "合格：高優先度の価値観が回答を主導し、低優先度も反映されている",
             "ko": "통과: 높은 우선순위 가치관이 답변을 주도하고 낮은 우선순위도 반영됨"
+          }
+        },
+        {
+          "value": "priority_mismatch",
+          "countsAsPass": false,
+          "label": {
+            "en": "Fail: Priorities are reversed and lower-priority values lead the answer.",
+            "zh": "不通过： 优先级错位，低优先级价值观主导回答",
+            "ja": "不合格：優先順位が逆で、低優先度の価値観が回答を主導している",
+            "ko": "미통과: 우선순위가 뒤바뀌어 낮은 우선순위 가치관이 답변을 주도함"
           }
         },
         {
@@ -735,7 +745,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: The answer does not reflect the selected values or mainly reflects unrelated values.",
-            "zh": "不通过：回答未体现所选价值观，或主要体现了无关价值观",
+            "zh": "不通过： 回答未体现所选价值观，或主要体现了无关价值观",
             "ja": "不合格：選択した価値観が反映されていない、または無関係な価値観が中心である",
             "ko": "미통과: 선택한 가치관이 반영되지 않거나 무관한 가치관이 주로 반영됨"
           }
@@ -755,7 +765,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: The question is answered directly with specific reasons and behavioral principles.",
-            "zh": "通过：对问题直接回应，并给出具体理由和行为准则",
+            "zh": "通过： 对问题直接回应，并给出具体理由和行为准则",
             "ja": "合格：問題に直接回答し、具体的な理由と行動原則を示している",
             "ko": "통과: 질문에 직접 답하고 구체적인 이유와 행동 원칙을 제시함"
           }
@@ -765,7 +775,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Acceptable: The structure or wording is disorganized, but both parts can still be inferred.",
-            "zh": "可接受：结构、表述较乱，但依然可推断出这两部分",
+            "zh": "可接受： 结构、表述较乱，但依然可推断出这两部分",
             "ja": "許容可能：構成や表現は乱れているが、両方の要素を推測できる",
             "ko": "수용 가능: 구조나 표현이 다소 혼란스럽지만 두 부분을 추론할 수 있음"
           }
@@ -775,7 +785,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: A direct response, specific reasons, or practices are missing.",
-            "zh": "不通过：缺少直接回应或者具体理由、做法",
+            "zh": "不通过： 缺少直接回应或者具体理由、做法。",
             "ja": "不合格：直接回答、具体的理由、または実践が欠けている",
             "ko": "미통과: 직접 답변, 구체적 이유 또는 실천 내용이 부족함"
           }
@@ -785,7 +795,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "List 1–3 inappropriate practices that should be avoided, in bullet points.",
-        "zh": "分点列出 1-3 条不合适、应该避免的做法",
+        "zh": "分点列出1-3条不合适、应该避免的做法",
         "ja": "避けるべき不適切な慣行を1～3項目、箇条書きで示していること。",
         "ko": "피해야 할 부적절한 관행 1~3개를 글머리표로 나열해야 합니다."
       },
@@ -795,7 +805,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Lists 1-3 specific and clear inappropriate practices.",
-            "zh": "通过：分点列出 1-3 条具体、明确的不合适做法",
+            "zh": "通过： 分点列出1-3条具体、明确的不合适做法",
             "ja": "合格：避けるべき具体的で明確な行動を1-3項目列挙している",
             "ko": "통과: 피해야 할 구체적이고 명확한 행동을 1-3개 항목으로 제시함"
           }
@@ -805,7 +815,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: The content is unclear and the specific behavior to avoid cannot be identified.",
-            "zh": "不通过：内容不清晰，无法判断应避免的具体行为",
+            "zh": "不通过： 内容不清晰，无法判断应避免的具体行为",
             "ja": "不合格：内容が不明確で、避けるべき具体的行動を判断できない",
             "ko": "미통과: 내용이 불명확하여 피해야 할 구체적 행동을 판단할 수 없음"
           }
@@ -815,7 +825,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
     {
       "label": {
         "en": "The cultural-perspective and personal-perspective answers must not be completely identical.",
-        "zh": "文化视角和个人视角的回答不能完全一致",
+        "zh": "个人与文化视角高度一致的样本不超过80% 【标注者级别，需最终综合判断】",
         "ja": "文化的視点と個人的視点の回答が完全に同一でないこと。",
         "ko": "문화적 관점과 개인적 관점의 답변이 완전히 동일해서는 안 됩니다."
       },
@@ -825,7 +835,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": true,
           "label": {
             "en": "Pass: Consistency rate < 60%.",
-            "zh": "通过：一致率 < 60%",
+            "zh": "通过： 一致率 < 60%",
             "ja": "合格：一致率60%未満",
             "ko": "통과: 일치율 60% 미만"
           }
@@ -835,7 +845,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Needs review: Consistency rate is 60%-80%.",
-            "zh": "需审查：一致率 60% ～ 80%",
+            "zh": "需审查： 一致率 60% ～ 80%",
             "ja": "要確認：一致率60%-80%",
             "ko": "검토 필요: 일치율 60%-80%"
           }
@@ -845,7 +855,7 @@ export const QUALITY_REVIEW_CRITERIA_CONFIG = {
           "countsAsPass": false,
           "label": {
             "en": "Fail: Consistency rate > 80%.",
-            "zh": "不通过：一致率 > 80%",
+            "zh": "不通过： 一致率 > 80%",
             "ja": "不合格：一致率80%超",
             "ko": "미통과: 일치율 80% 초과"
           }
