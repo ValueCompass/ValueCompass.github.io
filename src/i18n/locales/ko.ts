@@ -85,7 +85,7 @@ export default {
       durationFormat: '{minutes}분 {seconds}초 (총 {totalSeconds}초)',
       send: '전송',
       submit: '품질 검토 제출',
-      stage1Note: '*설문에 테스트 문항이 포함되어 있음을 어노테이터에게 알리지 말고, 실제 수행 결과를 직접 확인하세요.',
+      stage1Note: '주석자에게 "설문지에 검사 문항이 포함되어 있다"고 알리지 말고, 대신 주석자의 수행을 직접 평가한다.',
       annotatorStatuses: {
         notReviewed: '관리자 검토 대기 중',
         waitingForRevision: '수정 필요',

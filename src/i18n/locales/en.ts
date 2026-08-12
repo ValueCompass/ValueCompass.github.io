@@ -85,7 +85,7 @@ export default {
       durationFormat: '{minutes}m {seconds}s ({totalSeconds}s total)',
       send: 'Send',
       submit: 'Submit Quality Review',
-      stage1Note: '*Do not tell annotators that the questionnaires contain test questions; evaluate their performance directly.',
+      stage1Note: 'Do not tell annotators that the questionnaires contain test questions; evaluate their performance directly.',
       annotatorStatuses: {
         notReviewed: 'Waiting for administrator review',
         waitingForRevision: 'Revision required',
