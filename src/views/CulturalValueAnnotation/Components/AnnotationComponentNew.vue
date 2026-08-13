@@ -140,7 +140,7 @@
             class="input-section full-width validation-area"
             :class="{ 'has-validation-error': validationErrors.position }"
           >
-            <h5>{{ t('culturalValueAnnotation.annotationNew.positionTitle', { step }) }}</h5>
+            <h5>{{ isCulturalPerspective ? t('culturalValueAnnotation.annotationNew.positionTitle5', { step }) : t('culturalValueAnnotation.annotationNew.positionTitle6', { step }) }}</h5>
             <div style="padding-left: 1em;">
                 <p class="des" v-html="t('culturalValueAnnotation.annotationNew.positionNote')"></p>
               <div class="textarea-wrapper">
