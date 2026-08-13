@@ -413,7 +413,7 @@
               </template>
             </el-popover>
             <el-button
-              v-if="submit_type === 'create new' && hasClickedSaveAndGetQuestionListBtn"
+              v-if="hasClickedSaveAndGetQuestionListBtn"
               style="height: 2.8em; font-size: 1em; margin: 0"
               @click="handleBackToStep3Click"
               color="#0B70C3"
@@ -1645,10 +1645,6 @@ const resetGetAnswerState = () => {
 };
 
 const handleBackToStep3Click = () => {
-  if (submit_type.value !== "create new") {
-    return;
-  }
-
   resetGetAnswerState();
   hasClickedSaveAndGetQuestionListBtn.value = false;
   hasTriggeredGetAnswerValidation.value = false;
