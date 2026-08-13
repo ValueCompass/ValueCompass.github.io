@@ -116,7 +116,7 @@
                 type="textarea"
                 :rows="5"
                 :readonly="readonly"
-                :placeholder="t('culturalValueAnnotation.annotationNew.priorityDescriptionPlaceholder')"
+                
               />
               <span class="word-counter" :class="{ 'is-over': countWords(priorityDescription) > 200 }">{{ countWords(priorityDescription) }}/200</span>
             </div>
