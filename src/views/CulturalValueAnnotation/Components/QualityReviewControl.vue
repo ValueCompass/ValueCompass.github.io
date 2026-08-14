@@ -70,9 +70,49 @@
       >
         <div class="quality-review-comment__meta">
           <span>{{ t("culturalValueAnnotation.qualityReview.administrator") }}</span>
-          <span>{{ formatTimestamp(comment.timestamp) }}</span>
+          <div class="quality-review-comment__meta-actions">
+            <span>{{ formatTimestamp(comment.timestamp) }}</span>
+            <template v-if="isAdmin && comment.addressed !== true && editingCommentIndex !== index">
+              <el-tooltip :content="t('culturalValueAnnotation.qualityReview.editComment')">
+                <el-button text circle :disabled="saving" @click="startEditingComment(index)">
+                  <el-icon><EditPen /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip :content="t('culturalValueAnnotation.qualityReview.deleteComment')">
+                <el-button text circle :disabled="saving" @click="confirmDeleteComment(index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </el-tooltip>
+            </template>
+          </div>
         </div>
-        <p>{{ comment.text }}</p>
+        <template v-if="editingCommentIndex === index">
+          <el-input
+            v-model="editingCommentText"
+            class="quality-review-comment__edit"
+            type="textarea"
+            :rows="3"
+            :disabled="saving"
+          />
+          <div class="quality-review-comment__edit-actions">
+            <el-tooltip :content="t('common.confirm')">
+              <el-button
+                type="primary"
+                circle
+                :disabled="!editingCommentText.trim() || saving"
+                @click="saveEditedComment(index)"
+              >
+                <el-icon><Check /></el-icon>
+              </el-button>
+            </el-tooltip>
+            <el-tooltip :content="t('common.cancel')">
+              <el-button circle :disabled="saving" @click="cancelEditingComment">
+                <el-icon><Close /></el-icon>
+              </el-button>
+            </el-tooltip>
+          </div>
+        </template>
+        <p v-else>{{ comment.text }}</p>
         <el-checkbox
           :model-value="comment.addressed === true"
           :disabled="isAdmin || saving"
@@ -105,6 +145,8 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { ElMessageBox } from "element-plus";
+import { Check, Close, Delete, EditPen } from "@element-plus/icons-vue";
 import {
   isQualityReviewSelectionComplete,
   isQualityReviewSelectionPassing,
@@ -158,6 +200,8 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 const newComment = ref("");
+const editingCommentIndex = ref(-1);
+const editingCommentText = ref("");
 
 const review = computed(() => ({
   qualified: props.modelValue?.qualified ?? null,
@@ -281,6 +325,67 @@ const addComment = () => {
     ],
   });
   newComment.value = "";
+};
+
+const startEditingComment = (index) => {
+  const comment = review.value.comments[index];
+  if (!comment || comment.addressed === true) {
+    return;
+  }
+
+  editingCommentIndex.value = index;
+  editingCommentText.value = comment.text;
+};
+
+const cancelEditingComment = () => {
+  editingCommentIndex.value = -1;
+  editingCommentText.value = "";
+};
+
+const saveEditedComment = (index) => {
+  const text = editingCommentText.value.trim();
+  const comment = review.value.comments[index];
+  if (!text || !comment || comment.addressed === true) {
+    return;
+  }
+
+  updateReview({
+    ...review.value,
+    comments: review.value.comments.map((item, commentIndex) =>
+      commentIndex === index
+        ? { ...item, text, timestamp: formatReviewTimestamp(new Date()) }
+        : item,
+    ),
+  });
+  cancelEditingComment();
+};
+
+const deleteComment = (index) => {
+  const comment = review.value.comments[index];
+  if (!comment || comment.addressed === true) {
+    return;
+  }
+
+  updateReview({
+    ...review.value,
+    comments: review.value.comments.filter((_, commentIndex) => commentIndex !== index),
+  });
+  cancelEditingComment();
+};
+
+const confirmDeleteComment = async (index) => {
+  try {
+    await ElMessageBox.confirm(
+      t("culturalValueAnnotation.qualityReview.deleteCommentConfirm"),
+      t("culturalValueAnnotation.qualityReview.deleteComment"),
+      {
+        confirmButtonText: t("common.confirm"),
+        cancelButtonText: t("common.cancel"),
+        type: "warning",
+      },
+    );
+    deleteComment(index);
+  } catch {}
 };
 
 const handleAddressedChange = (index, addressed) => {
@@ -513,8 +618,31 @@ const formatReviewTimestamp = (date) => {
   &__meta {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 12px;
     color: #7a8491;
+  }
+
+  &__meta-actions,
+  &__edit-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__meta-actions :deep(.el-button) {
+    width: 28px;
+    height: 28px;
+    margin-left: 0;
+  }
+
+  &__edit {
+    margin: 12px 0 8px;
+  }
+
+  &__edit-actions {
+    justify-content: flex-end;
+    margin-bottom: 10px;
   }
 
   p {
