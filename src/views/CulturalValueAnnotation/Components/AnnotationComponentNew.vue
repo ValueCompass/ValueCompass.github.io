@@ -71,8 +71,9 @@
             <!-- 已选 Point 列表：支持拖拽排序 -->
             <div
               class="selected-list"
-              @dragover.prevent
-              @drop="onRankingListDrop"
+              @dragenter.prevent
+              @dragover.prevent="onDragOver"
+              @drop.prevent="onRankingListDrop"
             >
               <template v-for="(point, i) in rankedPoints" :key="point || `ranking-slot-${i}`">
               <div
@@ -80,8 +81,9 @@
                 class="selected-item"
                 :draggable="!readonly"
                 @dragstart="onRankedDragStart($event, i)"
-                @dragover.prevent
-                @drop.stop="onRankedItemDrop(i)"
+                @dragenter.prevent
+                @dragover.prevent="onDragOver"
+                @drop.prevent.stop="onRankedItemDrop(i)"
                 @dragend="onDragEnd"
               >
                 <div class="move-btns">
@@ -95,8 +97,9 @@
               <div
                 v-else
                 class="ranking-placeholder"
-                @dragover.prevent
-                @drop.stop="onRankingSlotDrop(i)"
+                @dragenter.prevent
+                @dragover.prevent="onDragOver"
+                @drop.prevent.stop="onRankingSlotDrop(i)"
               >
                 {{ t('culturalValueAnnotation.annotationNew.dropValueHint') }}
               </div>
@@ -552,6 +555,37 @@ const getPriorityColor = (index) => {
 
 // ===== 右侧拖拽排序功能函数 =====
 
+const setDragData = (event, state, text) => {
+  const dataTransfer = event.dataTransfer;
+  if (!dataTransfer) {
+    console.error("[Annotation drag] DragEvent.dataTransfer is unavailable", {
+      perspective: props.perspective,
+      userAgent: navigator.userAgent,
+    });
+    dragState.value = null;
+    event.preventDefault();
+    return false;
+  }
+
+  try {
+    dataTransfer.effectAllowed = "move";
+    dataTransfer.setData("text/plain", String(text ?? ""));
+    dragState.value = state;
+    return true;
+  } catch (error) {
+    console.error("[Annotation drag] Failed to initialize drag data", error);
+    dragState.value = null;
+    event.preventDefault();
+    return false;
+  }
+};
+
+const onDragOver = (event) => {
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = "move";
+  }
+};
+
 /**
  * 从左侧拖拽已勾选的候选项。
  */
@@ -560,9 +594,7 @@ const onCandidateDragStart = (event, point) => {
     event.preventDefault();
     return;
   }
-  dragState.value = { source: "candidate", point };
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("text/plain", point);
+  setDragData(event, { source: "candidate", point }, point);
 };
 
 /**
@@ -574,9 +606,11 @@ const onRankedDragStart = (event, index) => {
     return;
   }
 
-  dragState.value = { source: "ranked", index };
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("text/plain", rankedPoints.value[index]);
+  setDragData(
+    event,
+    { source: "ranked", index },
+    rankedPoints.value[index],
+  );
 };
 
 /**
@@ -619,16 +653,24 @@ const placeDraggedPoint = (targetIndex) => {
   }
 };
 
+const finishDrop = (targetIndex) => {
+  try {
+    placeDraggedPoint(targetIndex);
+  } finally {
+    dragState.value = null;
+  }
+};
+
 const onRankedItemDrop = (index) => {
-  placeDraggedPoint(index);
+  finishDrop(index);
 };
 
 const onRankingSlotDrop = (index) => {
-  placeDraggedPoint(index);
+  finishDrop(index);
 };
 
 const onRankingListDrop = () => {
-  placeDraggedPoint(Math.max(rankedPoints.value.length - 1, 0));
+  finishDrop(Math.max(rankedPoints.value.length - 1, 0));
 };
 
 /**
@@ -987,6 +1029,7 @@ defineExpose({
 
           &.is-draggable {
             cursor: grab;
+            user-select: none;
 
             &:active {
               cursor: grabbing;
@@ -1041,6 +1084,7 @@ defineExpose({
           border: 1px solid #F3F4F6;
           border-radius: 8px;
           cursor: move;
+          user-select: none;
 
           &:hover {
             background-color: #ecf5ff;
