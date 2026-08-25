@@ -90,6 +90,7 @@
               popper-class="cultural-alignment-select-popper"
               :fit-input-width="true"
               :disabled="hasClickedSaveAndGetQuestionListBtn"
+              @change="handleTopicValue1Change"
               style="flex: 1"
             >
               <el-option
@@ -329,7 +330,7 @@
               style="width: 100%"
             >
               <el-option
-                v-for="item in taskOptions1"
+                v-for="item in availableTaskOptions1"
                 :key="item"
                 :label="item"
                 :value="item"
@@ -347,7 +348,7 @@
               style="width: 100%"
             >
               <el-option
-                v-for="item in taskOptions2"
+                v-for="item in availableTaskOptions2"
                 :key="item"
                 :label="`${item.category} ${t('culturalValueAnnotation.step3.availableQuestions', { count: topic_task_count?.[topicValue2]?.[item.category] ?? 0 })}`"
                 :value="item.category"
@@ -365,7 +366,7 @@
             <el-popover
               placement="right-start"
               :width="500"
-              :disabled="taskOptions2 && taskOptions2.length === 0"
+              :disabled="availableTaskOptions2.length === 0"
             >
               <template #reference>
                 <div>
@@ -395,7 +396,7 @@
                 <div>
                   <ul style="display: flex; flex-direction: column; gap: 0.2em">
                     <li
-                      v-for="item in taskOptions2"
+                      v-for="item in availableTaskOptions2"
                       :key="item"
                       :style="{
                         color:
@@ -2136,6 +2137,26 @@ watch(taskValue1, (newValue) => {
 
 const topic_task_count = ref(null);
 
+const availableTaskOptions1 = computed(() => {
+  const categoryCounts = topic_task_count.value?.[topicValue2.value] || {};
+
+  return taskOptions1.value.filter((taskLevel1) => {
+    const level2Options = taskTaxonomy.value?.[taskLevel1];
+    return Array.isArray(level2Options) && level2Options.some(
+      (item) => Number(categoryCounts[item.category] ?? 0) > 0,
+    );
+  });
+});
+
+const availableTaskOptions2 = computed(() => {
+  const categoryCounts = topic_task_count.value?.[topicValue2.value] || {};
+  const options = Array.isArray(taskOptions2.value) ? taskOptions2.value : [];
+
+  return options.filter(
+    (item) => Number(categoryCounts[item.category] ?? 0) > 0,
+  );
+});
+
 const editCurrentQuestionDetail = ref(null);
 const submitQualityReviews = async () => {
   if (!editCurrentQuestionDetail.value || isSavingQualityReviews.value) {
@@ -2294,7 +2315,7 @@ onMounted(async () => {
     topicValue1.value = question.topic_1;
     setTimeout(() => {
       topicValue2.value = question.topic_2;
-      handleTopicValue2Change(question.topic_2);
+      handleTopicValue2Change(question.topic_2, false);
     }, 100);
     // Keep all existing principles, and pad with empty strings until there are 5 items.
     const principles = Array.isArray(question.principles)
@@ -2466,7 +2487,23 @@ const handleTaskValue2DropdownVisibleChange = (visible) => {
 
 const topic_principle_examples = ref({});
 let task_taxonomy_examples = {};
-const handleTopicValue2Change = (newValue) => {
+const resetTaskSelection = () => {
+  taskValue1.value = "";
+  taskValue2.value = "";
+  taskOptions2.value = [];
+  taskExample.value = [];
+  hoveredTaskExample.value = null;
+};
+
+const handleTopicValue1Change = () => {
+  resetTaskSelection();
+};
+
+const handleTopicValue2Change = (newValue, shouldResetTasks = true) => {
+  if (shouldResetTasks) {
+    resetTaskSelection();
+  }
+
   if (newValue) {
     const nextExamples = topic_principle_examples.value?.[newValue];
     principleExample.value = Array.isArray(nextExamples) ? nextExamples : [];

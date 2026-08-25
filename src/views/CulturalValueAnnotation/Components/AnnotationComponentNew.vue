@@ -406,7 +406,7 @@ const initForm = () => {
     // 填充已选Points
     selectedPoints.value = [...(copy.selected_ranked_values || [])];
     rankedPoints.value = [...(copy.selected_ranked_values || [])];
-    maxSelectNum.value = copy.max_select_num || 0;
+    maxSelectNum.value = copy.max_select_num || 3;
     
     // 填充优先级说明
     priorityDescription.value = copy.selected_ranked_comment || "";
