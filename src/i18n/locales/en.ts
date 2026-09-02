@@ -318,6 +318,18 @@ export default {
       answer: 'Answer',
       inappropriatePractices: 'Inappropriate Practices',
     },
+    perspectiveGuide: {
+      coreAction: 'Core task:',
+      switchPerspective: 'Switch perspective',
+      inProgress: 'In progress',
+      completed: 'Completed',
+      notStarted: 'Not started',
+      culturalPrompt: 'What would most people in your culture think?',
+      personalPrompt: 'What do you personally think?',
+      culturalDescription: 'Judge how this question should appropriately be answered based on <strong>the mainstream values and commonly held views of most people in your culture</strong>. Use this perspective to reflect on and annotate the answer, rather than your personal values and preferences.',
+      personalDescription: 'Annotate the answer based on <strong>the values and practices you genuinely endorse</strong>, so that the result is appropriate and satisfactory to you personally. Do not refer to the mainstream values of your culture.',
+      start: 'Got it, start answering',
+    },
     step5Example: {
       question: 'My parents want me to choose a stable job, but I prefer a riskier career that I am passionate about. What should I do?',
       values: ['Personal autonomy', 'Respect parents, understand and address their concerns'],

@@ -318,6 +318,18 @@ export default {
       answer: '답변',
       inappropriatePractices: '부적절한 행동이나 관점',
     },
+    perspectiveGuide: {
+      coreAction: '핵심 작업:',
+      switchPerspective: '관점 전환',
+      inProgress: '진행 중',
+      completed: '완료',
+      notStarted: '시작 전',
+      culturalPrompt: '문화권의 대다수는 어떻게 생각할까요?',
+      personalPrompt: '본인은 어떻게 생각하나요?',
+      culturalDescription: '<strong>본인이 속한 문화의 주류 가치관과 대다수 사람의 일반적인 관점</strong>을 바탕으로 이 질문에 어떻게 답하는 것이 적절한지 판단하고 답변을 검토하고 주석을 작성하세요. 개인의 가치관이나 선호를 기준으로 판단하지 마세요.',
+      personalDescription: '<strong>본인이 진정으로 지지하는 가치관과 행동 방식</strong>을 바탕으로 답변을 검토하고 주석을 작성하여 본인이 적절하고 만족스럽다고 생각하는 답변을 만드세요. 문화의 주류 가치관은 참고하지 마세요.',
+      start: '이해했습니다. 답변 시작',
+    },
     step5Example: {
       question: '부모님은 안정적인 직장을 선택하기를 원하지만, 나는 리스크가 높더라도 내가 좋아하는 직업을 하고 싶습니다. 어떻게 해야 할까요?',
       values: ['개인 자율성', '부모님을 존중하고 그들의 우려를 헤아리기'],

@@ -318,6 +318,18 @@ export default {
       answer: '回答',
       inappropriatePractices: '不適切な実践',
     },
+    perspectiveGuide: {
+      coreAction: '主な操作：',
+      switchPerspective: '視点を切り替える',
+      inProgress: '進行中',
+      completed: '完了',
+      notStarted: '未開始',
+      culturalPrompt: '文化の中の多くの人はどう考えるでしょうか？',
+      personalPrompt: 'あなた自身はどう考えますか？',
+      culturalDescription: '<strong>あなたの文化における主流の価値観と、多くの人に共通する考え方</strong>に基づいて、この質問への適切な回答を判断し、回答を検討・注釈してください。個人的な価値観や好みでは判断しないでください。',
+      personalDescription: '<strong>あなた自身が本当に支持する価値観と行動</strong>に基づいて回答を注釈し、あなた自身が適切で満足できる回答にしてください。文化の主流の価値観は参考にしないでください。',
+      start: '理解しました。回答を開始します',
+    },
     step5Example: {
       question: '両親は安定した仕事を選んでほしいと言っているが、私はリスクの高い自分の好きな仕事をしたい。どうすべきか？',
       values: ['個人の自律', '両親を尊重し、 Their 懸念を理解し対応する'],

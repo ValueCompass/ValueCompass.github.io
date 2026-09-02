@@ -839,13 +839,29 @@
       </div>
 
       <!-- 根据本地保存的视角顺序参数，动态排列文化视角和个人视角模块。 -->
-      <div class="step step5" :style="{ order: getPerspectiveStep(CULTURAL_PERSPECTIVE) }">
+      <div
+        class="step step5"
+        :class="{ 'is-purple-step': getPerspectiveStep(CULTURAL_PERSPECTIVE) === 6 }"
+        :style="{ order: getPerspectiveStep(CULTURAL_PERSPECTIVE) }"
+      >
         <div class="step-content">
-        <div class="intro-container">
+        <div class="intro-container perspective-step-title">
           <div class="step-title-row">
             <h4>{{ t("culturalValueAnnotation.step5.homeTitle", { step: getPerspectiveStep(CULTURAL_PERSPECTIVE) }) }}</h4>
           </div>
-          
+        </div>
+        <PerspectiveStartGuide
+          v-if="shouldShowPerspectiveGuide(CULTURAL_PERSPECTIVE)"
+          :perspective="CULTURAL_PERSPECTIVE"
+          :previous-perspective="getPreviousPerspective(CULTURAL_PERSPECTIVE)"
+          :previous-completed="isPreviousPerspectiveStarted(CULTURAL_PERSPECTIVE)"
+          :can-start="canStartPerspective(CULTURAL_PERSPECTIVE)"
+          :step="getPerspectiveStep(CULTURAL_PERSPECTIVE)"
+          :description="getPerspectiveGuideDescription(CULTURAL_PERSPECTIVE)"
+          @start="handlePerspectiveStart(CULTURAL_PERSPECTIVE)"
+        />
+        <template v-else>
+        <div class="intro-container">
           <div class="core-action-box flex-column">
             <h5>
               {{ t("culturalValueAnnotation.step5.homeCoreAction") }}
@@ -858,7 +874,11 @@
        
 
           <div class=""  style="font-size: 1rem;margin-top: 1em; border: 1px solid #DBEAFE">
-            <div class="question-show-container" v-if="questionValue">
+            <div
+              class="question-show-container"
+              :class="{ 'question-show-container-purple': getPerspectiveStep(CULTURAL_PERSPECTIVE) === 6 }"
+              v-if="questionValue"
+            >
               <div class="show_question_container" v-if="questionValue">
                 <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
                 <div class="question_box" style="flex: 1">
@@ -888,6 +908,7 @@
             ></AnnotationComponentNew>
           </div>
         </div>
+        </template>
         </div>
         <QualityReviewControl
           v-if="submit_type === 'revise'"
@@ -903,12 +924,29 @@
         ></div>
       </div>
 
-      <div class="step step6" :style="{ order: getPerspectiveStep(PERSONAL_PERSPECTIVE) }">
+      <div
+        class="step step6"
+        :class="{ 'is-purple-step': getPerspectiveStep(PERSONAL_PERSPECTIVE) === 6 }"
+        :style="{ order: getPerspectiveStep(PERSONAL_PERSPECTIVE) }"
+      >
         <div class="step-content">
-        <div class="intro-container">
+        <div class="intro-container perspective-step-title">
           <div class="step-title-row">
-            <h4 style="color: #780096" v-html="t('culturalValueAnnotation.step6.homeTitle', { step: getPerspectiveStep(PERSONAL_PERSPECTIVE) })"></h4>
+            <h4 v-html="t('culturalValueAnnotation.step6.homeTitle', { step: getPerspectiveStep(PERSONAL_PERSPECTIVE) })"></h4>
           </div>
+        </div>
+        <PerspectiveStartGuide
+          v-if="shouldShowPerspectiveGuide(PERSONAL_PERSPECTIVE)"
+          :perspective="PERSONAL_PERSPECTIVE"
+          :previous-perspective="getPreviousPerspective(PERSONAL_PERSPECTIVE)"
+          :previous-completed="isPreviousPerspectiveStarted(PERSONAL_PERSPECTIVE)"
+          :can-start="canStartPerspective(PERSONAL_PERSPECTIVE)"
+          :step="getPerspectiveStep(PERSONAL_PERSPECTIVE)"
+          :description="getPerspectiveGuideDescription(PERSONAL_PERSPECTIVE)"
+          @start="handlePerspectiveStart(PERSONAL_PERSPECTIVE)"
+        />
+        <template v-else>
+        <div class="intro-container">
           <div class="core-action-box">
             <h5>
               {{ t("culturalValueAnnotation.step6.homeCoreAction") }}
@@ -932,7 +970,11 @@
         </div>
 
         <div style="font-size: 1rem;">
-          <div class="question-show-container question-show-container-person" v-if="questionValue">
+          <div
+            class="question-show-container"
+            :class="{ 'question-show-container-purple': getPerspectiveStep(PERSONAL_PERSPECTIVE) === 6 }"
+            v-if="questionValue"
+          >
           <div class="show_question_container" v-if="questionValue">
             <span>{{ t("culturalValueAnnotation.step4.question") }} </span>
             <div class="question_box">
@@ -951,6 +993,7 @@
             ref="annotationComponentRef2"
           ></AnnotationComponentNew>
         </div>
+        </template>
         </div>
         <div v-if="submit_type === 'revise'" class="quality-review-column">
           <QualityReviewControl
@@ -986,7 +1029,8 @@
         :disabled="
           isLoadingSubmitHighlightAndConcepts ||
           !hasClickedSaveAndGetQuestionListBtn ||
-          !hasClickedGetAnswerBtn
+          !hasClickedGetAnswerBtn ||
+          !haveAllPerspectiveGuidesStarted
         "
         :loading="isLoadingSubmitHighlightAndConcepts"
         @click="submitHighlightAndConcepts"
@@ -1032,6 +1076,7 @@ import UserDetail from "./UserDetail.vue";
 import AnnotationComponentNew from "./Components/AnnotationComponentNew.vue";
 import SimilarityDialog from "./Components/SimilarityDialog.vue";
 import ExampleCard from "./Components/ExampleCard.vue";
+import PerspectiveStartGuide from "./Components/PerspectiveStartGuide.vue";
 import QualityReviewControl from "./Components/QualityReviewControl.vue";
 import { isHighlySimilar } from "@/utils/CulturalAnnotationUtil";
 import { getCulturalValueAnnotationAdminDetail } from "@/utils/culturalValueAnnotationAuth";
@@ -1086,6 +1131,47 @@ const perspectiveOrder = ref(
 const getPerspectiveStep = (perspective) => {
   return 5 + perspectiveOrder.value.indexOf(perspective);
 };
+const perspectiveStarted = reactive({
+  [CULTURAL_PERSPECTIVE]: false,
+  [PERSONAL_PERSPECTIVE]: false,
+});
+// 编辑已有内容时无需重复引导；一旦重新选择问题，则按新问题重新走视角引导。
+const perspectiveGuidesRequired = ref(!route.params.id);
+const shouldShowPerspectiveGuide = (perspective) =>
+  perspectiveGuidesRequired.value &&
+  !isAdminView.value &&
+  !perspectiveStarted[perspective];
+const getPreviousPerspective = (perspective) => {
+  const index = perspectiveOrder.value.indexOf(perspective);
+  return index > 0 ? perspectiveOrder.value[index - 1] : "";
+};
+const isPreviousPerspectiveStarted = (perspective) => {
+  const previousPerspective = getPreviousPerspective(perspective);
+  return !previousPerspective || perspectiveStarted[previousPerspective];
+};
+const canStartPerspective = (perspective) =>
+  hasClickedGetAnswerBtn.value && isPreviousPerspectiveStarted(perspective);
+const handlePerspectiveStart = (perspective) => {
+  if (!canStartPerspective(perspective)) {
+    return;
+  }
+  perspectiveStarted[perspective] = true;
+};
+const getPerspectiveGuideDescription = (perspective) => {
+  return t(
+    perspective === CULTURAL_PERSPECTIVE
+      ? "culturalValueAnnotation.perspectiveGuide.culturalDescription"
+      : "culturalValueAnnotation.perspectiveGuide.personalDescription",
+  );
+};
+const haveAllPerspectiveGuidesStarted = computed(
+  () =>
+    !perspectiveGuidesRequired.value ||
+    isAdminView.value ||
+    perspectiveOrder.value.every(
+      (perspective) => perspectiveStarted[perspective],
+    ),
+);
 const getPerspectiveReviewKey = (perspective) =>
   perspective === CULTURAL_PERSPECTIVE
     ? "cultural_perspective_review"
@@ -1199,7 +1285,8 @@ const distinctivenessScoreOptions = computed(() => [
 ]);
 
 const use_new_logic = ref(true);
-const submit_type = ref("create new"); // "create new" or "revise"
+// 根据路由同步识别编辑模式，避免等待初始化接口时短暂显示新建标注引导。
+const submit_type = ref(route.params.id ? "revise" : "create new");
 const duration_time = ref(0);
 const candidateQuestionsReceivedAt = ref(null);
 const pageEnteredAt = ref(null);
@@ -1616,6 +1703,11 @@ let annotationDataOrigin_person = reactive({
 
 const resetGetAnswerState = () => {
   hasClickedGetAnswerBtn.value = false;
+  if (!isAdminView.value) {
+    perspectiveGuidesRequired.value = true;
+  }
+  perspectiveStarted[CULTURAL_PERSPECTIVE] = false;
+  perspectiveStarted[PERSONAL_PERSPECTIVE] = false;
   questionErrorTip.value = "";
   answer_model.value = "";
   original_answer_country.value = "";
@@ -1773,6 +1865,8 @@ const handleGetAnswerBtnClick = async () => {
       console.log(res);
       if (res.data) {
         // ElMessage.success("提交成功");
+        perspectiveStarted[CULTURAL_PERSPECTIVE] = false;
+        perspectiveStarted[PERSONAL_PERSPECTIVE] = false;
         annotationDataOrigin = {
           value_list: res.data.value_list,
           max_select_num: res.data.max_select_num
@@ -1892,6 +1986,10 @@ const validateReviewCommentsBeforeSubmit = () => {
 };
 
 const submitHighlightAndConcepts = () => {
+  if (!haveAllPerspectiveGuidesStarted.value) {
+    return;
+  }
+
   if (!validateReviewCommentsBeforeSubmit()) {
     return;
   }
@@ -1901,7 +1999,7 @@ const submitHighlightAndConcepts = () => {
     return;
   }
 
-  if (!annotationComponentRef.value) {
+  if (!annotationComponentRef.value || !annotationComponentRef2.value) {
     ElMessage.error(t("common.pleaseCompleteAnnotation"));
     return;
   }
@@ -1923,8 +2021,11 @@ const submitHighlightAndConcepts = () => {
     };
     for (const perspective of perspectiveOrder.value) {
       const component = annotationComponents[perspective];
-      if (component && !component.validate()) {
+      if (!component || !component.validate()) {
         isLoadingSubmitHighlightAndConcepts.value = false;
+        if (!component) {
+          ElMessage.error(t("common.pleaseCompleteAnnotation"));
+        }
         return;
       }
     }
@@ -2258,7 +2359,7 @@ onMounted(async () => {
 
   pageEnteredAt.value = Date.now();
 
-  submit_type.value = "create new";
+  submit_type.value = route.params.id ? "revise" : "create new";
   console.log("onMounted");
   console.log(route.params.id);
   // getQuestionNum();
@@ -2666,6 +2767,11 @@ const getQuestionNum = () => {
             list-style: lower-alpha;
           }
         }
+      }
+    }
+    &.is-purple-step {
+      .intro-container h4 {
+        color: #780096;
       }
     }
     .question-error-tip{
@@ -3197,7 +3303,7 @@ const getQuestionNum = () => {
     background: #EFF6FF; 
     padding: 1.5em 3em; 
     border-radius: 12px;
-    &.question-show-container-person{
+    &.question-show-container-purple{
       background: #F3E8FF;
       border: 1px solid #988AC1;
     }

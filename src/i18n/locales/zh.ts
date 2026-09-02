@@ -318,6 +318,18 @@ export default {
       answer: '回答',
       inappropriatePractices: '不合适的做法',
     },
+    perspectiveGuide: {
+      coreAction: '核心操作：',
+      switchPerspective: '切换视角',
+      inProgress: '当前进行中',
+      completed: '已完成',
+      notStarted: '未开始',
+      culturalPrompt: '大多数人通常会怎么想？',
+      personalPrompt: '你个人是怎么想的？',
+      culturalDescription: '请基于你所在<strong>文化的主流价值观和大多数人的普遍观点</strong>来判断如何回答这个问题是合适的，以此来思考并标注回答，而不是你个人的价值观和偏好。',
+      personalDescription: '请基于<strong>你自己真正认可的价值观和做法</strong>来标注回答，得到你个人认为合适和满意的回答，不要参考你文化的主流价值观。',
+      start: '我了解了，开始作答',
+    },
     step5Example: {
       question: '父母希望我选择一份稳定的工作，但更想从事风险较高、自己喜欢的职业。我应该怎么办？',
       values: ['个人自主', '尊重父母，理解和回应父母的担忧'],

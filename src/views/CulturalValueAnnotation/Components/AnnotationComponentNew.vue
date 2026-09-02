@@ -2,7 +2,7 @@
   <div
     class="annotation-container"
     :class="{
-      'question-show-container-person': !isCulturalPerspective,
+      'is-purple-step': isPurpleStep,
       'is-readonly': readonly,
     }"
   >
@@ -293,6 +293,7 @@ const props = defineProps({
 const isCulturalPerspective = computed(() => {
   return props.perspective === "culturalPerspective";
 });
+const isPurpleStep = computed(() => props.step === 6);
 
 
 // ===== 数据定义 =====
@@ -1193,7 +1194,7 @@ defineExpose({
     }
   }
 
-  &.question-show-container-person{
+  &.is-purple-step{
     .step-section .step-title .title-text{
       color: #780096;
     }
