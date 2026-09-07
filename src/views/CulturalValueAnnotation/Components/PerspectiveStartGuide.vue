@@ -198,11 +198,10 @@ const PerspectiveCard = defineComponent({
 
 :deep(.perspective-card) {
   display: flex;
-  flex: 0 0 16rem;
+  flex: 0 1 auto;
   flex-direction: column;
   align-items: center;
-  width: 16rem;
-  height: 11rem;
+  min-width: 16rem;
   padding: 1.25rem 1rem 0.875rem;
   border: 2px solid #38bdf8;
   border-radius: 12px;
@@ -241,7 +240,6 @@ const PerspectiveCard = defineComponent({
   .perspective-card__prompt {
     color: #374151;
     font-size: 0.875rem;
-    font-weight: 600;
     line-height: 1.4;
   }
 
@@ -317,11 +315,6 @@ const PerspectiveCard = defineComponent({
   .perspective-guide__arrow {
     align-self: center;
     transform: rotate(90deg);
-  }
-
-  :deep(.perspective-card) {
-    flex-basis: auto;
-    width: 100%;
   }
 }
 </style>
