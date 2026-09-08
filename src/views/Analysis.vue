@@ -123,9 +123,8 @@
           </div>
           <div style="width: 9em">
             <el-button
-              style="font-size: 0.875em"
+              style="font-size: 0.875em; color: #268DD4"
               plain
-              color="#004f8f"
               @click="downloadAll"
               :disabled="downloadDisabled"
               :loading="downloadDisabled"

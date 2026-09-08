@@ -46,6 +46,8 @@ let chartInstance = null;
 
 let maxValue = 0;
 let minValue = 100;
+const selectedLabelColor = "#0B70C3";
+const defaultLabelColor = "black";
 
 const setRadarChart = (data, typeNum) => {
   const values = Object.values(data);
@@ -61,7 +63,9 @@ const setRadarChart = (data, typeNum) => {
     return {
       name: item + " (" + data[item].toFixed(2) + ")",
       color:
-        props.hasHightlight && index == 0 ? "#0B70C3" : "black",
+        props.hasHightlight && index == 0
+          ? selectedLabelColor
+          : defaultLabelColor,
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
       max: maxValue,
@@ -119,7 +123,7 @@ const setRadarHighlight = (data, item) => {
   const indicator = Object.keys(data).map((indica, index) => {
     return {
       name: indica + " (" + data[indica].toFixed(2) + ")",
-      color: item == indica ? "#0B70C3" : "black",
+      color: item == indica ? selectedLabelColor : defaultLabelColor,
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
       max: maxValue,
@@ -172,7 +176,7 @@ onMounted(async () => {
       },
       triggerEvent: true,
       indicator: [
-        { name: "Benevolence", max: 1, color: "#0B70C3" },
+        { name: "Benevolence", max: 1, color: selectedLabelColor },
         { name: "Achievement", max: 1, axisLabel: { show: false } },
         { name: "Universalism", max: 1, axisLabel: { show: false } },
         { name: "Tradition", max: 1, axisLabel: { show: false } },
@@ -215,53 +219,15 @@ onMounted(async () => {
   // });
   chartInstance.on("click", function (params) {
     if (params.componentType === "radar" && params.targetType == "axisName") {
-      // 修改雷达图的颜色
       const radar = chartInstance.getOption().radar[0];
+      const selectedName = params.name.replace(/[\r\n]/g, "");
       const indicator = radar.indicator.map((item) => {
-        params.name = params.name.replace(/[\r\n]/g, "");
-        if (item.name != params.name && item.color == "#0B70C3") {
-          delete item.color;
-        }
-        if (
-          item.name == params.name &&
-          item.color !== " #0B70C3"
-        ) {
-          item.color = " #0B70C3";
-          let name = item.name;
-          name = name.split(" (")[0];
-          emit("setCurrentCaseData", name);
-        }
+        item.color = item.name === selectedName
+          ? selectedLabelColor
+          : defaultLabelColor;
         return item;
       });
-      chartInstance.setOption({
-        radar: {
-          splitArea: {
-            areaStyle: {
-              color: ["rgba(0,0,0,0.05)", "rgba(0,0,0,0.03)"],
-            },
-          },
-          axisName: {
-            fontSize: nameFontSize,
-            color: "black",
-          },
-          triggerEvent: true,
-          indicator: indicator,
-        },
-      });
-    }
-  });
-  chartInstance.on("mouseout", function (params) {
-    if (params.componentType === "radar" && params.targetType == "axisName") {
-      const radar = chartInstance.getOption().radar[0];
-      const indicator = radar.indicator.map((item) => {
-        if (
-          item.name == params.name &&
-          item.color !== " #0B70C3"
-        ) {
-          delete item.color;
-        }
-        return item;
-      });
+      emit("setCurrentCaseData", selectedName.split(" (")[0]);
       chartInstance.setOption({
         radar: {
           splitArea: {

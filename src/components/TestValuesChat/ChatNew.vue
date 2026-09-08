@@ -1,14 +1,14 @@
 <template>
   <div class="chat-template">
     <div class="chat-container main-container">
-      <div class="left-emotion-img">
+      <div class="left-emotion-img" aria-hidden="true">
         <img
           :src="
             getAssetsFile(
               'TestYourValues/robi/' + emotionObj[currEmotionStatus]
             )
           "
-          alt="Robi"
+          alt=""
           class="robi-avatar"
         />
       </div>

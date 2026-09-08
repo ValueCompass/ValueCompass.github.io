@@ -1,12 +1,13 @@
 <template>
   <div class="chat-template">
     <div class="chat-container main-container">
-      <div class="left-emotion-img">
+      <div class="left-emotion-img" aria-hidden="true">
         <video
           :key="avatarKey"
           ref="avatarVideoRef"
           :src="getRobiWebmFile(currAvatarName)"
           class="robi-avatar"
+          tabindex="-1"
           autoplay
           muted
           playsinline

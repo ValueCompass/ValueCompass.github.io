@@ -7,7 +7,21 @@
             class="chart"
             ref="chartDom"
             style="width: 1200px; height: 600px; margin: 0 auto"
+            tabindex="0"
+            role="img"
+            aria-label="Culture heatmap. Use the arrow keys to explore values by model and country."
+            aria-describedby="heatmap-keyboard-help heatmap-live-status"
+            @focus="handleChartFocus"
+            @blur="handleChartBlur"
+            @keydown="handleChartKeydown"
           ></div>
+          <p id="heatmap-keyboard-help" class="sr-only">
+            Use Left and Right Arrow keys to move between countries. Use Up and
+            Down Arrow keys to move between models.
+          </p>
+          <p id="heatmap-live-status" class="sr-only" aria-live="polite">
+            {{ activeCellAnnouncement }}
+          </p>
           <p style="text-align: center; color: #747474;;">The heatmap illustrates the Pearson correlation between the values of various models and countries.</p>
         </div>
       </div>
@@ -33,6 +47,76 @@ let chartInstance = null;
 const allHeatMapData = ref();
 const allHeatMapDataObject = ref();
 let countries = [];
+let heatmapData = [];
+let heatmapModels = [];
+const activeCellIndex = ref(0);
+const activeCellAnnouncement = ref("");
+
+const announceActiveCell = () => {
+  const cell = heatmapData[activeCellIndex.value];
+  if (!cell) {
+    activeCellAnnouncement.value = "No heatmap data available.";
+    return;
+  }
+
+  const [countryIndex, modelIndex, value] = cell;
+  activeCellAnnouncement.value = `${heatmapModels[modelIndex]}, ${countries[countryIndex]}: ${value}`;
+  chartInstance.dispatchAction({
+    type: "downplay",
+    seriesIndex: 0,
+  });
+  chartInstance.dispatchAction({
+    type: "highlight",
+    seriesIndex: 0,
+    dataIndex: activeCellIndex.value,
+  });
+  chartInstance.dispatchAction({
+    type: "showTip",
+    seriesIndex: 0,
+    dataIndex: activeCellIndex.value,
+  });
+};
+
+const handleChartFocus = () => {
+  announceActiveCell();
+};
+
+const handleChartBlur = () => {
+  chartInstance?.dispatchAction({ type: "downplay", seriesIndex: 0 });
+  chartInstance?.dispatchAction({ type: "hideTip" });
+};
+
+const handleChartKeydown = (event) => {
+  if (!heatmapData.length || !countries.length) {
+    return;
+  }
+
+  const [countryIndex, modelIndex] = heatmapData[activeCellIndex.value];
+  let nextCountryIndex = countryIndex;
+  let nextModelIndex = modelIndex;
+  if (event.key === "ArrowRight") {
+    nextCountryIndex = Math.min(countryIndex + 1, countries.length - 1);
+  } else if (event.key === "ArrowLeft") {
+    nextCountryIndex = Math.max(countryIndex - 1, 0);
+  } else if (event.key === "ArrowDown") {
+    nextModelIndex = Math.max(modelIndex - 1, 0);
+  } else if (event.key === "ArrowUp") {
+    nextModelIndex = Math.min(modelIndex + 1, heatmapModels.length - 1);
+  } else {
+    return;
+  }
+
+  event.preventDefault();
+  const nextIndex = heatmapData.findIndex(
+    ([cellCountryIndex, cellModelIndex]) =>
+      cellCountryIndex === nextCountryIndex &&
+      cellModelIndex === nextModelIndex,
+  );
+  if (nextIndex !== -1) {
+    activeCellIndex.value = nextIndex;
+  }
+  announceActiveCell();
+};
 
 const getAllHeatMapData = async () => {
   return axios.get("./data/value_sim_heatmap.json").then((value_space_data) => {
@@ -88,6 +172,10 @@ const setHotChart = (modelNameList) => {
   const data = hotData.map(function (item) {
     return [item[1], item[0], (item[2] * 100).toFixed(3) || "-"];
   });
+  heatmapData = data;
+  heatmapModels = modelNames;
+  activeCellIndex.value = 0;
+  activeCellAnnouncement.value = "";
   // console.log(hotData, "hotData", data);
 
   chartInstance.setOption({
@@ -239,4 +327,20 @@ onMounted(async () => {
 });
 </script>
 <style>
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.chart:focus-visible {
+  outline: 3px solid #0870c3;
+  outline-offset: 3px;
+}
 </style>

@@ -179,7 +179,12 @@
         ></DimensionMeasurementTabs> -->
 
         <!-- table -->
-        <div class="table-box download-box" :class="{ show: currentTab == 0 }">
+        <div
+          class="table-box download-box"
+          :class="{ show: currentTab == 0 }"
+          :inert="currentTab != 0"
+          :aria-hidden="currentTab != 0"
+        >
           <!-- <TableComponent ref="TableComponentRef"></TableComponent> -->
           <div
             class="download-box"
@@ -354,7 +359,12 @@
           <!-- <h4>LLMs' Unique Value System</h4> -->
         </div>
         <!-- echart -->
-        <div class="download-box" :class="{ show: currentTab == 1 }">
+        <div
+          class="download-box"
+          :class="{ show: currentTab == 1 }"
+          :inert="currentTab != 1"
+          :aria-hidden="currentTab != 1"
+        >
           <VisualizationComponent
             ref="VisualizationComponentProps"
             :DimensionMeasurementTabIndex="DimensionMeasurementTabIndex"
@@ -362,13 +372,23 @@
         </div>
 
         <!-- Value Space -->
-        <div class="download-box" :class="{ show: currentTab == 3 }">
+        <div
+          class="download-box"
+          :class="{ show: currentTab == 3 }"
+          :inert="currentTab != 3"
+          :aria-hidden="currentTab != 3"
+        >
           <ValueSpaceComponent
             ref="ValueSpaceComponentProps"
           ></ValueSpaceComponent>
         </div>
         <!-- Cultural Alignment -->
-        <div class="download-box" :class="{ show: currentTab == 2 }">
+        <div
+          class="download-box"
+          :class="{ show: currentTab == 2 }"
+          :inert="currentTab != 2"
+          :aria-hidden="currentTab != 2"
+        >
           <CulturalAlignmentComponent
             ref="CulturalAlignmentComponentProps"
           ></CulturalAlignmentComponent>
