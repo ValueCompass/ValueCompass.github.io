@@ -51,6 +51,40 @@ let heatmapData = [];
 let heatmapModels = [];
 const activeCellIndex = ref(0);
 const activeCellAnnouncement = ref("");
+const heatmapColors = ["#096DD9", "#91D5FF", "#eeeeee", "#FFA39E", "#CF1322"];
+
+const hexToRgb = (hex) => [
+  parseInt(hex.slice(1, 3), 16),
+  parseInt(hex.slice(3, 5), 16),
+  parseInt(hex.slice(5, 7), 16),
+];
+
+const getHeatmapColor = (value) => {
+  const normalizedValue = Math.min(100, Math.max(0, Number(value))) / 100;
+  const scaledValue = normalizedValue * (heatmapColors.length - 1);
+  const startIndex = Math.min(Math.floor(scaledValue), heatmapColors.length - 2);
+  const ratio = scaledValue - startIndex;
+  const startColor = hexToRgb(heatmapColors[startIndex]);
+  const endColor = hexToRgb(heatmapColors[startIndex + 1]);
+
+  return startColor.map((channel, index) =>
+    Math.round(channel + (endColor[index] - channel) * ratio),
+  );
+};
+
+const getRelativeLuminance = (rgb) => {
+  const channels = rgb.map((channel) => {
+    const value = channel / 255;
+    return value <= 0.04045
+      ? value / 12.92
+      : Math.pow((value + 0.055) / 1.055, 2.4);
+  });
+
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+};
+
+const getHeatmapLabelStyle = (value) =>
+  getRelativeLuminance(getHeatmapColor(value)) > 0.179 ? "dark" : "light";
 
 const announceActiveCell = () => {
   const cell = heatmapData[activeCellIndex.value];
@@ -205,6 +239,20 @@ const setHotChart = (modelNameList) => {
           show: true,
           fontSize: 16,
           fontWeight: "bold",
+          formatter: (params) =>
+            `{${getHeatmapLabelStyle(params.value[2])}|${params.value[2]}}`,
+          rich: {
+            dark: {
+              color: "#000",
+              fontSize: 16,
+              fontWeight: "bold",
+            },
+            light: {
+              color: "#fff",
+              fontSize: 16,
+              fontWeight: "bold",
+            },
+          },
         },
         emphasis: {
           itemStyle: {
@@ -295,7 +343,7 @@ onMounted(async () => {
       bottom: "10%",
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
-      color: ["#CF1322", "#FFA39E","#eeeeee","#91D5FF","#096DD9"],
+      color: [...heatmapColors].reverse(),
       textStyle: { color: "#000" },
     },
 

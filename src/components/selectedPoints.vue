@@ -647,8 +647,8 @@ defineExpose({
       }
     }
     .select-all-btn {
-      color: #268DD4;
-      border-color: #268DD4;
+      color: #2077b4;
+      border-color: #2077b4;
     }
     .apply-btn {
       background: var(--theme-color);
