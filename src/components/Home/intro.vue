@@ -54,18 +54,18 @@
           </div>
         </div>
       </div>
-      <div class="img-div">
+      <div class="img-div" aria-hidden="true">
         <!-- <img src="@/assets/images/test-love.png" alt="test" /> -->
         <div class="home-animate-img">
           <img
             class="img img1"
             src="@/assets/images/testValues/home_2@2x.png"
-            alt="decorative"
+            alt=""
           />
           <img
             class="img img2"
             src="@/assets/images/testValues/home_4@2x.png"
-            alt="decorative"
+            alt=""
           />
         </div>
       </div>
