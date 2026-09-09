@@ -2,11 +2,12 @@
   <div class="home">
     <div>
       <div class="token">
+        <label for="login-password">Password：</label>
         <input
+          id="login-password"
           type="password"
           @keydown.enter="login"
           placeholder="Please enter password"
-          aria-label="Password"
           v-model.trim="token"
         />
       </div>
@@ -63,6 +64,13 @@ export default {
   }
   .token {
     margin-bottom: 1.25rem;
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+    }
   }
   input,
   button {
