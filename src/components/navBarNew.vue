@@ -400,4 +400,16 @@ const copyText = (text: string) => {
     border: 0;
   }
 }
+
+@media (forced-colors: active) {
+  .header-component .icon-li a {
+    color: LinkText !important;
+    forced-color-adjust: auto;
+  }
+
+  .header-component .icon-li a:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 3px;
+  }
+}
 </style>
