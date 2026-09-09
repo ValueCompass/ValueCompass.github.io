@@ -8,9 +8,9 @@
     >
       Read report
     </a>
-    <h1 class="h1">
+    <h2 class="h1">
       Insights about LLMs Values from the Value Compass Benchmarks
-    </h1>
+    </h2>
     <div v-for="(section, i) in InsightsData" :key="i">
       <h2>{{ section.h2 }}</h2>
       <template v-if="section.list">
