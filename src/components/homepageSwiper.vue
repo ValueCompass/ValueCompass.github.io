@@ -294,6 +294,30 @@ defineExpose({
   }
 }
 
+@media (forced-colors: active) {
+  .swiper-slide .swiper-main .img-div {
+    background: #fff;
+    forced-color-adjust: none;
+  }
+
+  :deep(.swiper .swiper-pagination-bullet) {
+    box-sizing: border-box;
+    background: Canvas;
+    border: 2px solid CanvasText;
+    opacity: 1;
+  }
+
+  :deep(.swiper .swiper-pagination-bullet-active) {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  :deep(.swiper .swiper-pagination-bullet:focus-visible) {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
 :deep(.highlight i) {
   color: rgba(0, 79, 143, 1);
   font-weight: 500;
