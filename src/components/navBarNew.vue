@@ -96,10 +96,15 @@
           <router-link to="/AboutUs">About Us</router-link>
         </li>
         <li class="icon-li">
-          <a href="mailto:valuecompass@microsoft.com" aria-label="Email" @click="copyEmail('valuecompass@microsoft.com')">
+          <a
+            href="mailto:valuecompass@microsoft.com"
+            aria-label="Email"
+            @click="copyEmail('valuecompass@microsoft.com')"
+          >
             <SvgIcon
               class="SvgIcon email-icon"
               name="email-icon"
+              aria-hidden="true"
             ></SvgIcon>
           </a>
         </li>
@@ -112,11 +117,14 @@
           ></a>
         </li>
       </ul>
+      <p class="sr-only" aria-live="polite" aria-atomic="true">
+        {{ emailCopyStatus }}
+      </p>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { getGeoStatus } from "../service/api";
 
@@ -124,6 +132,7 @@ const showTestYourValues = ref(false);
 const isResearchMenuOpen = ref(false);
 const researchMenuRef = ref<HTMLElement | null>(null);
 const researchTriggerRef = ref<HTMLElement | null>(null);
+const emailCopyStatus = ref("");
 
 onMounted(async () => {
   try {
@@ -206,11 +215,25 @@ const handleResearchKeydown = (event: KeyboardEvent) => {
     researchTriggerRef.value?.focus();
   }
 };
-const copyEmail = (text: string) => {
-  copyText(text);
-  // ElMessage.success('"mailto: valuecompass@microsoft.com" copied to your clipboard')
+const copyEmail = async (text: string) => {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else if (!copyText(text)) {
+      throw new Error("Clipboard copy failed");
+    }
+  } catch {
+    if (!copyText(text)) {
+      ElMessage.error("Unable to copy email");
+      return;
+    }
+  }
+
+  emailCopyStatus.value = "";
+  await nextTick();
+  emailCopyStatus.value = "Copied email";
   ElMessage({
-    message: `"mailto: ${text}" copied to your clipboard`,
+    message: "Copied email",
     type: "success",
     plain: true,
   });
@@ -364,6 +387,17 @@ const copyText = (text: string) => {
     padding-right: 1.3em;
     background: url(@/assets/images/goHomepageIcon.png) no-repeat right 0.1em;
     background-size: 1.2em;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 }
 </style>
