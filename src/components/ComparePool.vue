@@ -3,12 +3,19 @@
   <div class="title-content">
     <h2>
       Compare Pool ({{ props.compareArr.length }})
-      <SvgIcon
+      <button
+        type="button"
+        class="compare-toggle-button"
+        :aria-expanded="showDetail"
+        :aria-label="`${showDetail ? 'Collapse' : 'Expand'} compare pool`"
         @click="hideComparePool"
-        class="compare-hide-icon"
-        name="compare-hide-icon"
-        :style="{ transform: showDetail ? '' : 'rotate(180deg)' }"
-      ></SvgIcon>
+      >
+        <SvgIcon
+          class="compare-hide-icon"
+          name="compare-hide-icon"
+          :style="{ transform: showDetail ? '' : 'rotate(180deg)' }"
+        ></SvgIcon>
+      </button>
     </h2>
 
     <div class="compare-model-list" v-if="showDetail">
@@ -233,13 +240,33 @@ const handleClickOutside = (event) => {
   background: var(--gary-color);
   padding: 1.5em 3em;
   border-radius: 0.375em;
-  .compare-hide-icon {
-    width: 0.6em;
-    height: 0.6em;
+  .compare-toggle-button {
     position: absolute;
     top: 0.2em;
     right: 0.2em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2em;
+    height: 1.2em;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #000;
     cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid #0b70c3;
+      outline-offset: 2px;
+    }
+  }
+  .compare-hide-icon {
+    width: 0.6em;
+    height: 0.6em;
+  }
+  .add-model-svg {
+    color: #808080;
+    fill: #808080;
   }
   h2 {
     position: relative;
@@ -268,6 +295,16 @@ const handleClickOutside = (event) => {
 
 .compare-model-list .close :deep(.el-icon) {
   font-size: 1.1em;
+}
+
+@media (forced-colors: active) {
+  .title-content .compare-toggle-button {
+    color: ButtonText;
+
+    &:focus-visible {
+      outline-color: Highlight;
+    }
+  }
 }
 
 :deep(.el-tabs__header) {

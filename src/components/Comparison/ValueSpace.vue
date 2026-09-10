@@ -366,6 +366,18 @@ onMounted(async () => {
     padding: 1.5em 0;
   }
 }
+
+@media (forced-colors: active) {
+  .card-item,
+  .chart {
+    forced-color-adjust: none;
+  }
+
+  .card-item {
+    border: 2px solid CanvasText;
+  }
+}
+
 :deep(.i1) {
   font-style: normal;
   display: block;

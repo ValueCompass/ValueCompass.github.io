@@ -198,7 +198,12 @@
               style="width: 100%"
               :default-sort="{ prop: 'Score', order: 'descending' }"
             >
-              <el-table-column prop="model_name" label="Model" width="210" />
+              <el-table-column prop="model_name" label="Model" width="210">
+                <template #default="{ row }">
+                  <span aria-hidden="true">{{ row.model_name }}</span>
+                  <span class="sr-only">Model {{ row.model_name }}</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="Score"
                 label="Score"
@@ -213,17 +218,29 @@
                     Average
                   </button>
                 </template>
+                <template #default="{ row }">
+                  <span aria-hidden="true">{{ formatTableValue(row.Score) }}</span>
+                  <span class="sr-only">
+                    {{ row.model_name }}, Average {{ formatTableValue(row.Score) }}
+                  </span>
+                </template>
               </el-table-column>
               <template
                 v-for="(item, index) in Schwartz_table_columns_checked"
-                :key="index"
               >
                 <el-table-column
-                  v-if="item != 'model_name'"
+                  v-if="item != 'model_name' && item != 'Score'"
+                  :key="index"
                   :prop="item"
                   :label="item"
-                  :formatter="formatter"
-                />
+                >
+                  <template #default="{ row }">
+                    <span aria-hidden="true">{{ formatTableValue(row[item]) }}</span>
+                    <span class="sr-only">
+                      {{ row.model_name }}, {{ item }} {{ formatTableValue(row[item]) }}
+                    </span>
+                  </template>
+                </el-table-column>
               </template>
             </el-table>
           </div>
@@ -577,6 +594,8 @@ const formatter = (row, column) => {
   //   return row[column.label].toFixed(5)
   // }
 };
+
+const formatTableValue = (value) => (Number(value) || 0).toFixed(2);
 
 const currentTab = ref(0);
 const tabSwitch = (index) => {
@@ -1066,6 +1085,18 @@ const handleClickOutside = (event) => {
     outline: 2px solid #0b70c3;
     outline-offset: 2px;
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .compare-model-list :focus-visible {
