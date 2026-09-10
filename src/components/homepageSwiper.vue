@@ -49,7 +49,7 @@
                 <div class="img-div">
                   <img
                     :src="getAssetsFile(item.img)"
-                    :alt="item.img"
+                    :alt="item.alt"
                     width="100%"
                   />
                   <!-- <a :href="item.casesLink" target="_blank">
@@ -107,6 +107,7 @@ const introData = ref([
   {
     name: "Schwartz Theory of Basic Values",
     img: "Schwartz_image.png",
+    alt: "Schwartz Theory of Basic Values. Circular diagram of Schwartz's value system. Ten basic values are arranged by four higher-order groups: self-transcendence, self-enhancement, conservation, and openness to change. Adjacent values are compatible, while opposing values may conflict.",
     sourceLink:
       "https://scholarworks.gvsu.edu/cgi/viewcontent.cgi?article=1116&context=orpc",
     casesLink: "https://arxiv.org/pdf/2112.06346",
@@ -116,6 +117,7 @@ const introData = ref([
   {
     name: "Moral Foundation Theory",
     img: "MoralFoundationTheory_image.png",
+    alt: "Moral Foundation Theory. Circular diagram of five moral foundations: sanctity and degradation, authority and subversion, loyalty and betrayal, fairness and cheating, and care and harm, with example traits and scenarios for each foundation.",
     sourceLink: "https://moralfoundations.org/",
     casesLink:
       "https://web.archive.org/web/20170731065520/http://www-bcf.usc.edu/~jessegra/papers/GHKMIWD.inpress.MFT.AESP.pdf",
@@ -125,6 +127,7 @@ const introData = ref([
   {
     name: "Safety Taxonomy",
     img: "Safety_Taxonomy_image.png",
+    alt: "Safety Taxonomy. Circular diagram grouping AI safety risks into malicious use, representation and toxicity harms, misinformation harms, information and safety harms, human autonomy and integrity harms, and socioeconomic harms, with example risk categories.",
     sourceLink: "https://arxiv.org/pdf/2402.05044",
     casesLink: "http://arxiv.org/pdf/2402.05044",
     detail:
@@ -133,6 +136,7 @@ const introData = ref([
   {
     name: "LLMs' Unique Value System",
     img: "LLMs_Unique_Value_System_image.png",
+    alt: "LLMs' Unique Value System. Circular diagram of an LLM value system with three dimensions: integrity, competence, and character. Sub-dimensions include professional and ethical integrity, user-oriented and self-competent behavior, and social and idealistic character.",
     sourceLink: "https://arxiv.org/pdf/2404.12744",
     casesLink: "https://arxiv.org/pdf/2404.12744",
     detail:
