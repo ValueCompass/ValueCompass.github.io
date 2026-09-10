@@ -8,19 +8,39 @@
         </div>
       </div> -->
       <div class="echart-list">
-        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 0 }">
+        <div
+          class="download-box"
+          :class="{ show: props.DimensionMeasurementTabIndex == 0 }"
+          :inert="props.DimensionMeasurementTabIndex != 0"
+          :aria-hidden="props.DimensionMeasurementTabIndex != 0"
+        >
           <p>Schwartz Theory of Basic Values</p>
           <EchartComponent ref="chartDom1" :type="1"></EchartComponent>
         </div>
-        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 1 }">
+        <div
+          class="download-box"
+          :class="{ show: props.DimensionMeasurementTabIndex == 1 }"
+          :inert="props.DimensionMeasurementTabIndex != 1"
+          :aria-hidden="props.DimensionMeasurementTabIndex != 1"
+        >
           <p>Moral Foundation Theory</p>
           <EchartComponent ref="chartDom2" :type="2"></EchartComponent>
         </div>
-        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 2 }">
+        <div
+          class="download-box"
+          :class="{ show: props.DimensionMeasurementTabIndex == 2 }"
+          :inert="props.DimensionMeasurementTabIndex != 2"
+          :aria-hidden="props.DimensionMeasurementTabIndex != 2"
+        >
           <p>Safety Taxonomy</p>
           <EchartComponent ref="chartDom3" :type="3"></EchartComponent>
         </div>
-        <div class="download-box" :class="{ 'show': props.DimensionMeasurementTabIndex == 3 }">
+        <div
+          class="download-box"
+          :class="{ show: props.DimensionMeasurementTabIndex == 3 }"
+          :inert="props.DimensionMeasurementTabIndex != 3"
+          :aria-hidden="props.DimensionMeasurementTabIndex != 3"
+        >
           <p>LLMs' Unique Value System</p>
           <EchartComponent ref="chartDom4" :type="4"></EchartComponent>
         </div>

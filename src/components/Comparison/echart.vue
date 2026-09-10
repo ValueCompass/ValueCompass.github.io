@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <figure>
     <div class="">
       <div>
         <div>
@@ -7,11 +7,18 @@
             class="chart"
             ref="chartDom"
             style="width: 1200px; height: 700px; margin: 0 auto"
+            tabindex="0"
+            role="img"
+            :aria-label="chartAriaLabel"
+            :aria-describedby="chartDescriptionId"
           ></div>
+          <figcaption :id="chartDescriptionId" class="sr-only">
+            {{ chartDescription }}
+          </figcaption>
         </div>
       </div>
     </div>
-  </div>
+  </figure>
 </template>
 <script setup>
 import {
@@ -34,6 +41,22 @@ const props = defineProps({
 
 const chartDom = ref(null);
 let chartInstance = null;
+const chartTitles = {
+  1: "Schwartz Theory of Basic Values",
+  2: "Moral Foundation Theory",
+  3: "Safety Taxonomy",
+  4: "LLMs' Unique Value System",
+};
+const chartTitle = chartTitles[props.type] || "Value comparison";
+const chartDescriptionId = `comparison-chart-description-${props.type}`;
+const chartAriaLabel = ref(`${chartTitle} radar chart`);
+const chartDescription = ref(
+  "No comparison data is currently displayed. Use the Selected Points controls above the chart, then choose Select All or Apply to update it."
+);
+const starSymbol =
+  "path://M12 1.8L15.1 8.1L22 9.1L17 14L18.2 21L12 17.7L5.8 21L7 14L2 9.1L8.9 8.1Z";
+const modelSymbols = ["circle", "rect", "triangle", "diamond", starSymbol];
+const modelLineTypes = ["solid", "dashed", "dotted"];
 
 const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
   console.log(modelList);
@@ -73,6 +96,9 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
 
     for (let i = 0; i < modelList.length; i++) {
       let item = [];
+      const symbol = modelSymbols[i % modelSymbols.length];
+      const lineType =
+        modelLineTypes[Math.floor(i / modelSymbols.length) % modelLineTypes.length];
       for (let j = 0; j < Schwartz_indicator.length; j++) {
         item.push(
           modelList[i][MeasurementDimensionName][Schwartz_indicator[j].name]
@@ -81,6 +107,8 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       Schwartz_data.push({
         name: modelList[i].model_name,
         value: item,
+        symbol,
+        symbolSize: 9,
         areaStyle: {
           opacity: 0,
           color: "#1093FF",
@@ -88,13 +116,28 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
         lineStyle: {
           width: 2,
           color: modelList[i].color,
+          type: lineType,
         },
         itemStyle: {
           color: modelList[i].color,
         },
       });
-      legendName.push(modelList[i].model_name);
+      legendName.push({
+        name: modelList[i].model_name,
+        icon: symbol,
+      });
     }
+
+    const modelNames = modelList.map((item) => item.model_name).join(", ");
+    const dimensionNames = Schwartz_indicator
+      .map((item) => item.name)
+      .join(", ");
+    chartAriaLabel.value = `${chartTitle} radar chart comparing ${modelNames}`;
+    chartDescription.value = `Selected dimensions: ${dimensionNames}. Use the value-system tabs, dimension checkboxes, Select All, and Apply controls above this chart to change the displayed data.`;
+  } else {
+    chartAriaLabel.value = `${chartTitle} radar chart with no comparison data`;
+    chartDescription.value =
+      "No comparison data is currently displayed. Use the Selected Points controls above the chart, then choose Select All or Apply to update it.";
   }
 
   chartInstance.setOption({
@@ -187,5 +230,20 @@ onMounted(async () => {
   chartInstance.setOption(option);
 });
 </script>
-<style>
+<style scoped>
+figure {
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 </style>
