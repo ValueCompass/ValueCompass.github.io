@@ -1,5 +1,32 @@
 <template>
   <figure>
+    <ul
+      v-if="legendItems.length"
+      class="chart-legend"
+      :aria-label="`${chartTitle} series`"
+    >
+      <li
+        v-for="item in legendItems"
+        :key="item.name"
+      >
+        <button
+          type="button"
+          class="legend-button"
+          :class="{ 'is-unselected': !item.selected }"
+          :aria-pressed="item.selected"
+          :aria-label="`${item.name}, ${item.selected ? 'shown' : 'hidden'}`"
+          @click="toggleLegendItem(item)"
+          @keydown="handleLegendKeydown"
+        >
+          <span
+            class="legend-marker"
+            :style="{ color: item.color }"
+            aria-hidden="true"
+          >{{ item.marker }}</span>
+          <span>{{ item.name }}</span>
+        </button>
+      </li>
+    </ul>
     <div class="">
       <div>
         <div>
@@ -54,6 +81,8 @@ const chartAriaLabel = ref(`${chartTitle} radar chart`);
 const chartDescription = ref(
   "No comparison data is currently displayed. Use the Selected Points controls above the chart, then choose Select All or Apply to update it."
 );
+const legendItems = ref([]);
+const legendMarkers = ["●", "■", "▲", "◆", "★"];
 const starSymbol =
   "path://M12 1.8L15.1 8.1L22 9.1L17 14L18.2 21L12 17.7L5.8 21L7 14L2 9.1L8.9 8.1Z";
 const modelSymbols = ["circle", "rect", "triangle", "diamond", starSymbol];
@@ -79,11 +108,47 @@ const updateChartContrast = () => {
   });
 };
 
+const toggleLegendItem = (item) => {
+  chartInstance?.dispatchAction({
+    type: "legendToggleSelect",
+    name: item.name,
+  });
+  item.selected = !item.selected;
+};
+
+const handleLegendKeydown = (event) => {
+  const legend = event.currentTarget.closest(".chart-legend");
+  const buttons = Array.from(legend?.querySelectorAll(".legend-button") || []);
+  const currentIndex = buttons.indexOf(event.currentTarget);
+  let nextIndex = currentIndex;
+
+  if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+    nextIndex = (currentIndex + 1) % buttons.length;
+  } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+  } else if (event.key === "Home") {
+    nextIndex = 0;
+  } else if (event.key === "End") {
+    nextIndex = buttons.length - 1;
+  } else {
+    return;
+  }
+
+  event.preventDefault();
+  buttons[nextIndex]?.focus();
+};
+
 const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
   console.log(modelList);
   let Schwartz_data = [];
   let legendName = [];
   let Schwartz_indicator = [];
+  legendItems.value = modelList.map((item, index) => ({
+    name: item.model_name,
+    color: item.color,
+    marker: legendMarkers[index % legendMarkers.length],
+    selected: true,
+  }));
   if (modelList.length > 0) {
     const allValues = modelList.flatMap((item) =>
       Object.entries(item[MeasurementDimensionName])
@@ -153,7 +218,7 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       .map((item) => item.name)
       .join(", ");
     chartAriaLabel.value = `${chartTitle} radar chart comparing ${modelNames}`;
-    chartDescription.value = `Selected dimensions: ${dimensionNames}. Use the value-system tabs, dimension checkboxes, Select All, and Apply controls above this chart to change the displayed data.`;
+    chartDescription.value = `Selected dimensions: ${dimensionNames}. Use the series toggle buttons before the chart to show or hide models. Use the value-system tabs, dimension checkboxes, Select All, and Apply controls above this chart to change the displayed data.`;
   } else {
     chartAriaLabel.value = `${chartTitle} radar chart with no comparison data`;
     chartDescription.value =
@@ -162,7 +227,11 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
 
   chartInstance.setOption({
     legend: {
+      show: false,
       data: legendName,
+      selected: Object.fromEntries(
+        legendItems.value.map((item) => [item.name, true])
+      ),
       // top: "0%",
       textStyle: {
         fontSize: 14,
@@ -262,9 +331,62 @@ figure {
   margin: 0;
 }
 
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75em;
+  min-height: 2em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.25em;
+  border: 0;
+  background: transparent;
+  color: #000;
+  font: inherit;
+  line-height: 1.2;
+
+}
+
+.legend-button:focus-visible {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
+
+.legend-button.is-unselected {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.legend-marker {
+  width: 1em;
+  font-size: 1.2em;
+  line-height: 1;
+  text-align: center;
+}
+
 @media (forced-colors: active) {
   .chart {
     color: CanvasText;
+  }
+
+  .legend-button {
+    color: ButtonText;
+  }
+
+  .legend-button:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .legend-marker {
+    color: ButtonText !important;
   }
 }
 
