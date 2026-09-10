@@ -41,6 +41,7 @@ const props = defineProps({
 
 const chartDom = ref(null);
 let chartInstance = null;
+let forcedColorsMediaQuery = null;
 const chartTitles = {
   1: "Schwartz Theory of Basic Values",
   2: "Moral Foundation Theory",
@@ -57,6 +58,26 @@ const starSymbol =
   "path://M12 1.8L15.1 8.1L22 9.1L17 14L18.2 21L12 17.7L5.8 21L7 14L2 9.1L8.9 8.1Z";
 const modelSymbols = ["circle", "rect", "triangle", "diamond", starSymbol];
 const modelLineTypes = ["solid", "dashed", "dotted"];
+
+const getChartTextColor = () =>
+  forcedColorsMediaQuery?.matches
+    ? getComputedStyle(chartDom.value).color
+    : "#000";
+
+const updateChartContrast = () => {
+  if (!chartInstance) {
+    return;
+  }
+
+  const textColor = getChartTextColor();
+  chartInstance.setOption({
+    legend: { textStyle: { color: textColor } },
+    radar: {
+      axisName: { color: textColor },
+      axisLabel: { color: textColor },
+    },
+  });
+};
 
 const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
   console.log(modelList);
@@ -87,7 +108,6 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       .map((item, index) => {
         return {
           name: item,
-          color: index == 0 ? "#000" : "#000",
           axisLabel: { show: index == 0 ? true : false },
           min: minValue,
           max: maxValue,
@@ -146,7 +166,7 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       // top: "0%",
       textStyle: {
         fontSize: 14,
-        color: "black",
+        color: getChartTextColor(),
       },
     },
     radar: {
@@ -161,13 +181,13 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
       splitNumber: 5,
       axisName: {
         fontSize: 16,
-        color: "black",
+        color: getChartTextColor(),
         formatter: function (value) {
           return value.split("&").join("&\n"); // 将换行符拆分为数组
         },
       },
       axisLabel: {
-        color: "#767676",
+        color: getChartTextColor(),
         formatter: function (value) {
           return value.toFixed(0); // 保留一位小数
         },
@@ -195,6 +215,7 @@ defineExpose({
 // 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
 onMounted(async () => {
   await nextTick(); // 确保DOM已经渲染完成
+  forcedColorsMediaQuery = window.matchMedia("(forced-colors: active)");
   chartInstance = echarts.init(chartDom.value);
   const option = {
     radar: {
@@ -206,15 +227,15 @@ onMounted(async () => {
       axisLabel: {
         show: true,
         fontSize: 14,
-        color: "#767676",
+        color: getChartTextColor(),
       },
       axisName: {
         fontSize: 14,
-        color: "#fff",
+        color: getChartTextColor(),
       },
       triggerEvent: true,
       indicator: [
-        { name: "Benevolence", max: 1, color: "#ffd000" },
+        { name: "Benevolence", max: 1 },
         { name: "Achievement", max: 1, axisLabel: { show: false } },
         { name: "Universalism", max: 1, axisLabel: { show: false } },
         { name: "Tradition", max: 1, axisLabel: { show: false } },
@@ -228,11 +249,23 @@ onMounted(async () => {
     },
   };
   chartInstance.setOption(option);
+  forcedColorsMediaQuery.addEventListener("change", updateChartContrast);
+});
+
+onUnmounted(() => {
+  forcedColorsMediaQuery?.removeEventListener("change", updateChartContrast);
+  chartInstance?.dispose();
 });
 </script>
 <style scoped>
 figure {
   margin: 0;
+}
+
+@media (forced-colors: active) {
+  .chart {
+    color: CanvasText;
+  }
 }
 
 .sr-only {
