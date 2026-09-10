@@ -28,10 +28,23 @@
           @swiper="onSwiper"
           @slideChange="onSlideChange"
           :modules="modules"
-          :navigation="true"
           :pagination="{ clickable: true }"
           :loop="true"
         >
+          <template #container-start>
+            <button
+              type="button"
+              class="swiper-button-prev"
+              aria-label="Previous slide"
+              @click="showPreviousSlide"
+            ></button>
+            <button
+              type="button"
+              class="swiper-button-next"
+              aria-label="Next slide"
+              @click="showNextSlide"
+            ></button>
+          </template>
           <swiper-slide
             class="swiper-slide"
             v-for="(item, index) in introData"
@@ -63,6 +76,7 @@
                   {{ item.detail }}
                   <a
                     :href="item.sourceLink"
+                    :tabindex="tabIndex === index ? 0 : -1"
                     target="_blank"
                     style="color: var(--theme-color)"
                     >[Source Link]</a
@@ -82,7 +96,7 @@
   </div>
 </template>
 <script setup>
-import { ref, defineExpose } from "vue";
+import { ref, defineExpose, nextTick } from "vue";
 
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -102,6 +116,7 @@ const getAssetsFile = (url) => {
 
 const dialogTableVisible = ref(false);
 const tabIndex = ref(0);
+const requestedSlideIndex = ref(0);
 
 const introData = ref([
   {
@@ -148,14 +163,15 @@ const swiperRef = ref(null);
 const onSwiper = (swiper) => {
   console.log(swiper);
   swiperRef.value = swiper;
+  swiper.slideToLoop(requestedSlideIndex.value, 0);
 };
 
-const onSlideChange = () => {
+const onSlideChange = (swiper) => {
   console.log("slide change");
-  if (swiperRef.value) {
-    tabIndex.value = swiperRef.value.activeIndex;
-  }
+  tabIndex.value = swiper.realIndex;
 };
+const showPreviousSlide = () => swiperRef.value?.slidePrev();
+const showNextSlide = () => swiperRef.value?.slideNext();
 const tabClick = (index) => {
   tabIndex.value = index;
   if (swiperRef.value) {
@@ -164,11 +180,10 @@ const tabClick = (index) => {
 };
 
 const showIntro = (index) => {
-  
+  requestedSlideIndex.value = index;
+  tabIndex.value = index;
   dialogTableVisible.value = true;
-  setTimeout(() => {
-    tabClick(index);
-  }, 100);
+  nextTick(() => swiperRef.value?.slideToLoop(index, 0));
 };
 
 defineExpose({
@@ -284,6 +299,9 @@ defineExpose({
   .swiper-button-next {
     width: 5em;
     height: 6em;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: var(--text-color);
     &:after {
       font-size: 2em;
@@ -319,6 +337,11 @@ defineExpose({
   :deep(.swiper .swiper-pagination-bullet:focus-visible) {
     outline: 2px solid Highlight;
     outline-offset: 2px;
+  }
+
+  :deep(.swiper .swiper-button-prev),
+  :deep(.swiper .swiper-button-next) {
+    color: ButtonText;
   }
 }
 

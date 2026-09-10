@@ -464,4 +464,14 @@ const downloadPdf = () => {
   font-size: 14px;
   font-weight: 700;
 }
+
+@media (forced-colors: active) {
+  .Key-Findings-template .item .title .toggle-button {
+    color: ButtonText;
+
+    &:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}
 </style>
