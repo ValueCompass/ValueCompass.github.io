@@ -450,7 +450,7 @@ const sendMessage = (textareaValue) => {
             "This chat API is not accessible from mainland China IP addresses."
           );
         } else {
-          ElMessage.error("发送失败，请重新发送");
+          ElMessage.error("Failed to send. Please try again.");
         }
         setIdleState();
 

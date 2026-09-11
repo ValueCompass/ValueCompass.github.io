@@ -330,7 +330,7 @@ const sendMessage = (textareaValue) => {
       })
       .catch((err) => {
         console.log("err");
-        ElMessage.error("发送失败，请重新发送");
+        ElMessage.error("Failed to send. Please try again.");
 
         if (chatList.value.length == 0) {
           showChat.value = false;

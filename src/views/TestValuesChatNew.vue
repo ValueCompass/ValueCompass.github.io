@@ -111,7 +111,7 @@ const getResults = (userId) => {
       })
       .catch((err) => {
         console.log("err");
-        ElMessage.error("发送失败，请重新发送");
+        ElMessage.error("Failed to send. Please try again.");
         processIndex.value = 3;
       })
       .finally(() => {});

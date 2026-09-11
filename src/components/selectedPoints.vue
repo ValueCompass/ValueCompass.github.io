@@ -8,16 +8,12 @@
         style="width: 4.5em"
         aria-label="Measurement Date"
       >
-        <el-radio-group v-model="value1" style="width: 100%">
-          <el-option
-            v-for="item in dates"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-            <el-radio :value="item.value">{{ item.label }}</el-radio>
-          </el-option>
-        </el-radio-group>
+        <el-option
+          v-for="item in dates"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
       </el-select>
     </div>
     <div class="select-points-box">
@@ -714,6 +710,10 @@ defineExpose({
       padding: 0 0.8em !important;
       background: transparent !important;
       box-shadow: none !important;
+      &:has(input:focus-visible) {
+        outline: 2px solid var(--theme-color);
+        outline-offset: 2px;
+      }
       .el-select__placeholder {
         opacity: 0;
       }
