@@ -9,15 +9,30 @@
             style="width: 1200px; height: 600px; margin: 0 auto"
             tabindex="0"
             role="img"
-            aria-label="Culture heatmap. Use the arrow keys to explore values by model and country."
+            aria-label="Culture heatmap"
             aria-describedby="heatmap-keyboard-help heatmap-live-status"
             @focus="handleChartFocus"
             @blur="handleChartBlur"
-            @keydown="handleChartKeydown"
           ></div>
+          <div
+            class="heatmap-cell-controls"
+            role="group"
+            aria-label="Culture heatmap cells"
+          >
+            <button
+              v-for="(cell, index) in accessibleHeatmapCells"
+              :key="`${cell[0]}-${cell[1]}`"
+              type="button"
+              class="sr-only"
+              :aria-label="getCellLabel(cell)"
+              @focus="focusHeatmapCell(index)"
+              @blur="handleChartBlur"
+            >
+              {{ getCellLabel(cell) }}
+            </button>
+          </div>
           <p id="heatmap-keyboard-help" class="sr-only">
-            Use Left and Right Arrow keys to move between countries. Use Up and
-            Down Arrow keys to move between models.
+            Press Tab to visit each heatmap cell individually.
           </p>
           <p id="heatmap-live-status" class="sr-only" aria-live="polite">
             {{ activeCellAnnouncement }}
@@ -49,6 +64,7 @@ const allHeatMapDataObject = ref();
 let countries = [];
 let heatmapData = [];
 let heatmapModels = [];
+const accessibleHeatmapCells = ref([]);
 const activeCellIndex = ref(0);
 const activeCellAnnouncement = ref("");
 const heatmapColors = ["#096DD9", "#91D5FF", "#eeeeee", "#FFA39E", "#CF1322"];
@@ -86,6 +102,9 @@ const getRelativeLuminance = (rgb) => {
 const getHeatmapLabelStyle = (value) =>
   getRelativeLuminance(getHeatmapColor(value)) > 0.179 ? "dark" : "light";
 
+const getCellLabel = ([countryIndex, modelIndex, value]) =>
+  `${heatmapModels[modelIndex]}, ${countries[countryIndex]}: ${value}`;
+
 const announceActiveCell = () => {
   const cell = heatmapData[activeCellIndex.value];
   if (!cell) {
@@ -115,41 +134,14 @@ const handleChartFocus = () => {
   announceActiveCell();
 };
 
+const focusHeatmapCell = (index) => {
+  activeCellIndex.value = index;
+  announceActiveCell();
+};
+
 const handleChartBlur = () => {
   chartInstance?.dispatchAction({ type: "downplay", seriesIndex: 0 });
   chartInstance?.dispatchAction({ type: "hideTip" });
-};
-
-const handleChartKeydown = (event) => {
-  if (!heatmapData.length || !countries.length) {
-    return;
-  }
-
-  const [countryIndex, modelIndex] = heatmapData[activeCellIndex.value];
-  let nextCountryIndex = countryIndex;
-  let nextModelIndex = modelIndex;
-  if (event.key === "ArrowRight") {
-    nextCountryIndex = Math.min(countryIndex + 1, countries.length - 1);
-  } else if (event.key === "ArrowLeft") {
-    nextCountryIndex = Math.max(countryIndex - 1, 0);
-  } else if (event.key === "ArrowDown") {
-    nextModelIndex = Math.max(modelIndex - 1, 0);
-  } else if (event.key === "ArrowUp") {
-    nextModelIndex = Math.min(modelIndex + 1, heatmapModels.length - 1);
-  } else {
-    return;
-  }
-
-  event.preventDefault();
-  const nextIndex = heatmapData.findIndex(
-    ([cellCountryIndex, cellModelIndex]) =>
-      cellCountryIndex === nextCountryIndex &&
-      cellModelIndex === nextModelIndex,
-  );
-  if (nextIndex !== -1) {
-    activeCellIndex.value = nextIndex;
-  }
-  announceActiveCell();
 };
 
 const getAllHeatMapData = async () => {
@@ -208,6 +200,7 @@ const setHotChart = (modelNameList) => {
   });
   heatmapData = data;
   heatmapModels = modelNames;
+  accessibleHeatmapCells.value = data;
   activeCellIndex.value = 0;
   activeCellAnnouncement.value = "";
   // console.log(hotData, "hotData", data);
@@ -335,9 +328,13 @@ onMounted(async () => {
 
       max: 100,
 
-      calculable: true,
+      calculable: false,
 
       orient: "horizontal",
+
+      text: ["100", "0"],
+
+      textGap: 8,
 
       left: "center",
       bottom: "10%",

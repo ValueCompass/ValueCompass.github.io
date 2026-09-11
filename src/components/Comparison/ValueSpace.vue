@@ -19,10 +19,17 @@
                 border-radius: 0.5em;
               "
               ref="chartDom"
+              tabindex="0"
+              role="img"
+              aria-label="3D Value Space visualization"
+              aria-describedby="value-space-description"
             ></div>
           </div>
         </div>
-        <p style="text-align: center; color: #747474; margin-top: 2.25em">
+        <p
+          id="value-space-description"
+          style="text-align: center; color: #747474; margin-top: 2.25em"
+        >
           The value space is a t-SNE visualization that maps the 10-dimensional
           value vectors of different models and countries to a lower-dimensional
           space.
@@ -367,6 +374,11 @@ onMounted(async () => {
   }
 }
 
+.chart:focus-visible {
+  outline: 3px solid #1093ff;
+  outline-offset: 4px;
+}
+
 @media (forced-colors: active) {
   .card-item,
   .chart {
@@ -375,6 +387,10 @@ onMounted(async () => {
 
   .card-item {
     border: 2px solid CanvasText;
+  }
+
+  .chart:focus-visible {
+    outline-color: Highlight;
   }
 }
 

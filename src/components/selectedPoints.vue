@@ -118,11 +118,9 @@
             <button
               type="button"
               class="toggle-selected-points-button"
-              aria-label="Toggle selected points details"
-              @click="
-                tablePointDetailShow = !tablePointDetailShow;
-                swicthChange(tablePointDetailShow);
-              "
+              :aria-pressed="tablePointDetailShow"
+              :aria-label="`${tablePointDetailShow ? 'Hide' : 'Show'} selected points details`"
+              @click="toggleSelectedPointsDetails"
               >Show Selected Points</button
             >
           </div>
@@ -413,6 +411,9 @@ const applyChange = () => {
   } else {
     emit("applyChange", checkedPoints.value);
   }
+  announceLiveMessage(
+    `Filters applied with ${checkedPoints.value.length} selected ${checkedPoints.value.length === 1 ? "point" : "points"}.`,
+  );
 };
 
 const handleCheckAllChange = () => {
@@ -503,6 +504,14 @@ const checkSubArray = (index, groupName) => {
 const swicthChange = (val) => {
   console.log("swicthChange", val);
   emit("swicthChange", val);
+  announceLiveMessage(
+    `Selected points details ${val ? "shown" : "hidden"}.`,
+  );
+};
+
+const toggleSelectedPointsDetails = () => {
+  tablePointDetailShow.value = !tablePointDetailShow.value;
+  swicthChange(tablePointDetailShow.value);
 };
 
 const showIntro = (index) => {
