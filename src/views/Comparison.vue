@@ -219,7 +219,7 @@
                   </button>
                 </template>
                 <template #default="{ row }">
-                  <span aria-hidden="true">{{ formatTableValue(row.Score) }}</span>
+                  <span>{{ formatTableValue(row.Score) }}</span>
                   <span class="sr-only">
                     {{ row.model_name }}, Average {{ formatTableValue(row.Score) }}
                   </span>
@@ -235,7 +235,7 @@
                   :label="item"
                 >
                   <template #default="{ row }">
-                    <span aria-hidden="true">{{ formatTableValue(row[item]) }}</span>
+                    <span>{{ formatTableValue(row[item]) }}</span>
                     <span class="sr-only">
                       {{ row.model_name }}, {{ item }} {{ formatTableValue(row[item]) }}
                     </span>
