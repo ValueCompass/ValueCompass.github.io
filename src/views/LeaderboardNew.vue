@@ -976,8 +976,8 @@ const handleMouseUp = () => {
   border-radius: 4px;
 
   &:focus-visible {
-    outline: 2px solid #0b70c3;
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: inset 0 0 0 2px #0b70c3;
   }
 }
 

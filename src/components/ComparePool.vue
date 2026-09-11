@@ -58,15 +58,17 @@
           v-for="item in 5 - props.compareArr.length"
           :key="item"
           :style="{ 'border-color': item.color }"
-          :ref="(el) => (buttonRefs[item] = el)"
-          @click="showPopover(item)"
-          tabindex="0"
-          role="button"
-          aria-label="Add model to compare"
         >
-          <!-- <img src="@/assets/images/add-model.svg" alt="add-model" /> -->
-          <SvgIcon class="add-model-svg" name="add-model"></SvgIcon>
-          <p>Add</p>
+          <button
+            type="button"
+            class="add-model-button"
+            :ref="(el) => (buttonRefs[item] = el)"
+            aria-label="Add model to compare"
+            @click="showPopover(item)"
+          >
+            <SvgIcon class="add-model-svg" name="add-model"></SvgIcon>
+            <span>Add</span>
+          </button>
         </li>
         <el-popover
           ref="popoverRef"
@@ -98,7 +100,13 @@
             class="compare-btn"
             >compare now</el-button
           >
-          <span @click="removeAll" class="remove-all-btn">remove all</span>
+          <button
+            type="button"
+            class="remove-all-btn"
+            @click="removeAll"
+          >
+            remove all
+          </button>
         </li>
       </ul>
       <p class="max-num-tip">
@@ -268,6 +276,26 @@ const handleClickOutside = (event) => {
     color: #808080;
     fill: #808080;
   }
+  .add-model-button {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid #0b70c3;
+      outline-offset: 3px;
+    }
+  }
   h2 {
     position: relative;
     font-size: 2em;
@@ -295,6 +323,19 @@ const handleClickOutside = (event) => {
 
 .compare-model-list .close :deep(.el-icon) {
   font-size: 1.1em;
+}
+
+.compare-model-list .remove-all-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+
+  &:focus-visible {
+    outline: 2px solid #0b70c3;
+    outline-offset: 2px;
+  }
 }
 
 @media (forced-colors: active) {
