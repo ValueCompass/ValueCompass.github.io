@@ -9,21 +9,44 @@
             element-loading-text="Loading..."
             element-loading-background="rgba(122, 122, 122, 0)"
           >
-            <div
-              class="chart"
-              style="
-                width: 1180px;
-                height: 700px;
-                background-color: #121f37;
-                padding: 2em 0;
-                border-radius: 0.5em;
-              "
-              ref="chartDom"
-              tabindex="0"
-              role="img"
-              aria-label="3D Value Space visualization"
-              aria-describedby="value-space-description"
-            ></div>
+            <div class="chart-frame">
+              <div
+                class="chart"
+                style="
+                  width: 1180px;
+                  height: 700px;
+                  background-color: #121f37;
+                  padding: 2em 0;
+                  border-radius: 0.5em;
+                "
+                ref="chartDom"
+                tabindex="0"
+                role="img"
+                aria-label="3D Value Space visualization"
+                aria-describedby="value-space-description"
+              ></div>
+              <button
+                class="rotation-control"
+                type="button"
+                :aria-label="
+                  isAutoRotating
+                    ? 'Pause 3D visualization rotation'
+                    : 'Resume 3D visualization rotation'
+                "
+                @click="toggleAutoRotate"
+              >
+                <span
+                  :class="[
+                    'rotation-control__icon',
+                    isAutoRotating
+                      ? 'rotation-control__icon--pause'
+                      : 'rotation-control__icon--play',
+                  ]"
+                  aria-hidden="true"
+                ></span>
+                {{ isAutoRotating ? "Pause rotation" : "Resume rotation" }}
+              </button>
+            </div>
           </div>
         </div>
         <p
@@ -52,6 +75,10 @@ import axios from "axios";
 import * as echarts from "echarts";
 import "echarts-gl";
 const loading = ref(false);
+const reducedMotionQuery = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+);
+const isAutoRotating = ref(!reducedMotionQuery.matches);
 
 var gl_series_data = null;
 
@@ -234,7 +261,7 @@ function setGlChart(gl_data) {
         lineStyle: { color: "rgba(255,255,255,0.3)" },
       },
       viewControl: {
-        autoRotate: true, //自动旋转
+        autoRotate: isAutoRotating.value,
         autoRotateSpeed: 2,
         autoRotateAfterStill: 1,
         distance: 130,
@@ -282,6 +309,24 @@ function setGlChart(gl_data) {
 
 const chartDom = ref(null);
 let chartInstance = null;
+const setAutoRotate = (enabled) => {
+  isAutoRotating.value = enabled;
+  chartInstance?.setOption({
+    grid3D: {
+      viewControl: {
+        autoRotate: enabled,
+      },
+    },
+  });
+};
+const toggleAutoRotate = () => {
+  setAutoRotate(!isAutoRotating.value);
+};
+const handleReducedMotionChange = (event) => {
+  if (event.matches) {
+    setAutoRotate(false);
+  }
+};
 const getAxiosData = (url) => {
   return axios.get(url);
 };
@@ -350,10 +395,15 @@ defineExpose({
   setValueSpacesData,
 });
 onMounted(async () => {
+  reducedMotionQuery.addEventListener("change", handleReducedMotionChange);
   await nextTick(); // 确保DOM已经渲染完成
   // Submit();
 
   // setValueSpacesData();
+});
+onUnmounted(() => {
+  reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
+  chartInstance?.dispose();
 });
 </script>
 
@@ -379,6 +429,76 @@ onMounted(async () => {
   outline-offset: 4px;
 }
 
+.chart-frame {
+  position: relative;
+}
+
+.rotation-control {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  background: rgba(18, 31, 55, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rotation-control:hover {
+  background: #1d4f78;
+}
+
+.rotation-control:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.rotation-control__icon {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 14px;
+  width: 14px;
+  height: 16px;
+}
+
+.rotation-control__icon--pause::before,
+.rotation-control__icon--pause::after {
+  position: absolute;
+  top: 1px;
+  width: 4px;
+  height: 14px;
+  content: "";
+  background: currentColor;
+}
+
+.rotation-control__icon--pause::before {
+  left: 1px;
+}
+
+.rotation-control__icon--pause::after {
+  right: 1px;
+}
+
+.rotation-control__icon--play::before {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  width: 0;
+  height: 0;
+  content: "";
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid currentColor;
+}
+
 @media (forced-colors: active) {
   .card-item,
   .chart {
@@ -391,6 +511,12 @@ onMounted(async () => {
 
   .chart:focus-visible {
     outline-color: Highlight;
+  }
+
+  .rotation-control {
+    color: ButtonText;
+    background: ButtonFace;
+    border-color: ButtonText;
   }
 }
 
