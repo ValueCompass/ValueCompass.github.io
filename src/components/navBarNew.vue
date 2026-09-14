@@ -99,7 +99,7 @@
           <a
             href="mailto:valuecompass@microsoft.com"
             aria-label="Email"
-            @click="copyEmail('valuecompass@microsoft.com')"
+            @click.prevent="copyEmail('valuecompass@microsoft.com')"
           >
             <SvgIcon
               class="SvgIcon email-icon"
@@ -117,14 +117,19 @@
           ></a>
         </li>
       </ul>
-      <p class="sr-only" aria-live="polite" aria-atomic="true">
+      <p
+        class="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {{ emailCopyStatus }}
       </p>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { nextTick, onMounted, ref } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { getGeoStatus } from "../service/api";
 
@@ -133,6 +138,13 @@ const isResearchMenuOpen = ref(false);
 const researchMenuRef = ref<HTMLElement | null>(null);
 const researchTriggerRef = ref<HTMLElement | null>(null);
 const emailCopyStatus = ref("");
+let emailCopyStatusTimer: number | undefined;
+let emailClientTimer: number | undefined;
+
+onBeforeUnmount(() => {
+  window.clearTimeout(emailCopyStatusTimer);
+  window.clearTimeout(emailClientTimer);
+});
 
 onMounted(async () => {
   try {
@@ -230,8 +242,15 @@ const copyEmail = async (text: string) => {
   }
 
   emailCopyStatus.value = "";
+  window.clearTimeout(emailCopyStatusTimer);
+  window.clearTimeout(emailClientTimer);
   await nextTick();
-  emailCopyStatus.value = "Copied email";
+  emailCopyStatusTimer = window.setTimeout(() => {
+    emailCopyStatus.value = "Copied email";
+    emailClientTimer = window.setTimeout(() => {
+      window.location.href = `mailto:${text}`;
+    }, 1000);
+  }, 100);
   ElMessage({
     message: "Copied email",
     type: "success",
