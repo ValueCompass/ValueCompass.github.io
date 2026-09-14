@@ -123,7 +123,7 @@
           </div>
           <div style="width: 9em">
             <el-button
-              style="font-size: 0.875em; color: #268DD4"
+              style="font-size: 0.875em;"
               plain
               @click="downloadAll"
               :disabled="downloadDisabled"

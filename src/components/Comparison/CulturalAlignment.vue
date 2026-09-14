@@ -37,7 +37,7 @@
           <p id="heatmap-live-status" class="sr-only" aria-live="polite">
             {{ activeCellAnnouncement }}
           </p>
-          <p style="text-align: center; color: #747474;;">The heatmap illustrates the Pearson correlation between the values of various models and countries.</p>
+          <p style="text-align: center; color: var(--sub-text-color)">The heatmap illustrates the Pearson correlation between the values of various models and countries.</p>
         </div>
       </div>
     </div>
@@ -68,6 +68,7 @@ const accessibleHeatmapCells = ref([]);
 const activeCellIndex = ref(0);
 const activeCellAnnouncement = ref("");
 const heatmapColors = ["#096DD9", "#91D5FF", "#eeeeee", "#FFA39E", "#CF1322"];
+const getThemeTextColor = () => getComputedStyle(document.body).color || "#000";
 
 const hexToRgb = (hex) => [
   parseInt(hex.slice(1, 3), 16),
@@ -158,6 +159,7 @@ const getAllHeatMapData = async () => {
   });
 };
 const setHotChart = (modelNameList) => {
+  const textColor = getThemeTextColor();
   checkedModels.value = modelNameList;
   let allHeatMapDataFilter = [];
   if (modelNameList && modelNameList.length > 0) {
@@ -216,7 +218,7 @@ const setHotChart = (modelNameList) => {
       },
 
       axisLabel: {
-        color: "#000",
+        color: textColor,
         fontSize: 16,
       },
     },
@@ -280,6 +282,7 @@ onMounted(async () => {
   // prettier-ignore
 
   chartInstance = echarts.init(chartDom.value);
+  const textColor = getThemeTextColor();
   const option = {
     tooltip: {
       position: "top",
@@ -303,7 +306,7 @@ onMounted(async () => {
       },
 
       axisLabel: {
-        color: "#000",
+        color: textColor,
         fontSize: 16,
       },
     },
@@ -318,7 +321,7 @@ onMounted(async () => {
       },
 
       axisLabel: {
-        color: "#000",
+        color: textColor,
         fontSize: 16,
       },
     },
@@ -341,7 +344,7 @@ onMounted(async () => {
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
       // color: ["#083669", "#4795C3", "#eeeeee", "#E0785F", "#690320"],
       color: [...heatmapColors].reverse(),
-      textStyle: { color: "#000" },
+      textStyle: { color: textColor },
     },
 
     // series: [

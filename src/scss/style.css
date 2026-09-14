@@ -244,12 +244,13 @@ button,.button {
     }
 }
 .el-button.is-plain{
-    border-color: #2077b4;
-    color: #2077b4;
+    border-color: var(--theme-color);
+    color: var(--theme-color);
     background: #fff;
     &:hover{
         background: #fff;
-        color: #2077b4;
+        color: var(--theme-color);
+        opacity: 1;
     }
 }
 

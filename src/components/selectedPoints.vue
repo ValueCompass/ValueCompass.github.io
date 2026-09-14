@@ -126,7 +126,7 @@
           </div>
         </div>
         <div>
-          <el-button class="btn select-all-btn" :aria-label="selectAllAriaLabel" @click="handleCheckAllChange"
+          <el-button class="btn select-all-btn is-plain" :aria-label="selectAllAriaLabel" @click="handleCheckAllChange"
             >{{ selectAllAriaLabel }}</el-button
           >
           <el-button
@@ -652,12 +652,13 @@ defineExpose({
       }
     }
     .select-all-btn {
-      color: #2077b4;
-      border-color: #2077b4;
     }
     .apply-btn {
       background: var(--theme-color);
       color: #fff;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 

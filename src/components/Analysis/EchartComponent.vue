@@ -47,9 +47,10 @@ let chartInstance = null;
 let maxValue = 0;
 let minValue = 100;
 const selectedLabelColor = "#0B70C3";
-const defaultLabelColor = "black";
+const getThemeTextColor = () => getComputedStyle(document.body).color || "#000";
 
 const setRadarChart = (data, typeNum) => {
+  const textColor = getThemeTextColor();
   const values = Object.values(data);
   maxValue = Math.ceil(Math.max(...values) * 1) / 1;
   let jianNum = 2;
@@ -65,7 +66,7 @@ const setRadarChart = (data, typeNum) => {
       color:
         props.hasHightlight && index == 0
           ? selectedLabelColor
-          : defaultLabelColor,
+          : textColor,
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
       max: maxValue,
@@ -82,12 +83,13 @@ const setRadarChart = (data, typeNum) => {
       splitNumber: 5,
       axisName: {
         fontSize: 14,
-        color: "black",
+        color: textColor,
         formatter: function (value) {
           return value.split("&").join("&\n"); // 将换行符拆分为数组
         },
       },
       axisLabel: {
+        color: textColor,
         formatter: function (value) {
           return value.toFixed(0); // 保留一位小数
         },
@@ -120,10 +122,11 @@ const setRadarChart = (data, typeNum) => {
   });
 };
 const setRadarHighlight = (data, item) => {
+  const textColor = getThemeTextColor();
   const indicator = Object.keys(data).map((indica, index) => {
     return {
       name: indica + " (" + data[indica].toFixed(2) + ")",
-      color: item == indica ? selectedLabelColor : defaultLabelColor,
+      color: item == indica ? selectedLabelColor : textColor,
       axisLabel: { show: index == 0 ? true : false },
       min: minValue,
       max: maxValue,
@@ -139,7 +142,7 @@ const setRadarHighlight = (data, item) => {
       splitNumber: 5,
       axisName: {
         fontSize: nameFontSize,
-        color: "black",
+        color: textColor,
         formatter: function (value) {
           return value.split("&").join("&\n"); // 将换行符拆分为数组
         },
@@ -159,6 +162,7 @@ defineExpose({
 onMounted(async () => {
   await nextTick(); // 确保DOM已经渲染完成
   chartInstance = echarts.init(chartDom.value);
+  const textColor = getThemeTextColor();
   const option = {
     radar: {
       splitArea: {
@@ -169,10 +173,11 @@ onMounted(async () => {
       axisLabel: {
         show: true,
         fontSize: 14,
+        color: textColor,
       },
       axisName: {
         fontSize: 14,
-        color: "black",
+        color: textColor,
       },
       triggerEvent: true,
       indicator: [
@@ -224,7 +229,7 @@ onMounted(async () => {
       const indicator = radar.indicator.map((item) => {
         item.color = item.name === selectedName
           ? selectedLabelColor
-          : defaultLabelColor;
+          : getThemeTextColor();
         return item;
       });
       emit("setCurrentCaseData", selectedName.split(" (")[0]);
