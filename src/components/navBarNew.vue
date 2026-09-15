@@ -6,7 +6,22 @@
           <img src="@/assets/images/main-logo.png" alt="Value Compass logo" />
         </div>
       </router-link>
-      <ul class="nav-ul">
+      <button
+        class="mobile-nav-toggle"
+        type="button"
+        aria-controls="primary-navigation"
+        :aria-expanded="isMobileNavOpen"
+        aria-label="Toggle navigation"
+        @click="isMobileNavOpen = !isMobileNavOpen"
+      >
+        <span class="mobile-nav-toggle__icon" aria-hidden="true"></span>
+      </button>
+      <ul
+        id="primary-navigation"
+        class="nav-ul"
+        :class="{ 'mobile-open': isMobileNavOpen }"
+        @click="closeMobileNav"
+      >
         <li>
           <router-link to="/">Home</router-link>
           <!-- <a href="">Home</a> -->
@@ -134,6 +149,7 @@ import { ElMessage } from "element-plus";
 import { getGeoStatus } from "../service/api";
 
 const showTestYourValues = ref(false);
+const isMobileNavOpen = ref(false);
 const isResearchMenuOpen = ref(false);
 const researchMenuRef = ref<HTMLElement | null>(null);
 const researchTriggerRef = ref<HTMLElement | null>(null);
@@ -170,6 +186,11 @@ const openResearchMenu = () => {
 };
 const closeResearchMenu = () => {
   isResearchMenuOpen.value = false;
+};
+const closeMobileNav = (event: MouseEvent) => {
+  if ((event.target as HTMLElement).closest("a")) {
+    isMobileNavOpen.value = false;
+  }
 };
 const getResearchMenuLinks = () => {
   return Array.from(
@@ -417,6 +438,103 @@ const copyText = (text: string) => {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+}
+
+.mobile-nav-toggle {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .header-component {
+    height: auto;
+    padding: 0.75em 0;
+
+    & > .nav {
+      flex-wrap: wrap;
+
+      .logo-container img {
+        width: auto;
+        max-width: 11em;
+        height: 3.25em;
+      }
+
+      ul.nav-ul {
+        display: none;
+        width: 100%;
+        padding-top: 0.75em;
+        flex-direction: column;
+        align-items: stretch;
+
+        &.mobile-open {
+          display: flex;
+        }
+
+        & > li {
+          width: 100%;
+          margin-left: 0;
+          border-top: 1px solid var(--border-color);
+
+          & > a {
+            display: inline-flex;
+            max-width: 100%;
+            padding: 0.75em 0;
+            overflow-wrap: anywhere;
+          }
+
+          &.icon-li {
+            padding: 0.75em 0;
+          }
+
+          .nav-child-ul {
+            right: 0;
+            left: auto;
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    color: var(--text-color);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+  }
+
+  .mobile-nav-toggle__icon,
+  .mobile-nav-toggle__icon::before,
+  .mobile-nav-toggle__icon::after {
+    display: block;
+    width: 22px;
+    height: 2px;
+    content: "";
+    background: currentColor;
+  }
+
+  .mobile-nav-toggle__icon {
+    position: relative;
+  }
+
+  .mobile-nav-toggle__icon::before,
+  .mobile-nav-toggle__icon::after {
+    position: absolute;
+    left: 0;
+  }
+
+  .mobile-nav-toggle__icon::before {
+    top: -7px;
+  }
+
+  .mobile-nav-toggle__icon::after {
+    top: 7px;
   }
 }
 

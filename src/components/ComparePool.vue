@@ -72,12 +72,13 @@
         </li>
         <el-popover
           ref="popoverRef"
-          :width="630"
+          width="min(630px, calc(100vw - 32px))"
+          popper-class="compare-pool-model-popover"
           v-if="activeIndex !== null"
           :visible="true"
           :virtual-ref="buttonRefs[activeIndex]"
           virtual-triggering
-          placement="right-start"
+          :placement="isMobileViewport ? 'top' : 'right-start'"
           trigger="click"
           @after-leave="activeIndex = null"
         >
@@ -124,6 +125,7 @@ import {
   defineExpose,
   defineEmits,
   onMounted,
+  onUnmounted,
   watchEffect,
 } from "vue";
 import axios from "axios";
@@ -144,6 +146,11 @@ const checkedModelNameList = ref([]);
 
 const checkedModelDetailList = ref([]);
 const showDetail = ref(true);
+const mobileViewportQuery = window.matchMedia("(max-width: 767px)");
+const isMobileViewport = ref(mobileViewportQuery.matches);
+const handleMobileViewportChange = (event) => {
+  isMobileViewport.value = event.matches;
+};
 
 const closeModel = (model) => {
   emit("closeModel", model);
@@ -176,6 +183,12 @@ const getAxiosData = (url) => {
 onMounted(() => {
   fetchData();
   document.addEventListener("click", handleClickOutside);
+  mobileViewportQuery.addEventListener("change", handleMobileViewportChange);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+  mobileViewportQuery.removeEventListener("change", handleMobileViewportChange);
 });
 
 // 监听 checkedModelDetailList 的变化
@@ -345,6 +358,78 @@ const handleClickOutside = (event) => {
     &:focus-visible {
       outline-color: Highlight;
     }
+  }
+}
+
+@media (max-width: 767px) {
+  .title-content {
+    bottom: 16px;
+    width: calc(100% - 32px);
+    max-height: calc(100% - 32px);
+    padding: 1.25em;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    h2 {
+      padding-right: 1.5em;
+      font-size: 1.5em;
+    }
+
+    .compare-model-list ul {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75em;
+
+      > li.model-li,
+      > li.model-li.add-model {
+        width: 100%;
+        min-width: 0;
+        padding: 0.85em 0.6em;
+
+        .name {
+          padding-right: 1.25em;
+          overflow-wrap: anywhere;
+        }
+
+        .top-item-content {
+          flex-wrap: wrap;
+          gap: 0.25em;
+
+          .dev {
+            min-width: 0;
+            padding: 0 0.25em;
+          }
+
+          .date {
+            margin-left: auto;
+          }
+        }
+      }
+
+      > li.model-li.add-model {
+        padding: 0;
+      }
+
+      > .btn-box {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+    }
+  }
+
+  :global(.compare-pool-model-popover) {
+    position: fixed !important;
+    inset: 16px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    transform: none !important;
+    box-sizing: border-box;
+  }
+
+  :global(.compare-pool-model-popover .el-popper__arrow) {
+    display: none;
   }
 }
 

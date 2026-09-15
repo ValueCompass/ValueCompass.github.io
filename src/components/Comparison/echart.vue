@@ -33,7 +33,6 @@
           <div
             class="chart"
             ref="chartDom"
-            style="width: 1200px; height: 700px; margin: 0 auto"
             tabindex="0"
             role="img"
             :aria-label="chartAriaLabel"
@@ -68,6 +67,7 @@ const props = defineProps({
 
 const chartDom = ref(null);
 let chartInstance = null;
+let chartResizeObserver = null;
 let forcedColorsMediaQuery = null;
 const chartTitles = {
   1: "Schwartz Theory of Basic Values",
@@ -136,6 +136,21 @@ const handleLegendKeydown = (event) => {
 
   event.preventDefault();
   buttons[nextIndex]?.focus();
+};
+
+const resizeChart = () => {
+  if (!chartDom.value || !chartInstance) {
+    return;
+  }
+
+  chartInstance.resize({
+    width: chartDom.value.clientWidth,
+    height: chartDom.value.clientHeight,
+  });
+};
+
+const handleWindowResize = () => {
+  requestAnimationFrame(() => requestAnimationFrame(resizeChart));
 };
 
 const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
@@ -279,6 +294,7 @@ const setRadarChart = (modelList, MeasurementDimensionName, filerData) => {
 
 defineExpose({
   setRadarChart,
+  resizeChart,
 });
 
 // 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
@@ -318,17 +334,34 @@ onMounted(async () => {
     },
   };
   chartInstance.setOption(option);
+  chartResizeObserver = new ResizeObserver(([entry]) => {
+    const { width, height } = entry.contentRect;
+
+    if (width > 0 && height > 0) {
+      chartInstance?.resize({ width, height });
+    }
+  });
+  chartResizeObserver.observe(chartDom.value);
+  window.addEventListener("resize", handleWindowResize);
   forcedColorsMediaQuery.addEventListener("change", updateChartContrast);
 });
 
 onUnmounted(() => {
   forcedColorsMediaQuery?.removeEventListener("change", updateChartContrast);
+  window.removeEventListener("resize", handleWindowResize);
+  chartResizeObserver?.disconnect();
   chartInstance?.dispose();
 });
 </script>
 <style scoped>
 figure {
   margin: 0;
+}
+
+.chart {
+  width: 100%;
+  height: 700px;
+  margin: 0 auto;
 }
 
 .chart-legend {
@@ -400,5 +433,11 @@ figure {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+@media (max-width: 767px) {
+  .chart {
+    height: 360px;
+  }
 }
 </style>

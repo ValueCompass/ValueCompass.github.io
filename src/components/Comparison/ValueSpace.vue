@@ -11,14 +11,8 @@
           >
             <div class="chart-frame">
               <div
-                class="chart"
-                style="
-                  width: 1180px;
-                  height: 700px;
-                  background-color: #121f37;
-                  padding: 2em 0;
-                  border-radius: 0.5em;
-                "
+                class="
+                chart"
                 ref="chartDom"
                 tabindex="0"
                 role="img"
@@ -309,6 +303,7 @@ function setGlChart(gl_data) {
 
 const chartDom = ref(null);
 let chartInstance = null;
+let chartResizeObserver = null;
 const setAutoRotate = (enabled) => {
   isAutoRotating.value = enabled;
   chartInstance?.setOption({
@@ -397,12 +392,15 @@ defineExpose({
 onMounted(async () => {
   reducedMotionQuery.addEventListener("change", handleReducedMotionChange);
   await nextTick(); // 确保DOM已经渲染完成
+  chartResizeObserver = new ResizeObserver(() => chartInstance?.resize());
+  chartResizeObserver.observe(chartDom.value);
   // Submit();
 
   // setValueSpacesData();
 });
 onUnmounted(() => {
   reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
+  chartResizeObserver?.disconnect();
   chartInstance?.dispose();
 });
 </script>
@@ -431,6 +429,16 @@ onUnmounted(() => {
 
 .chart-frame {
   position: relative;
+  width: 100%;
+}
+
+.chart {
+  width: 100%;
+  height: 700px;
+  padding: 2em 0;
+  background-color: #121f37;
+  border-radius: 0.5em;
+  box-sizing: border-box;
 }
 
 .rotation-control {
@@ -527,5 +535,17 @@ onUnmounted(() => {
 }
 :deep(.el-input) {
   --el-input-text-color: #fff;
+}
+
+@media (max-width: 767px) {
+  .chart {
+    height: 420px;
+  }
+
+  .rotation-control {
+    top: 8px;
+    right: 8px;
+    max-width: calc(100% - 16px);
+  }
 }
 </style>

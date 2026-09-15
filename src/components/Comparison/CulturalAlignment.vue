@@ -4,9 +4,8 @@
       <div>
         <div>
           <div
-            class="chart"
+            class="chart culture-heatmap-chart"
             ref="chartDom"
-            style="width: 1200px; height: 600px; margin: 0 auto"
             tabindex="0"
             role="img"
             aria-label="Culture heatmap"
@@ -59,6 +58,7 @@ import { getKeyValue } from "@/utils/common.js";
 const checkedModels = ref([]);
 const chartDom = ref(null);
 let chartInstance = null;
+let chartResizeObserver = null;
 const allHeatMapData = ref();
 const allHeatMapDataObject = ref();
 let countries = [];
@@ -370,11 +370,23 @@ onMounted(async () => {
     // ],
   };
   chartInstance.setOption(option);
+  chartResizeObserver = new ResizeObserver(() => chartInstance?.resize());
+  chartResizeObserver.observe(chartDom.value);
 
   setHotChart(checkedModels.value);
 });
+onUnmounted(() => {
+  chartResizeObserver?.disconnect();
+  chartInstance?.dispose();
+});
 </script>
 <style>
+.culture-heatmap-chart {
+  width: 100%;
+  height: 600px;
+  margin: 0 auto;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -390,5 +402,11 @@ onMounted(async () => {
 .chart:focus-visible {
   outline: 3px solid #0870c3;
   outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .culture-heatmap-chart {
+    height: 420px;
+  }
 }
 </style>

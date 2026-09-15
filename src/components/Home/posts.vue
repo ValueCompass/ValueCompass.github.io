@@ -242,4 +242,30 @@ const posts = ref([
     }
   }
 }
+
+@media (max-width: 767px) {
+  .posts-news {
+    display: block;
+
+    li {
+      width: 100%;
+
+      .bottom {
+        padding: 1.25em;
+
+        .article-tags__box {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5em;
+
+          .article__tag {
+            max-width: 100%;
+            margin-right: 0;
+            overflow-wrap: anywhere;
+          }
+        }
+      }
+    }
+  }
+}
 </style>

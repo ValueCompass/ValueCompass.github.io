@@ -255,4 +255,39 @@ onMounted(async () => {
     }
   }
 }
+
+@media (max-width: 767px) {
+  .test-container {
+    padding: 2.5em 16px;
+    flex-direction: column;
+    align-items: stretch;
+
+    .home-intro-div {
+      width: 100%;
+      padding-right: 0;
+      box-sizing: border-box;
+
+      h1 {
+        font-size: 3em;
+        overflow-wrap: anywhere;
+      }
+
+      h2 {
+        font-size: 1.75em;
+      }
+    }
+
+    .img-div {
+      width: 70%;
+      max-width: 16em;
+      margin: 2em auto 0;
+      padding: 0;
+    }
+
+    .btn-container {
+      margin-top: 2em;
+      flex-wrap: wrap;
+    }
+  }
+}
 </style>

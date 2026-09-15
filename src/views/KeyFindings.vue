@@ -1,5 +1,8 @@
 <template>
   <div class="main-container Key-Findings-template">
+    <h2 class="h1">
+      Insights about LLMs Values from the Value Compass Benchmarks
+    </h2>
     <!-- <span class="button read-report-btn" @click="downloadPdf">Read report</span> -->
     <a
       class="button read-report-btn"
@@ -8,9 +11,6 @@
     >
       Read report
     </a>
-    <h2 class="h1">
-      Insights about LLMs Values from the Value Compass Benchmarks
-    </h2>
     <div v-for="(section, i) in InsightsData" :key="i">
       <h2>{{ section.h2 }}</h2>
       <template v-if="section.list">
@@ -472,6 +472,68 @@ const downloadPdf = () => {
     &:focus-visible {
       outline-color: Highlight;
     }
+  }
+}
+
+@media (max-width: 767px) {
+  .Key-Findings-template {
+    padding: 2em 16px;
+
+    .h1 {
+      margin-bottom: 0.75em;
+      font-size: 2em;
+      overflow-wrap: anywhere;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      line-height: 1.3;
+    }
+
+    h3 {
+      gap: 0.5em;
+      font-size: 1.35em;
+    }
+
+    .item {
+      padding: 1.25em;
+      border-radius: 8px;
+
+      .title {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75em;
+
+        .left {
+          width: auto;
+          min-width: 0;
+          gap: 0.5em;
+        }
+
+        .right {
+          min-width: 0;
+          font-size: 1.1em;
+          overflow-wrap: anywhere;
+        }
+      }
+
+      .details {
+        padding-left: 0;
+        padding-top: 0.75em;
+
+        > div {
+          font-size: 1em;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+  }
+
+  .read-report-btn {
+    position: static;
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 2em;
   }
 }
 </style>

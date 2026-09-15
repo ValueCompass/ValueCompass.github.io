@@ -24,12 +24,26 @@ html, body {
     }
   }
   
-  @media (max-width: 1500px) {
+@media (max-width: 1500px) {
     html,
     body {
       font-size: 14px;
     }
-  }
+}
+
+@media (max-width: 1280px) {
+    html,
+    body {
+      font-size: 13px;
+    }
+}
+
+@media (max-width: 767px) {
+    html,
+    body {
+        font-size: 12px;
+    }
+}
 
 body {
     width: 100%;
@@ -82,6 +96,21 @@ button:focus-visible {
     margin: 0 auto;
     min-width: 1200px;
 }
+
+@media (max-width: 1279px) {
+    body {
+        min-width: 0;
+    }
+
+    .main-container {
+        width: 100%;
+        min-width: 0;
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+}
+
+
 
 .main-14-container {
     width: 1400px;

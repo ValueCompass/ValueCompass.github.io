@@ -425,4 +425,86 @@ import postsComponent from "../components/Home/posts.vue";
     }
   }
 }
+
+@media (max-width: 767px) {
+  .box {
+    .flex,
+    .global-ai-values-challenge .main-container {
+      flex-direction: column !important;
+      gap: 1.5em !important;
+    }
+
+    .flex > div,
+    .global-ai-values-challenge .main-container .left,
+    .global-ai-values-challenge .main-container .right {
+      width: 100%;
+    }
+
+    .global-ai-values-challenge {
+      padding: 2.5em 0;
+
+      .main-container {
+        .left img {
+          width: 50%;
+          max-width: 12em;
+        }
+
+        .right {
+          min-width: 0;
+          padding: 0;
+
+          > p:first-child span {
+            max-width: 100%;
+            padding: 0.35em 0.75em;
+            overflow-wrap: anywhere;
+          }
+
+          > .global-ai-values-challenge-img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+          }
+        }
+      }
+    }
+
+    .leaderboard {
+      .left > div img {
+        width: 100%;
+      }
+
+      .left > div .cover {
+        display: none;
+      }
+
+      .right ul {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25em 0.75em;
+      }
+    }
+
+    .card {
+      padding: 1.5em !important;
+      border-radius: 1em;
+    }
+
+    .flex .card {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 1.5em !important;
+    }
+
+    .title {
+      img {
+        width: 5em;
+      }
+
+      h4 {
+        font-size: 2em;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+}
 </style>

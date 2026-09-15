@@ -10,7 +10,13 @@
           @applyChange="applyChange"
           @swicthChange="swicthChange"
         ></SelectedPoints>
-        <div class="filter-table" @mousedown="handleMouseDown">
+        <div
+          class="filter-table"
+          tabindex="0"
+          role="region"
+          aria-label="Leaderboard table, scroll horizontally to view all columns"
+          @mousedown="handleMouseDown"
+        >
           <el-table
             :data="tableData"
             :default-sort="{ prop: 'place' }"
@@ -955,6 +961,32 @@ const handleMouseUp = () => {
 
 .el-select-dropdown__item.is-hovering {
   background: transparent !important;
+}
+
+@media (max-width: 767px) {
+  .filter-table {
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-inline: contain;
+  }
+
+  .filter-table :deep(.el-table-fixed-column--left),
+  .filter-table :deep(.el-table-fixed-column--right) {
+    position: static !important;
+    right: auto !important;
+    left: auto !important;
+    z-index: auto !important;
+  }
+
+  .filter-table :deep(.el-scrollbar__wrap) {
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+  }
+
+  .filter-table:focus-visible {
+    outline: 2px solid var(--theme-color);
+    outline-offset: 2px;
+  }
 }
 
 .show-intro-icon {

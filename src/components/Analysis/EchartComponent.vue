@@ -43,6 +43,7 @@ if (clientWidth > 1800) {
 
 const chartDom = ref(null);
 let chartInstance = null;
+let chartResizeObserver = null;
 
 let maxValue = 0;
 let minValue = 100;
@@ -195,6 +196,8 @@ onMounted(async () => {
     },
   };
   chartInstance.setOption(option);
+  chartResizeObserver = new ResizeObserver(() => chartInstance?.resize());
+  chartResizeObserver.observe(chartDom.value);
   // chartInstance.on("mouseover", function (params) {
   //   if (params.componentType === "radar" && params.targetType == "axisName") {
   //     // 修改雷达图的颜色
@@ -250,6 +253,11 @@ onMounted(async () => {
       });
     }
   });
+});
+
+onUnmounted(() => {
+  chartResizeObserver?.disconnect();
+  chartInstance?.dispose();
 });
 
 const emit = defineEmits(["setCurrentCaseData"]);

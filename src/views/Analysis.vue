@@ -63,15 +63,7 @@
           {{ currentModel }} is an API model produced by
           {{ currentModelInfo.developer }}.
         </div> -->
-        <div
-          style="
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-top: 1.5em;
-          "
-        >
+        <div class="model-details">
           <div class="model-props" v-if="currentModelInfo">
             <div class="model-prop">
               <!-- <SvgIcon class="prop-icon" name="Affiliation-icon"></SvgIcon> -->
@@ -121,7 +113,7 @@
               <span class="prop-content">2025/2</span>
             </div>
           </div>
-          <div style="width: 9em">
+          <div class="download-actions">
             <el-button
               style="font-size: 0.875em;"
               plain
@@ -835,6 +827,18 @@ const downloadChartsAsPDF = async (pdf) => {
       }
     }
   }
+
+  .model-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 1.5em;
+  }
+
+  .download-actions {
+    width: 9em;
+  }
 }
 .chart-box {
   margin-top: 1.5em;
@@ -1095,6 +1099,129 @@ const downloadChartsAsPDF = async (pdf) => {
     right: 0;
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .title-content {
+    padding: 1em;
+    border-radius: 6px;
+
+    .model .model-type {
+      max-width: 100%;
+      font-size: 1.5em;
+      overflow-wrap: anywhere;
+    }
+
+    .model-details {
+      flex-direction: column;
+      gap: 1em;
+    }
+
+    .model-props {
+      width: 100%;
+      align-items: flex-start;
+
+      .model-prop {
+        flex: 0 1 auto;
+        width: auto;
+        max-width: 100%;
+        padding-right: 1em;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        .prop-name {
+          white-space: normal;
+        }
+
+        .prop-content {
+          max-width: 100%;
+          white-space: normal;
+          overflow: visible;
+          overflow-wrap: anywhere;
+          text-overflow: clip;
+        }
+      }
+    }
+
+    .download-actions {
+      width: auto;
+    }
+  }
+
+  .title-tabs > ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    align-items: stretch;
+
+    > li {
+      min-width: 0;
+      min-height: 3.5em;
+      padding: 0.5em 0.25em;
+      justify-content: center;
+      font-size: 0.85em;
+      line-height: 1.2;
+      text-align: center;
+      overflow-wrap: anywhere;
+      box-sizing: border-box;
+    }
+  }
+
+  .chart-box {
+    display: block;
+    padding-bottom: 2em;
+
+    .chart-tab {
+      width: 100%;
+      padding-right: 0;
+
+      ul li {
+        margin-bottom: 0.75em;
+        padding: 0.5em;
+      }
+    }
+
+    .chart-main {
+      overflow: visible;
+
+      .chart-main-chart,
+      .chart-main-chart.close {
+        height: auto;
+        flex-direction: column;
+
+        .chart-container {
+          width: 100%;
+          height: 0;
+          margin-top: 0;
+          padding-bottom: 100%;
+          transform: none;
+        }
+
+        .chart-text-main {
+          min-height: 34em;
+          transform: none;
+
+          .chart-menu {
+            margin: 0 1em;
+          }
+
+          .chart-content {
+            min-height: 27em;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+
+    .case-open-btn {
+      display: none;
+    }
+
+    .case-close-btn {
+      position: static;
+      margin: 0.75em 1em;
+    }
   }
 }
 </style>

@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       v-model="dialogTableVisible"
+      class="value-systems-dialog"
       title=""
       style="width: 70%; max-width: 1340px"
       align-center
@@ -408,6 +409,73 @@ defineExpose({
         color: var(--theme-color);
         transition: all 0.2s;
       }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  :global(.el-overlay-dialog:has(.value-systems-dialog)) {
+    padding: 16px 0;
+    align-items: center;
+    transform: none !important;
+    box-sizing: border-box;
+  }
+
+  :deep(.el-dialog) {
+    width: calc(100vw - 16px) !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: 75vh;
+    margin: 0 auto !important;
+    padding: 0.75em;
+    align-self: center;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .swiper {
+    margin-top: 0;
+  }
+
+  .swiper-slide .swiper-main {
+    padding: 0 1em 2.5em;
+
+    h3 {
+      padding: 0 1em;
+      font-size: 1.75em;
+      line-height: 1.3;
+    }
+
+    .img-div {
+      margin: 0.75em 0;
+
+      img {
+        display: block;
+        width: 100%;
+        max-height: 46vh;
+        object-fit: contain;
+      }
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  }
+
+  :deep(.swiper) {
+    .swiper-button-prev,
+    .swiper-button-next {
+      width: 2.5em;
+      height: 4em;
+    }
+
+    .swiper-button-prev {
+      left: -0.5em;
+    }
+
+    .swiper-button-next {
+      right: -0.5em;
     }
   }
 }

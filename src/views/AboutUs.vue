@@ -483,6 +483,75 @@ const interns = ref([
     }
   }
 
+  @media only screen and (max-width: 767px) {
+    .hero__content {
+      flex-direction: column;
+
+      img {
+        width: 5em;
+      }
+    }
+
+    .hreo_name {
+      font-size: 2em;
+      text-align: center;
+    }
+
+    .teams-container {
+      .team-head h2 {
+        font-size: 1.5em;
+        overflow-wrap: anywhere;
+      }
+
+      .team-members {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.5em 0.75em;
+        align-items: start !important;
+      }
+
+      .one-member {
+        width: auto;
+        min-width: 0;
+        margin-bottom: 0;
+        flex-direction: row;
+        align-items: flex-start !important;
+        gap: 0.5em;
+
+        .member__image {
+          flex: 0 0 38%;
+          width: 38%;
+        }
+
+        .member-info {
+          flex: 1;
+          width: auto;
+          min-width: 0;
+          padding: 0.15em 0;
+          box-sizing: border-box;
+          gap: 0.35em;
+
+          .member__name {
+            font-size: 1em;
+          }
+
+          .member__position,
+          .member_intern_content,
+          .member__institution {
+            font-size: 0.8em;
+          }
+
+          p,
+          h3,
+          span {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+          }
+        }
+      }
+    }
+  }
+
   // @media only screen and (max-width: 600px) {
   //   .teams-container {
   //     .team-members {

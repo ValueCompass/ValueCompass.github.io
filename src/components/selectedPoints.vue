@@ -65,7 +65,12 @@
           v-model="checkedPoints"
           @change="handleCheckedPointsChange"
         >
-          <div class="group-list">
+          <div
+            class="group-list"
+            tabindex="0"
+            role="region"
+            aria-label="Selected point groups, scroll horizontally to view all options"
+          >
             <div
               v-for="(item, index) in SchwartzData.group"
               :key="index"
@@ -92,7 +97,6 @@
                   <el-checkbox
                     :label="point.label"
                     :value="point.label"
-                    v-if="!point.isRepeat"
                   >
                     {{ point.label }}
                   </el-checkbox>
@@ -814,4 +818,188 @@ defineExpose({
     }
   }
 }
+
+@media (min-width: 768px) and (max-width: 1400px) {
+  .select-container {
+    ul.label {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+
+      li {
+        flex: 0 0 auto;
+        width: auto;
+        padding-right: 0.5em;
+        padding-left: 0.5em;
+
+        .point-option-button {
+          min-width: 0;
+          text-align: left;
+        }
+
+        span {
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 899px) {
+  .select-container .group-list {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 1.75em 0;
+    max-width: 100%;
+    padding: 0.8em 2px 0.5em;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+
+    &:focus-visible {
+      outline: 2px solid var(--theme-color);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .select-container {
+    .select-date {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      width: 4.5em;
+      margin-left: auto;
+      margin-bottom: 0.75em;
+    }
+
+    .select-points-box {
+      padding: 1em;
+      border-radius: 6px;
+    }
+
+    ul {
+      width: 100%;
+      flex-wrap: wrap;
+
+      li {
+        width: 100%;
+        padding: 0.65em 0;
+        justify-content: flex-start;
+
+        .point-option-button {
+          min-width: 0;
+          text-align: left;
+        }
+
+        span {
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+
+    ul.label {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5em;
+      overflow-x: visible;
+
+      li {
+        width: 100%;
+        min-width: 0;
+        padding-right: 0.5em;
+        padding-left: 0.5em;
+        box-sizing: border-box;
+
+        span {
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+
+    .btn-container {
+      flex-direction: column;
+      gap: 1em;
+
+      > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+      }
+
+      :deep(.el-button + .el-button) {
+        margin-left: 0;
+      }
+    }
+
+    .group-list {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      gap: 1.75em 0;
+      max-width: 100%;
+      padding: 0.8em 2px 0.5em;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+
+      .group-item {
+        width: auto;
+        min-width: 0;
+        padding: 1em 0 0.8em;
+        border: 0;
+        border-radius: 0;
+
+        .group-text {
+          position: absolute;
+          top: -0.8em;
+          left: 1em;
+          width: fit-content;
+          max-width: none;
+          height: 1.5rem;
+          margin-bottom: 0;
+          font-size: 1.25em;
+          line-height: 1.5rem;
+          white-space: nowrap;
+          transform: none;
+        }
+
+        > .border-box,
+        &:nth-child(1) > .border-box,
+        &:nth-child(2) > .border-box {
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
+          border: 1px solid #47acff;
+          border-radius: 12px;
+          transform: translateX(-0.9375rem) scale(0.985);
+        }
+
+        &:nth-child(1) > .border-box {
+          width: calc(100% - 3.18rem - 0.9375rem);
+        }
+
+        &:nth-child(2) > .border-box {
+          width: calc(100% + 3.18rem + 0.9375rem);
+          transform: translateX(-3.18rem - 1.875rem) scale(0.985);
+        }
+
+        .radio-box {
+          display: block;
+          white-space: nowrap;
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--theme-color);
+        outline-offset: 2px;
+      }
+    }
+  }
+}
+
 </style>

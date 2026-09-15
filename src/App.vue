@@ -73,4 +73,22 @@ provide("reload", () => {
     z-index: 2003;
   }
 }
+
+@media (max-width: 767px) {
+  #app {
+    display: flex;
+    flex-direction: column;
+
+    #content {
+      flex: 1;
+      min-height: 0;
+      padding-top: 0;
+    }
+
+    .header-component {
+      position: static;
+      flex: 0 0 auto;
+    }
+  }
+}
 </style>

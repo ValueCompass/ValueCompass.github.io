@@ -102,8 +102,14 @@ const setRadarChart = (modelList, filerData) => {
   );
 };
 
+const resizeChart = () => {
+  const charts = [chartDom1, chartDom2, chartDom3, chartDom4];
+  charts[props.DimensionMeasurementTabIndex]?.value?.resizeChart();
+};
+
 defineExpose({
   setRadarChart,
+  resizeChart,
 });
 
 // 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）

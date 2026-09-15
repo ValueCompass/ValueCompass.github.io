@@ -481,4 +481,73 @@ const vDrag = {
     
   }
 }
+
+@media (max-width: 767px) {
+  .intro {
+    width: 100%;
+    padding: 2em 0;
+    flex-direction: column;
+    align-items: stretch;
+
+    .left {
+      width: auto;
+    }
+
+    .right {
+      padding-top: 1.5em;
+      padding-left: 0;
+
+      ul {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25em 0.75em;
+
+        li p:nth-child(2) {
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+
+    h2 {
+      font-size: 3em;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .leaderboard-nav-container {
+    padding-top: 1em;
+  }
+
+  .nav-child-ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    li {
+      margin-right: 0;
+
+      a {
+        height: 100%;
+        min-height: 0;
+        padding: 0.75em 0.5em;
+        flex-direction: column;
+        text-align: center;
+        overflow-wrap: anywhere;
+        box-sizing: border-box;
+
+        .svg-icon {
+          margin-right: 0;
+          margin-bottom: 0.25em;
+        }
+      }
+    }
+  }
+
+  .learnMore-btn {
+    position: static !important;
+    width: auto;
+    margin: 1em 16px;
+    border-radius: 6px;
+    transform: none;
+  }
+}
 </style>

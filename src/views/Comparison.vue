@@ -600,6 +600,10 @@ const formatTableValue = (value) => (Number(value) || 0).toFixed(2);
 const currentTab = ref(0);
 const tabSwitch = (index) => {
   currentTab.value = index;
+
+  if (index == 1) {
+    nextTick(() => VisualizationComponentProps.value?.resizeChart());
+  }
 };
 
 // Comparison 顶部自定义 tabs 使用左右方向键只移动焦点，不直接切换内容。
@@ -1106,9 +1110,10 @@ const handleClickOutside = (event) => {
 
 .download-box {
   width: 100%;
-  position: absolute;
+  position: fixed;
   top: -99999px;
-  right: -99999px;
+  right: auto;
+  left: -99999px;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1116,6 +1121,7 @@ const handleClickOutside = (event) => {
     position: relative;
     top: 0;
     right: 0;
+    left: 0;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -1170,5 +1176,81 @@ const handleClickOutside = (event) => {
   font-size: 1.3em;
   font-weight: 700;
   stroke-width: 2.4;
+}
+
+@media (max-width: 767px) {
+  .title-content {
+    padding: 1em;
+    border-radius: 6px;
+  }
+
+  .compare-model-list {
+    > .el-button {
+      position: static !important;
+      margin-bottom: 1em;
+    }
+
+    ul {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75em;
+      padding-right: 0;
+
+      > li.model-li,
+      > li.model-li.add-model {
+        width: 100%;
+        min-width: 0;
+        padding: 0.85em 0.6em;
+
+        .name {
+          padding-right: 1.5em;
+          overflow-wrap: anywhere;
+        }
+
+        .top-item-content {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          gap: 0.25em;
+
+          .dev {
+            min-width: 0;
+            padding: 0 0.25em;
+            overflow-wrap: anywhere;
+          }
+
+          .date {
+            margin-left: auto;
+          }
+        }
+      }
+
+      > li.model-li.add-model {
+        padding: 0;
+      }
+    }
+  }
+
+  .chart-box {
+    margin-top: 1.5em;
+
+    .chart-tab > ul {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      align-items: stretch;
+
+      > li {
+        min-width: 0;
+        min-height: 3.5em;
+        padding: 0.5em 0.2em;
+        justify-content: center;
+        font-size: 0.8em;
+        line-height: 1.2;
+        text-align: center;
+        overflow-wrap: anywhere;
+        box-sizing: border-box;
+      }
+    }
+  }
 }
 </style>
