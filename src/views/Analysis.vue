@@ -355,6 +355,10 @@ const currentTitleIndex = ref(0);
 // 顶部自定义标题 tabs 的切换入口，点击或键盘激活时更新当前标题索引。
 const tabListTitleSwitch = (index) => {
   currentTitleIndex.value = index;
+
+  if (index == 1) {
+    nextTick(() => CulturalAlignmentComponentProps.value?.resizeChart());
+  }
 };
 
 // 顶部 title-tabs 使用左右方向键只移动焦点，不直接切换内容。

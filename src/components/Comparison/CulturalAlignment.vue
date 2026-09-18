@@ -69,6 +69,116 @@ const activeCellIndex = ref(0);
 const activeCellAnnouncement = ref("");
 const heatmapColors = ["#096DD9", "#91D5FF", "#eeeeee", "#FFA39E", "#CF1322"];
 const getThemeTextColor = () => getComputedStyle(document.body).color || "#000";
+const getResponsiveChartSettings = () => {
+  const chartWidth = chartDom.value?.clientWidth || window.innerWidth;
+
+  if (chartWidth < 400) {
+    return { compact: true, axisFontSize: 10, cellFontSize: 8, precision: 1 };
+  }
+
+  if (chartWidth < 768) {
+    return { compact: true, axisFontSize: 12, cellFontSize: 9, precision: 1 };
+  }
+
+  return { compact: false, axisFontSize: 16, cellFontSize: 16, precision: 3 };
+};
+
+const getVisibleCellValue = (value, precision) =>
+  Number(value).toFixed(precision);
+
+const getHeatmapLabelOption = () => {
+  const { cellFontSize, precision } = getResponsiveChartSettings();
+
+  return {
+    show: true,
+    position: "inside",
+    fontSize: cellFontSize,
+    fontWeight: "bold",
+    formatter: (params) => {
+      const value = getVisibleCellValue(params.value[2], precision);
+      return `{${getHeatmapLabelStyle(params.value[2])}|${value}}`;
+    },
+    rich: {
+      dark: {
+        color: "#000",
+        fontSize: cellFontSize,
+        fontWeight: "bold",
+      },
+      light: {
+        color: "#fff",
+        fontSize: cellFontSize,
+        fontWeight: "bold",
+      },
+    },
+  };
+};
+
+const getResponsiveHeatmapData = (data) => {
+  const { cellFontSize, precision } = getResponsiveChartSettings();
+
+  return data.map((value) => ({
+    value,
+    label: {
+      show: true,
+      position: "inside",
+      color: getHeatmapLabelStyle(value[2]) === "dark" ? "#000" : "#fff",
+      fontSize: cellFontSize,
+      fontWeight: "bold",
+      formatter: getVisibleCellValue(value[2], precision),
+    },
+  }));
+};
+
+const updateResponsiveChartOptions = () => {
+  if (!chartInstance) {
+    return;
+  }
+
+  const { compact, axisFontSize } = getResponsiveChartSettings();
+  chartInstance.setOption({
+    grid: compact
+      ? {
+          top: "10%",
+          right: 8,
+          bottom: "28%",
+          left: 72,
+          containLabel: false,
+        }
+      : {
+          height: "60%",
+          top: "10%",
+          right: "2%",
+          left: "2%",
+          containLabel: true,
+        },
+    xAxis: {
+      axisLabel: {
+        fontSize: axisFontSize,
+      },
+    },
+    yAxis: {
+      axisLabel: {
+        fontSize: axisFontSize,
+      },
+    },
+    visualMap: {
+      textStyle: {
+        fontSize: axisFontSize,
+      },
+    },
+    series: [
+      {
+        name: "Punch Card",
+        type: "heatmap",
+        data: getResponsiveHeatmapData(heatmapData),
+        label: getHeatmapLabelOption(),
+        labelLayout: {
+          hideOverlap: false,
+        },
+      },
+    ],
+  });
+};
 
 const hexToRgb = (hex) => [
   parseInt(hex.slice(1, 3), 16),
@@ -145,6 +255,18 @@ const handleChartBlur = () => {
   chartInstance?.dispatchAction({ type: "hideTip" });
 };
 
+const resizeChart = () => {
+  if (!chartDom.value || !chartInstance) {
+    return;
+  }
+
+  chartInstance.resize({
+    width: chartDom.value.clientWidth,
+    height: chartDom.value.clientHeight,
+  });
+  updateResponsiveChartOptions();
+};
+
 const getAllHeatMapData = async () => {
   return axios.get("./data/value_sim_heatmap.json").then((value_space_data) => {
     console.log(value_space_data);
@@ -160,6 +282,7 @@ const getAllHeatMapData = async () => {
 };
 const setHotChart = (modelNameList) => {
   const textColor = getThemeTextColor();
+  const { axisFontSize } = getResponsiveChartSettings();
   checkedModels.value = modelNameList;
   let allHeatMapDataFilter = [];
   if (modelNameList && modelNameList.length > 0) {
@@ -219,7 +342,7 @@ const setHotChart = (modelNameList) => {
 
       axisLabel: {
         color: textColor,
-        fontSize: 16,
+        fontSize: axisFontSize,
       },
     },
     series: [
@@ -228,26 +351,11 @@ const setHotChart = (modelNameList) => {
 
         type: "heatmap",
 
-        data: data,
+        data: getResponsiveHeatmapData(data),
 
-        label: {
-          show: true,
-          fontSize: 16,
-          fontWeight: "bold",
-          formatter: (params) =>
-            `{${getHeatmapLabelStyle(params.value[2])}|${params.value[2]}}`,
-          rich: {
-            dark: {
-              color: "#000",
-              fontSize: 16,
-              fontWeight: "bold",
-            },
-            light: {
-              color: "#fff",
-              fontSize: 16,
-              fontWeight: "bold",
-            },
-          },
+        label: getHeatmapLabelOption(),
+        labelLayout: {
+          hideOverlap: false,
         },
         emphasis: {
           itemStyle: {
@@ -263,6 +371,7 @@ const setHotChart = (modelNameList) => {
 
 defineExpose({
   setHotChart,
+  resizeChart,
 });
 
 // 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
@@ -370,10 +479,18 @@ onMounted(async () => {
     // ],
   };
   chartInstance.setOption(option);
-  chartResizeObserver = new ResizeObserver(() => chartInstance?.resize());
+  chartResizeObserver = new ResizeObserver(([entry]) => {
+    const { width, height } = entry.contentRect;
+
+    if (width > 0 && height > 0) {
+      chartInstance?.resize({ width, height });
+      updateResponsiveChartOptions();
+    }
+  });
   chartResizeObserver.observe(chartDom.value);
 
   setHotChart(checkedModels.value);
+  updateResponsiveChartOptions();
 });
 onUnmounted(() => {
   chartResizeObserver?.disconnect();

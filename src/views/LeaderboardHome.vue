@@ -550,4 +550,33 @@ const vDrag = {
     transform: none;
   }
 }
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .nav-child-ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    li a {
+      padding-right: 0.25em;
+      padding-left: 0.25em;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-child-ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    li a {
+      min-width: 0;
+      padding: 0.6em 0.15em;
+      font-size: 0.85em;
+      line-height: 1.2;
+
+      .svg-icon {
+        width: 1.1em;
+        height: 1.1em;
+      }
+    }
+  }
+}
 </style>

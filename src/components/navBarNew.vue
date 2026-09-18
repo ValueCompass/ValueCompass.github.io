@@ -15,6 +15,7 @@
         @click="isMobileNavOpen = !isMobileNavOpen"
       >
         <span class="mobile-nav-toggle__icon" aria-hidden="true"></span>
+        <span class="mobile-nav-toggle__label">Menu</span>
       </button>
       <ul
         id="primary-navigation"
@@ -500,7 +501,8 @@ const copyText = (text: string) => {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
+    gap: 8px;
+    min-width: 44px;
     height: 44px;
     padding: 10px;
     color: var(--text-color);
@@ -535,6 +537,35 @@ const copyText = (text: string) => {
 
   .mobile-nav-toggle__icon::after {
     top: 7px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .header-component > .nav {
+    .mobile-nav-toggle {
+      display: none;
+    }
+
+    ul.nav-ul {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      gap: 0.25em 1em;
+
+      > li {
+        flex: 0 0 auto;
+        width: auto;
+        display: flex;
+        align-items: center;
+        border-top: 0;
+
+        > a {
+          width: auto;
+          padding: 0.6em 0.35em;
+          white-space: normal;
+        }
+      }
+    }
   }
 }
 

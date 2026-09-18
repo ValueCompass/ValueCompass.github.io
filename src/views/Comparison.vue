@@ -92,6 +92,7 @@
             <el-popover
               ref="popoverRef"
               :width="630"
+              popper-class="comparison-model-popover"
               v-if="activeIndex !== null"
               :visible="true"
               :virtual-ref="buttonRefs[activeIndex]"
@@ -603,6 +604,8 @@ const tabSwitch = (index) => {
 
   if (index == 1) {
     nextTick(() => VisualizationComponentProps.value?.resizeChart());
+  } else if (index == 2) {
+    nextTick(() => CulturalAlignmentComponentProps.value?.resizeChart());
   }
 };
 
@@ -1251,6 +1254,27 @@ const handleClickOutside = (event) => {
         box-sizing: border-box;
       }
     }
+  }
+}
+
+@media (max-width: 1279px) {
+  :global(.comparison-model-popover) {
+    position: fixed !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 50% !important;
+    width: min(630px, calc(100vw - 32px)) !important;
+    height: auto !important;
+    max-width: calc(100vw - 32px) !important;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    transform: translate(-50%, -50%) !important;
+    box-sizing: border-box;
+  }
+
+  :global(.comparison-model-popover .el-popper__arrow) {
+    display: none;
   }
 }
 </style>
