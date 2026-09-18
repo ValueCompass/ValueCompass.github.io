@@ -482,5 +482,22 @@ const currentStepAnnouncement = computed(() => {
   border: 0;
 }
 
+@media (max-width: 767px) {
+  .process-bar {
+    justify-content: flex-start;
+    overflow: visible;
+    container-type: size;
+  }
+
+  .process-box {
+    width: min(100cqw, calc(100cqh / 3.03));
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    aspect-ratio: 1 / 3.03;
+    padding-bottom: 0;
+    flex: 0 0 auto;
+  }
+}
 
 </style>

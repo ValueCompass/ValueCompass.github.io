@@ -26,12 +26,6 @@
         <div class="chat-content">
           <div
             class="chat-list-container setHeight"
-            style="
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-            "
           >
             <div style="max-height: 100%; width: 100%">
               <el-scrollbar ref="scrollbarRef">
@@ -718,6 +712,10 @@ defineExpose({
       }
       .chat-list-container {
         // height: calc(100% - 10em);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         overflow: hidden;
         &.setHeight {
           flex: 1;
@@ -895,6 +893,154 @@ defineExpose({
           color: rgba(11, 112, 195, 1);
           margin-right: 5.3em;
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .chat-template {
+    position: relative !important;
+    left: auto;
+    min-height: calc(100vh - 62px);
+    min-height: calc(100dvh - 62px);
+    height: calc(100vh - 62px);
+    height: calc(100dvh - 62px);
+    transform: none;
+
+    .chat-container {
+      --chat-sidebar-width: clamp(5em, 22vw, 8em);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--chat-sidebar-width);
+      grid-template-rows: var(--chat-sidebar-width) minmax(0, 1fr);
+      column-gap: 0.75em;
+      row-gap: 0.75em;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      padding: 1em 12px;
+      overflow: hidden;
+
+      .left-emotion-img {
+        grid-column: 2;
+        grid-row: 1;
+        position: static;
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1;
+        align-self: start;
+        overflow: hidden;
+        pointer-events: none;
+
+        img,
+        video {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .left {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        height: 100%;
+        min-height: 0;
+        width: 100%;
+        padding: 0;
+
+        .chat-content {
+          height: 100%;
+          min-height: 0;
+          justify-content: stretch;
+        }
+
+        .chat-list-container {
+          min-height: 0;
+          justify-content: flex-start;
+          align-items: stretch;
+
+          > div {
+            height: 100%;
+            min-height: 0;
+          }
+
+          :deep(.el-scrollbar) {
+            height: 100%;
+          }
+
+          .content {
+            width: 100%;
+            padding: 0;
+
+            .chat-ul {
+              padding-bottom: 1em;
+
+              li {
+                max-width: 100%;
+                padding: 0.75em 1em;
+
+                > div {
+                  font-size: 1.1em;
+                  overflow-wrap: anywhere;
+                }
+
+                &.me-chat {
+                  max-width: 90%;
+                }
+              }
+            }
+          }
+        }
+
+        .input-container {
+          flex: 0 0 auto;
+          width: 100%;
+          margin-top: auto;
+          padding: 0.75em 0 0;
+
+          .tip-text {
+            margin: 0.75em 4.5em 0;
+            font-size: 0.9em;
+          }
+        }
+      }
+
+      .right {
+        grid-column: 2;
+        grid-row: 2;
+        width: 100%;
+        min-width: 0;
+        height: 100%;
+        min-height: 0;
+        align-self: stretch;
+        overflow: visible;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-template .chat-container {
+    --chat-sidebar-width: clamp(4.5em, 24vw, 6em);
+    column-gap: 0.5em;
+    padding: 0.75em 8px;
+
+    .left {
+      width: 100%;
+
+      .chat-list-container .content .chat-ul li {
+        width: fit-content;
+        min-width: 0;
+
+        &.model-chat {
+          width: 100%;
+        }
+      }
+
+      .input-container .tip-text {
+        margin-right: 1em;
+        margin-left: 1em;
       }
     }
   }
