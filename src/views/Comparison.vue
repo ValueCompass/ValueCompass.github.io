@@ -191,187 +191,143 @@
             class="download-box"
             :class="{ show: DimensionMeasurementTabIndex == 0 }"
           >
-            <h4>Schwartz Theory of Basic Values</h4>
-            <el-table
-              :data="Schwartz_table_data"
-              ref="SchwartzTableRef"
-              border
-              style="width: 100%"
-              :default-sort="{ prop: 'Score', order: 'descending' }"
-            >
-              <el-table-column prop="model_name" label="Model" width="210">
-                <template #default="{ row }">
-                  <span aria-hidden="true">{{ row.model_name }}</span>
-                  <span class="sr-only">Model {{ row.model_name }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="Score"
-                label="Score"
-                sortable
-                :formatter="formatter"
-              >
-                <template #header>
-                  <button
-                    type="button"
-                    class="sortable-header-button"
-                  >
-                    Average
-                  </button>
-                </template>
-                <template #default="{ row }">
-                  <span>{{ formatTableValue(row.Score) }}</span>
-                  <span class="sr-only">
-                    {{ row.model_name }}, Average {{ formatTableValue(row.Score) }}
-                  </span>
-                </template>
-              </el-table-column>
-              <template
-                v-for="(item, index) in Schwartz_table_columns_checked"
-              >
-                <el-table-column
-                  v-if="item != 'model_name' && item != 'Score'"
-                  :key="index"
-                  :prop="item"
-                  :label="item"
-                >
-                  <template #default="{ row }">
-                    <span>{{ formatTableValue(row[item]) }}</span>
-                    <span class="sr-only">
-                      {{ row.model_name }}, {{ item }} {{ formatTableValue(row[item]) }}
-                    </span>
+            <table ref="SchwartzTableRef" class="comparison-data-table">
+              <caption>Schwartz Theory of Basic Values</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Average</th>
+                  <template v-for="item in Schwartz_table_columns_checked">
+                    <th
+                      v-if="item != 'model_name' && item != 'Score'"
+                      :key="item"
+                      scope="col"
+                    >
+                      {{ item }}
+                    </th>
                   </template>
-                </el-table-column>
-              </template>
-            </el-table>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in Schwartz_table_data" :key="row.model_name">
+                  <th scope="row">{{ row.model_name }}</th>
+                  <td>{{ formatTableValue(row.Score) }}</td>
+                  <template v-for="item in Schwartz_table_columns_checked">
+                    <td
+                      v-if="item != 'model_name' && item != 'Score'"
+                      :key="item"
+                    >
+                      {{ formatTableValue(row[item]) }}
+                    </td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div
             class="download-box"
             :class="{ show: DimensionMeasurementTabIndex == 1 }"
           >
-            <h4>Moral Foundations Theory</h4>
-            <el-table
-              :data="MFT_table_data"
-              ref="MFTTableRef"
-              border
-              style="width: 100%"
-              :default-sort="{ prop: 'Score', order: 'descending' }"
-            >
-              <el-table-column prop="model_name" label="Model" width="210" />
-              <el-table-column
-                prop="Score"
-                label="Score"
-                sortable
-                :formatter="formatter"
-              >
-                <template #header>
-                  <button
-                    type="button"
-                    class="sortable-header-button"
-                  >
-                    Average
-                  </button>
-                </template>
-              </el-table-column>
-              <template
-                v-for="(item, index) in MFT_table_columns_checked"
-                :key="index"
-              >
-                <el-table-column
-                  v-if="item != 'model_name'"
-                  :prop="item"
-                  :label="item"
-                  :formatter="formatter"
-                />
-              </template>
-            </el-table>
+            <table ref="MFTTableRef" class="comparison-data-table">
+              <caption>Moral Foundations Theory</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Average</th>
+                  <template v-for="item in MFT_table_columns_checked">
+                    <th
+                      v-if="item != 'model_name'"
+                      :key="item"
+                      scope="col"
+                    >
+                      {{ item }}
+                    </th>
+                  </template>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in MFT_table_data" :key="row.model_name">
+                  <th scope="row">{{ row.model_name }}</th>
+                  <td>{{ formatTableValue(row.Score) }}</td>
+                  <template v-for="item in MFT_table_columns_checked">
+                    <td v-if="item != 'model_name'" :key="item">
+                      {{ formatTableValue(row[item]) }}
+                    </td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div
             class="download-box"
             :class="{ show: DimensionMeasurementTabIndex == 2 }"
           >
-            <h4>Safety Taxonomy</h4>
-            <el-table
-              :data="Risk_table_data"
-              ref="RiskTableRef"
-              border
-              style="width: 100%"
-              :default-sort="{ prop: 'Score', order: 'descending' }"
-            >
-              <el-table-column prop="model_name" label="Model" width="210" />
-              <el-table-column
-                prop="Score"
-                label="Score"
-                sortable
-                :formatter="formatter"
-              >
-                <template #header>
-                  <button
-                    type="button"
-                    class="sortable-header-button"
-                  >
-                    Average
-                  </button>
-                </template>
-              </el-table-column>
-
-              <template
-                v-for="(item, index) in Risk_table_columns_checked"
-                :key="index"
-              >
-                <el-table-column
-                  v-if="item != 'model_name'"
-                  :prop="item"
-                  :label="item"
-                  :formatter="formatter"
-                />
-              </template>
-            </el-table>
+            <table ref="RiskTableRef" class="comparison-data-table">
+              <caption>Safety Taxonomy</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Average</th>
+                  <template v-for="item in Risk_table_columns_checked">
+                    <th
+                      v-if="item != 'model_name'"
+                      :key="item"
+                      scope="col"
+                    >
+                      {{ item }}
+                    </th>
+                  </template>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in Risk_table_data" :key="row.model_name">
+                  <th scope="row">{{ row.model_name }}</th>
+                  <td>{{ formatTableValue(row.Score) }}</td>
+                  <template v-for="item in Risk_table_columns_checked">
+                    <td v-if="item != 'model_name'" :key="item">
+                      {{ formatTableValue(row[item]) }}
+                    </td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div
             class="download-box"
             :class="{ show: DimensionMeasurementTabIndex == 3 }"
           >
-            <h4>LLMs' Unique Value System</h4>
-            <el-table
-              :data="FULVa_table_data"
-              ref="FULVaTableRef"
-              border
-              style="width: 100%"
-              :default-sort="{ prop: 'Score', order: 'descending' }"
-            >
-              <el-table-column prop="model_name" label="Model" width="210" />
-              <el-table-column
-                prop="Score"
-                label="Score"
-                sortable
-                :formatter="formatter"
-              >
-                <template #header>
-                  <button
-                    type="button"
-                    class="sortable-header-button"
-                  >
-                    Average
-                  </button>
-                </template>
-              </el-table-column>
-
-              <template
-                v-for="(item, index) in FULVa_table_columns_checked"
-                :key="index"
-              >
-                <el-table-column
-                  v-if="item != 'model_name'"
-                  :prop="item"
-                  :label="item"
-                  :formatter="formatter"
-                />
-              </template>
-            </el-table>
+            <table ref="FULVaTableRef" class="comparison-data-table">
+              <caption>LLMs' Unique Value System</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Average</th>
+                  <template v-for="item in FULVa_table_columns_checked">
+                    <th
+                      v-if="item != 'model_name'"
+                      :key="item"
+                      scope="col"
+                    >
+                      {{ item }}
+                    </th>
+                  </template>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in FULVa_table_data" :key="row.model_name">
+                  <th scope="row">{{ row.model_name }}</th>
+                  <td>{{ formatTableValue(row.Score) }}</td>
+                  <template v-for="item in FULVa_table_columns_checked">
+                    <td v-if="item != 'model_name'" :key="item">
+                      {{ formatTableValue(row[item]) }}
+                    </td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <!-- <h4>LLMs' Unique Value System</h4> -->
@@ -580,20 +536,6 @@ const fetchData = async () => {
   } catch (error) {
     console.error("Fetch error:", error);
   }
-};
-
-const formatter = (row, column) => {
-  if (column.label == "model_name") {
-    return row[column.label];
-  } else {
-    return (row[column.label] * 1).toFixed(2);
-  }
-  // if(column.label == 'model_name'){
-  //   return row[column.label]
-  // }else{
-  //   console.log(row[column.label])
-  //   return row[column.label].toFixed(5)
-  // }
 };
 
 const formatTableValue = (value) => (Number(value) || 0).toFixed(2);
@@ -917,19 +859,19 @@ const downloadChartsAsPDF = async (pdf) => {
     [
       {
         name: "Schwartz Theory of Basic Values",
-        chart: SchwartzTableRef.value.$el,
+        chart: SchwartzTableRef.value,
       },
       {
         name: "Moral Foundation Theory",
-        chart: MFTTableRef.value.$el,
+        chart: MFTTableRef.value,
       },
       {
         name: "Safety Taxonomy",
-        chart: RiskTableRef.value.$el,
+        chart: RiskTableRef.value,
       },
       {
         name: "LLMs' Unique Value System",
-        chart: FULVaTableRef.value.$el,
+        chart: FULVaTableRef.value,
       },
     ],
     [
@@ -989,23 +931,36 @@ const handleClickOutside = (event) => {
 </script>
 
 <style scoped lang="scss">
-.comparison-template {
-  // width: 80%;
-  // max-width: 1500px;
-  // margin: 0 auto;
-  // min-width: 1200px;
-}
-.el-table {
-  // --el-table-border: none;
-  --el-table-header-bg-color: var(--gary-color);
-  --el-table-bg-color: transparent;
-  --el-table-tr-bg-color: transparent;
-  --el-table-text-color: var(--text-color);
-  --el-table-header-text-color: var(--text-color);
-  --el-table-row-hover-bg-color: #0a111f;
-  --el-table-border-color: var(--border-color);
-  --el-table-row-hover-bg-color: transparent;
+.comparison-data-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  color: var(--text-color);
   font-size: 1em;
+
+  caption {
+    padding: 0 0 0.8em;
+    font-size: 1.2em;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  th,
+  td {
+    min-width: 8em;
+    padding: 0.75em;
+    border: 1px solid var(--border-color);
+    text-align: left;
+  }
+
+  th:first-child {
+    min-width: 13.125em;
+  }
+
+  thead th,
+  tbody th {
+    font-weight: 600;
+  }
 }
 .title-content {
   margin-top: 1.5em;
@@ -1060,12 +1015,6 @@ const handleClickOutside = (event) => {
     margin-top: 1em;
     .table-box {
       margin-top: 2em;
-      h4 {
-        font-size: 1.2em;
-        margin: 0 0 0.8em;
-        font-weight: 600;
-        text-align: center;
-      }
     }
 
     .chart-main-chart {
@@ -1073,37 +1022,6 @@ const handleClickOutside = (event) => {
       align-items: center;
     }
   }
-}
-
-.sortable-header-button {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  text-align: inherit;
-  cursor: pointer;
-  border-radius: 4px;
-
-  &:focus-visible {
-    outline: 2px solid #0b70c3;
-    outline-offset: 2px;
-  }
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .compare-model-list :focus-visible {
@@ -1133,23 +1051,23 @@ const handleClickOutside = (event) => {
 
 .table-box {
   .download-box:nth-child(1) {
-    .el-table {
-      --el-table-header-bg-color: #fff2e2;
+    .comparison-data-table thead {
+      background-color: #fff2e2;
     }
   }
   .download-box:nth-child(2) {
-    .el-table {
-      --el-table-header-bg-color: #fdeaf3;
+    .comparison-data-table thead {
+      background-color: #fdeaf3;
     }
   }
   .download-box:nth-child(3) {
-    .el-table {
-      --el-table-header-bg-color: #dcf5f8;
+    .comparison-data-table thead {
+      background-color: #dcf5f8;
     }
   }
   .download-box:nth-child(4) {
-    .el-table {
-      --el-table-header-bg-color: #e7f1f9;
+    .comparison-data-table thead {
+      background-color: #e7f1f9;
     }
   }
 }
