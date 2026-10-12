@@ -19,7 +19,7 @@
       <div class="main-container">
         <div class="intro intro-container">
           <div class="left">
-            <h2>Benchmarks</h2>
+            <h1>Benchmarks</h1>
           </div>
           <div class="right">
             <p class="p">
@@ -384,7 +384,7 @@ const vDrag = {
       line-height: 1.8;
     }
   }
-  h2 {
+  h1 {
     font-size: 4em;
     color: #004f8f;
     line-height: normal;
@@ -508,7 +508,7 @@ const vDrag = {
       }
     }
 
-    h2 {
+    h1 {
       font-size: 3em;
       overflow-wrap: anywhere;
     }
