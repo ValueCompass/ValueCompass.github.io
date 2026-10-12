@@ -23,12 +23,13 @@
             <li
               class="model-li"
               v-for="(item, index) in checkedModelDetailList"
-              :key="item"
+              :key="item.model_name"
               :style="{ 'border-color': item.color }"
             >
               <button
                 type="button"
                 class="close"
+                :ref="(element) => setRemoveButtonRef(element, item.model_name)"
                 :aria-label="`Remove ${item.model_name} from compare`"
                 @click="closeModel(item.model_name, index)"
               >
@@ -120,6 +121,9 @@
         </div>
       </div>
     </div>
+    <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      {{ comparePoolAnnouncement }}
+    </p>
     <!-- <p
       style="
         font-size: 2em;
@@ -452,6 +456,16 @@ const modelGropsByDeveloper = ref();
 const modelNameList = ref([]); // [ 'GPT-4-Turbo', 'GPT-4-Turbo' ]
 const checkedModelNameList = ref([]);
 const checkedModelDetailList = ref([]);
+const comparePoolAnnouncement = ref("");
+const removeButtonRefs = new Map();
+
+const setRemoveButtonRef = (element, modelName) => {
+  if (element) {
+    removeButtonRefs.set(modelName, element);
+  } else {
+    removeButtonRefs.delete(modelName);
+  }
+};
 
 const getAxiosData = (url) => {
   return axios.get(url);
@@ -590,12 +604,27 @@ const submit = () => {
   checkedModel.value = "";
 };
 
-const closeModel = (modelName, index) => {
+const closeModel = async (modelName, index) => {
   // if (checkedModelNameList.value.length <= 1) {
   //   return;
   // }
+  comparePoolAnnouncement.value = "";
   checkedModelNameList.value.splice(index, 1);
   submit();
+
+  await nextTick();
+
+  if (checkedModelNameList.value.length > 0) {
+    const nextFocusIndex = Math.min(
+      index,
+      checkedModelNameList.value.length - 1
+    );
+    removeButtonRefs.get(checkedModelNameList.value[nextFocusIndex])?.focus();
+  } else {
+    document.querySelector(".compare-model-list .add-model")?.focus();
+  }
+
+  comparePoolAnnouncement.value = `${modelName} removed from Compare Pool`;
 };
 
 const Schwartz_table_columns = ref([]);
@@ -931,6 +960,18 @@ const handleClickOutside = (event) => {
 </script>
 
 <style scoped lang="scss">
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .comparison-data-table {
   width: 100%;
   border-spacing: 0;

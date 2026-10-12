@@ -23,14 +23,15 @@
         <li
           class="model-li"
           v-for="(item, index) in props.compareArr"
-          :key="index"
+          :key="item.modelName"
           :style="{ 'border-color': colorList[index] }"
         >
           <button
             type="button"
             class="close"
+            :ref="(el) => setRemoveButtonRef(el, item.modelName)"
             :aria-label="`Remove ${item.modelName} from compare`"
-            @click="closeModel(item)"
+            @click="closeModel(item, index)"
           >
             <el-icon><Close /></el-icon>
           </button>
@@ -148,12 +149,23 @@ const checkedModelDetailList = ref([]);
 const showDetail = ref(true);
 const mobileViewportQuery = window.matchMedia("(max-width: 767px)");
 const isMobileViewport = ref(mobileViewportQuery.matches);
+const removeButtonRefs = new Map();
 const handleMobileViewportChange = (event) => {
   isMobileViewport.value = event.matches;
 };
 
-const closeModel = (model) => {
-  emit("closeModel", model);
+const setRemoveButtonRef = (element, modelName) => {
+  if (element) {
+    removeButtonRefs.set(modelName, element);
+  } else {
+    removeButtonRefs.delete(modelName);
+  }
+};
+const focusRemoveButton = (modelName) => {
+  removeButtonRefs.get(modelName)?.focus();
+};
+const closeModel = (model, index) => {
+  emit("closeModel", model, index);
 };
 const removeAll = () => {
   emit("removeAll");
@@ -242,6 +254,10 @@ const handleClickOutside = (event) => {
     activeIndex.value = null;
   }
 };
+
+defineExpose({
+  focusRemoveButton,
+});
 </script>
 
 

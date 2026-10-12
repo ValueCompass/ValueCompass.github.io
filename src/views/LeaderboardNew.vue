@@ -451,6 +451,9 @@
       @hideComparePool="ComparePoolShow = false"
       :compareArr="compareArr"
     ></ComparePool>
+    <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      {{ comparePoolAnnouncement }}
+    </p>
     <div v-if="compareArr.length > 0" style="height: 200px"></div>
 
     <scoreIntro ref="scoreIntroRef"></scoreIntro>
@@ -624,6 +627,7 @@ const handleDetailClick = (row) => {
 
 const ComparePoolShow = ref(false);
 const ComparePoolRef = ref();
+const comparePoolAnnouncement = ref("");
 const compareArr = ref([]);
 const compareArrString = ref([]);
 
@@ -678,13 +682,35 @@ const compareNow = () => {
     },
   });
 };
-const closeModel = (model) => {
+const closeModel = async (model, removedIndex) => {
+  comparePoolAnnouncement.value = "";
   compareArr.value = compareArr.value.filter(
     (item) => item.modelName !== model.modelName
   );
   compareArrString.value = compareArrString.value.filter(
     (item) => item !== model.modelName
   );
+
+  await nextTick();
+
+  if (compareArr.value.length > 0) {
+    const nextFocusIndex = Math.min(removedIndex, compareArr.value.length - 1);
+    ComparePoolRef.value?.focusRemoveButton(
+      compareArr.value[nextFocusIndex].modelName
+    );
+  } else {
+    const addButton = Array.from(
+      document.querySelectorAll(".compare-button")
+    ).find(
+      (button) =>
+        button.getAttribute("aria-label") ===
+        `Add ${model.modelName} to compare`
+    );
+    const focusTarget = addButton || document.querySelector(".filter-table");
+    focusTarget?.focus();
+  }
+
+  comparePoolAnnouncement.value = `${model.modelName} removed from Compare Pool`;
 };
 
 const formatter = (row, column) => {
@@ -796,6 +822,18 @@ const handleMouseUp = () => {
 </script>
 
 <style scoped lang="scss">
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .des {
   text-align: center;
   line-height: 1.8;
