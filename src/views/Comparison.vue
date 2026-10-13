@@ -66,6 +66,9 @@
                 tabindex="0"
                 role="button"
                 aria-label="Add model to compare"
+                aria-haspopup="dialog"
+                :aria-expanded="activeIndex === item"
+                aria-controls="model-selection-dialog"
                 :ref="(el) => (buttonRefs[item] = el)"
                 @click="showPopover(item)"
                 @keydown.enter.prevent="showPopover(item)"
@@ -82,6 +85,9 @@
               tabindex="0"
               role="button"
               aria-label="Add model to compare"
+              aria-haspopup="dialog"
+              :aria-expanded="activeIndex === 0"
+              aria-controls="model-selection-dialog"
               :ref="(el) => (buttonRefs[0] = el)"
               @click="showPopover(0)"
               @keydown.enter.prevent="showPopover(0)"
@@ -100,9 +106,21 @@
               virtual-triggering
               placement="right"
               trigger="click"
+              @after-enter="focusModelDialog"
               @after-leave="activeIndex = null"
             >
-              <div id="popoverId" style="position: relative">
+              <div
+                id="model-selection-dialog"
+                ref="modelDialogRef"
+                role="dialog"
+                aria-labelledby="model-selection-dialog-title"
+                tabindex="-1"
+                style="position: relative"
+                @keydown.esc.stop.prevent="closeModelDialog"
+              >
+                <h2 id="model-selection-dialog-title" class="sr-only">
+                  Select models to compare
+                </h2>
                 <ModelListCheckbox
                   :modelGropsByDeveloper="modelGropsByDeveloper"
                   :modelValue="checkedModelNameList"
@@ -458,6 +476,7 @@ const checkedModelNameList = ref([]);
 const checkedModelDetailList = ref([]);
 const comparePoolAnnouncement = ref("");
 const removeButtonRefs = new Map();
+const modelDialogRef = ref(null);
 
 const setRemoveButtonRef = (element, modelName) => {
   if (element) {
@@ -588,9 +607,12 @@ const handleComparisonTabArrowKey = (index, direction) => {
   });
 };
 
-const updateCheckboxValue = (checkedValue) => {
+const updateCheckboxValue = async (checkedValue) => {
+  const trigger = buttonRefs.value[activeIndex.value];
   checkedModelNameList.value = checkedValue;
   submit();
+  await nextTick();
+  restoreModelDialogTriggerFocus(trigger);
 };
 const submit = () => {
   visible.value = false;
@@ -942,12 +964,37 @@ const isSetModelNumMax = ref(true);
 const buttonRefs = ref([]);
 const activeIndex = ref(null);
 
-const showPopover = (index) => {
-  activeIndex.value = activeIndex.value === index ? null : index;
+const focusModelDialog = () => {
+  modelDialogRef.value?.focus();
+};
+const restoreModelDialogTriggerFocus = (trigger) => {
+  if (trigger?.isConnected) {
+    trigger.focus();
+    return;
+  }
+
+  document
+    .querySelector(".compare-model-list .add-model, .compare-model-list .close")
+    ?.focus();
+};
+const showPopover = async (index) => {
+  const isOpen = activeIndex.value === index;
+  activeIndex.value = isOpen ? null : index;
+
+  if (!isOpen) {
+    await nextTick();
+    focusModelDialog();
+  }
+};
+const closeModelDialog = async () => {
+  const trigger = buttonRefs.value[activeIndex.value];
+  activeIndex.value = null;
+  await nextTick();
+  restoreModelDialogTriggerFocus(trigger);
 };
 const handleClickOutside = (event) => {
   // 如果点击的是按钮或弹出框，不关闭
-  const popoverEl = document.getElementById("popoverId");
+  const popoverEl = document.getElementById("model-selection-dialog");
   const clickedInsideButton = buttonRefs.value.some((el) =>
     el?.contains(event.target)
   );

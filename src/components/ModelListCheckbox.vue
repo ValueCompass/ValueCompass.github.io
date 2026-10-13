@@ -14,6 +14,7 @@
 
     <div class="scroll-inner" ref="contentRef" @scroll="handleScroll">
       <el-checkbox-group
+        class="model-checkbox-group"
         v-model="checkedModelNameList"
         :max="isSetModelNumMax ? 5 : 100"
       >
@@ -230,6 +231,9 @@ onMounted(async () => {
   height: 376px;
   overflow-y: auto;
   padding-right: 3em;
+}
+.model-checkbox-group {
+  padding: 0 4px;
 }
 .provider_models {
   display: flex;
