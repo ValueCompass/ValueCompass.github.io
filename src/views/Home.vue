@@ -49,7 +49,7 @@
           <div class="right card">
             <div class="title">
               <img src="@/assets/images/home-icon-leaderboard.png" alt="" />
-              <h4>Benchmarks</h4>
+              <h3>Benchmarks</h3>
             </div>
             <p style="text-align: center; margin: .8em 0 1.2em">
               <a href="" target="_blank">
@@ -129,7 +129,7 @@
                   src="@/assets/images/home-icon-PublicationsHub.png"
                   alt=""
                 />
-                <h4>Publication</h4>
+                <h3>Publication</h3>
               </div>
               <div>
                 <p class="p">
@@ -180,7 +180,7 @@
         <div class="latest-news main-container" style="padding: 4.5em 0">
           <div class="title">
             <img src="@/assets/images/home-icon-news.png" alt="" />
-            <h4>Latest News</h4>
+            <h3>Latest News</h3>
           </div>
           <!-- <ul>
           <li>
@@ -310,7 +310,7 @@ import postsComponent from "../components/Home/posts.vue";
     img {
       width: 7.5em;
     }
-    h4 {
+    h3 {
       font-weight: 400;
       color: rgba(0, 79, 143, 1);
       font-size: 2.5em;
@@ -500,7 +500,7 @@ import postsComponent from "../components/Home/posts.vue";
         width: 5em;
       }
 
-      h4 {
+      h3 {
         font-size: 2em;
         overflow-wrap: anywhere;
       }

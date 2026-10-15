@@ -614,7 +614,7 @@ const getReadAloudLabel = (index, text = "") => {
     .replace(/\s+/g, " ")
     .trim();
 
-  return readableText ? `${actionText}: ${readableText}` : actionText;
+  return readableText ? `${actionText} button: ${readableText}` : actionText;
 };
 
 const getChatMessageContentId = (index) => {

@@ -17,9 +17,9 @@
               </div>
             </div>
             <div class="bottom">
-              <h2 class="article__title">
+              <h4 class="article__title">
                 {{ post.title }}
-              </h2>
+              </h4>
 
               <div class="article-tags">
                 <div class="article-tags__box">
