@@ -1,16 +1,18 @@
 <template>
   <div class="main-container Key-Findings-template">
-    <h2 class="h1">
-      Insights about LLMs Values from the Value Compass Benchmarks
-    </h2>
-    <!-- <span class="button read-report-btn" @click="downloadPdf">Read report</span> -->
-    <a
-      class="button read-report-btn"
-      target="_blank"
-      href="/data/LeaderboardReport.pdf"
-    >
-      Read report
-    </a>
+    <div class="findings-header">
+      <h2 class="h1">
+        Insights about LLMs Values from the Value Compass Benchmarks
+      </h2>
+      <!-- <span class="button read-report-btn" @click="downloadPdf">Read report</span> -->
+      <a
+        class="button read-report-btn"
+        target="_blank"
+        href="/data/LeaderboardReport.pdf"
+      >
+        Read report
+      </a>
+    </div>
     <div v-for="(section, i) in InsightsData" :key="i">
       <h2>{{ section.h2 }}</h2>
       <template v-if="section.list">
@@ -28,10 +30,10 @@
                   class="toggle-button"
                   :aria-expanded="item.open === true"
                   :aria-controls="`insight-details-${i}-${index}`"
-                  :aria-label="`Toggle Finding ${index + 1}`"
+                  :aria-label="`${item.open ? 'Collapse' : 'Expand'} Finding ${index + 1}: ${item.title}`"
                   @click="toggle(item)"
                 >
-                  <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
+                  <SvgIcon class="toggle-icon" name="toggle-icon" aria-hidden="true"></SvgIcon>
                 </button>
                 <SvgIcon class="star" name="star"></SvgIcon>
                 <span>Finding {{ index + 1 }}</span>
@@ -82,10 +84,10 @@
                     class="toggle-button"
                     :aria-expanded="item.open === true"
                     :aria-controls="`sub-insight-details-${i}-${j}-${index}`"
-                    :aria-label="`Toggle Finding ${index + 1}`"
+                    :aria-label="`${item.open ? 'Collapse' : 'Expand'} Finding ${index + 1}: ${item.title}`"
                     @click="toggle(item)"
                   >
-                    <SvgIcon class="toggle-icon" name="toggle-icon"></SvgIcon>
+                    <SvgIcon class="toggle-icon" name="toggle-icon" aria-hidden="true"></SvgIcon>
                   </button>
                   <SvgIcon class="star" name="star"></SvgIcon>
                   <span>Finding {{ index + 1 }}</span>
@@ -346,6 +348,20 @@ const downloadPdf = () => {
   padding: 3em;
   color: #000;
   box-sizing: border-box;
+  .findings-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1em 1.5em;
+    margin-bottom: 2.2em;
+
+    .h1 {
+      flex: 1 1 24rem;
+      min-width: 0;
+      margin-bottom: 0;
+      overflow-wrap: anywhere;
+    }
+  }
   .h1 {
     font-size: 2em;
     font-weight: 600;
@@ -454,9 +470,9 @@ const downloadPdf = () => {
   }
 }
 .read-report-btn {
-  position: absolute;
-  right: 3rem;
-  top: 3.3rem;
+  flex: 0 0 auto;
+  max-width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--theme-color);
   background: #fff;
   color: var(--theme-color);
@@ -480,7 +496,6 @@ const downloadPdf = () => {
     padding: 2em 16px;
 
     .h1 {
-      margin-bottom: 0.75em;
       font-size: 2em;
       overflow-wrap: anywhere;
     }
@@ -530,10 +545,8 @@ const downloadPdf = () => {
   }
 
   .read-report-btn {
-    position: static;
     display: inline-flex;
     width: fit-content;
-    margin-bottom: 2em;
   }
 }
 </style>

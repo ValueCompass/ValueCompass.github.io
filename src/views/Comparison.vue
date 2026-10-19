@@ -74,7 +74,7 @@
                 @keydown.enter.prevent="showPopover(item)"
                 @keydown.space.prevent="showPopover(item)"
               >
-                <img src="@/assets/images/add-model.svg" alt="add-model" />
+                <SvgIcon class="add-model-icon" name="add-model" style="width: 48px; height: 48px" />
                 <p>Add</p>
               </li>
             </template>
@@ -93,7 +93,7 @@
               @keydown.enter.prevent="showPopover(0)"
               @keydown.space.prevent="showPopover(0)"
             >
-              <img src="@/assets/images/add-model.svg" alt="add-model" />
+              <SvgIcon class="add-model-icon" name="add-model" style="width: 48px; height: 48px" />
               <p>Add</p>
             </li>
             <el-popover

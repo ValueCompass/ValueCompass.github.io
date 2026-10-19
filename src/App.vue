@@ -2,7 +2,7 @@
   <div id="app" class="app-container">
     <Header v-if="!hideAppChrome" class="header-component" style="" />
     <div id="content" :class="{ 'content-without-chrome': hideAppChrome }" style="">
-      <div
+      <main
         style="
           min-height: calc(100% - 40px);
           display: flex;
@@ -23,7 +23,7 @@
             v-if="!$route.meta.keepAlive"
           />
         </router-view>
-      </div>
+      </main>
       <Footer v-if="!hideAppChrome" class="footer-component" />
     </div>
   </div>

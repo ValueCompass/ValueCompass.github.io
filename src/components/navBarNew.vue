@@ -1,6 +1,6 @@
 <template>
-  <div class="header-component">
-    <div class="nav main-container">
+  <header class="header-component">
+    <nav class="nav main-container" aria-label="Primary navigation">
       <router-link to="/">
         <div class="logo-container">
           <img src="@/assets/images/main-logo.png" alt="Value Compass logo" />
@@ -114,7 +114,8 @@
         <li class="icon-li">
           <a
             href="mailto:valuecompass@microsoft.com"
-            aria-label="Email"
+            aria-label="Copy email address and open email app: valuecompass@microsoft.com"
+            title="Copy email address and open email app: valuecompass@microsoft.com"
             @click.prevent="copyEmail('valuecompass@microsoft.com')"
           >
             <SvgIcon
@@ -126,10 +127,11 @@
         </li>
         <li class="icon-li">
           <a
-            aria-label="Github"
+            aria-label="View ValueCompass on GitHub (opens in a new tab)"
+            title="View ValueCompass on GitHub (opens in a new tab)"
             target="_blank"
             href="https://github.com/microsoft/ValueCompass.git"
-            ><SvgIcon class="SvgIcon github-icon" name="github-icon"></SvgIcon
+            ><SvgIcon class="SvgIcon github-icon" name="github-icon" aria-hidden="true"></SvgIcon
           ></a>
         </li>
       </ul>
@@ -141,8 +143,8 @@
       >
         {{ emailCopyStatus }}
       </p>
-    </div>
-  </div>
+    </nav>
+  </header>
 </template>
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";

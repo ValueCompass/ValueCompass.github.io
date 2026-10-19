@@ -4,6 +4,7 @@
     :navigation="true"
     :pagination="{ clickable: true }"
     @swiper="onSwiper"
+    @slideChange="onSlideChange"
     :loop="true"
     style="height: 100%; padding-bottom: 1.7em; box-sizing: border-box"
   >
@@ -11,6 +12,8 @@
       class="swiper-slide"
       v-for="(item, index) in caseData"
       :key="item.model + index"
+      tabindex="-1"
+      :inert="activeCaseIndex === index ? null : ''"
     >
       <div class="swiper-main swiper-no-swiping" tabindex="0">
         <button
@@ -78,18 +81,21 @@ export default {
   },
   setup(props) {
     const swiperRef = ref(null);
+    const activeCaseIndex = ref(0);
     const onSwiper = (swiper) => {
       console.log(swiper);
       swiperRef.value = swiper;
+      activeCaseIndex.value = swiper.realIndex;
     };
-    const onSlideChange = () => {
-      console.log("slide change");
+    const onSlideChange = (swiper) => {
+      activeCaseIndex.value = swiper.realIndex;
     };
     const caseData = ref(props.data);
     watch(
       () => props.data,
       (newMessage, oldMessage) => {
         caseData.value = newMessage;
+        activeCaseIndex.value = 0;
         if (swiperRef.value) {
           nextTick(() => {
             // swiperRef.value.slideTo(0);
@@ -102,6 +108,7 @@ export default {
 
             // 启用loop模式
             swiperInstance.loopCreate();
+            activeCaseIndex.value = swiperInstance.realIndex;
           });
         }
         console.log(caseData.value);
@@ -146,6 +153,7 @@ export default {
     };
 
     return {
+      activeCaseIndex,
       onSwiper,
       onSlideChange,
       modules: [Pagination, Navigation, A11y, Autoplay],

@@ -24,7 +24,7 @@
               <img :src="getAssetsFile(member.photo)" :alt="member.name" />
             </div>
             <div class="member-info">
-              <h3 class="member__name">{{ member.name }}</h3>
+              <p class="member__name">{{ member.name }}</p>
               <p class="member__position">{{ member.position }}</p>
               <!-- <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a> -->
               <p class="member__institution">{{ member.institution }}</p>
@@ -48,7 +48,7 @@
               <img :src="getAssetsFile(member.photo)" :alt="member.name" />
             </div>
             <div class="member-info">
-              <h3 class="member__name">{{ member.name }}</h3>
+              <p class="member__name">{{ member.name }}</p>
               <p class="member__position">{{ member.position }}</p>
               <!-- <a href="mailto:{{ member.email }}" class="member__email">{{ member.email }}</a> -->
               <p class="member__institution">{{ member.institution }}</p>
@@ -72,7 +72,7 @@
               <img :src="getAssetsFile(member.photo)" :alt="member.name" />
             </div>
             <div class="member-info">
-              <h3 class="member__name">{{ member.name }}</h3>
+              <p class="member__name">{{ member.name }}</p>
               <div>
                 <p class="member__position">{{ member.position }}</p>
                 <p class="member_intern_content">
@@ -374,8 +374,7 @@ const interns = ref([
       width: 7.5em;
     }
   }
-  p,
-  h3 {
+  p {
     line-height: normal;
   }
   .hreo_name {
@@ -542,7 +541,6 @@ const interns = ref([
           }
 
           p,
-          h3,
           span {
             max-width: 100%;
             overflow-wrap: anywhere;

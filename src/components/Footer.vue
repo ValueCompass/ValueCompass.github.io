@@ -5,7 +5,7 @@ export default {
 };
 </script>
 <template>
-  <div class="footer-component">
+  <footer class="footer-component">
     <div class="main-container">
       <nav class="footer-links" aria-label="Footer links">
         <div>
@@ -51,7 +51,7 @@ export default {
         </a>
       </p>
     </div>
-  </div>
+  </footer>
 </template>
 
 <style scoped  lang="scss">
@@ -97,6 +97,7 @@ export default {
       }
       a {
         margin: 0 12px;
+        text-decoration: underline;
       }
     }
     a {

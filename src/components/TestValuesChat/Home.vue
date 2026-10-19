@@ -3,7 +3,7 @@
     <div class="test-intro">
       <div>
         <h1>Welcome to Test Your Values</h1>
-        <h3>Discover your core values through an AI-led conversation</h3>
+        <h2>Discover your core values through an AI-led conversation</h2>
         <ul>
           <li>
             You will have a 1-on-1 conversation with an AI interviewer (approx.
@@ -103,7 +103,7 @@ const toTest = () => {
         font-style: italic;
         letter-spacing: -2px;
       }
-      h3 {
+      h2 {
         font-size: 2.25em;
         font-weight: 350;
         font-style: italic;

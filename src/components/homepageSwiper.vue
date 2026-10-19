@@ -77,6 +77,7 @@
                   {{ item.detail }}
                   <a
                     :href="item.sourceLink"
+                    :aria-label="`${item.name} source link (opens in a new tab)`"
                     :tabindex="tabIndex === index ? 0 : -1"
                     target="_blank"
                     style="color: var(--theme-color)"
